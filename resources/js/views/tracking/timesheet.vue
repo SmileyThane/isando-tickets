@@ -507,7 +507,7 @@
 
                 <template v-slot:item.approve="{ item }" v-if="[STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1">
                     <v-btn
-                        v-if="item.status === 'pending'"
+                        v-if="item.status === STATUS_APPROVAL_PENDING"
                         color="success"
                         dark
                         @click="approveTimesheet(item)"
@@ -516,19 +516,19 @@
                     >
                         Approve
                     </v-btn>
-                    <v-chip color="success" outlined v-if="item.status==='archived'">Approved</v-chip>
-                    <v-chip color="error" outlined v-if="item.status==='rejected'">Rejected</v-chip>
+                    <v-chip color="success" outlined v-if="item.status===STATUS_ARCHIVED">Approved</v-chip>
+                    <v-chip color="error" outlined v-if="item.status===STATUS_REJECTED">Rejected</v-chip>
                 </template>
                 <template v-slot:item.reject="{ item }" v-if="[STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1">
                     <v-dialog
-                        v-if="item.status === 'pending'"
+                        v-if="item.status === STATUS_APPROVAL_PENDING"
                         v-model="rejectManagerDialog"
                         persistent
                         max-width="490"
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
-                                v-if="item.status === 'pending'"
+                                v-if="item.status === STATUS_APPROVAL_PENDING"
                                 color="error"
                                 dark
                                 v-bind="attrs"
@@ -902,7 +902,7 @@
                     ></v-simple-checkbox>
                 </template>
                 <template v-slot:item.entity.name="{ isMobile, item, header, value }">
-                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1 || !item.is_manually">
+                    <template v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) !== -1 || !item.is_manually">
                         <v-btn
                             tile
                             small
@@ -936,10 +936,10 @@
                     </template>
                 </template>
                 <template v-slot:item.status="{ isMobile, item, header, value }">
-                    <v-chip v-if="value === 'archived'" small color="success">{{ langMap.tracking.timesheet.approved }}</v-chip>
-                    <v-chip v-if="value === 'rejected'" small color="error">{{ langMap.tracking.timesheet.rejected }}</v-chip>
-                    <v-chip v-if="value === 'pending'" small color="primary">{{ langMap.tracking.timesheet.approval_pending }}</v-chip>
-                    <v-chip v-if="value === 'tracked'" small>{{ langMap.tracking.timesheet.tracked }}</v-chip>
+                    <v-chip v-if="value === STATUS_ARCHIVED" small color="success">{{ langMap.tracking.timesheet.approved }}</v-chip>
+                    <v-chip v-if="value === STATUS_REJECTED" small color="error">{{ langMap.tracking.timesheet.rejected }}</v-chip>
+                    <v-chip v-if="value === STATUS_APPROVAL_PENDING" small color="primary">{{ langMap.tracking.timesheet.approval_pending }}</v-chip>
+                    <v-chip v-if="value === STATUS_TRACKED" small>{{ langMap.tracking.timesheet.tracked }}</v-chip>
                 </template>
                 <template v-slot:item.number="{ isMobile, item, header, value }">
                     <template v-if="value">
@@ -947,7 +947,7 @@
                     </template>
                 </template>
                 <template v-slot:item.service.name="{ isMobile, item, header, value }">
-                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1 || !item.is_manually">
+                    <template v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) !== -1 || !item.is_manually">
                         <span v-if="item.service">{{ item.service.name }}</span>
                     </template>
                     <template v-else>
@@ -1008,7 +1008,7 @@
                     <span v-else>00:00</span>
                 </template>
                 <template v-slot:item.mon="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[0]">
                         <TimeField
                             v-model="moment(item.times[0].dateTime).format()"
@@ -1026,7 +1026,7 @@
                     </template>
                 </template>
                 <template v-slot:item.tue="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[1]">
                     <TimeField
                         v-model="moment(item.times[1].dateTime).format()"
@@ -1044,7 +1044,7 @@
                     </template>
                 </template>
                 <template v-slot:item.wed="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[2]">
                     <TimeField
                         v-model="moment(item.times[2].dateTime).format()"
@@ -1062,7 +1062,7 @@
                     </template>
                 </template>
                 <template v-slot:item.thu="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[3]">
                         <TimeField
                             v-model="moment(item.times[3].dateTime).format()"
@@ -1080,7 +1080,7 @@
                     </template>
                 </template>
                 <template v-slot:item.fri="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[4]">
                         <TimeField
                             v-model="moment(item.times[4].dateTime).format()"
@@ -1098,7 +1098,7 @@
                     </template>
                 </template>
                 <template v-slot:item.sat="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[5]">
                     <TimeField
                         v-model="moment(item.times[5].dateTime).format()"
@@ -1116,7 +1116,7 @@
                     </template>
                 </template>
                 <template v-slot:item.sun="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[6]">
                         <TimeField
                             v-model="moment(item.times[6].dateTime).format()"
@@ -1339,7 +1339,7 @@
                 v-if="selected.length && [STATUS_REJECTED].indexOf(typeOfItems) !== -1"
                 class="mx-2"
                 small
-                @click="submitItems('tracked')"
+                @click="submitItems(STATUS_TRACKED)"
             >
                 <span>Back to edit</span>
             </v-btn>
@@ -1397,7 +1397,7 @@
                         <v-btn
                             color="success"
                             text
-                            @click="sendingApprovalDialog = false; submitItems('pending')"
+                            @click="sendingApprovalDialog = false; submitItems(STATUS_APPROVAL_PENDING)"
                         >
                             Submit
                         </v-btn>
@@ -1447,7 +1447,7 @@
                         <v-btn
                             color="success"
                             text
-                            @click="approvalDialog = false; submitItems('archived')"
+                            @click="approvalDialog = false; submitItems(STATUS_ARCHIVED)"
                         >
                             Approve
                         </v-btn>
@@ -1498,7 +1498,7 @@
                         <v-btn
                             color="success"
                             text
-                            @click="rejectDialog = false; submitItems('rejected')"
+                            @click="rejectDialog = false; submitItems(STATUS_REJECTED)"
                         >
                             Reject
                         </v-btn>
@@ -1606,6 +1606,7 @@ export default {
             STATUS_REJECTED: 2,
             STATUS_ARCHIVED: 3,
             STATUS_APPROVAL_REQUESTS: 4,
+            STATUS_UNSUBMITTED: 5,
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
@@ -1658,18 +1659,18 @@ export default {
             approvalRequestFilterItems: [
                 {
                     text: 'Requests',
-                    value: 'pending'
+                    value: 1
                 },
                 {
                     text: 'Approved',
-                    value: 'archived'
+                    value: 3
                 },
                 {
                     text: 'Rejected',
-                    value: 'rejected'
+                    value: 2
                 },
             ],
-            approvalRequestFilter: ['pending'],
+            approvalRequestFilter: [1],
             exportDialog: false,
             exportDialogFrom: false,
             exportDialogTo: false,
@@ -1677,9 +1678,9 @@ export default {
                 from: moment().startOf('week').format('YYYY-MM-DD'),
                 to: moment().endOf('week').format('YYYY-MM-DD'),
                 tracked: null,
-                pending: 'pending',
-                rejected: 'rejected',
-                archived: 'archived',
+                pending: 1,
+                rejected: 2,
+                archived: 3,
             },
             loadingCopyWeek: false,
             invalidWeekday: [false, false, false, false, false, false, false],
@@ -1895,7 +1896,11 @@ export default {
                     status,
                     approver_id: this.selectedApprover,
                 })
-                    .then(() => this.debounceGetTimesheet());
+                    .then(async () => {
+                        this.$store.commit('Timesheet/SET_STATUS', this.selected, status);
+                        this.debounceGetTimesheet();
+                        await this._getTimesheetByStatus();
+                    });
             }
             this.selected = [];
         },
@@ -2055,15 +2060,19 @@ export default {
             this.loadingBtn = true;
             this.$store.dispatch('Timesheet/submitTimesheetByIds', {
                 ids: item.items.map(i => i.id),
-                status: 'rejected',
+                status: this.STATUS_REJECTED,
                 approver_id: this.currentUser.id,
                 note: this.rejectReason,
             })
-                .then(() => {
-                    this.loadingBtn = false;
+                .then(async () => {
+                    this.$store.commit('Timesheet/SET_STATUS', item.items, this.STATUS_REJECTED);
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
                     this.debounceGetTimesheet();
+                    await this._getTimesheetByStatus();
                     return null;
+                })
+                .finally(() => {
+                    this.loadingBtn = false;
                 });
             this.rejectReason = '';
         },
@@ -2071,21 +2080,25 @@ export default {
             this.loadingBtn = true;
             this.$store.dispatch('Timesheet/submitTimesheetByIds', {
                 ids: item.items.map(i => i.id),
-                status: 'archived',
+                status: this.STATUS_ARCHIVED,
                 approver_id: this.currentUser.id,
             })
-                .then(() => {
-                    this.loadingBtn = false;
+                .then(async () => {
+                    this.$store.commit('Timesheet/SET_STATUS', item.items, this.STATUS_ARCHIVED);
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
                     this.debounceGetTimesheet();
+                    await this._getTimesheetByStatus();
                     return null;
+                })
+                .finally(() => {
+                    this.loadingBtn = false;
                 });
             this.rejectReason = '';
         },
         cancelTimesheet(item) {
             this.$store.dispatch('Timesheet/submitTimesheetByIds', {
                 ids: item.items.map(i => i.id),
-                status: 'tracked',
+                status: this.STATUS_TRACKED,
             })
                 .then(() => this.debounceGetTimesheet());
             this.rejectReason = '';
@@ -2196,19 +2209,19 @@ export default {
         getStatuses() {
             return [
                 {
-                    value: 'tracked',
+                    value: this.STATUS_TRACKED,
                     text: this.langMap.tracking.timesheet.tracked,
                 },
                 {
-                    value: 'pending',
+                    value: this.STATUS_APPROVAL_PENDING,
                     text: this.langMap.tracking.timesheet.approval_pending,
                 },
                 {
-                    value: 'rejected',
+                    value: this.STATUS_REJECTED,
                     text: this.langMap.tracking.timesheet.rejected,
                 },
                 {
-                    value: 'archived',
+                    value: this.STATUS_ARCHIVED,
                     text: this.langMap.tracking.timesheet.approved,
                 },
             ];
@@ -2245,22 +2258,22 @@ export default {
             return this.$store.getters['getCurrentUser'];
         },
         currentStatus () {
-            let status = 'tracked';
+            let status = this.STATUS_TRACKED;
             switch (this.typeOfItems) {
                 case this.STATUS_TRACKED:
-                    status = 'tracked';
+                    status = this.STATUS_TRACKED;
                     break;
                 case this.STATUS_APPROVAL_PENDING:
-                    status = 'pending';
+                    status = this.STATUS_APPROVAL_PENDING;
                     break;
                 case this.STATUS_REJECTED:
-                    status = 'rejected';
+                    status = this.STATUS_REJECTED;
                     break;
                 case this.STATUS_ARCHIVED:
-                    status = 'archived';
+                    status = this.STATUS_ARCHIVED;
                     break;
                 case this.STATUS_APPROVAL_REQUESTS:
-                    status = 'request';
+                    status = this.STATUS_APPROVAL_REQUESTS;
                     break;
             }
             return status;
@@ -2379,15 +2392,15 @@ export default {
         getTimesheetForManager() {
             const user = this.currentUser;
             let timesheet = [];
-            if (this.currentStatus === 'pending') {
+            if (this.currentStatus === this.STATUS_APPROVAL_PENDING) {
                 timesheet = this.$store.getters['Timesheet/getPendingTimesheet']
                     .filter(i => !this.deletedItems.includes(i.id));
             }
-            if (this.currentStatus === 'rejected') {
+            if (this.currentStatus === this.STATUS_REJECTED) {
                 timesheet = this.$store.getters['Timesheet/getRejectedTimesheet']
                     .filter(i => !this.deletedItems.includes(i.id));
             }
-            if (this.currentStatus === 'request') {
+            if (this.currentStatus === this.STATUS_APPROVAL_REQUESTS) {
                 timesheet = this.$store.getters['Timesheet/getRequestTimesheet']
                     .filter(i => !this.deletedItems.includes(i.id))
                     .filter(i => {
@@ -2397,7 +2410,7 @@ export default {
                         return true;
                     });
             }
-            if (this.currentStatus === 'archived') {
+            if (this.currentStatus === this.STATUS_ARCHIVED) {
                 timesheet = this.$store.getters['Timesheet/getArchivedTimesheet'];
             }
             // timesheet = this.$store.getters['Timesheet/getTimesheet']
@@ -2451,7 +2464,7 @@ export default {
             if (this.selected.length) {
                 let hasFinished = false;
                 Promise.all(this.selected.map(i => {
-                    if (['archived'].indexOf(i.status) !== -1) {
+                    if ([this.STATUS_ARCHIVED].indexOf(i.status) !== -1) {
                         hasFinished = true;
                         return true;
                     }
