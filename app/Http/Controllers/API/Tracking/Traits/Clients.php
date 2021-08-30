@@ -9,7 +9,7 @@ trait Clients
 {
     public function getClientList(Request $request)
     {
-        $result = $this->clientRepo->clients($request);
+        $result = $this->clientService->clients($request);
         return self::showResponse((bool)$result, $result);
     }
 }

@@ -990,9 +990,9 @@ export default {
             });
         this.debounceGetTracking();
         this.$store.dispatch('Tracking/getSettings');
-        this.$store.dispatch('Projects/getProjectList', { search: null });
+        this.$store.dispatch('Projects/getProjectList', { search: null, force: true });
         this.$store.dispatch('Products/getProductList', { search: null });
-        this.$store.dispatch('Clients/getClientList', { search: null });
+        this.$store.dispatch('Clients/getClientList', { search: null, force: true });
         this.$store.dispatch('Tags/getTagList', { force: true });
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Tickets/getTicketList', { search: null });

@@ -336,7 +336,8 @@
                                     clearable
                                     style="max-width: 900px; width: 100%"
                                     v-model="filter.selected"
-                                    @input="debounceGenPreview(); resetSelectedReport()"
+                                    @input="clearFiltersAfter(filter); debounceGenPreview(); resetSelectedReport()"
+                                    @change=""
                                 ></v-select>
                                 <v-btn
                                     color="danger"
@@ -1633,6 +1634,12 @@ export default {
                 query = { ...query, [filters[i].value]: filters[i].selected };
             }
             return query;
+        },
+        clearFiltersAfter(filter) {
+            const index = this.builder.filters.findIndex(i => i.value === filter.value);
+            if (index >= 0) {
+                this.builder.filters.splice(index+1, this.builder.filters.length);
+            }
         }
     },
     computed: {

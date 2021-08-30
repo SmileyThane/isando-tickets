@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Str;
 
 abstract class Filter {
-    public function handler($request, Closure $next) {
+    public function handle($request, Closure $next) {
         if (!request()->has($this->filterName())) {
             return $next($request);
         }
