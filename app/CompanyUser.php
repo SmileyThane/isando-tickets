@@ -104,7 +104,7 @@ class CompanyUser extends Model
     }
 
     public function getColorAttribute() {
-        return $this->userData->color;
+          return $this->userData ? $this->userData->color : '';
     }
 
 }
