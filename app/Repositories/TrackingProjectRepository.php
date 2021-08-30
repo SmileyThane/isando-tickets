@@ -6,7 +6,7 @@ namespace App\Repositories;
 use App\Client;
 use App\Http\Controllers\API\Tracking\Filters\Projects\Billable;
 use App\Http\Controllers\API\Tracking\Filters\Projects\Clients;
-use App\Http\Controllers\API\Tracking\Filters\Projects\Services;
+use App\Http\Controllers\API\Tracking\Filters\Projects\Coworkers;
 use App\LimitationGroupHasModel;
 use App\Permission;
 use App\Product;
@@ -121,6 +121,7 @@ class TrackingProjectRepository
             ->through([
                 Billable::class,
                 Clients::class,
+                Coworkers::class
             ])
             ->thenReturn();
 //        dd($trackingProjects->toSql());

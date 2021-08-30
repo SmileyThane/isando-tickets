@@ -4,26 +4,36 @@
 namespace App\Http\Controllers\API\Tracking\Traits;
 
 use App\Company;
+use App\Http\Controllers\API\Tracking\Filters\Coworkers\Projects;
 use App\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
 
 trait Team
 {
     public function getCoworkers(Request $request)
     {
-        $teams = $this->teamRepo->all($request);
         $coworkers = [];
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS)) {
             $coworkers = Auth::user()->employee->companyData()->first()
                 ->employees()->whereDoesntHave('assignedToClients')
                 ->where('is_clientable', false)
-                ->with('userData')->get()
+                ->with('userData');
+            $coworkers = app(Pipeline::class)
+                ->send($coworkers)
+                ->through([
+                    Projects::class,
+                ])
+                ->thenReturn();
+//            dd($coworkers->toSql());
+            $coworkers = $coworkers->get()
                 ->map(function($user) {
                     $user->userData->name = $user->userData->name . ' ' . $user->userData->surname;
                     return $user->userData;
                 });
         } elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {
+            $teams = $this->teamRepo->all($request);
             foreach ($teams as $team) {
                 $users = $team->employees()->first()->employee()->first()->userData()->get();
                 $coworkers = array_merge($coworkers, $users->toArray());
