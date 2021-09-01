@@ -93,7 +93,7 @@
             </div>
         </div>
         <div class="d-flex flex-grow-1 flex-row">
-            <div class="d-inline-block flex-grow-1" style="width: 33%">
+            <div class="d-inline-block flex-grow-1" style="width: 33%; min-width: 550px">
                 <v-radio-group
                     class="mt-2 pt-0"
                     v-model="source"
@@ -113,13 +113,16 @@
                 </v-radio-group>
             </div>
             <div class="d-inline-block flex-grow-1 text-center" style="width: 33%">
+
+            </div>
+            <div class="d-inline-block flex-grow-1" style="width: 33%">
                 <v-btn
+                    class="mt-1 mx-4"
                     :color="themeBgColor"
                     @click="genReport"
                     :loading="loadingBtn"
                 >Generate report</v-btn>
             </div>
-            <div class="d-inline-block flex-grow-1" style="width: 33%"></div>
         </div>
     </div>
 </template>
@@ -133,7 +136,7 @@ export default {
     name: 'report-tracker',
     components: {
         ClientSelect,
-        CoworkerSelect
+        CoworkerSelect,
     },
     data () {
         return {
@@ -151,6 +154,7 @@ export default {
             source: 'tracker',
             clients: [],
             coworkers: [],
+            grouping: [],
             loadingBtn: false,
         };
     },
@@ -249,7 +253,7 @@ export default {
                     const url = window.URL.createObjectURL(new Blob([res.data]));
                     const link = document.createElement('a');
                     link.href = url;
-                    link.setAttribute('download', `Report.csv`);
+                    link.setAttribute('download', `Report_${this.source}.csv`);
                     document.body.appendChild(link);
                     link.click();
                 })

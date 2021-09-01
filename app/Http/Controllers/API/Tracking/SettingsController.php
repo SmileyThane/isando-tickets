@@ -62,6 +62,7 @@ class SettingsController extends BaseController
     public function getReconciliationReport(Request $request) {
         $periodStart = $request->get('start', Carbon::now()->startOf('week'));
         $periodEnd = $request->get('end', Carbon::now()->endOf('week'));
-        return $this->trackingReportRepo->getReportReconciliationDetail($periodStart, $periodEnd);
+        $groupBy = $request->get('group', 'client');
+        return $this->trackingReportRepo->getReportReconciliationDetail($periodStart, $periodEnd, $groupBy);
     }
 }

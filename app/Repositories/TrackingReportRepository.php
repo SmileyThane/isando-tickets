@@ -998,9 +998,10 @@ class TrackingReportRepository
         return (array)array_values($teams);
     }
 
-    public function getTrackerDataToReportDetail($from, $to, $clients = [], $coworkers = []) {
+    public function getTrackerDataToReportDetail($from, $to, $clients = [], $coworkers = [])
+    {
         $trackers = Tracking::where('date_from', '<=', Carbon::parse($to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
-            ->where(function($query) use ($from, $to) {
+            ->where(function ($query) use ($from, $to) {
                 $query
                     ->where('date_to', '>=', Carbon::parse($from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
                     ->orWhereNull('date_to');
@@ -1015,10 +1016,14 @@ class TrackingReportRepository
         }
 
 //        dd($trackers->toSql(), $trackers->get());
-        $trackers = $trackers->with('Tags.Translates:name,lang,color')
+        $trackers->with('Tags.Translates:name,lang,color')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
-            ->orderBy('date_from', 'desc')
-            ->get();
+            ->orderBy('date_from', 'desc');
+        return $trackers;
+    }
+
+    protected function prepareTrackerDataToReportDetail($trackers) {
+        $trackers = $trackers->get();
         $rows = [
             [
                 'id', 'company_id', 'team_id', 'timesheet_id', 'status', 'user_id', 'user_name', 'entity_id',
@@ -1092,16 +1097,19 @@ class TrackingReportRepository
             $timesheets->whereIn('user_id', $coworkers);
         }
 
-        $timesheets = $timesheets
-            ->orderBy('id', 'desc')
-            ->get();
+        $timesheets->orderBy('id', 'desc');
+        return $timesheets;
+    }
+
+    protected function prepareTimesheetDataToReportDetail($timesheets) {
+        $timesheets = $timesheets->get();
         $rows = [
-             [
-                 'id', 'company_id', 'team_id', 'user_id', 'user_name', 'number', 'status', 'entity_id', 'entity_type',
-                 'entity_name', 'client_id', 'client_name', 'is_manually', 'billable', 'date_from', 'date_to', 'total_time', 'service_id', 'service_name',
-                 'mon', 'mon_decimal', 'tue', 'tue_decimal', 'wed', 'wed_decimal', 'thu', 'thu_decimal', 'fri', 'fri_decimal',
-                 'sat', 'sat_decimal', 'sun', 'sun_decimal', 'approver_id', 'approver_name'
-             ]
+            [
+                'id', 'company_id', 'team_id', 'user_id', 'user_name', 'number', 'status', 'entity_id', 'entity_type',
+                'entity_name', 'client_id', 'client_name', 'is_manually', 'billable', 'date_from', 'date_to', 'total_time', 'service_id', 'service_name',
+                'mon', 'mon_decimal', 'tue', 'tue_decimal', 'wed', 'wed_decimal', 'thu', 'thu_decimal', 'fri', 'fri_decimal',
+                'sat', 'sat_decimal', 'sun', 'sun_decimal', 'approver_id', 'approver_name'
+            ]
         ];
         foreach ($timesheets as $timesheet) {
             switch ($timesheet->status) {
@@ -1151,8 +1159,8 @@ class TrackingReportRepository
         fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
 
         switch ($source) {
-            case 'tracker': $result = $this->getTrackerDataToReportDetail($from, $to, $clients, $coworkers); break;
-            case 'timesheet': $result = $this->getTimesheetDataToReportDetail($from, $to, $clients, $coworkers); break;
+            case 'tracker': $result = $this->prepareTrackerDataToReportDetail($this->getTrackerDataToReportDetail($from, $to, $clients, $coworkers)); break;
+            case 'timesheet': $result = $this->prepareTimesheetDataToReportDetail($this->getTimesheetDataToReportDetail($from, $to, $clients, $coworkers)); break;
             default: $result = [];
         }
         foreach ($result as $key => $row) {
@@ -1161,17 +1169,94 @@ class TrackingReportRepository
         return stream_get_contents($out);
     }
 
-    public function getReconciliationDataToReport($from, $to) {
-        return [];
+    public function getReconciliationDataToReport($from, $to, $groupBy = 'client') {
+
+        $trackers = $this->getTrackerDataToReportDetail($from, $to);
+        $trackers = $this->prepareTrackerDataToReportDetail($trackers);
+        $trackers = collect($trackers);
+        $trackers->shift();
+
+        $timesheets = $this->getTimesheetDataToReportDetail($from, $to);
+        $timesheets = $this->prepareTimesheetDataToReportDetail($timesheets);
+        $timesheets = collect($timesheets);
+        $timesheets->shift();
+
+        switch ($groupBy) {
+            case 'project':
+                $groupField = 'entity_id';
+                $fieldName = 'entity_name';
+                break;
+            case 'coworker':
+                $groupField = 'user_id';
+                $fieldName = 'user_name';
+                break;
+            case 'client':
+            default:
+                $groupField = 'client_id';
+                $fieldName = 'client_name';
+        }
+
+        // grouping
+        $trackers = $trackers->groupBy($groupField);
+        $timesheets = $timesheets->groupBy($groupField);
+
+        foreach ($trackers as $index => $tracker) {
+            $trackers[$index] = [
+                'id' => $index,
+                'name' => $tracker[0][$fieldName],
+                'passed' => $tracker->sum('passed'),
+            ];
+        }
+
+        foreach ($timesheets as $index => $timesheet) {
+            $timesheets[$index] = [
+                'id' => $index,
+                'name' => $timesheet[0][$fieldName],
+                'passed' => $timesheet->sum('total_time'),
+            ];
+        }
+
+        return $this->prepareReconciliationDataToReport(
+            $trackers,
+            $timesheets
+        );
     }
 
-    public function getReportReconciliationDetail($from, $to) {
+    public function prepareReconciliationDataToReport($trackers, $timesheets) {
+        $rows = [
+            [ 'id', 'name', 'tracker_passed', 'passed_decimal', 'timesheet', 'passed_decimal' ]
+        ];
+        foreach ($trackers as $item) {
+            $rows[$item['id']]['id'] = $item['id'];
+            $rows[$item['id']]['name'] = $item['name'];
+            $rows[$item['id']]['tracker_passed'] = $item['passed'];
+            $rows[$item['id']]['tracker_passed_decimal'] = $this->convertSecondsToDecimal($item['passed']);
+            if (!isset($rows[$item['id']]['timesheet_passed'])) {
+                $rows[$item['id']]['timesheet_passed'] = 0;
+                $rows[$item['id']]['timesheet_passed_decimal'] = 0;
+            }
+        }
+        foreach ($timesheets as $item) {
+            $rows[$item['id']]['id'] = $item['id'];
+            $rows[$item['id']]['name'] = $item['name'];
+            if (!isset($rows[$item['id']]['tracker_passed'])) {
+                $rows[$item['id']]['tracker_passed'] = 0;
+                $rows[$item['id']]['tracker_passed_decimal'] = 0;
+            }
+            $rows[$item['id']]['timesheet_passed'] = $item['passed'];
+            $rows[$item['id']]['timesheet_passed_decimal'] = $this->convertSecondsToDecimal($item['passed']);
+        }
+
+        return $rows;
+    }
+
+    public function getReportReconciliationDetail($from, $to, $groupBy = 'client') {
         $out = fopen('php://output', 'w');
         fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        $result = $this->getReconciliationDataToReport($from, $to);
-        foreach ($result as $key => $item) {
-//            fputcsv($out, $this->getDataCSV($item), ';');
+        $result = $this->getReconciliationDataToReport($from, $to, $groupBy);
+        foreach ($result as $key => $row) {
+            fputcsv($out, $row, ';');
         }
         return stream_get_contents($out);
     }

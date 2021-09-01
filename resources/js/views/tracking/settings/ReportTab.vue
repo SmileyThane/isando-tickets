@@ -26,14 +26,12 @@
 
 <script>
 import ReportTracker from './components/ReportTracker';
-import ReportTimesheet from './components/ReportTimesheet';
 import ReportReconciliation from './components/ReportReconciliation';
 
 export default {
     name: 'report-tab',
     components: {
         ReportTracker,
-        ReportTimesheet,
         ReportReconciliation,
     },
     data () {

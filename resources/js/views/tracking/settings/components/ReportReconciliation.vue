@@ -1,89 +1,130 @@
 <template>
     <div>
         <div class="d-flex flex-row">
-            <div class="d-inline-block" style="width: 33%; min-width: 550px">
+            <div class="d-inline-block flex-grow-1" style="width: 33%; min-width: 550px">
                 <v-expansion-panels
-            v-model="isActive"
-            accordion
-            flat
-            v-click-outside="closePeriodSelect"
-        >
-            <v-expansion-panel
-                key="timeperiod"
-            >
-                <v-expansion-panel-header v-slot="{ open }">
-                    <div class="d-flex flex-row">
-                        <div class="d-inline-flex">
-                            {{ langMap.tracking.report.time_period }}:
-                        </div>
-                        <div class="d-inline-flex float-right flex-grow-1 text-center">
-                            <v-fade-transition leave-absolute>
-                                <span v-if="open" class="d-block flex-grow-1">{{ langMap.tracking.report.choose_period }}</span>
-                                <span v-else class="d-block flex-grow-1">
+                    v-model="isActive"
+                    accordion
+                    flat
+                    v-click-outside="closePeriodSelect"
+                >
+                    <v-expansion-panel
+                        key="timeperiod"
+                    >
+                        <v-expansion-panel-header v-slot="{ open }">
+                            <div class="d-flex flex-row">
+                                <div class="d-inline-flex">
+                                    {{ langMap.tracking.report.time_period }}:
+                                </div>
+                                <div class="d-inline-flex float-right flex-grow-1 text-center">
+                                    <v-fade-transition leave-absolute>
+                                        <span v-if="open" class="d-block flex-grow-1">{{
+                                                langMap.tracking.report.choose_period
+                                            }}</span>
+                                        <span v-else class="d-block flex-grow-1">
                                 {{ period.start ? moment(period.start).format('ddd D MMM YYYY') : '...' }} -
                                 {{ moment(period.end).format('ddd D MMM YYYY') }}
                             </span>
-                            </v-fade-transition>
-                        </div>
-                    </div>
-                </v-expansion-panel-header>
-                <v-expansion-panel-content
-                    class="elevation-"
-                >
-                    <div class="d-flex flex-row">
-                        <div class="d-flex flex-column flex-grow-1">
-                            <a class="text-decoration-none" @click="setPeriod('today')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
-                            <a class="text-decoration-none" @click="setPeriod('yesterday')" :style="{ color: themeBgColor }">{{langMap.tracking.report.period_yesterday}}</a>
-                            <a class="text-decoration-none" @click="setPeriod('last7days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last7days }}</a>
-                            <a class="text-decoration-none" @click="setPeriod('last28days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last28days }}</a>
-                        </div>
-                        <div class="d-flex flex-column flex-grow-1">
-                            <a class="text-decoration-none" @click="setPeriod('thisWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_week }}</a>
-                            <a class="text-decoration-none" @click="setPeriod('lastWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_week }}</a>
-                            <a class="text-decoration-none" @click="setPeriod('thisMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_month }}</a>
-                            <a class="text-decoration-none" @click="setPeriod('lastMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_month }}</a>
-                        </div>
-                        <div class="d-flex flex-column flex-grow-1">
-                            <a class="text-decoration-none" @click="setPeriod('thisQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_quarter }}</a>
-                            <a class="text-decoration-none" @click="setPeriod('lastQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_quarter }}</a>
-                            <a class="text-decoration-none" @click="setPeriod('thisYear')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_year }}</a>
-                            <a class="text-decoration-none" @click="setPeriod('totalTime')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_total_time }}</a>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-row">
-                        <v-divider class="d-inline-flex flex-grow-1 my-3"></v-divider>
-                    </div>
-                    <div class="d-flex flex-row">
-                        <div class="d-inline-flex flex-grow-1">
-                            {{langMap.tracking.report.select_custom_period}}:
-                        </div>
-                    </div>
-                    <div class="d-flex flex-row">
-                        <div class="d-inline-flex">
-                            <vc-date-picker
-                                ref="calendar"
-                                v-model.sync="period"
-                                :value.sync="period"
-                                is-range
-                                no-title
-                                :step="1"
-                                :columns="2"
-                                mode="range"
-                                @input="closePeriodSelect"
-                            ></vc-date-picker>
-                        </div>
-                    </div>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
-        </v-expansion-panels>
+                                    </v-fade-transition>
+                                </div>
+                            </div>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content
+                            class="elevation-"
+                        >
+                            <div class="d-flex flex-row">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <a class="text-decoration-none" @click="setPeriod('today')"
+                                       :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('yesterday')"
+                                       :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_yesterday }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last7days')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last7days
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last28days')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last28days
+                                        }}</a>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_week
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_week
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_month
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_month
+                                        }}</a>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_quarter
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_quarter
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisYear')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_year
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('totalTime')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_total_time
+                                        }}</a>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <v-divider class="d-inline-flex flex-grow-1 my-3"></v-divider>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <div class="d-inline-flex flex-grow-1">
+                                    {{ langMap.tracking.report.select_custom_period }}:
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <div class="d-inline-flex">
+                                    <vc-date-picker
+                                        ref="calendar"
+                                        v-model.sync="period"
+                                        :value.sync="period"
+                                        is-range
+                                        no-title
+                                        :step="1"
+                                        :columns="2"
+                                        mode="range"
+                                        @input="closePeriodSelect"
+                                    ></vc-date-picker>
+                                </div>
+                            </div>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </div>
-            <div class="d-inline-block">
+            <div class="d-inline-block flex-grow-1" style="width: 33%">
+                <grouping-select
+                    :selected="grouping"
+                    @select="grouping = $event"
+                ></grouping-select>
+            </div>
+            <div class="d-inline-block flex-grow-1" style="width: 33%">
                 <v-btn
                     :color="themeBgColor"
                     class="mt-1 mx-4"
                     @click="genReport"
                     :loading="loadingBtn"
-                >Generate report</v-btn>
+                >Generate report
+                </v-btn>
             </div>
         </div>
     </div>
@@ -91,11 +132,12 @@
 
 <script>
 import moment from 'moment-timezone';
+import GroupingSelect from './UI/GroupingSelect';
 
 export default {
     name: 'report-reconciliation',
     components: {
-
+        GroupingSelect
     },
     data () {
         return {
@@ -108,66 +150,67 @@ export default {
             isActive: null,
             period: {
                 start: moment().subtract(1, 'months').format('YYYY-MM-DDTHH:mm:ss'),
-                end: moment().format('YYYY-MM-DDTHH:mm:ss')
+                end: moment().format('YYYY-MM-DDTHH:mm:ss'),
             },
             loadingBtn: false,
+            grouping: "client",
         };
     },
     created () {
         this.period = {
             start: moment().subtract(1, 'months').format('YYYY-MM-DDTHH:mm:ss'),
-            end: moment().format('YYYY-MM-DDTHH:mm:ss')
+            end: moment().format('YYYY-MM-DDTHH:mm:ss'),
         };
     },
     methods: {
         closePeriodSelect () {
             this.isActive = null;
         },
-        async setPeriod(periodKey = 'today') {
+        async setPeriod (periodKey = 'today') {
             let start = null;
             let end = null;
             switch (periodKey) {
-                case "today":
+                case 'today':
                     start = moment().startOf('days');
                     end = moment().endOf('days');
                     break;
-                case "yesterday":
+                case 'yesterday':
                     start = moment().subtract(1, 'days').startOf('days');
                     end = moment().subtract(1, 'days').endOf('days');
                     break;
-                case "last7days":
+                case 'last7days':
                     start = moment().weekday(1).subtract(7, 'days').startOf('days');
                     end = moment().weekday(1).subtract(1, 'days').endOf('days');
                     break;
-                case "last28days":
+                case 'last28days':
                     start = moment().subtract(28, 'days').startOf('days');
                     end = moment().subtract(1, 'days').endOf('days');
                     break;
-                case "thisWeek":
+                case 'thisWeek':
                     start = moment().isoWeekday(1).startOf('weeks');
                     end = moment().isoWeekday(1).endOf('weeks');
                     break;
-                case "lastWeek":
+                case 'lastWeek':
                     start = moment().weekday(1).startOf('weeks').subtract(1, 'weeks');
                     end = moment().weekday(1).endOf('weeks').subtract(1, 'weeks');
                     break;
-                case "thisMonth":
+                case 'thisMonth':
                     start = moment().startOf('months');
                     end = moment().endOf('months');
                     break;
-                case "lastMonth":
+                case 'lastMonth':
                     start = moment().startOf('months').subtract(1, 'months');
                     end = moment().endOf('months').subtract(1, 'months');
                     break;
-                case "thisQuarter":
+                case 'thisQuarter':
                     start = moment().startOf('quarters');
                     end = moment().endOf('quarters');
                     break;
-                case "lastQuarter":
+                case 'lastQuarter':
                     start = moment().startOf('quarters').subtract(1, 'quarters');
                     end = moment().endOf('quarters').subtract(1, 'quarters');
                     break;
-                case "thisYear":
+                case 'thisYear':
                     start = moment().startOf('years');
                     end = moment().endOf('years');
                     break;
@@ -182,14 +225,14 @@ export default {
             if (calendar) {
                 await calendar.updateValue({
                     start: this.period.start ? moment(this.period.start).format(this.dateFormat) : moment('2020-01-01').format(this.dateFormat),
-                    end: moment(this.period.end).format(this.dateFormat)
+                    end: moment(this.period.end).format(this.dateFormat),
                 }, {
                     formatInput: true,
-                    hidePopover: false
+                    hidePopover: false,
                 });
                 calendar.$refs.calendar.showPageRange({
                     from: this.period.start,
-                    to: this.period.end
+                    to: this.period.end,
                 });
             }
             this.closePeriodSelect();
@@ -199,14 +242,15 @@ export default {
             axios.post(`/api/tracking/settings/report/reconciliation`, {
                 start: this.period.start,
                 end: this.period.end,
+                group: this.grouping,
             }, {
-                responseType: 'blob'
+                responseType: 'blob',
             })
                 .then(res => {
                     const url = window.URL.createObjectURL(new Blob([res.data]));
                     const link = document.createElement('a');
                     link.href = url;
-                    link.setAttribute('download', `Report.${format}`);
+                    link.setAttribute('download', `Report_reconciliation.csv`);
                     document.body.appendChild(link);
                     link.click();
                 })
@@ -219,13 +263,13 @@ export default {
                 .finally(() => {
                     this.loadingBtn = false;
                 })
-        }
-    }
+        },
+    },
 };
 </script>
 
 <style scoped>
->>>.v-expansion-panel {
+>>> .v-expansion-panel {
     border-color: rgba(0, 0, 0, 0.42);
     border-width: 1px;
     border-style: solid;
