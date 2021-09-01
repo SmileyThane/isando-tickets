@@ -235,6 +235,8 @@ Route::group(['middleware' => 'auth:api'], function () {
                 // Settings
                 Route::get('/settings', 'SettingsController@get');
                 Route::patch('/settings', 'SettingsController@update');
+                Route::post('/settings/report/{source}', 'SettingsController@genReport');
+                Route::post('/settings/report/reconciliation', 'SettingsController@getReconciliationReport');
 
                 // Timesheet
                 Route::get('/timesheet', 'TimesheetController@get');

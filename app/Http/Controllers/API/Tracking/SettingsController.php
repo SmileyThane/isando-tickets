@@ -8,6 +8,7 @@ use App\Company;
 use App\Currency;
 use App\TrackingSettings;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,5 +48,20 @@ class SettingsController extends BaseController
             );
         }
         return self::showResponse(true, '');
+    }
+
+    public function genReport(Request $request, $source = 'tracker') {
+        $periodStart = $request->get('start', Carbon::now()->startOf('week'));
+        $periodEnd = $request->get('end', Carbon::now()->endOf('week'));
+        $clients = $request->get('clients', []);
+        $coworkers = $request->get('coworkers', []);
+
+        return $this->trackingReportRepo->getReportDetail($source, $periodStart, $periodEnd, $clients, $coworkers);
+    }
+
+    public function getReconciliationReport(Request $request) {
+        $periodStart = $request->get('start', Carbon::now()->startOf('week'));
+        $periodEnd = $request->get('end', Carbon::now()->endOf('week'));
+        return $this->trackingReportRepo->getReportReconciliationDetail($periodStart, $periodEnd);
     }
 }

@@ -19,6 +19,7 @@
                     v-if="$helpers.auth.checkPermissionByIds([75])"
                     :key="2"
                 >{{ langMap.tracking.settings.services }}</v-tab>
+                <v-tab :key="3">Control report</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
@@ -408,6 +409,10 @@
                         </v-card-text>
                     </v-card>
                 </v-tab-item>
+
+                <v-tab-item :key="3">
+                    <report-tab></report-tab>
+                </v-tab-item>
             </v-tabs-items>
         </template>
 
@@ -426,9 +431,10 @@ import _ from 'lodash';
 import moment from 'moment-timezone';
 import TagBtn from './components/tag-btn';
 import TimeField from './components/time-field';
+import ReportTab from './settings/ReportTab';
 
 export default {
-    components: {TagBtn, TimeField},
+    components: {TagBtn, TimeField, ReportTab},
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
