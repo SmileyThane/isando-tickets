@@ -249,6 +249,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::delete('/timesheet/templates/{template_id}', 'TimesheetController@removeTemplate');
                 Route::post('/timesheet', 'TimesheetController@create');
                 Route::get('/timesheet/approval', 'TimesheetController@getCountTimesheetForApproval');
+                Route::patch('/timesheet/ordering', 'TimesheetController@saveOrdering');
                 Route::get('/timesheet/{id}', 'TimesheetController@find');
                 Route::patch('/timesheet/submit', 'TimesheetController@submit');
                 Route::post('/timesheet/remind', 'TimesheetController@remind');

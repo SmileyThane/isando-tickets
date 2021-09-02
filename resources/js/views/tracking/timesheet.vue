@@ -580,10 +580,12 @@
                 :items="getTimesheet"
                 :loading="loading"
                 loading-text="Loading... Please wait"
+                v-sortable-data-table
                 v-model="selected"
                 hide-default-footer
                 show-group-by
                 :items-per-page="countRecordsOnTable"
+                @sorted="sorted"
             >
                 <template v-slot:group.header="{ group, groupBy, items, isOpen, toggle, remove }">
                     <th colspan="13">
@@ -895,11 +897,18 @@
                 </template>
 
                 <template v-slot:item.data-table-select="{ item }">
-                    <v-simple-checkbox
-                        v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 || ([STATUS_APPROVAL_PENDING].indexOf(typeOfItems) !== -1 && canApproval(item))"
-                        :value="!!selected.find(i => i.id === item.id)"
-                        @click="toggleTableItem(item)"
-                    ></v-simple-checkbox>
+                    <div class="d-flex flex-row">
+                        <div class="d-inline-flex">
+                            <v-icon style="cursor: move;">mdi-dots-vertical</v-icon>
+                        </div>
+                        <div class="d-inline-flex">
+                            <v-simple-checkbox
+                                v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 || ([STATUS_APPROVAL_PENDING].indexOf(typeOfItems) !== -1 && canApproval(item))"
+                                :value="!!selected.find(i => i.id === item.id)"
+                                @click="toggleTableItem(item)"
+                            ></v-simple-checkbox>
+                        </div>
+                    </div>
                 </template>
                 <template v-slot:item.entity.name="{ isMobile, item, header, value }">
                     <template v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) !== -1 || !item.is_manually">
@@ -1722,6 +1731,7 @@ export default {
         this.debounceGetTimesheetTemplates();
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Products/getProductList', { search: null });
+        this._getTimesheetByStatus();
     },
     methods: {
         async _getTimesheet () {
@@ -2225,6 +2235,14 @@ export default {
                     text: this.langMap.tracking.timesheet.approved,
                 },
             ];
+        },
+        sorted(event) {
+            console.log(event.oldDraggableIndex, event.newDraggableIndex);
+            this.$store.commit('Timesheet/SET_ORDERING', {
+                oldIndex: event.oldDraggableIndex,
+                newIndex: event.newDraggableIndex
+            })
+            this.$store.dispatch('Timesheet/saveOrdering');
         }
     },
     watch: {

@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\API\Tracking;
 
-use App\Tracking;
-use App\TrackingTimesheet;
-use App\TrackingTimesheetTemplate;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -135,5 +132,11 @@ class TimesheetController extends BaseController
         } catch (\Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
+    }
+
+    public function saveOrdering(Request $request) {
+        $ids = $request->get('ids');
+        $result = $this->timesheetRepo->saveOrdering($ids);
+        return self::showResponse($result, []);
     }
 }

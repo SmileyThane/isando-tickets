@@ -918,4 +918,15 @@ class TrackingTimesheetRepository
         }
         throw new \Exception('Error generating file');
     }
+
+    public function saveOrdering($ids) {
+        try {
+            foreach ($ids as $index => $id) {
+                TrackingTimesheet::where('id', '=', $id)->update(['ordering' => $index+1]);
+            }
+        } catch (\Exception $exception) {
+            return false;
+        }
+        return true;
+    }
 }

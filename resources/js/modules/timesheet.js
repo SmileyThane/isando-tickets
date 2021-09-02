@@ -133,6 +133,14 @@ export default {
                     }
                 });
         },
+        saveOrdering({ state }) {
+            return axios.patch(`/api/tracking/timesheet/ordering`, {
+                ids: state.timesheet.sort((a,b) => a.ordering - b.ordering).map(i => i.id),
+            }, { retry: 5, retryDelay: 1000 })
+                .then(({ data: { data, success }}) => {
+                    return success;
+                });
+        }
     },
     mutations: {
         UPDATE_ITEM(state, item) {
@@ -163,11 +171,20 @@ export default {
             state.timesheetRejected.filter(i => ids.includes(i)).map(i => i.status = status);
             state.timesheetArchived.filter(i => ids.includes(i)).map(i => i.status = status);
             state.timesheetRequest.filter(i => ids.includes(i)).map(i => i.status = status);
+        },
+        SET_ORDERING(state, { oldIndex, newIndex }) {
+            state.timesheet[oldIndex-1].ordering = newIndex;
+            state.timesheet.splice(newIndex-1, 0, state.timesheet.splice(oldIndex-1, 1)[0]);
         }
     },
     getters: {
-        getTimesheet(state) {
-            return state.timesheet;
+        getTimesheet(state, commit) {
+            return state.timesheet
+                .sort((a,b) => a.ordering - b.ordering)
+                .map((item, index) => {
+                    state.timesheet[index].ordering = index+1;
+                    return item;
+                });
         },
         getCountTimesheetForApproval(state) {
             return state.countForApproval;
