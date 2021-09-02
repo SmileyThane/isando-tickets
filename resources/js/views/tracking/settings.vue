@@ -19,7 +19,10 @@
                     v-if="$helpers.auth.checkPermissionByIds([75])"
                     :key="2"
                 >{{ langMap.tracking.settings.services }}</v-tab>
-                <v-tab :key="3">Control report</v-tab>
+                <v-tab
+                    v-if="$helpers.auth.checkPermissionByIds([96])"
+                   :key="3"
+                >Control report</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
@@ -410,7 +413,7 @@
                     </v-card>
                 </v-tab-item>
 
-                <v-tab-item :key="3">
+                <v-tab-item :key="3" v-if="$helpers.auth.checkPermissionByIds([96])">
                     <report-tab></report-tab>
                 </v-tab-item>
             </v-tabs-items>

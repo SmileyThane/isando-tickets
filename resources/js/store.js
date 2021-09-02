@@ -49,7 +49,7 @@ export default new Vuex.Store({
             state.roles = roles;
         },
         setPermissions(state, permissions) {
-            state.permissions = permissions;
+            state.permissions = [...new Set(permissions)].sort((a,b) => a-b);
         },
         setLang(state, lang) {
             state.lang = lang;

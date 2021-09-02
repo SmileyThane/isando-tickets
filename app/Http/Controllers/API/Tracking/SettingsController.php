@@ -51,6 +51,9 @@ class SettingsController extends BaseController
     }
 
     public function genReport(Request $request, $source = 'tracker') {
+        if (!Auth::user()->employee->getPermissionIds([96])) {
+            return self::showResponse(false, '');
+        }
         $periodStart = $request->get('start', Carbon::now()->startOf('week'));
         $periodEnd = $request->get('end', Carbon::now()->endOf('week'));
         $clients = $request->get('clients', []);
@@ -60,6 +63,9 @@ class SettingsController extends BaseController
     }
 
     public function getReconciliationReport(Request $request) {
+        if (!Auth::user()->employee->getPermissionIds([96])) {
+            return self::showResponse(false, '');
+        }
         $periodStart = $request->get('start', Carbon::now()->startOf('week'));
         $periodEnd = $request->get('end', Carbon::now()->endOf('week'));
         $groupBy = $request->get('group', 'client');
