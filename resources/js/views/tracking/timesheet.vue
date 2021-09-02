@@ -2237,7 +2237,6 @@ export default {
             ];
         },
         sorted(event) {
-            console.log(event.oldDraggableIndex, event.newDraggableIndex);
             this.$store.commit('Timesheet/SET_ORDERING', {
                 oldIndex: event.oldDraggableIndex,
                 newIndex: event.newDraggableIndex
