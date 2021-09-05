@@ -1264,7 +1264,8 @@ export default {
                         text: 'In text form (as in the report)'
                     }
                 ],
-            }
+            },
+            query: null,
         }
     },
     created() {
@@ -1282,7 +1283,7 @@ export default {
         this.$store.dispatch('Languages/getLanguageList');
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
         this.debounceGetReports = _.debounce(this.__getReports, 1000);
-        this.debounceGenPreview = _.debounce(this.genPreview, 1000);
+        this.debounceGenPreview = _.debounce(this.genPreview, 2000);
     },
     mounted() {
         let that = this;
@@ -1422,16 +1423,20 @@ export default {
             } else {
                 this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format(dateFormat)}`;
             }
-            axios.post('/api/tracking/reports/generate', this.builder)
+            const query = this.builder;
+            let queryStr = JSON.stringify(query);
+            axios.post('/api/tracking/reports/generate', query)
                 .then(({ data: { data } }) => {
-                    this.reportData.entities = data;
-                    this.dialogEdit = {};
-                    const self = this;
-                    data.g1.map(i => function () {
-                       self.dialogEdit[i.id] = false;
-                       self.dialogDelete[i.id] = false;
-                    });
-                    this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data.g1))].sort().join(', ');
+                    if (queryStr === JSON.stringify(this.builder)) {
+                        this.reportData.entities = data;
+                        this.dialogEdit = {};
+                        const self = this;
+                        data.g1.map(i => function () {
+                            self.dialogEdit[i.id] = false;
+                            self.dialogDelete[i.id] = false;
+                        });
+                        this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data.g1))].sort().join(', ');
+                    }
                 })
                 .catch(err => {
                     console.log(err);
