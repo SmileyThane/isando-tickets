@@ -1634,6 +1634,7 @@ export default {
                 entity: null,
                 entity_id: null,
                 entity_type: null,
+                service_id: null,
                 service: null,
                 mon: moment().startOf('days').format(),
                 tue: moment().startOf('days').format(),
@@ -1776,20 +1777,34 @@ export default {
                 this.form.entity_id = this.form.entity.id;
                 this.form.entity_type = this.form.entity.from ? 'App\\Ticket' : 'App\\TrackingProject';
             }
-            if (this.form.entity && this.form.entity_id && this.form.entity_type) {
-                return this.$store.dispatch('Timesheet/createTimesheet', this.form)
-                    .then(result => {
-                        if (result) {
-                            this.resetTimesheet();
-                            this.snackbarMessage = 'Success';
-                            this.actionColor = 'success'
-                            this.snackbar = true;
-                        } else {
-                            this.snackbarMessage = 'Error';
-                            this.actionColor = 'error'
-                            this.snackbar = true;
-                        }
-                    });
+            this.form.service_id = this.form.service ? this.form.service.id : null;
+            const canCreate = this.getTimesheet.find(i => {
+                return i.entity_id === this.form.entity_id
+                    && i.entity_type === this.form.entity_type
+                    && i.service_id === this.form.service_id
+                    && i.is_manually === true;
+            });
+            if (canCreate) {
+                this.resetTimesheet();
+                this.snackbarMessage = 'The same timesheet already exists';
+                this.actionColor = 'success'
+                this.snackbar = true;
+            } else {
+                if (this.form.entity && this.form.entity_id && this.form.entity_type) {
+                    return this.$store.dispatch('Timesheet/createTimesheet', this.form)
+                        .then(result => {
+                            if (result) {
+                                this.resetTimesheet();
+                                this.snackbarMessage = 'Success';
+                                this.actionColor = 'success'
+                                this.snackbar = true;
+                            } else {
+                                this.snackbarMessage = 'Error';
+                                this.actionColor = 'error'
+                                this.snackbar = true;
+                            }
+                        });
+                }
             }
             this.selected = [];
         },
