@@ -235,6 +235,8 @@ Route::group(['middleware' => 'auth:api'], function () {
                 // Settings
                 Route::get('/settings', 'SettingsController@get');
                 Route::patch('/settings', 'SettingsController@update');
+                Route::post('/settings/report/reconciliation', 'SettingsController@getReconciliationReport');
+                Route::post('/settings/report/{source}', 'SettingsController@genReport');
 
                 // Timesheet
                 Route::get('/timesheet', 'TimesheetController@get');
@@ -247,6 +249,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::delete('/timesheet/templates/{template_id}', 'TimesheetController@removeTemplate');
                 Route::post('/timesheet', 'TimesheetController@create');
                 Route::get('/timesheet/approval', 'TimesheetController@getCountTimesheetForApproval');
+                Route::patch('/timesheet/ordering', 'TimesheetController@saveOrdering');
                 Route::get('/timesheet/{id}', 'TimesheetController@find');
                 Route::patch('/timesheet/submit', 'TimesheetController@submit');
                 Route::post('/timesheet/remind', 'TimesheetController@remind');

@@ -7,8 +7,9 @@ export default {
         search: null
     },
     actions: {
-        getServicesList({commit, state}, { search }) {
-            if (state.services.length) {
+        getServicesList({commit, state}, { search, force = false,
+            billable = null, clients = null, projects = null, coworkers = null, tag = null}) {
+            if (state.services.length && !search && !force) {
                 if (search && search.length) {
                     return state.services.filter(i => i.name.includes(search))
                 }
@@ -16,7 +17,8 @@ export default {
             } else {
                 commit('SET_SEARCH', search);
                 const queryParams = new URLSearchParams({
-                    search: search ?? ''
+                    search: search ?? '',
+                    billable, clients, projects, coworkers, tag
                 });
                 axios.get(`/api/services?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
                     .then(({ data: { success, data: services } }) => {

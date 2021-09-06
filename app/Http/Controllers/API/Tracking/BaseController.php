@@ -4,12 +4,12 @@
 namespace App\Http\Controllers\API\Tracking;
 
 
+use App\Http\Controllers\API\Tracking\Services\ClientService;
 use App\Http\Controllers\API\Tracking\Traits\Clients;
 use App\Http\Controllers\API\Tracking\Traits\Products;
 use App\Http\Controllers\API\Tracking\Traits\Team;
 use App\Http\Controllers\API\Tracking\Traits\Tickets;
 use App\Http\Controllers\Controller;
-use App\Repositories\ClientRepository;
 use App\Repositories\TeamRepository;
 use App\Repositories\TicketRepository;
 use App\Repositories\TrackingReportRepository;
@@ -29,7 +29,7 @@ class BaseController extends Controller
     protected $ticketRepo;
     protected $currencyRepo;
     protected $timesheetRepo;
-    protected $clientRepo;
+    protected $clientService;
 
     public function __construct(
         TrackingRepository $trackingRepository,
@@ -39,7 +39,7 @@ class BaseController extends Controller
         TicketRepository $ticketRepository,
         CurrencyRepository $currencyRepository,
         TrackingTimesheetRepository $trackingTimesheetRepository,
-        ClientRepository $clientRepository
+        ClientService $clientServ
     )
     {
         $this->trackingRepo = $trackingRepository;
@@ -49,6 +49,6 @@ class BaseController extends Controller
         $this->ticketRepo = $ticketRepository;
         $this->currencyRepo = $currencyRepository;
         $this->timesheetRepo = $trackingTimesheetRepository;
-        $this->clientRepo = $clientRepository;
+        $this->clientService = $clientServ;
     }
 }

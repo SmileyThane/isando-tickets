@@ -6,12 +6,15 @@ export default {
         clients: []
     },
     actions: {
-        getClientList({commit, state}, { search }) {
-            if (state.clients.length && !search) {
+        getClientList({commit, state}, { search, force = false,
+            coworkers = null, projects = null, services = null, tag = null, billable = null }) {
+            if (state.clients.length && !search && !force) {
+                console.log(state.clients.length, search, !search, search, !search);
                 return state.clients;
             } else {
                 const queryParams = new URLSearchParams({
-                    search: search ?? ''
+                    search: search ?? '',
+                    coworkers, projects, services, tag, billable
                 });
                 axios.get(`/api/tracking/clients?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
                     .then(({ data: { success, data: { data: clients } } }) => {

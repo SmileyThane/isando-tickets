@@ -6,8 +6,9 @@ export default {
         tags: []
     },
     actions: {
-        getTagList({commit, state}) {
-            if (state.tags.length) {
+        getTagList({commit, state}, { force = false,
+            coworkers = null, billable = null, clients = null, projects = null, services = null, tag = null }) {
+            if (state.tags.length && !force) {
                 return state.tags;
             } else {
                 axios.get('/api/tags', { retry: 5, retryDelay: 1000 })

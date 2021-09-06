@@ -227,7 +227,8 @@
                 </v-pagination>
             </template>
             <template v-slot:item.ticket_type_id="{ item }">
-                <v-icon v-if="item.ticket_type.icon" small :title="$helpers.i18n.localized(item.ticket_type)" v-text="item.ticket_type.icon" />
+                <v-icon v-if="item.ticket_type.icon" small :title="$helpers.i18n.localized(item.ticket_type)"
+                        v-text="item.ticket_type.icon"/>
                 <v-icon v-else small :title="$helpers.i18n.localized(item.ticket_type)">mdi-alert</v-icon>
             </template>
             <template v-slot:item.status.name="{ item }">
@@ -610,32 +611,32 @@ export default {
             }
 
             axios.get('/api/ticket', {
-                    params: {
-                        search_param: this.searchLabel,
-                        search: this.ticketsSearch,
-                        sort_by: this.manageSortableField(this.options.sortBy[0]),
-                        sort_val: this.options.sortDesc[0],
-                        with_spam: this.options.withSpam,
-                        only_for_user: this.options.onlyForUser,
-                        per_page: this.options.itemsPerPage,
-                        minified: this.minifiedTickets,
-                        page: this.options.page,
-                        filter_id: this.filterId
-                    }
+                params: {
+                    search_param: this.searchLabel,
+                    search: this.ticketsSearch,
+                    sort_by: this.manageSortableField(this.options.sortBy[0]),
+                    sort_val: this.options.sortDesc[0],
+                    with_spam: this.options.withSpam,
+                    only_for_user: this.options.onlyForUser,
+                    per_page: this.options.itemsPerPage,
+                    minified: this.minifiedTickets,
+                    page: this.options.page,
+                    filter_id: this.filterId
+                }
             }).then(
-                    response => {
-                        response = response.data
-                        if (response.success === true) {
-                            this.tickets = response.data.data
-                            this.totalTickets = response.data.total
-                            this.lastPage = response.data.last_page
-                        } else {
-                            this.snackbarMessage = this.langMap.main.generic_error;
-                            this.actionColor = 'error'
-                            this.snackbar = true;
-                        }
-                        this.loading = false
-                    });
+                response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.tickets = response.data.data
+                        this.totalTickets = response.data.total
+                        this.lastPage = response.data.last_page
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                    this.loading = false
+                });
         },
         getFilters() {
             axios.get(`/api/ticket_filters`)
@@ -713,7 +714,7 @@ export default {
         options: {
             handler: _.debounce(function (v) {
                 this.getTickets()
-            }, 1000),
+            }, 500),
             deep: true,
         },
     },

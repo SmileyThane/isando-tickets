@@ -13,6 +13,7 @@ import PerfectScrollbar from 'vue2-perfect-scrollbar'
 import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
 import Tinymce from "./components/Tinymce";
 import helpers from './helpers';
+import Sortable from 'sortablejs';
 
 Vue.component('Tinymce', Tinymce)
 Vue.use(PerfectScrollbar)
@@ -22,6 +23,16 @@ Vue.use(VCalendar, {
     componentPrefix: 'vc',
     firstDayOfWeek: 2,  // Monday
 })
+Vue.directive('sortable-data-table', function (el, binding, vnode) {
+    const options = {
+        animation: 150,
+        onUpdate: function (event) {
+            // console.log(event.newDraggableIndex, event.oldDraggableIndex);
+            vnode.child.$emit('sorted', event)
+        }
+    }
+    Sortable.create(el.getElementsByTagName('tbody')[0], options)
+});
 Vue.prototype.moment = moment
 Vue.use({
     install: () => {

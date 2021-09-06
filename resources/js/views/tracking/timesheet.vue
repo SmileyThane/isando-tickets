@@ -580,10 +580,12 @@
                 :items="getTimesheet"
                 :loading="loading"
                 loading-text="Loading... Please wait"
+                v-sortable-data-table
                 v-model="selected"
                 hide-default-footer
                 show-group-by
                 :items-per-page="countRecordsOnTable"
+                @sorted="sorted"
             >
                 <template v-slot:group.header="{ group, groupBy, items, isOpen, toggle, remove }">
                     <th colspan="13">
@@ -895,11 +897,18 @@
                 </template>
 
                 <template v-slot:item.data-table-select="{ item }">
-                    <v-simple-checkbox
-                        v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 || ([STATUS_APPROVAL_PENDING].indexOf(typeOfItems) !== -1 && canApproval(item))"
-                        :value="!!selected.find(i => i.id === item.id)"
-                        @click="toggleTableItem(item)"
-                    ></v-simple-checkbox>
+                    <div class="d-flex flex-row">
+                        <div class="d-inline-flex">
+                            <v-icon style="cursor: move;">mdi-dots-vertical</v-icon>
+                        </div>
+                        <div class="d-inline-flex">
+                            <v-simple-checkbox
+                                v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 || ([STATUS_APPROVAL_PENDING].indexOf(typeOfItems) !== -1 && canApproval(item))"
+                                :value="!!selected.find(i => i.id === item.id)"
+                                @click="toggleTableItem(item)"
+                            ></v-simple-checkbox>
+                        </div>
+                    </div>
                 </template>
                 <template v-slot:item.entity.name="{ isMobile, item, header, value }">
                     <template v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) !== -1 || !item.is_manually">
@@ -1625,6 +1634,7 @@ export default {
                 entity: null,
                 entity_id: null,
                 entity_type: null,
+                service_id: null,
                 service: null,
                 mon: moment().startOf('days').format(),
                 tue: moment().startOf('days').format(),
@@ -1722,6 +1732,7 @@ export default {
         this.debounceGetTimesheetTemplates();
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Products/getProductList', { search: null });
+        this._getTimesheetByStatus();
     },
     methods: {
         async _getTimesheet () {
@@ -1766,20 +1777,34 @@ export default {
                 this.form.entity_id = this.form.entity.id;
                 this.form.entity_type = this.form.entity.from ? 'App\\Ticket' : 'App\\TrackingProject';
             }
-            if (this.form.entity && this.form.entity_id && this.form.entity_type) {
-                return this.$store.dispatch('Timesheet/createTimesheet', this.form)
-                    .then(result => {
-                        if (result) {
-                            this.resetTimesheet();
-                            this.snackbarMessage = 'Success';
-                            this.actionColor = 'success'
-                            this.snackbar = true;
-                        } else {
-                            this.snackbarMessage = 'Error';
-                            this.actionColor = 'error'
-                            this.snackbar = true;
-                        }
-                    });
+            this.form.service_id = this.form.service ? this.form.service.id : null;
+            const canCreate = this.getTimesheet.find(i => {
+                return i.entity_id === this.form.entity_id
+                    && i.entity_type === this.form.entity_type
+                    && i.service_id === this.form.service_id
+                    && i.is_manually === true;
+            });
+            if (canCreate) {
+                this.resetTimesheet();
+                this.snackbarMessage = 'The same timesheet already exists';
+                this.actionColor = 'success'
+                this.snackbar = true;
+            } else {
+                if (this.form.entity && this.form.entity_id && this.form.entity_type) {
+                    return this.$store.dispatch('Timesheet/createTimesheet', this.form)
+                        .then(result => {
+                            if (result) {
+                                this.resetTimesheet();
+                                this.snackbarMessage = 'Success';
+                                this.actionColor = 'success'
+                                this.snackbar = true;
+                            } else {
+                                this.snackbarMessage = 'Error';
+                                this.actionColor = 'error'
+                                this.snackbar = true;
+                            }
+                        });
+                }
             }
             this.selected = [];
         },
@@ -2225,6 +2250,13 @@ export default {
                     text: this.langMap.tracking.timesheet.approved,
                 },
             ];
+        },
+        sorted(event) {
+            this.$store.commit('Timesheet/SET_ORDERING', {
+                oldIndex: event.oldDraggableIndex,
+                newIndex: event.newDraggableIndex
+            })
+            this.$store.dispatch('Timesheet/saveOrdering');
         }
     },
     watch: {

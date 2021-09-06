@@ -27,12 +27,14 @@ export default {
                     return success;
                 })
         },
-        getCoworkers({commit, state}, { search }) {
-            if (state.coworkers.length && !search) {
+        getCoworkers({commit, state}, { search, force = false,
+            billable = null, clients = null, projects = null, services = null, tag = null }) {
+            if (state.coworkers.length && !search && !force) {
                 return state.coworkers;
             } else {
                 const queryParams = new URLSearchParams({
-                    search: search ?? ''
+                    search: search ?? '',
+                    clients, projects, services, tag, billable
                 });
                 axios.get(`/api/tracking/coworkers?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
                     .then(({ data: { success, data: coworkers } }) => {

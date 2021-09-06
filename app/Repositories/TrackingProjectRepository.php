@@ -4,6 +4,9 @@
 namespace App\Repositories;
 
 use App\Client;
+use App\Http\Controllers\API\Tracking\Filters\Projects\Billable;
+use App\Http\Controllers\API\Tracking\Filters\Projects\Clients;
+use App\Http\Controllers\API\Tracking\Filters\Projects\Coworkers;
 use App\LimitationGroupHasModel;
 use App\Permission;
 use App\Product;
@@ -12,6 +15,7 @@ use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
 use Illuminate\Http\Request;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
@@ -112,6 +116,14 @@ class TrackingProjectRepository
             }
         }
 
+        $trackingProjects = app(Pipeline::class)
+            ->send($trackingProjects)
+            ->through([
+                Billable::class,
+                Clients::class,
+                Coworkers::class
+            ])
+            ->thenReturn();
 //        dd($trackingProjects->toSql());
         return $trackingProjects
             ->paginate($request->per_page ?? $trackingProjects->count());

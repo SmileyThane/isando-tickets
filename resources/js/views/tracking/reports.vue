@@ -336,7 +336,8 @@
                                     clearable
                                     style="max-width: 900px; width: 100%"
                                     v-model="filter.selected"
-                                    @input="debounceGenPreview(); resetSelectedReport()"
+                                    @input="clearFiltersAfter(filter); debounceGenPreview(); resetSelectedReport()"
+                                    @change=""
                                 ></v-select>
                                 <v-btn
                                     color="danger"
@@ -1263,7 +1264,8 @@ export default {
                         text: 'In text form (as in the report)'
                     }
                 ],
-            }
+            },
+            query: null,
         }
     },
     created() {
@@ -1281,7 +1283,7 @@ export default {
         this.$store.dispatch('Languages/getLanguageList');
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
         this.debounceGetReports = _.debounce(this.__getReports, 1000);
-        this.debounceGenPreview = _.debounce(this.genPreview, 1000);
+        this.debounceGenPreview = _.debounce(this.genPreview, 2000);
     },
     mounted() {
         let that = this;
@@ -1397,6 +1399,11 @@ export default {
             const index = this.builder.filters.findIndex(i => i.value === filter.value);
             if (index < 0) {
                 filter.selected = [];
+                const queryParam = this.createQuery(this.builder.filters);
+                if (filter.dispatch) {
+                    console.log(queryParam);
+                    this.$store.dispatch(filter.dispatch, queryParam);
+                }
                 this.builder.filters.push(filter);
             } else {
                 this.builder.filters.splice(index, 1);
@@ -1416,17 +1423,20 @@ export default {
             } else {
                 this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format(dateFormat)}`;
             }
-            axios.post('/api/tracking/reports/generate', this.builder)
+            const query = this.builder;
+            let queryStr = JSON.stringify(query);
+            axios.post('/api/tracking/reports/generate', query)
                 .then(({ data: { data } }) => {
-                    this.reportData.entities = data;
-                    this.dialogEdit = {};
-                    const self = this;
-                    console.log(data);
-                    data.g1.map(i => function () {
-                       self.dialogEdit[i.id] = false;
-                       self.dialogDelete[i.id] = false;
-                    });
-                    this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data.g1))].sort().join(', ');
+                    if (queryStr === JSON.stringify(this.builder)) {
+                        this.reportData.entities = data;
+                        this.dialogEdit = {};
+                        const self = this;
+                        data.g1.map(i => function () {
+                            self.dialogEdit[i.id] = false;
+                            self.dialogDelete[i.id] = false;
+                        });
+                        this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data.g1))].sort().join(', ');
+                    }
                 })
                 .catch(err => {
                     console.log(err);
@@ -1622,6 +1632,20 @@ export default {
             });
             return items;
         },
+        createQuery(filters) {
+            let query = { force: true };
+            for (const i in filters) {
+                console.log(filters[i]);
+                query = { ...query, [filters[i].value]: filters[i].selected };
+            }
+            return query;
+        },
+        clearFiltersAfter(filter) {
+            const index = this.builder.filters.findIndex(i => i.value === filter.value);
+            if (index >= 0) {
+                this.builder.filters.splice(index+1, this.builder.filters.length);
+            }
+        }
     },
     computed: {
         totalTime: function() {
@@ -1755,6 +1779,7 @@ export default {
                     value: 'coworkers',
                     text: this.$store.state.lang.lang_map.tracking.report.co_worker,
                     store: 'Team/getCoworkers',
+                    dispatch: 'Team/getCoworkers',
                     items: [],
                     selected: [],
                     multiply: true
@@ -1763,6 +1788,7 @@ export default {
                     value: 'projects',
                     text: this.getTrackingProjectsLabel,
                     store: 'Projects/getProjects',
+                    dispatch: 'Projects/getProjectList',
                     items: [],
                     selected: [],
                     multiply: true
@@ -1771,6 +1797,7 @@ export default {
                     value: 'clients',
                     text: this.$store.state.lang.lang_map.tracking.report.clients,
                     store: 'Clients/getClients',
+                    dispatch: 'Clients/getClientList',
                     items: [],
                     selected: [],
                     multiply: true
@@ -1779,6 +1806,7 @@ export default {
                     value: 'services',
                     text: this.$store.state.lang.lang_map.tracking.report.services,
                     store: 'Services/getServices',
+                    dispatch: 'Services/getServicesList',
                     items: [],
                     selected: [],
                     multiply: true
@@ -1787,6 +1815,7 @@ export default {
                     value: 'billable',
                     text: this.$store.state.lang.lang_map.tracking.report.billable,
                     store: null,
+                    dispatch: '',
                     items: [
                         {
                             id: 1,
@@ -1804,6 +1833,7 @@ export default {
                     value: 'tag',
                     text: this.$store.state.lang.lang_map.tracking.report.tags,
                     store: 'Tags/getTags',
+                    dispatch: 'Tags/getTagList',
                     items: [],
                     selected: [],
                     multiply: true
