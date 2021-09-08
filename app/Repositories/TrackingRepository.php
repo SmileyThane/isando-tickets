@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Http\Controllers\API\Tracking\Filters\Trackers\EntityId;
+use App\Http\Controllers\API\Tracking\Filters\Trackers\EntityType;
 use App\Permission;
 use App\Role;
 use App\Service;
@@ -13,6 +15,7 @@ use App\TrackingLogger;
 use App\TrackingTimesheet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -136,29 +139,40 @@ class TrackingRepository
             $tracking->whereIn('user_id', $users);
         }
 
-        $tracking
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $tracking
 //            ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
-            ->where('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
-            ->where(function($query) use ($request) {
-                $query->where('date_to', '<=', Carbon::parse($request->date_to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
-                    ->orWhereNull('date_to');
-            })
-
+                ->where('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
+                ->where(function($query) use ($request) {
+                    $query->where('date_to', '<=', Carbon::parse($request->date_to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
+                        ->orWhereNull('date_to');
+                });
+        }
+        $tracking
 //            ->with('Timesheet')
             ->with('Tags.Translates:name,lang,color')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
             ->orderBy('date_from', 'desc')
             ->limit(15)
             ->offset($request->get('offset', 0));
-        return
-            $tracking->get();
+
+        return app(Pipeline::class)
+            ->send($tracking)
+            ->through([
+                EntityId::class,
+                EntityType::class,
+            ])
+            ->thenReturn()
+            ->get();
 //        dd(DB::getQueryLog());
     }
 
     public function find($id)
     {
-        return TrackingProject::where('id', $id)
-            ->with('client')
+        return TrackingProject::where('id', '=', $id)
+            ->with('Tags.Translates:name,lang,color')
+            ->with('User:id,name,surname,middle_name,number,avatar_url')
+            ->orderBy('date_from', 'desc')
             ->first();
     }
 

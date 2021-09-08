@@ -430,6 +430,56 @@
                         {{ langMap.main.delete }}
                     </v-btn>
                     <v-spacer></v-spacer>
+                    <v-dialog
+                        v-model="trackerCreateDialog"
+                        width="500"
+                    >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                class="ma-2"
+                                color="#f2f2f2"
+                                small
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                {{ trackerActive.id ? 'Stop tracking' : 'Start tracking' }}
+                            </v-btn>
+                        </template>
+
+                        <v-card>
+                            <v-card-title class="text-h5 grey lighten-2">
+                                {{ trackerActive.id ? 'Stop tracker' : 'Create new tracker' }}
+                            </v-card-title>
+
+                            <v-card-text v-if="!trackerActive.id">
+                                <v-text-field
+                                    label="Description"
+                                    v-model="trackerActive.description"
+                                ></v-text-field>
+                            </v-card-text>
+
+                            <v-divider></v-divider>
+
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                    color="error"
+                                    text
+                                    @click="trackerCreateDialog = false"
+                                >
+                                    Cancel
+                                </v-btn>
+                                <v-btn
+                                    color="success"
+                                    text
+                                    @click="trackerCreateDialog = false; StartStopNewTimeTracker()"
+                                >
+                                    {{ trackerActive.id ? 'Stop' : 'Start' }}
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                    <v-spacer></v-spacer>
                     <v-menu
                         offset-y
                         rounded
@@ -1349,7 +1399,104 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-
+                <br/>
+                <v-expansion-panels class="d-sm-none d-md-flex">
+                    <v-expansion-panel @click="getTrackers">
+                        <v-expansion-panel-header style="background:#F0F0F0;">
+                            <span>
+                                <strong>Time tracking</strong>
+                            </span>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-list dense>
+                                <v-list-item
+                                    :key="-10"
+                                    class="mx-0 px-0"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="d-flex flex-row">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 35%">
+                                                <strong>Date</strong>
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 15%">
+                                                <strong>Passed</strong>
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 25%">
+                                                <strong>Service</strong>
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 25%">
+                                                <strong>Status</strong>
+                                            </div>
+                                        </v-list-item-title>
+                                        <hr>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item
+                                    :key="-5"
+                                    class="mx-0 px-0"
+                                    v-if="!$store.getters['Tracking/getTrackers'].length && trackersLoading"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="d-flex flex-row">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 100%">
+                                                Loading, please wait...
+                                            </div>
+                                        </v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item
+                                    :key="0"
+                                    class="mx-0 px-0"
+                                    v-if="!$store.getters['Tracking/getTrackers'].length && !trackersLoading"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="d-flex flex-row">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 100%">
+                                                No items
+                                            </div>
+                                        </v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item
+                                    v-for="(item) in $store.getters['Tracking/getTrackers']"
+                                    :key="item.id"
+                                    class="mx-0 px-0"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="d-flex flex-row">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 35%">
+                                                {{ moment(item.date_from).format('DD.MM.YYYY HH:mm') }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 15%">
+                                                {{ $helpers.time.convertSecToTime(item.passed, false) }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 25%">
+                                                {{ item.service ? item.service.name : '' }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 25%">
+                                                {{ trackerStatuses[item.status] }}
+                                            </div>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            {{ item.description ? $helpers.string.shortenText(item.description, 100) : '' }}
+                                        </v-list-item-subtitle>
+                                        <hr>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item>
+                                    <v-list-item-content class="text-center">
+                                        <v-btn
+                                            :loading="trackersLoading"
+                                            x-small
+                                            v-if="trackersLoadMoreBtn"
+                                            @click="loadMoreTrackers"
+                                        >Load more</v-btn>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-col>
             <v-scale-transition>
                 <v-col
@@ -1965,7 +2112,24 @@ export default {
             },
             currentUser: {
                 id: ''
-            }
+            },
+            trackersOffset: 0,
+            trackersLoading: false,
+            trackersLoadMoreBtn: false,
+            trackerStatuses: [
+                'Started',
+                'Stopped',
+                'Paused',
+                'Archived'
+            ],
+            trackerActive: {
+                id: null,
+                description: '',
+                status: 1,
+                entity_id: null,
+                entity_type: 'App\\Ticket',
+            },
+            trackerCreateDialog: false,
         }
     },
     watch: {
@@ -1996,6 +2160,8 @@ export default {
         let ticketId = this.$route.params.id;
         window.history.replaceState({}, this.langMap.sidebar.ticket_list, '/tickets');
         window.history.pushState({ticket_id: ticketId}, this.langMap.sidebar.ticket, `/ticket/${ticketId}`);
+        this.trackerActive.entity_id = ticketId;
+        this.getTrackers()
     },
     methods: {
         selectSearchCategory(item) {
@@ -2510,6 +2676,70 @@ export default {
             this.ticketNotice.notice = notice.notice;
             this.selectedSignature = '';
             this.noteDialog = true;
+        },
+        getTrackers() {
+            this.trackersLoading = true;
+            return this.$store.dispatch('Tracking/getTrackers', {
+                offset: this.trackersOffset,
+                filters: {
+                    entity_type: this.trackerActive.entity_type,
+                    entity_id: this.trackerActive.entity_id,
+                }
+            })
+                .then(data => {
+                    if (data.length === 15) {
+                        this.trackersLoadMoreBtn = true;
+                    } else {
+                        this.trackersLoadMoreBtn = false;
+                    }
+                })
+                .finally(() => {
+                    if (this.$store.getters['Tracking/getTrackers'].length) {
+                        const firstTracker = this.$store.getters['Tracking/getTrackers'][0];
+                        if (firstTracker.status === 0) {
+                            this.trackerActive.id = firstTracker.id;
+                            this.trackerActive.status = firstTracker.status;
+                            this.trackerActive.description = firstTracker.description;
+                        }
+                    }
+                    this.trackersLoading = false;
+                });
+        },
+        loadMoreTrackers() {
+            this.trackersOffset += 15;
+            this.getTrackers();
+        },
+        StartStopNewTimeTracker() {
+            this.trackersOffset = 0;
+            if (!this.trackerActive.id) {
+                this.$store.dispatch('Tracking/createTrack', {
+                    date_from: new Date(),
+                    status: 0,
+                    description: this.trackerActive.description,
+                    entity: {
+                        id: this.mergeTicketForm.parent_ticket_id,
+                    },
+                    entity_type: 'App\\Ticket',
+                })
+                    .then(data => {
+                        this.trackerActive.id = data.id;
+                        this.trackerActive.status = data.status;
+                        this.trackerActive.description = data.description;
+                        this.getTrackers();
+                    });
+            } else {
+                this.$store.dispatch('Tracking/updateTrack', {
+                    id: this.trackerActive.id,
+                    status: 1,
+                    date_to: new Date(),
+                })
+                    .then(() => {
+                        this.trackerActive.id = null;
+                        this.trackerActive.status = 1;
+                        this.trackerActive.description = '';
+                        this.getTrackers();
+                    });
+            }
         }
     },
     computed: {
