@@ -1589,6 +1589,9 @@ th *:not(.v-icon) td, th, td *:not(.v-icon), .v-tooltip__content,
 .v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
     font-size: 12px !important;
 }
+.sortable-chosen {
+    transform: translateY(0);
+}
 </style>
 
 <script>

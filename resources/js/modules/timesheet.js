@@ -173,8 +173,12 @@ export default {
             state.timesheetRequest.filter(i => ids.includes(i)).map(i => i.status = status);
         },
         SET_ORDERING(state, { oldIndex, newIndex }) {
-            state.timesheet[oldIndex-1].ordering = newIndex;
-            state.timesheet.splice(newIndex-1, 0, state.timesheet.splice(oldIndex-1, 1)[0]);
+            try {
+                state.timesheet[oldIndex-1].ordering = newIndex;
+                state.timesheet.splice(newIndex-1, 0, state.timesheet.splice(oldIndex-1, 1)[0]);
+            } catch (e) {
+                console.log('Ordering error');
+            }
         }
     },
     getters: {
