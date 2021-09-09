@@ -599,7 +599,7 @@
                     </th>
                 </template>
                 <template v-slot:body.prepend="{ headers }">
-                    <tr class="highlight">
+                    <tr class="highlight static">
                         <td :class="{'text-end': header.time >= 0}" v-for="header in headers" :style="{
                         width: header.width,
                         maxWidth: header.width,
@@ -615,7 +615,7 @@
                 <template v-slot:body.append="{ headers }"
                           v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_REQUESTS, STATUS_REJECTED].indexOf(typeOfItems) === -1"
                 >
-                    <tr>
+                    <tr class="static">
                         <td
                             :class="{ 'text-end': ['data-table-select', 'entity.name'].indexOf(header.value) === -1}"
                             v-for="header in headers"
