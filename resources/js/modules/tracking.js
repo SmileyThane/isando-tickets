@@ -1,4 +1,5 @@
 import moment from 'moment-timezone';
+import helpers from '../helpers';
 
 export default {
     namespaced: true,
@@ -163,6 +164,13 @@ export default {
                     }
                     return data;
                 });
+        },
+        duplicateTrack({commit}, id) {
+            return axios.post(`/api/tracking/tracker/${id}/duplicate`)
+                .then(({ data }) => {
+                    commit('ADD_TRACKERS', data.data);
+                    return data;
+                });
         }
     },
     mutations: {
@@ -204,6 +212,12 @@ export default {
         },
         CLEAR_TRACKERS(state) {
             state.trackers = [];
+        },
+        UPDATE_TIME(state) {
+            state.trackers.filter(i => i.status === 0).forEach(tracker => {
+                const index = state.trackers.indexOf(tracker);
+                state.trackers[index].passed = helpers.time.getSecBetweenDates(tracker.date_from, moment(), true);
+            });
         }
     },
     getters: {
@@ -214,7 +228,7 @@ export default {
             return state.reports;
         },
         getTrackers(state) {
-            return state.trackers;
+            return state.trackers.sort((a,b) => (moment(a.date_from).isAfter(b.date_from)));
         }
     }
 }

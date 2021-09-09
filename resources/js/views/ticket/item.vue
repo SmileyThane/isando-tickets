@@ -437,7 +437,7 @@
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
                                 class="ma-2"
-                                color="#f2f2f2"
+                                :color="trackerActive.id ? 'red' : '#f2f2f2'"
                                 small
                                 v-bind="attrs"
                                 v-on="on"
@@ -1421,11 +1421,14 @@
                                             <div class="d-inline-flex flex-grow-1 text-center" style="width: 15%">
                                                 <strong>Passed</strong>
                                             </div>
-                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 25%">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
                                                 <strong>Service</strong>
                                             </div>
-                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 25%">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
                                                 <strong>Status</strong>
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 10%">
+                                                &nbsp;
                                             </div>
                                         </v-list-item-title>
                                         <hr>
@@ -1468,13 +1471,25 @@
                                                 {{ moment(item.date_from).format('DD.MM.YYYY HH:mm') }}
                                             </div>
                                             <div class="d-inline-flex flex-grow-1 text-center" style="width: 15%">
-                                                {{ $helpers.time.convertSecToTime(item.passed, false) }}
+                                                {{ $helpers.time.convertSecToTime(item.status === 0 ? $helpers.time.getSecBetweenDates(item.date_from, moment(), true) : item.passed, false) }}
                                             </div>
-                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 25%">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
                                                 {{ item.service ? item.service.name : '' }}
                                             </div>
-                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 25%">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
                                                 {{ trackerStatuses[item.status] }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center mt-n1" style="width: 10%">
+                                                <v-btn
+                                                    :color="item.status === 0 ? 'error' : 'default'"
+                                                    small
+                                                    icon
+                                                    :disabled="item.readonly"
+                                                    @click="startStopExistsTrackers(item.id, item.status)"
+                                                >
+                                                    <v-icon v-if="item.status === 0">mdi-pause</v-icon>
+                                                    <v-icon v-else>mdi-play-outline</v-icon>
+                                                </v-btn>
                                             </div>
                                         </v-list-item-title>
                                         <v-list-item-subtitle>
@@ -1921,6 +1936,7 @@
 <script>
 
 import EventBus from "../../components/EventBus";
+import moment from 'moment-timezone';
 
 export default {
     data() {
@@ -2130,6 +2146,8 @@ export default {
                 entity_type: 'App\\Ticket',
             },
             trackerCreateDialog: false,
+            trackerDateTimeFormat: 'YYYY-MM-DDTHH:mm:ss',
+            globalTimer: moment(),
         }
     },
     watch: {
@@ -2137,9 +2155,13 @@ export default {
             if (value === 100) {
                 this.isLoaded = true;
             }
+        },
+        globalTimer() {
+            this.$store.commit('Tracking/UPDATE_TIME');
         }
     },
     mounted() {
+        this.__globalTimer()
         this.getTicket();
         this.getSuppliers()
         this.getProducts()
@@ -2713,7 +2735,7 @@ export default {
             this.trackersOffset = 0;
             if (!this.trackerActive.id) {
                 this.$store.dispatch('Tracking/createTrack', {
-                    date_from: new Date(),
+                    date_from: moment().format(this.trackerDateTimeFormat),
                     status: 0,
                     description: this.trackerActive.description,
                     entity: {
@@ -2728,11 +2750,7 @@ export default {
                         this.getTrackers();
                     });
             } else {
-                this.$store.dispatch('Tracking/updateTrack', {
-                    id: this.trackerActive.id,
-                    status: 1,
-                    date_to: new Date(),
-                })
+                this.updateTrack(this.trackerActive.id, 1 , moment().format(this.trackerDateTimeFormat))
                     .then(() => {
                         this.trackerActive.id = null;
                         this.trackerActive.status = 1;
@@ -2740,7 +2758,49 @@ export default {
                         this.getTrackers();
                     });
             }
-        }
+        },
+        updateTrack(id, status, date_to, date_from = null) {
+            this.trackersOffset = 0;
+            let data = {
+                id,
+                status,
+                date_to: date_to ? moment(date_to).format(this.trackerDateTimeFormat) : null,
+            };
+            if (date_from) {
+                data = { ...data, date_from };
+            }
+            return this.$store.dispatch('Tracking/updateTrack', data)
+                .then(() => this.getTrackers());
+        },
+        startStopExistsTrackers(id, status) {
+            this.trackersOffset = 0;
+            if (status === 0) {
+                if (id === this.trackerActive.id) {
+                    this.trackerActive.id = null;
+                    this.trackerActive.status = 1;
+                    this.trackerActive.description = '';
+                }
+                return this.updateTrack(id, 1, moment().format(this.trackerDateTimeFormat));
+            } else {
+                return this.$store.dispatch('Tracking/duplicateTrack', id)
+                    .then(({ data, success }) => {
+                        if (success) {
+                            if (id === this.trackerActive.id) {
+                                this.trackerActive.id = data.id;
+                                this.trackerActive.status = data.status;
+                                this.trackerActive.description = data.description;
+                            }
+                            return this.updateTrack(data.id, 0, null, moment().format(this.trackerDateTimeFormat));
+                        }
+                    });
+            }
+        },
+        __globalTimer() {
+            return setTimeout(() => {
+                this.globalTimer = moment();
+                this.__globalTimer();
+            }, 1000);
+        },
     },
     computed: {
         checkProgress: function () {
