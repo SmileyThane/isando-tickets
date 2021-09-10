@@ -443,6 +443,21 @@
                                     </template>
                                 </v-edit-dialog>
                             </template>
+
+                            <template v-slot:body.append="{ headers }">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 1), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 2), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 3), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 4), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 5), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 6), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 7), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTotalTime(item.items), false) }}</th>
+                                </tr>
+                            </template>
                         </v-data-table>
                     </td>
                 </template>
@@ -2073,7 +2088,7 @@ export default {
                     text: 'Total',
                     align: 'end',
                     value: 'total',
-                    width: '3%',
+                    width: '10%',
                     groupable: false,
                     time: days.reduce((acc, val) => acc + val, 0),
                 },
@@ -2260,6 +2275,23 @@ export default {
                 newIndex: event.newDraggableIndex
             })
             this.$store.dispatch('Timesheet/saveOrdering');
+        },
+        calculateTimeByDay(items = [], dayOfWeek = 1) {
+            let sumSec = 0;
+            items.map(i => {
+                const dayTime = i.times.find(t => t.dayOfWeek === dayOfWeek);
+                sumSec += dayTime.timeInSec;
+            });
+            return sumSec;
+        },
+        calculateTotalTime(items) {
+            let sumSec = 0;
+            items.map(i => {
+                i.times.map(t => {
+                    sumSec += t.timeInSec;
+                });
+            });
+            return sumSec;
         }
     },
     watch: {
