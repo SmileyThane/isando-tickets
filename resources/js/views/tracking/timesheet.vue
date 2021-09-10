@@ -2128,6 +2128,9 @@ export default {
             })
                 .then(async () => {
                     this.$store.commit('Timesheet/SET_STATUS', item.items, this.STATUS_ARCHIVED);
+                    this.snackbarMessage = this.langMap.tracking.timesheet.timesheet_approved;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
                     this.debounceGetTimesheet();
                     await this._getTimesheetByStatus();

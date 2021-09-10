@@ -312,6 +312,7 @@ class LanguageSeeder extends Seeder
                                 'reject_selected' => 'Reject selected',
                                 'project' => 'Project',
                                 'service' => 'Service',
+                                'timesheet_approved' => 'Timesheet was successfully approved',
                             ]
                         ],
                     'ticket_statuses' =>
@@ -1245,6 +1246,7 @@ class LanguageSeeder extends Seeder
                                 'reject_selected' => 'Reject selected',
                                 'project' => 'Projekt',
                                 'service' => 'Service',
+                                'timesheet_approved' => 'Timesheet wurde erfolgreich genehmigt',
                             ]
                         ],
                         'ticket_statuses' => [
