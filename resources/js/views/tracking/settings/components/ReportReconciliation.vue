@@ -103,6 +103,7 @@
                                         :step="1"
                                         :columns="2"
                                         mode="range"
+                                        :disabled-dates='{ weekdays: [3,4,5,6,7] }'
                                         @input="closePeriodSelect"
                                     ></vc-date-picker>
                                 </div>
@@ -149,8 +150,8 @@ export default {
             snackbar: false,
             isActive: null,
             period: {
-                start: moment().subtract(1, 'months').format('YYYY-MM-DDTHH:mm:ss'),
-                end: moment().format('YYYY-MM-DDTHH:mm:ss'),
+                start: moment().subtract(1, 'months').startOf('weeks').format('YYYY-MM-DDTHH:mm:ss'),
+                end: moment().endOf('weeks').format('YYYY-MM-DDTHH:mm:ss'),
             },
             loadingBtn: false,
             grouping: "client",
@@ -171,20 +172,20 @@ export default {
             let end = null;
             switch (periodKey) {
                 case 'today':
-                    start = moment().startOf('days');
-                    end = moment().endOf('days');
+                    start = moment().startOf('weeks');
+                    end = moment().endOf('weeks');
                     break;
                 case 'yesterday':
-                    start = moment().subtract(1, 'days').startOf('days');
-                    end = moment().subtract(1, 'days').endOf('days');
+                    start = moment().subtract(1, 'days').startOf('weeks');
+                    end = moment().subtract(1, 'days').endOf('weeks');
                     break;
                 case 'last7days':
-                    start = moment().weekday(1).subtract(7, 'days').startOf('days');
-                    end = moment().weekday(1).subtract(1, 'days').endOf('days');
+                    start = moment().weekday(1).subtract(7, 'days').startOf('weeks');
+                    end = moment().weekday(1).subtract(1, 'days').endOf('weeks');
                     break;
                 case 'last28days':
-                    start = moment().subtract(28, 'days').startOf('days');
-                    end = moment().subtract(1, 'days').endOf('days');
+                    start = moment().subtract(28, 'days').startOf('weeks');
+                    end = moment().subtract(1, 'days').endOf('weeks');
                     break;
                 case 'thisWeek':
                     start = moment().isoWeekday(1).startOf('weeks');
@@ -195,29 +196,29 @@ export default {
                     end = moment().weekday(1).endOf('weeks').subtract(1, 'weeks');
                     break;
                 case 'thisMonth':
-                    start = moment().startOf('months');
-                    end = moment().endOf('months');
+                    start = moment().startOf('months').startOf('weeks');
+                    end = moment().endOf('months').endOf('weeks');
                     break;
                 case 'lastMonth':
-                    start = moment().startOf('months').subtract(1, 'months');
-                    end = moment().endOf('months').subtract(1, 'months');
+                    start = moment().startOf('months').subtract(1, 'months').startOf('weeks');
+                    end = moment().endOf('months').subtract(1, 'months').endOf('weeks');
                     break;
                 case 'thisQuarter':
-                    start = moment().startOf('quarters');
-                    end = moment().endOf('quarters');
+                    start = moment().startOf('quarters').startOf('weeks');
+                    end = moment().endOf('quarters').endOf('weeks');
                     break;
                 case 'lastQuarter':
-                    start = moment().startOf('quarters').subtract(1, 'quarters');
-                    end = moment().endOf('quarters').subtract(1, 'quarters');
+                    start = moment().startOf('quarters').subtract(1, 'quarters').startOf('weeks');
+                    end = moment().endOf('quarters').subtract(1, 'quarters').endOf('weeks');
                     break;
                 case 'thisYear':
-                    start = moment().startOf('years');
-                    end = moment().endOf('years');
+                    start = moment().startOf('years').startOf('weeks');
+                    end = moment().endOf('years').endOf('weeks');
                     break;
                 default:
                     // total time
                     start = null;
-                    end = moment().endOf('years');
+                    end = moment().endOf('years').endOf('weeks');
             }
             this.period.start = start ? moment(start).format(this.dateFormat) : start;
             this.period.end = moment(end).format(this.dateFormat);
