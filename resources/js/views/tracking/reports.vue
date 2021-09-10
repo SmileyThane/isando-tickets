@@ -1399,9 +1399,11 @@ export default {
             const index = this.builder.filters.findIndex(i => i.value === filter.value);
             if (index < 0) {
                 filter.selected = [];
-                const queryParam = this.createQuery(this.builder.filters);
+                let queryParam = this.createQuery(this.builder.filters);
                 if (filter.dispatch) {
-                    console.log(queryParam);
+                    Object.keys(filter.dispatchParams).map(f => {
+                        queryParam = { ...queryParam, [f]: filter.dispatchParams[f] };
+                    });
                     this.$store.dispatch(filter.dispatch, queryParam);
                 }
                 this.builder.filters.push(filter);
@@ -1780,6 +1782,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.co_worker,
                     store: 'Team/getCoworkers',
                     dispatch: 'Team/getCoworkers',
+                    dispatchParams: {},
                     items: [],
                     selected: [],
                     multiply: true
@@ -1789,6 +1792,7 @@ export default {
                     text: this.getTrackingProjectsLabel,
                     store: 'Projects/getProjects',
                     dispatch: 'Projects/getProjectList',
+                    dispatchParams: { search: null, includeArchives: true },
                     items: [],
                     selected: [],
                     multiply: true
@@ -1798,6 +1802,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.clients,
                     store: 'Clients/getClients',
                     dispatch: 'Clients/getClientList',
+                    dispatchParams: {},
                     items: [],
                     selected: [],
                     multiply: true
@@ -1807,6 +1812,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.services,
                     store: 'Services/getServices',
                     dispatch: 'Services/getServicesList',
+                    dispatchParams: {},
                     items: [],
                     selected: [],
                     multiply: true
@@ -1816,6 +1822,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.billable,
                     store: null,
                     dispatch: '',
+                    dispatchParams: {},
                     items: [
                         {
                             id: 1,
@@ -1834,6 +1841,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.tags,
                     store: 'Tags/getTags',
                     dispatch: 'Tags/getTagList',
+                    dispatchParams: {},
                     items: [],
                     selected: [],
                     multiply: true
