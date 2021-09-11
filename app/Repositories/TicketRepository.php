@@ -122,6 +122,9 @@ class TicketRepository
         if ($request->only_for_user === "true") {
             $ticketResult->where('to_company_user_id', Auth::user()->employee->id);
         }
+        if ($request->only_open === "true") {
+            $ticketResult->where('status_id', 2);
+        }
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
                 ->with('creator.userData')
