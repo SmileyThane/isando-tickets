@@ -4,12 +4,13 @@ namespace App\Notifications;
 
 use App\Ticket;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
-class ChangedTicketStatus extends Notification
+class ChangedTicketStatus extends Notification implements ShouldQueue
 {
     use Queueable;
 

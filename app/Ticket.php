@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
-use App\Tracking;
 
 class Ticket extends Model
 {
@@ -295,5 +294,16 @@ class Ticket extends Model
     public function billedBy(): HasOne
     {
         return $this->hasOne(InternalBilling::class, 'id', 'internal_billing_id');
+    }
+
+    public function followers() {
+        return $this->belongsToMany(
+            User::class,
+            'ticket_followers',
+            'ticket_id',
+            'follower_id',
+            'id',
+            'id'
+        );
     }
 }

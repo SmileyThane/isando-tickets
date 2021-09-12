@@ -149,6 +149,31 @@
                                     rows="1"
                                 ></v-textarea>
                             </v-col>
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    v-model="ticket.followers"
+                                    :items="$store.getters['Team/getCoworkers']"
+                                    item-value="id"
+                                    item-text="full_name"
+                                    return-object
+                                    dense
+                                    chips
+                                    label="Followers"
+                                    prepend-icon="mdi-bell-ring-outline"
+                                    multiple
+                                    clearable
+                                >
+                                    <template v-slot:selection="{ item, index }">
+                                        <v-chip
+                                            small
+                                            close
+                                            @click:close="ticket.followers.splice(ticket.followers.findIndex(i => i.id === item.id), 1)"
+                                        >
+                                            <span>{{ item.full_name }}</span>
+                                        </v-chip>
+                                    </template>
+                                </v-select>
+                            </v-col>
                         </v-row>
                     </v-card-text>
                 </v-card>
@@ -2111,6 +2136,7 @@ export default {
                         description: ''
                     }
                 ],
+                followers: [],
             },
             ticketAnswer: {
                 id: '',
@@ -2184,6 +2210,7 @@ export default {
         window.history.pushState({ticket_id: ticketId}, this.langMap.sidebar.ticket, `/ticket/${ticketId}`);
         this.trackerActive.entity_id = ticketId;
         this.getTrackers()
+        this.$store.dispatch('Team/getCoworkers', { force: true });
     },
     methods: {
         selectSearchCategory(item) {
