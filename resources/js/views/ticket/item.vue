@@ -1213,11 +1213,35 @@
                                             </v-avatar>
                                             <span class="mt-2">{{ ticket.assigned_person.user_data.full_name }}</span>
                                         </div>
-                                        <div class="d-inline-flex my-2" v-if="ticket.followers.length">
-                                            {{ ticket.followers.slice(0,5).map(f => f.full_name).join(', ') }}
-                                            <template v-if="ticket.followers.length > 5">
+                                        <div class="d-inline-block my-2" v-if="ticket.followers.length">
+                                            <div
+                                                class="float-left mr-2"
+                                                v-for="follower in ticket.followers.slice(0, 5)"
+                                            >
+                                                <div class="d-flex flex-row">
+                                                    <v-avatar
+                                                        v-if="follower.avatar_url || follower.full_name"
+                                                        class="mr-2 mb-0 ml-n1 d-inline-flex"
+                                                        color="grey darken-1"
+                                                        size="2em"
+                                                    >
+                                                        <v-img v-if="follower.avatar_url"
+                                                               :src="follower.avatar_url"/>
+                                                        <span v-else-if="follower.full_name"
+                                                              class="white--text">
+                                                            {{
+                                                                follower.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                            }}
+                                                        </span>
+                                                    </v-avatar>
+                                                    <div class="d-inline-flex mt-2">
+                                                        {{ follower.full_name }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="float-left mr-2 mt-2" v-if="ticket.followers.length > 5">
                                                 (+{{ ticket.followers.length - 5 }} others)
-                                            </template>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1282,6 +1306,7 @@
                                     prepend-icon="mdi-account-multiple-outline"
                                     multiple
                                     clearable
+                                    hide-details
                                 >
                                     <template v-slot:selection="{ item, index }">
                                         <v-chip
@@ -1289,6 +1314,21 @@
                                             close
                                             @click:close="ticket.followers.splice(ticket.followers.findIndex(i => i.id === item.id), 1)"
                                         >
+                                            <v-avatar
+                                                v-if="item.avatar_url || item.full_name"
+                                                class="mr-2 mb-0 ml-n1"
+                                                color="grey darken-1"
+                                                size="2em"
+                                            >
+                                                <v-img v-if="item.avatar_url"
+                                                       :src="item.avatar_url"/>
+                                                <span v-else-if="item.full_name"
+                                                      class="white--text">
+                                                    {{
+                                                        item.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                    }}
+                                                 </span>
+                                            </v-avatar>
                                             <span>{{ item.full_name }}</span>
                                         </v-chip>
                                     </template>
