@@ -149,31 +149,6 @@
                                     rows="1"
                                 ></v-textarea>
                             </v-col>
-                            <v-col cols="12" md="6">
-                                <v-select
-                                    v-model="ticket.followers"
-                                    :items="$store.getters['Team/getCoworkers']"
-                                    item-value="id"
-                                    item-text="full_name"
-                                    return-object
-                                    dense
-                                    chips
-                                    label="Followers"
-                                    prepend-icon="mdi-bell-ring-outline"
-                                    multiple
-                                    clearable
-                                >
-                                    <template v-slot:selection="{ item, index }">
-                                        <v-chip
-                                            small
-                                            close
-                                            @click:close="ticket.followers.splice(ticket.followers.findIndex(i => i.id === item.id), 1)"
-                                        >
-                                            <span>{{ item.full_name }}</span>
-                                        </v-chip>
-                                    </template>
-                                </v-select>
-                            </v-col>
                         </v-row>
                     </v-card-text>
                 </v-card>
@@ -1200,38 +1175,53 @@
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
                         >
-                            <span>
-                                <span v-if="ticket.team !== null">
-                                <strong>{{ langMap.sidebar.team }}: </strong>
-                                    <span class="float-md-right">{{ ticket.team.name }} </span>
-                                    <br/>
-                                </span>
-                                 <span v-else>
-                                    <strong>{{ langMap.ticket.no_assigned }}</strong>
-                                </span>
-                                <span v-if="ticket.assigned_person !== null">
-                                <strong>{{ langMap.team.members }}: </strong>
-                                    <span class="float-md-right text-md-right">
-                                        <v-avatar
-                                            v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
-                                            class="mr-2 mb-2"
-                                            color="grey darken-1"
-                                            size="2em"
-                                        >
-                                         <v-img v-if="ticket.assigned_person.user_data.avatar_url"
-                                                :src="ticket.assigned_person.user_data.avatar_url"/>
-                                         <span v-else-if="ticket.assigned_person.user_data.full_name"
-                                               class="white--text">
-                                            {{
-                                                 ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                             }}
-                                         </span>
-                                        </v-avatar>
-                                        {{ ticket.assigned_person.user_data.full_name }}
-                                    </span>
-                                </span>
-                            </span>
-                            <v-spacer></v-spacer>
+                            <div class="d-flex flex-row">
+                                <div class="d-inline-flex" style="width: 30%">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-inline-flex my-2">
+                                            <strong>{{ langMap.sidebar.team }}: </strong>
+                                        </div>
+                                        <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
+                                            <strong>{{ langMap.team.members }}: </strong>
+                                        </div>
+                                        <div class="d-inline-flex my-2" v-if="ticket.followers.length">
+                                            <strong>{{ langMap.ticket.followers }}: </strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-inline-flex" style="width: 70%">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-inline-flex my-2">
+                                            <span v-if="ticket.team !== null">{{ ticket.team.name }}</span>
+                                            <span v-else>{{ langMap.ticket.no_assigned }}</span>
+                                        </div>
+                                        <div class="d-inline-flex my-0" v-if="ticket.assigned_person !== null">
+                                            <v-avatar
+                                                v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
+                                                class="mr-2 mb-2"
+                                                color="grey darken-1"
+                                                size="2em"
+                                            >
+                                                <v-img v-if="ticket.assigned_person.user_data.avatar_url"
+                                                       :src="ticket.assigned_person.user_data.avatar_url"/>
+                                                <span v-else-if="ticket.assigned_person.user_data.full_name"
+                                                      class="white--text">
+                                                    {{
+                                                                ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                            }}
+                                                 </span>
+                                            </v-avatar>
+                                            <span class="mt-2">{{ ticket.assigned_person.user_data.full_name }}</span>
+                                        </div>
+                                        <div class="d-inline-flex my-2" v-if="ticket.followers.length">
+                                            {{ ticket.followers.slice(0,5).map(f => f.full_name).join(', ') }}
+                                            <template v-if="ticket.followers.length > 5">
+                                                (+{{ ticket.followers.length - 5 }} others)
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <template v-slot:actions>
                                 <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                                        class="float-md-right"
@@ -1254,6 +1244,7 @@
                                     :item-color="themeBgColor"
                                     :items="teams"
                                     :label="langMap.sidebar.team"
+                                    prepend-icon="mdi-account-group-outline"
                                     dense
                                     item-text="name"
                                     item-value="id"
@@ -1266,6 +1257,7 @@
                                     :item-color="themeBgColor"
                                     :items="employees"
                                     :label="langMap.team.members"
+                                    prepend-icon="mdi-account-outline"
                                     dense
                                     item-value="employee.id"
                                 >
@@ -1278,6 +1270,29 @@
                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                 </v-autocomplete>
+                                <v-select
+                                    v-model="ticket.followers"
+                                    :items="$store.getters['Team/getCoworkers']"
+                                    item-value="id"
+                                    item-text="full_name"
+                                    return-object
+                                    dense
+                                    chips
+                                    label="Followers"
+                                    prepend-icon="mdi-account-multiple-outline"
+                                    multiple
+                                    clearable
+                                >
+                                    <template v-slot:selection="{ item, index }">
+                                        <v-chip
+                                            small
+                                            close
+                                            @click:close="ticket.followers.splice(ticket.followers.findIndex(i => i.id === item.id), 1)"
+                                        >
+                                            <span>{{ item.full_name }}</span>
+                                        </v-chip>
+                                    </template>
+                                </v-select>
                                 <v-btn :color="themeBgColor"
                                        :disabled="selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                        class="ma-2"
