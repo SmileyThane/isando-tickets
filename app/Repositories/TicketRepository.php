@@ -628,6 +628,17 @@ class TicketRepository
         return TicketFilter::where('user_id', Auth::id())->get();
     }
 
+    public function removeFilter($filterId) {
+        try {
+            TicketFilter::where('user_id', Auth::id())
+                ->where('id', '=', $filterId)
+                ->delete();
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
+    }
+
     public function getFilterParameters(Request $request): array
     {
         return $this->ticketSelectRepo->getFilterParameters($request);

@@ -102,6 +102,7 @@
                             item-text="name"
                             item-value="id"
                             prepend-icon="mdi-filter"
+                            clearable
                             @change="getTickets"
                         >
                             <template v-slot:append-outer>
@@ -559,7 +560,16 @@ export default {
             });
         },
         removeFilter() {
-            this.filterId = ''
+            console.log(this.filterId);
+            axios.delete(`/api/ticket_filters/${this.filterId}`)
+                .then(
+                    response => {
+                        response = response.data
+                        if (response.success) {
+                            this.filterId = ''
+                            this.getFilters()
+                        }
+                    });
             this.getTickets()
         },
         selectSearchCategory(item) {

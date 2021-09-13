@@ -177,6 +177,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('ticket_filters', 'API\TicketController@getFilters');
         Route::get('ticket_filter_parameters', 'API\TicketController@getFilterParameters');
         Route::post('ticket_query', 'API\TicketController@addFilter');
+        Route::delete('ticket_filters/{filterId}', 'API\TicketController@removeFilter');
 
         //notifications management
         Route::get('notification_types', 'API\NotificationController@getTypes');
