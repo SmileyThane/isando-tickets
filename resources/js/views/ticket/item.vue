@@ -1176,7 +1176,7 @@
                             style="background:#F0F0F0;"
                         >
                             <div class="d-flex flex-row">
-                                <div class="d-inline-flex" style="width: 30%">
+                                <div class="d-inline-flex" style="width: 20%">
                                     <div class="d-flex flex-column">
                                         <div class="d-inline-flex my-2">
                                             <strong>{{ langMap.sidebar.team }}: </strong>
@@ -1245,16 +1245,36 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="d-inline-flex" style="width: 10%">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-inline-flex my-0">
+                                            <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
+                                                   class="float-md-right"
+                                                   color="white" small
+                                                   style="color: black;"
+                                                   @click="assignFormToggle = 'team'"
+                                            >
+                                                {{ langMap.main.edit }}
+                                            </v-btn>
+                                        </div>
+                                        <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
+                                            &nbsp;
+                                        </div>
+                                        <div class="d-inline-flex my-2">
+                                            <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
+                                                   class="float-md-right"
+                                                   color="white" small
+                                                   style="color: black;"
+                                                   @click="assignFormToggle = 'followers'"
+                                            >
+                                                {{ langMap.main.edit }}
+                                            </v-btn>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <template v-slot:actions>
-                                <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
-                                       class="float-md-right"
-                                       color="white" small
-                                       style="color: black;"
-                                       @click="true"
-                                >
-                                    {{ langMap.main.edit }}
-                                </v-btn>
+                                &nbsp;
                                 <!--                                <v-icon>$expand</v-icon>-->
                             </template>
                         </v-expansion-panel-header>
@@ -1262,6 +1282,7 @@
                             <br/>
                             <v-form>
                                 <v-autocomplete
+                                    v-if="assignFormToggle === 'team'"
                                     v-model="ticket.to_team_id"
                                     :color="themeBgColor"
                                     :disabled="selectionDisabled"
@@ -1275,6 +1296,7 @@
                                     @change="selectTeam(); ticket.to_company_user_id = null;"
                                 ></v-autocomplete>
                                 <v-autocomplete
+                                    v-if="assignFormToggle === 'team'"
                                     v-model="ticket.to_company_user_id"
                                     :color="themeBgColor"
                                     :disabled="selectionDisabled"
@@ -1295,6 +1317,7 @@
                                     </template>
                                 </v-autocomplete>
                                 <v-select
+                                    v-if="assignFormToggle === 'followers'"
                                     v-model="ticket.followers"
                                     :items="$store.getters['Team/getCoworkers']"
                                     item-value="id"
@@ -1342,20 +1365,22 @@
                                 >
                                     {{ langMap.ticket.assign_to }}
                                 </v-btn>
-                                <v-btn :color="themeBgColor"
-                                       :disabled="!ticket.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
-                                       class="ma-2"
-                                       small
-                                       color="grey"
-                                       style="color: white;"
-                                       @click.native.stop="ticket.to_company_user_id = null; updateTicket()"
+                                <v-btn
+                                    v-if="assignFormToggle === 'team'"
+                                    :color="themeBgColor"
+                                    :disabled="!ticket.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
+                                    class="ma-2"
+                                    small
+                                    color="grey"
+                                    style="color: white;"
+                                    @click.native.stop="ticket.to_company_user_id = null; updateTicket()"
                                 >
                                     {{ langMap.ticket.clear_agent }}
                                 </v-btn>
                                 <v-btn class="ma-2"
                                        color="white" small
                                        style="color: black;"
-                                       @click="teamAssignPanel = []"
+                                       @click="teamAssignPanel = []; ticket.followers = [...followers]"
                                        v-text="langMap.main.cancel"
                                 >
                                 </v-btn>
@@ -2062,6 +2087,7 @@ export default {
             priorities: [],
             types: [],
             employees: [],
+            followers: [],
             contacts: [],
             teams: [],
             from: [],
@@ -2229,6 +2255,7 @@ export default {
             trackerCreateDialog: false,
             trackerDateTimeFormat: 'YYYY-MM-DDTHH:mm:ss',
             globalTimer: moment(),
+            assignFormToggle: 'team',
         }
     },
     watch: {
@@ -2284,6 +2311,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.ticket = response.data
+                    this.followers = response.data.followers
                     this.ticket.files = [];
                     this.from = {[this.ticket.from_entity_type]: this.ticket.from_entity_id}
                     this.progressBuffer = this.progressBuffer + 40;
