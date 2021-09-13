@@ -162,7 +162,7 @@
                             :color="themeBgColor"
                             class="ma-2"
                             hide-details
-                            label="Only open"
+                            label="All open"
                         >
                         </v-checkbox>
                     </v-col>
