@@ -1326,7 +1326,7 @@
                                     dense
                                     chips
                                     label="Followers"
-                                    prepend-icon="mdi-account-multiple-outline"
+                                    prepend-icon="mdi-eye"
                                     multiple
                                     clearable
                                     hide-details
