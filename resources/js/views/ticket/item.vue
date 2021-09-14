@@ -1176,7 +1176,7 @@
                             style="background:#F0F0F0;"
                         >
                             <div class="d-flex flex-row">
-                                <div class="d-inline-flex" style="width: 20%">
+                                <div class="d-inline-flex" style="min-width: 80px;">
                                     <div class="d-flex flex-column">
                                         <div class="d-inline-flex my-2">
                                             <strong>{{ langMap.sidebar.team }}: </strong>
@@ -1184,7 +1184,7 @@
                                         <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
                                             <strong>{{ langMap.team.members }}: </strong>
                                         </div>
-                                        <div class="d-inline-flex my-2" v-if="ticket.followers.length">
+                                        <div class="d-inline-flex mb-2 mt-6">
                                             <strong>{{ langMap.ticket.followers }}: </strong>
                                         </div>
                                     </div>
@@ -1213,32 +1213,37 @@
                                             </v-avatar>
                                             <span class="mt-2">{{ ticket.assigned_person.user_data.full_name }}</span>
                                         </div>
-                                        <div class="d-inline-block my-2" v-if="ticket.followers.length">
-                                            <div
-                                                class="float-left mr-2"
-                                                v-for="follower in ticket.followers.slice(0, 5)"
+                                        <div class="d-inline-block my-2 ma-1">
+                                            <template
+                                                v-if="ticket.followers.length"
                                             >
-                                                <div class="d-flex flex-row">
-                                                    <v-avatar
-                                                        v-if="follower.avatar_url || follower.full_name"
-                                                        class="mr-2 mb-0 ml-n1 d-inline-flex"
-                                                        color="grey darken-1"
-                                                        size="2em"
-                                                    >
-                                                        <v-img v-if="follower.avatar_url"
-                                                               :src="follower.avatar_url"/>
-                                                        <span v-else-if="follower.full_name"
-                                                              class="white--text">
+                                                <div
+                                                    class="float-left mr-2"
+                                                    v-for="follower in ticket.followers.slice(0, 5)"
+                                                >
+                                                    <div class="d-flex flex-row">
+                                                        <v-avatar
+                                                            v-if="follower.avatar_url || follower.full_name"
+                                                            class="mr-2 mb-0 ml-n1 d-inline-flex"
+                                                            color="grey darken-1"
+                                                            size="2em"
+                                                        >
+                                                            <v-img v-if="follower.avatar_url"
+                                                                   :src="follower.avatar_url"/>
+                                                            <span v-else-if="follower.full_name"
+                                                                  class="white--text">
                                                             {{
-                                                                follower.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                                            }}
+                                                                    follower.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                                }}
                                                         </span>
-                                                    </v-avatar>
-                                                    <div class="d-inline-flex mt-2">
-                                                        {{ follower.full_name }}
+                                                        </v-avatar>
+                                                        <div class="d-inline-flex mt-2">
+                                                            {{ follower.full_name }}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </template>
+                                            <div v-else class="float-left mr-2 mt-2">No followers</div>
                                             <div class="float-left mr-2 mt-2" v-if="ticket.followers.length > 5">
                                                 (+{{ ticket.followers.length - 5 }} others)
                                             </div>
@@ -1260,7 +1265,7 @@
                                         <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
                                             &nbsp;
                                         </div>
-                                        <div class="d-inline-flex my-2">
+                                        <div class="d-inline-flex mb-2 mt-5">
                                             <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                                                    class="float-md-right"
                                                    color="white" small
@@ -1330,6 +1335,7 @@
                                     multiple
                                     clearable
                                     hide-details
+                                    @blur="updateTicket(assignFormToggle === 'followers' ? 0 : [])"
                                 >
                                     <template v-slot:selection="{ item, index }">
                                         <v-chip
@@ -1357,6 +1363,7 @@
                                     </template>
                                 </v-select>
                                 <v-btn :color="themeBgColor"
+                                       v-if="assignFormToggle === 'team'"
                                        :disabled="selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                        class="ma-2"
                                        small
@@ -1377,10 +1384,10 @@
                                 >
                                     {{ langMap.ticket.clear_agent }}
                                 </v-btn>
-                                <v-btn class="ma-2"
+                                <v-btn :class="{ 'ma-2': true, 'float-right': assignFormToggle === 'followers'}"
                                        color="white" small
                                        style="color: black;"
-                                       @click="teamAssignPanel = []; ticket.followers = [...followers]"
+                                       @click="teamAssignPanel = []"
                                        v-text="langMap.main.cancel"
                                 >
                                 </v-btn>
@@ -2486,7 +2493,7 @@ export default {
 
             }
         },
-        updateTicket() {
+        updateTicket(teamAssignPanel = []) {
             this.ticket.from_entity_id = Object.values(this.from)[0]
             this.ticket.from_entity_type = Object.keys(this.from)[0]
             this.ticket.name = this.ticket.original_name
@@ -2495,7 +2502,7 @@ export default {
                 if (response.success === true) {
                     this.getTicket()
                     this.updateDialog = false
-                    this.teamAssignPanel = []
+                    this.teamAssignPanel = teamAssignPanel
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
