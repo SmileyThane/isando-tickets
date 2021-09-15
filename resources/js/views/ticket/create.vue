@@ -17,282 +17,237 @@
                     <p class="title text-center">{{langMap.ticket.create_ticket}}</p>
                 </v-col>
             </v-row>
-            <v-stepper
-                v-model="e1"
-                :alt-labels="altLabels"
 
-            >
-                <v-stepper-header>
-                    <template v-for="n in steps">
-                        <v-stepper-step
-                            :key="`${n}-step`"
-                            :complete="e1 > n"
-                            :step="n"
-                            :editable="editable"
+            <v-card>
+                <v-card-text>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <v-select
+                                :label="langMap.ticket.company_from"
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                item-text="name"
+                                item-value="item"
+                                :items="suppliers"
+                                v-model="ticketForm.from"
+                                @input="getContacts"
+                            />
+                        </div>
+                        <v-col cols="md-6">
+                            <v-autocomplete
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                item-text="name"
+                                item-value="item"
+                                v-model="ticketForm.to"
+                                :items="suppliers"
+                                :label="langMap.ticket.company_to"
+                            ></v-autocomplete>
+
+                        </v-col>
+                        <div class="col-md-6">
+                            <v-select
+                                :label="langMap.ticket.product_name"
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                item-text="full_name"
+                                item-value="id"
+                                :items="products"
+                                v-model="ticketForm.to_product_id"
+                            />
+                        </div>
+                        <v-col cols="md-6">
+                            <v-autocomplete
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                item-text="user_data.full_name"
+                                item-value="id"
+                                v-model="ticketForm.contact_company_user_id"
+                                :items="employees"
+                                :label="langMap.ticket.contact_name"
+                            >
+                                <template v-slot:append-outer>
+                                    <v-btn :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'"
+                                           icon :color="themeBgColor" :title="langMap.individuals.add_new" @click="createContactDlg = true;">
+                                        <v-icon>mdi-plus</v-icon>
+                                    </v-btn>
+                                </template>
+                            </v-autocomplete>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-tooltip v-model="availabilityTooltip" bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-textarea
+                                        :label="langMap.ticket.availability"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
+                                        auto-grow
+                                        outlined
+                                        rows="1"
+                                        row-height="25"
+                                        v-model="ticketForm.availability"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    ></v-textarea>
+                                </template>
+                                <span>{{langMap.ticket.availability_description}}</span>
+                            </v-tooltip>
+                        </v-col>
+                    </div>
+                    <div class="row">
+                        <v-col cols="md-6">
+                            <v-text-field
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                :label="langMap.ticket.subject + ' *'"
+                                v-model="ticketForm.name"
+                            ></v-text-field>
+                        </v-col>
+                        <div class="col-md-2">
+                            <v-select
+                                :label="langMap.ticket.priority"
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                item-text="name"
+                                item-value="id"
+                                :items="priorities"
+                                v-model="ticketForm.priority_id"
+                            >
+                                <!--                                            <template slot="selection" slot-scope="data">-->
+                                <!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
+                                <!--                                            </template>-->
+                                <!--                                            <template slot="item" slot-scope="data">-->
+                                <!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
+                                <!--                                            </template>-->
+                            </v-select>
+                        </div>
+                        <div class="col-md-2">
+                            <v-select
+                                :label="langMap.main.type"
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                item-text="name"
+                                item-value="id"
+                                :items="types"
+                                v-model="ticketForm.ticket_type_id"
+                            >
+                                <!--                                            <template slot="selection" slot-scope="data">-->
+                                <!--                                                {{ langMap.ticket_types[data.item.name] }}-->
+                                <!--                                            </template>-->
+                                <!--                                            <template slot="item" slot-scope="data">-->
+                                <!--                                                {{ langMap.ticket_types[data.item.name] }}-->
+                                <!--                                            </template>-->
+                            </v-select>
+                        </div>
+                        <div class="col-md-2">
+                            <v-select
+                                :label="langMap.main.category"
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                item-text="name"
+                                item-value="id"
+                                :items="categories"
+                                v-model="ticketForm.category_id"
+                            />
+                        </div>
+                        <v-col cols="12">
+                            <v-textarea
+                                :label="langMap.main.description"
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                auto-grow
+                                outlined
+                                rows="3"
+                                row-height="25"
+                                v-model="ticketForm.description"
+                            ></v-textarea>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-label>{{langMap.ticket.access_data}}:</v-label>
+                        </v-col>
+                        <v-col cols="md-6">
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-textarea
+                                        :label="langMap.ticket.ip_address"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
+                                        auto-grow
+                                        outlined
+                                        rows="3"
+                                        row-height="25"
+                                        v-model="ticketForm.connection_details"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    ></v-textarea>
+                                </template>
+                                <span>{{langMap.ticket.ip_description}}</span>
+                            </v-tooltip>
+                        </v-col>
+                        <v-col cols="md-6">
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-textarea
+                                        :label="langMap.ticket.access_details"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
+                                        auto-grow
+                                        outlined
+                                        rows="3"
+                                        row-height="25"
+                                        v-model="ticketForm.access_details"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    ></v-textarea>
+                                </template>
+                                <span>{{langMap.ticket.access_description}}</span>
+                            </v-tooltip>
+                        </v-col>
+                    </div>
+                    <div class="row">
+                        <v-col cols="md-12">
+                            <v-file-input
+                            chips
+                            multiple
+                            :label="langMap.main.attachments"
                             :color="themeBgColor"
+                            :item-color="themeBgColor"
+                            prepend-icon="mdi-paperclip"
+                            :show-size="1000"
+                            v-on:change="onFileChange('ticketForm')"
                         >
-                            <!--                            Step {{ n }}-->
-                        </v-stepper-step>
-
-                        <v-divider
-                            v-if="n !== steps"
-                            :key="n"
-                        ></v-divider>
-                    </template>
-                </v-stepper-header>
-
-                <v-stepper-items
-
-                >
-                    <v-form>
-                        <v-stepper-content step="1">
-                            <v-card-text>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <v-select
-                                            :label="langMap.ticket.company_from"
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            item-text="name"
-                                            item-value="item"
-                                            :items="suppliers"
-                                            v-model="ticketForm.from"
-                                            @input="getContacts"
-                                        />
-                                    </div>
-                                    <v-col cols="md-6">
-                                        <v-autocomplete
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            item-text="name"
-                                            item-value="item"
-                                            v-model="ticketForm.to"
-                                            :items="suppliers"
-                                            :label="langMap.ticket.company_to"
-                                        ></v-autocomplete>
-
-                                    </v-col>
-                                    <div class="col-md-6">
-                                        <v-select
-                                            :label="langMap.ticket.product_name"
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            item-text="full_name"
-                                            item-value="id"
-                                            :items="products"
-                                            v-model="ticketForm.to_product_id"
-                                        />
-                                    </div>
-                                    <v-col cols="md-6">
-                                        <v-autocomplete
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            item-text="user_data.full_name"
-                                            item-value="id"
-                                            v-model="ticketForm.contact_company_user_id"
-                                            :items="employees"
-                                            :label="langMap.ticket.contact_name"
-                                        >
-                                            <template v-slot:append-outer>
-                                                <v-btn :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'"
-                                                    icon :color="themeBgColor" :title="langMap.individuals.add_new" @click="createContactDlg = true;">
-                                                    <v-icon>mdi-plus</v-icon>
-                                                </v-btn>
-                                            </template>
-                                        </v-autocomplete>
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <v-tooltip v-model="availabilityTooltip" bottom>
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-textarea
-                                                    :label="langMap.ticket.availability"
-                                                    :color="themeBgColor"
-                                                    :item-color="themeBgColor"
-                                                    auto-grow
-                                                    outlined
-                                                    rows="1"
-                                                    row-height="25"
-                                                    v-model="ticketForm.availability"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                ></v-textarea>
-                                            </template>
-                                            <span>{{langMap.ticket.availability_description}}</span>
-                                        </v-tooltip>
-                                    </v-col>
-                                </div>
-                            </v-card-text>
-                        </v-stepper-content>
-
-                        <v-stepper-content step="2">
-                            <v-card-text>
-                                <div class="row">
-                                    <v-col cols="md-6">
-                                        <v-text-field
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            :label="langMap.ticket.subject"
-                                            v-model="ticketForm.name"
-                                        ></v-text-field>
-                                    </v-col>
-                                    <div class="col-md-2">
-                                        <v-select
-                                            :label="langMap.ticket.priority"
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            item-text="name"
-                                            item-value="id"
-                                            :items="priorities"
-                                            v-model="ticketForm.priority_id"
-                                        >
-<!--                                            <template slot="selection" slot-scope="data">-->
-<!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
-<!--                                            </template>-->
-<!--                                            <template slot="item" slot-scope="data">-->
-<!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
-<!--                                            </template>-->
-                                        </v-select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <v-select
-                                            :label="langMap.main.type"
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            item-text="name"
-                                            item-value="id"
-                                            :items="types"
-                                            v-model="ticketForm.ticket_type_id"
-                                        >
-<!--                                            <template slot="selection" slot-scope="data">-->
-<!--                                                {{ langMap.ticket_types[data.item.name] }}-->
-<!--                                            </template>-->
-<!--                                            <template slot="item" slot-scope="data">-->
-<!--                                                {{ langMap.ticket_types[data.item.name] }}-->
-<!--                                            </template>-->
-                                        </v-select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <v-select
-                                            :label="langMap.main.category"
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            item-text="name"
-                                            item-value="id"
-                                            :items="categories"
-                                            v-model="ticketForm.category_id"
-                                        />
-                                    </div>
-                                    <v-col cols="12">
-                                        <v-textarea
-                                            :label="langMap.main.description"
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            auto-grow
-                                            outlined
-                                            rows="3"
-                                            row-height="25"
-                                            v-model="ticketForm.description"
-                                        ></v-textarea>
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <v-label>{{langMap.ticket.access_data}}:</v-label>
-                                    </v-col>
-                                    <v-col cols="md-6">
-                                        <v-tooltip bottom>
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-textarea
-                                                    :label="langMap.ticket.ip_address"
-                                                    :color="themeBgColor"
-                                                    :item-color="themeBgColor"
-                                                    auto-grow
-                                                    outlined
-                                                    rows="3"
-                                                    row-height="25"
-                                                    v-model="ticketForm.connection_details"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                ></v-textarea>
-                                            </template>
-                                            <span>{{langMap.ticket.ip_description}}</span>
-                                        </v-tooltip>
-                                    </v-col>
-                                    <v-col cols="md-6">
-                                        <v-tooltip bottom>
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-textarea
-                                                    :label="langMap.ticket.access_details"
-                                                    :color="themeBgColor"
-                                                    :item-color="themeBgColor"
-                                                    auto-grow
-                                                    outlined
-                                                    rows="3"
-                                                    row-height="25"
-                                                    v-model="ticketForm.access_details"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                ></v-textarea>
-                                            </template>
-                                            <span>{{langMap.ticket.access_description}}</span>
-                                        </v-tooltip>
-                                    </v-col>
-                                </div>
-                            </v-card-text>
-                            <div>
-                                <v-file-input
-                                    chips
-                                    multiple
-                                    :label="langMap.main.attachments"
+                            <template v-slot:selection="{ index, text }">
+                                <v-chip
                                     :color="themeBgColor"
-                                    :item-color="themeBgColor"
-                                    prepend-icon="mdi-paperclip"
-                                    :show-size="1000"
-                                    v-on:change="onFileChange('ticketForm')"
+                                    class="ma-2"
+                                    :text-color="themeFgColor"
                                 >
-                                    <template v-slot:selection="{ index, text }">
-                                        <v-chip
-                                            :color="themeBgColor"
-                                            class="ma-2"
-                                            :text-color="themeFgColor"
-                                        >
-                                            {{ text }}
-                                        </v-chip>
-                                    </template>
-                                </v-file-input>
-                            </div>
-                        </v-stepper-content>
-                    </v-form>
-
-                    <v-stepper-content
-                        v-for="n in steps"
-                        :key="`${n}-content`"
-                        :step="n"
+                                    {{ text }}
+                                </v-chip>
+                            </template>
+                        </v-file-input>
+                        </v-col>
+                    </div>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        style="color: white;"
+                        color="#4caf50"
+                        @click="submit()"
+                        v-text="langMap.main.create"
                     >
-                        <v-btn
-                            style="color: white;"
-                            color="#4caf50"
-                            @click="n !== steps ? nextStep(n) : submit()"
-                            v-text="n !== steps ? langMap.main.continue : langMap.main.create"
-                        >
-                        </v-btn>
+                    </v-btn>
 
-                        <v-btn
-                            class="ml-2"
-                            v-if="n == steps"
-                            style="color: white;"
-                            color="#4caf50"
-                            @click="assignDlg = true"
-                            v-text="langMap.ticket.create_and_assign"
-                        />
-                        <v-btn
-                            text
-                            @click="previousStep(n)"
-                        >
-                            {{langMap.main.cancel}}
-                        </v-btn>
-                    </v-stepper-content>
-                </v-stepper-items>
-                <v-spacer></v-spacer>
-            </v-stepper>
+                    <v-btn
+                        class="ml-2"
+                        style="color: white;"
+                        color="#4caf50"
+                        @click="assignDlg = true"
+                        v-text="langMap.ticket.create_and_assign"
+                    />
+                </v-card-actions>
+            </v-card>
+
         </div>
 
         <v-row justify="center">
@@ -743,6 +698,9 @@
                 });
             },
             submit() {
+                if (!this.ticketForm.name) {
+                    return false;
+                }
                 // console.log(this.ticketForm.from);
                 this.overlay = true;
                 this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0]
