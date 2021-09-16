@@ -270,6 +270,15 @@
                                     @click="assignDlg = true"
                                     v-text="langMap.ticket.create_and_assign"
                                 />
+
+                                <v-btn
+                                    class="ml-2"
+                                    style="color: white;"
+                                    color="#4caf50"
+                                    @click="savetoLS()"
+                                >
+                                    Save for later
+                                </v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-col>
@@ -582,6 +591,7 @@
                 selectionDisabled: false,
                 tTeams: [],
                 tEmployees: [],
+                ticketFormIsSaved: false,
             }
         },
         watch: {
@@ -594,6 +604,9 @@
                 this.e1 = 2
                 requestAnimationFrame(() => this.e1 = 1) // Workarounds
             },
+            ticketForm() {
+                this.ticketFormIsSaved = false;
+            }
         },
         beforeDestroy() {
             this.saveForLater()
@@ -876,14 +889,21 @@
                 }
             },
             saveForLater() {
-                if (confirm('Do you want to save the content of the form for later?')) {
-                    localStorage.setItem('ticketForm', JSON.stringify(this.ticketForm));
-                    this.snackbarMessage = 'Form saved!'
-                    this.actionColor = 'success'
-                    this.snackbar = true;
-                } else {
-                    localStorage.removeItem('ticketForm');
+                if (this.ticketFormIsSaved === false) {
+                    if (confirm('Do you want to save the content of the form for later?')) {
+                        this.savetoLS();
+                    } else {
+                        localStorage.removeItem('ticketForm');
+                        this.ticketFormIsSaved = false;
+                    }
                 }
+            },
+            savetoLS() {
+                localStorage.setItem('ticketForm', JSON.stringify(this.ticketForm));
+                this.ticketFormIsSaved = true;
+                this.snackbarMessage = 'Form saved!'
+                this.actionColor = 'success'
+                this.snackbar = true;
             },
             loadSavedForm() {
                 try {
