@@ -1388,7 +1388,7 @@
                                        color="white" small
                                        style="color: black;"
                                        @click="teamAssignPanel = []"
-                                       v-text="langMap.main.cancel"
+                                       v-text="assignFormToggle === 'followers' ? langMap.main.close : langMap.main.cancel"
                                 >
                                 </v-btn>
                             </v-form>
