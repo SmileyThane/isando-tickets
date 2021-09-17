@@ -24,9 +24,9 @@
                         <v-card class="pa-2">
                             <v-card-text>
                                 <div class="row">
-                                    <div class="col-md-6 col-sm-12">
+                                    <div class="col-md-4 col-sm-12">
                                         <v-select
-                                            :label="langMap.ticket.company_from"
+                                            label="Ticket is submitted by"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
                                             item-text="name"
@@ -37,7 +37,7 @@
                                             hide-details
                                         />
                                     </div>
-                                    <v-col class="col-md-6 col-sm-12">
+                                    <v-col class="col-md-4 col-sm-12">
                                         <v-autocomplete
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
@@ -45,7 +45,7 @@
                                             item-value="id"
                                             v-model="ticketForm.contact_company_user_id"
                                             :items="employees"
-                                            :label="langMap.ticket.contact_name"
+                                            label="Contact person"
                                             hide-details
                                         >
                                             <template v-slot:append-outer>
@@ -56,7 +56,7 @@
                                             </template>
                                         </v-autocomplete>
                                     </v-col>
-                                    <v-col class="col-md-12 mb-4">
+                                    <v-col class="col-md-4 mb-4">
                                         <v-autocomplete
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
@@ -234,7 +234,7 @@
                                                     <v-tooltip v-model="availabilityTooltip" bottom>
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-textarea
-                                                                :label="langMap.ticket.availability"
+                                                                label="Availability of the contact person for callback – e.g. add working hours…"
                                                                 :color="themeBgColor"
                                                                 :item-color="themeBgColor"
                                                                 auto-grow
