@@ -6,6 +6,7 @@ use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyUser;
+use App\Notifications\ChangedFollowTicketStatus;
 use App\Notifications\ChangedTicketStatus;
 use App\Permission;
 use App\ProductCompanyUser;
@@ -19,6 +20,7 @@ use App\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
 
@@ -121,6 +123,9 @@ class TicketRepository
         }
         if ($request->only_for_user === "true") {
             $ticketResult->where('to_company_user_id', Auth::user()->employee->id);
+        }
+        if ($request->only_open === "true") {
+            $ticketResult->whereIn('status_id', [1,2,4]);
         }
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
@@ -259,7 +264,8 @@ class TicketRepository
                 'notices.employee.userData',
                 'attachments',
                 'mergedParent',
-                'billedBy'
+                'billedBy',
+                'followers'
             )->first()->makeVisible(['to']);
     }
 
@@ -295,7 +301,7 @@ class TicketRepository
 
     public function update(Request $request, $id)
     {
-        $ticket = Ticket::find($id);
+        $ticket = Ticket::with('followers')->find($id);
         if ($request->status_id !== $ticket->status_id) {
             $this->updateStatus($request, $id);
         } else {
@@ -329,11 +335,11 @@ class TicketRepository
             $ticket->access_details = $this->ticketUpdateRepo->setAccessDetails($ticket->access_details, $request->access_details, $ticket->id);
             $ticket->connection_details = $this->ticketUpdateRepo->setConnectionDetails($ticket->connection_details, $request->connection_details, $ticket->id);
             $ticket->category_id = $this->ticketUpdateRepo->setCategoryId($ticket->category_id, $request->category_id, $ticket->id);
+            $ticket->followers()->sync(collect($request->followers)->pluck('id'));
             $ticket->save();
             $request->status_id = 2;
             $this->updateStatus($request, $id, null, false);
         }
-
         return $ticket;
     }
 
@@ -360,6 +366,20 @@ class TicketRepository
             $ticket,
             ChangedTicketStatus::class
         );
+        // Notify followers
+        $followers = $ticket->followers()->get()->all();
+        foreach ($followers as $follower) {
+            $follower->notify(
+                new ChangedFollowTicketStatus(
+                    $follower->employee->companyData->name,
+                    $follower->title,
+                    $follower->full_name,
+                    $ticket->name,
+                    $ticket->id,
+                    $follower->language->short_code
+                )
+            );
+        }
         if ($withHistory === true) {
             if ($request->status_id === TicketStatus::CLOSED) {
                 $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_closed');
@@ -606,6 +626,17 @@ class TicketRepository
     public function getFilters()
     {
         return TicketFilter::where('user_id', Auth::id())->get();
+    }
+
+    public function removeFilter($filterId) {
+        try {
+            TicketFilter::where('user_id', Auth::id())
+                ->where('id', '=', $filterId)
+                ->delete();
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
     public function getFilterParameters(Request $request): array

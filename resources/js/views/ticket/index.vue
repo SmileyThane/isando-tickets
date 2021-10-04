@@ -102,6 +102,7 @@
                             item-text="name"
                             item-value="id"
                             prepend-icon="mdi-filter"
+                            clearable
                             @change="getTickets"
                         >
                             <template v-slot:append-outer>
@@ -139,7 +140,7 @@
                             {{ langMap.main.save }}
                         </v-btn>
                     </v-col>
-                    <v-col md="2">
+                    <v-col md="2" class="pt-0">
                         <v-checkbox
                             v-model="options.withSpam"
                             :color="themeBgColor"
@@ -155,6 +156,14 @@
                             class="ma-2"
                             hide-details
                             label="Assigned for me Only"
+                        >
+                        </v-checkbox>
+                        <v-checkbox
+                            v-model="options.onlyOpen"
+                            :color="themeBgColor"
+                            class="ma-2"
+                            hide-details
+                            label="All open"
                         >
                         </v-checkbox>
                     </v-col>
@@ -425,6 +434,7 @@ export default {
                 sortDesc: [true],
                 sortBy: ['id'],
                 withSpam: false,
+                onlyOpen: false,
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
             },
             footerProps: {
@@ -550,7 +560,16 @@ export default {
             });
         },
         removeFilter() {
-            this.filterId = ''
+            console.log(this.filterId);
+            axios.delete(`/api/ticket_filters/${this.filterId}`)
+                .then(
+                    response => {
+                        response = response.data
+                        if (response.success) {
+                            this.filterId = ''
+                            this.getFilters()
+                        }
+                    });
             this.getTickets()
         },
         selectSearchCategory(item) {
@@ -618,6 +637,7 @@ export default {
                     sort_val: this.options.sortDesc[0],
                     with_spam: this.options.withSpam,
                     only_for_user: this.options.onlyForUser,
+                    only_open: this.options.onlyOpen,
                     per_page: this.options.itemsPerPage,
                     minified: this.minifiedTickets,
                     page: this.options.page,

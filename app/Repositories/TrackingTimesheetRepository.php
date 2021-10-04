@@ -628,18 +628,28 @@ class TrackingTimesheetRepository
             ['to', '>=', Carbon::parse($to)->startOf('week')->subtract('week', 1)->format(Tracking::$DATETIME_FORMAT)],
         ])->get();
         foreach ($timesheets as $timesheet) {
-            $newTimesheet = $timesheet->duplicate();
-            $newTimesheet->status = TrackingTimesheet::STATUS_TRACKED;
-            $newTimesheet->number = null;
-            $newTimesheet->note = null;
-            $newTimesheet->approver_id = null;
-            $newTimesheet->submitted_on = null;
-            $newTimesheet->notification_date = null;
-            $newTimesheet->is_manually = true;
-            $newTimesheet->from = Carbon::parse($from)->startOf('week');
-            $newTimesheet->to = Carbon::parse($to)->endOf('week');
-            $newTimesheet->save();
-            $this->genTrackersByTimesheet($newTimesheet);
+            $existsTimesheet = TrackingTimesheet::where([
+                ['user_id', '=', $user->id],
+                ['from', '<=', Carbon::parse($to)->endOf('week')->format(Tracking::$DATETIME_FORMAT)],
+                ['to', '>=', Carbon::parse($from)->startOf('week')->format(Tracking::$DATETIME_FORMAT)],
+                ['entity_id', '=', $timesheet->entity_id],
+                ['entity_type', '=', $timesheet->entity_type],
+                ['service_id', '=', $timesheet->service_id],
+            ])->first();
+            if (!$existsTimesheet) {
+                $newTimesheet = $timesheet->duplicate();
+                $newTimesheet->status = TrackingTimesheet::STATUS_TRACKED;
+                $newTimesheet->number = null;
+                $newTimesheet->note = null;
+                $newTimesheet->approver_id = null;
+                $newTimesheet->submitted_on = null;
+                $newTimesheet->notification_date = null;
+                $newTimesheet->is_manually = true;
+                $newTimesheet->from = Carbon::parse($from)->startOf('week');
+                $newTimesheet->to = Carbon::parse($to)->endOf('week');
+                $newTimesheet->save();
+                $this->genTrackersByTimesheet($newTimesheet);
+            }
         }
     }
 

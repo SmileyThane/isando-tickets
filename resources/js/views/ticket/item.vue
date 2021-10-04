@@ -155,7 +155,7 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true">
+            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true" hide-overlay persistent content-class="draggable">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ ticketAnswer.id ? langMap.ticket.edit_answer : langMap.ticket.create_answer }}
@@ -429,6 +429,56 @@
                     >
                         {{ langMap.main.delete }}
                     </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-dialog
+                        v-model="trackerCreateDialog"
+                        width="500"
+                    >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                class="ma-2"
+                                :color="trackerActive.id ? 'red' : '#f2f2f2'"
+                                small
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                {{ trackerActive.id ? 'Stop tracking' : 'Start tracking' }}
+                            </v-btn>
+                        </template>
+
+                        <v-card>
+                            <v-card-title class="text-h5 grey lighten-2">
+                                {{ trackerActive.id ? 'Stop tracker' : 'Create new tracker' }}
+                            </v-card-title>
+
+                            <v-card-text v-if="!trackerActive.id">
+                                <v-text-field
+                                    label="Description"
+                                    v-model="trackerActive.description"
+                                ></v-text-field>
+                            </v-card-text>
+
+                            <v-divider></v-divider>
+
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                    color="error"
+                                    text
+                                    @click="trackerCreateDialog = false"
+                                >
+                                    Cancel
+                                </v-btn>
+                                <v-btn
+                                    color="success"
+                                    text
+                                    @click="trackerCreateDialog = false; StartStopNewTimeTracker()"
+                                >
+                                    {{ trackerActive.id ? 'Stop' : 'Start' }}
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                     <v-spacer></v-spacer>
                     <v-menu
                         offset-y
@@ -1125,47 +1175,111 @@
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
                         >
-                            <span>
-                                <span v-if="ticket.team !== null">
-                                <strong>{{ langMap.sidebar.team }}: </strong>
-                                    <span class="float-md-right">{{ ticket.team.name }} </span>
-                                    <br/>
-                                </span>
-                                 <span v-else>
-                                    <strong>{{ langMap.ticket.no_assigned }}</strong>
-                                </span>
-                                <span v-if="ticket.assigned_person !== null">
-                                <strong>{{ langMap.team.members }}: </strong>
-                                    <span class="float-md-right text-md-right">
-                                        <v-avatar
-                                            v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
-                                            class="mr-2 mb-2"
-                                            color="grey darken-1"
-                                            size="2em"
-                                        >
-                                         <v-img v-if="ticket.assigned_person.user_data.avatar_url"
-                                                :src="ticket.assigned_person.user_data.avatar_url"/>
-                                         <span v-else-if="ticket.assigned_person.user_data.full_name"
-                                               class="white--text">
-                                            {{
-                                                 ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                             }}
-                                         </span>
-                                        </v-avatar>
-                                        {{ ticket.assigned_person.user_data.full_name }}
-                                    </span>
-                                </span>
-                            </span>
-                            <v-spacer></v-spacer>
+                            <div class="d-flex flex-row">
+                                <div class="d-inline-flex" style="min-width: 80px;">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-inline-flex my-2">
+                                            <strong>{{ langMap.sidebar.team }}: </strong>
+                                        </div>
+                                        <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
+                                            <strong>{{ langMap.team.members }}: </strong>
+                                        </div>
+                                        <div class="d-inline-flex mb-2 mt-6">
+                                            <strong>{{ langMap.ticket.followers }}: </strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-inline-flex" style="width: 70%">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-inline-flex my-2">
+                                            <span v-if="ticket.team !== null">{{ ticket.team.name }}</span>
+                                            <span v-else>{{ langMap.ticket.no_assigned }}</span>
+                                        </div>
+                                        <div class="d-inline-flex my-0" v-if="ticket.assigned_person !== null">
+                                            <v-avatar
+                                                v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
+                                                class="mr-2 mb-2"
+                                                color="grey darken-1"
+                                                size="2em"
+                                            >
+                                                <v-img v-if="ticket.assigned_person.user_data.avatar_url"
+                                                       :src="ticket.assigned_person.user_data.avatar_url"/>
+                                                <span v-else-if="ticket.assigned_person.user_data.full_name"
+                                                      class="white--text">
+                                                    {{
+                                                                ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                            }}
+                                                 </span>
+                                            </v-avatar>
+                                            <span class="mt-2">{{ ticket.assigned_person.user_data.full_name }}</span>
+                                        </div>
+                                        <div class="d-inline-block my-2 ma-1">
+                                            <template
+                                                v-if="ticket.followers.length"
+                                            >
+                                                <div
+                                                    class="float-left mr-2"
+                                                    v-for="follower in ticket.followers.slice(0, 5)"
+                                                >
+                                                    <div class="d-flex flex-row">
+                                                        <v-avatar
+                                                            v-if="follower.avatar_url || follower.full_name"
+                                                            class="mr-2 mb-0 ml-n1 d-inline-flex"
+                                                            color="grey darken-1"
+                                                            size="2em"
+                                                        >
+                                                            <v-img v-if="follower.avatar_url"
+                                                                   :src="follower.avatar_url"/>
+                                                            <span v-else-if="follower.full_name"
+                                                                  class="white--text">
+                                                            {{
+                                                                    follower.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                                }}
+                                                        </span>
+                                                        </v-avatar>
+                                                        <div class="d-inline-flex mt-2">
+                                                            {{ follower.full_name }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <div v-else class="float-left mr-2 mt-2">No followers</div>
+                                            <div class="float-left mr-2 mt-2" v-if="ticket.followers.length > 5">
+                                                (+{{ ticket.followers.length - 5 }} others)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-inline-flex" style="width: 10%">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-inline-flex my-0">
+                                            <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
+                                                   class="float-md-right"
+                                                   color="white" small
+                                                   style="color: black;"
+                                                   @click="assignFormToggle = 'team'"
+                                            >
+                                                {{ langMap.main.edit }}
+                                            </v-btn>
+                                        </div>
+                                        <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
+                                            &nbsp;
+                                        </div>
+                                        <div class="d-inline-flex mb-2 mt-5">
+                                            <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
+                                                   class="float-md-right"
+                                                   color="white" small
+                                                   style="color: black;"
+                                                   @click="assignFormToggle = 'followers'"
+                                            >
+                                                {{ langMap.main.edit }}
+                                            </v-btn>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <template v-slot:actions>
-                                <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
-                                       class="float-md-right"
-                                       color="white" small
-                                       style="color: black;"
-                                       @click="true"
-                                >
-                                    {{ langMap.main.edit }}
-                                </v-btn>
+                                &nbsp;
                                 <!--                                <v-icon>$expand</v-icon>-->
                             </template>
                         </v-expansion-panel-header>
@@ -1173,24 +1287,28 @@
                             <br/>
                             <v-form>
                                 <v-autocomplete
+                                    v-if="assignFormToggle === 'team'"
                                     v-model="ticket.to_team_id"
                                     :color="themeBgColor"
                                     :disabled="selectionDisabled"
                                     :item-color="themeBgColor"
                                     :items="teams"
                                     :label="langMap.sidebar.team"
+                                    prepend-icon="mdi-account-group-outline"
                                     dense
                                     item-text="name"
                                     item-value="id"
                                     @change="selectTeam(); ticket.to_company_user_id = null;"
                                 ></v-autocomplete>
                                 <v-autocomplete
+                                    v-if="assignFormToggle === 'team'"
                                     v-model="ticket.to_company_user_id"
                                     :color="themeBgColor"
                                     :disabled="selectionDisabled"
                                     :item-color="themeBgColor"
                                     :items="employees"
                                     :label="langMap.team.members"
+                                    prepend-icon="mdi-account-outline"
                                     dense
                                     item-value="employee.id"
                                 >
@@ -1203,7 +1321,49 @@
                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                 </v-autocomplete>
+                                <v-select
+                                    v-if="assignFormToggle === 'followers'"
+                                    v-model="ticket.followers"
+                                    :items="$store.getters['Team/getCoworkers']"
+                                    item-value="id"
+                                    item-text="full_name"
+                                    return-object
+                                    dense
+                                    chips
+                                    label="Followers"
+                                    prepend-icon="mdi-eye"
+                                    multiple
+                                    clearable
+                                    hide-details
+                                    @blur="updateTicket(assignFormToggle === 'followers' ? 0 : [])"
+                                >
+                                    <template v-slot:selection="{ item, index }">
+                                        <v-chip
+                                            small
+                                            close
+                                            @click:close="ticket.followers.splice(ticket.followers.findIndex(i => i.id === item.id), 1)"
+                                        >
+                                            <v-avatar
+                                                v-if="item.avatar_url || item.full_name"
+                                                class="mr-2 mb-0 ml-n1"
+                                                color="grey darken-1"
+                                                size="2em"
+                                            >
+                                                <v-img v-if="item.avatar_url"
+                                                       :src="item.avatar_url"/>
+                                                <span v-else-if="item.full_name"
+                                                      class="white--text">
+                                                    {{
+                                                        item.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                    }}
+                                                 </span>
+                                            </v-avatar>
+                                            <span>{{ item.full_name }}</span>
+                                        </v-chip>
+                                    </template>
+                                </v-select>
                                 <v-btn :color="themeBgColor"
+                                       v-if="assignFormToggle === 'team'"
                                        :disabled="selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                        class="ma-2"
                                        small
@@ -1212,21 +1372,23 @@
                                 >
                                     {{ langMap.ticket.assign_to }}
                                 </v-btn>
-                                <v-btn :color="themeBgColor"
-                                       :disabled="!ticket.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
-                                       class="ma-2"
-                                       small
-                                       color="grey"
-                                       style="color: white;"
-                                       @click.native.stop="ticket.to_company_user_id = null; updateTicket()"
+                                <v-btn
+                                    v-if="assignFormToggle === 'team'"
+                                    :color="themeBgColor"
+                                    :disabled="!ticket.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
+                                    class="ma-2"
+                                    small
+                                    color="grey"
+                                    style="color: white;"
+                                    @click.native.stop="ticket.to_company_user_id = null; updateTicket()"
                                 >
                                     {{ langMap.ticket.clear_agent }}
                                 </v-btn>
-                                <v-btn class="ma-2"
+                                <v-btn :class="{ 'ma-2': true, 'float-right': assignFormToggle === 'followers'}"
                                        color="white" small
                                        style="color: black;"
                                        @click="teamAssignPanel = []"
-                                       v-text="langMap.main.cancel"
+                                       v-text="assignFormToggle === 'followers' ? langMap.main.close : langMap.main.cancel"
                                 >
                                 </v-btn>
                             </v-form>
@@ -1349,7 +1511,119 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-
+                <br/>
+                <v-expansion-panels class="d-sm-none d-md-flex">
+                    <v-expansion-panel @click="getTrackers">
+                        <v-expansion-panel-header style="background:#F0F0F0;">
+                            <span>
+                                <strong>Time tracking</strong>
+                            </span>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-list dense>
+                                <v-list-item
+                                    :key="-10"
+                                    class="mx-0 px-0"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="d-flex flex-row">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 35%">
+                                                <strong>Date</strong>
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 15%">
+                                                <strong>Passed</strong>
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
+                                                <strong>Service</strong>
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
+                                                <strong>Status</strong>
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 10%">
+                                                &nbsp;
+                                            </div>
+                                        </v-list-item-title>
+                                        <hr>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item
+                                    :key="-5"
+                                    class="mx-0 px-0"
+                                    v-if="!$store.getters['Tracking/getTrackers'].length && trackersLoading"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="d-flex flex-row">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 100%">
+                                                Loading, please wait...
+                                            </div>
+                                        </v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item
+                                    :key="0"
+                                    class="mx-0 px-0"
+                                    v-if="!$store.getters['Tracking/getTrackers'].length && !trackersLoading"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="d-flex flex-row">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 100%">
+                                                No items
+                                            </div>
+                                        </v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item
+                                    v-for="(item) in $store.getters['Tracking/getTrackers']"
+                                    :key="item.id"
+                                    class="mx-0 px-0"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="d-flex flex-row">
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 35%">
+                                                {{ moment(item.date_from).format('DD.MM.YYYY HH:mm') }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 15%">
+                                                {{ $helpers.time.convertSecToTime(item.status === 0 ? $helpers.time.getSecBetweenDates(item.date_from, moment(), true) : item.passed, false) }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
+                                                {{ item.service ? item.service.name : '' }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
+                                                {{ trackerStatuses[item.status] }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1 text-center mt-n1" style="width: 10%">
+                                                <v-btn
+                                                    :color="item.status === 0 ? 'error' : 'default'"
+                                                    small
+                                                    icon
+                                                    :disabled="item.readonly"
+                                                    @click="startStopExistsTrackers(item.id, item.status)"
+                                                >
+                                                    <v-icon v-if="item.status === 0">mdi-pause</v-icon>
+                                                    <v-icon v-else>mdi-play-outline</v-icon>
+                                                </v-btn>
+                                            </div>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            {{ item.description ? $helpers.string.shortenText(item.description, 100) : '' }}
+                                        </v-list-item-subtitle>
+                                        <hr>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item>
+                                    <v-list-item-content class="text-center">
+                                        <v-btn
+                                            :loading="trackersLoading"
+                                            x-small
+                                            v-if="trackersLoadMoreBtn"
+                                            @click="loadMoreTrackers"
+                                        >Load more</v-btn>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-col>
             <v-scale-transition>
                 <v-col
@@ -1774,6 +2048,7 @@
 <script>
 
 import EventBus from "../../components/EventBus";
+import moment from 'moment-timezone';
 
 export default {
     data() {
@@ -1819,6 +2094,7 @@ export default {
             priorities: [],
             types: [],
             employees: [],
+            followers: [],
             contacts: [],
             teams: [],
             from: [],
@@ -1948,6 +2224,7 @@ export default {
                         description: ''
                     }
                 ],
+                followers: [],
             },
             ticketAnswer: {
                 id: '',
@@ -1965,7 +2242,27 @@ export default {
             },
             currentUser: {
                 id: ''
-            }
+            },
+            trackersOffset: 0,
+            trackersLoading: false,
+            trackersLoadMoreBtn: false,
+            trackerStatuses: [
+                'Started',
+                'Stopped',
+                'Paused',
+                'Archived'
+            ],
+            trackerActive: {
+                id: null,
+                description: '',
+                status: 1,
+                entity_id: null,
+                entity_type: 'App\\Ticket',
+            },
+            trackerCreateDialog: false,
+            trackerDateTimeFormat: 'YYYY-MM-DDTHH:mm:ss',
+            globalTimer: moment(),
+            assignFormToggle: 'team',
         }
     },
     watch: {
@@ -1973,9 +2270,13 @@ export default {
             if (value === 100) {
                 this.isLoaded = true;
             }
+        },
+        globalTimer() {
+            this.$store.commit('Tracking/UPDATE_TIME');
         }
     },
     mounted() {
+        this.__globalTimer()
         this.getTicket();
         this.getSuppliers()
         this.getProducts()
@@ -1996,6 +2297,9 @@ export default {
         let ticketId = this.$route.params.id;
         window.history.replaceState({}, this.langMap.sidebar.ticket_list, '/tickets');
         window.history.pushState({ticket_id: ticketId}, this.langMap.sidebar.ticket, `/ticket/${ticketId}`);
+        this.trackerActive.entity_id = ticketId;
+        this.getTrackers()
+        this.$store.dispatch('Team/getCoworkers', { force: true });
     },
     methods: {
         selectSearchCategory(item) {
@@ -2014,6 +2318,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.ticket = response.data
+                    this.followers = response.data.followers
                     this.ticket.files = [];
                     this.from = {[this.ticket.from_entity_type]: this.ticket.from_entity_id}
                     this.progressBuffer = this.progressBuffer + 40;
@@ -2188,7 +2493,7 @@ export default {
 
             }
         },
-        updateTicket() {
+        updateTicket(teamAssignPanel = []) {
             this.ticket.from_entity_id = Object.values(this.from)[0]
             this.ticket.from_entity_type = Object.keys(this.from)[0]
             this.ticket.name = this.ticket.original_name
@@ -2197,7 +2502,7 @@ export default {
                 if (response.success === true) {
                     this.getTicket()
                     this.updateDialog = false
-                    this.teamAssignPanel = []
+                    this.teamAssignPanel = teamAssignPanel
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -2510,7 +2815,109 @@ export default {
             this.ticketNotice.notice = notice.notice;
             this.selectedSignature = '';
             this.noteDialog = true;
-        }
+        },
+        getTrackers() {
+            this.trackersLoading = true;
+            return this.$store.dispatch('Tracking/getTrackers', {
+                offset: this.trackersOffset,
+                filters: {
+                    entity_type: this.trackerActive.entity_type,
+                    entity_id: this.trackerActive.entity_id,
+                }
+            })
+                .then(data => {
+                    if (data.length === 15) {
+                        this.trackersLoadMoreBtn = true;
+                    } else {
+                        this.trackersLoadMoreBtn = false;
+                    }
+                })
+                .finally(() => {
+                    if (this.$store.getters['Tracking/getTrackers'].length) {
+                        const firstTracker = this.$store.getters['Tracking/getTrackers'][0];
+                        if (firstTracker.status === 0) {
+                            this.trackerActive.id = firstTracker.id;
+                            this.trackerActive.status = firstTracker.status;
+                            this.trackerActive.description = firstTracker.description;
+                        }
+                    }
+                    this.trackersLoading = false;
+                });
+        },
+        loadMoreTrackers() {
+            this.trackersOffset += 15;
+            this.getTrackers();
+        },
+        StartStopNewTimeTracker() {
+            this.trackersOffset = 0;
+            if (!this.trackerActive.id) {
+                this.$store.dispatch('Tracking/createTrack', {
+                    date_from: moment().format(this.trackerDateTimeFormat),
+                    status: 0,
+                    description: this.trackerActive.description,
+                    entity: {
+                        id: this.mergeTicketForm.parent_ticket_id,
+                    },
+                    entity_type: 'App\\Ticket',
+                })
+                    .then(data => {
+                        this.trackerActive.id = data.id;
+                        this.trackerActive.status = data.status;
+                        this.trackerActive.description = data.description;
+                        this.getTrackers();
+                    });
+            } else {
+                this.updateTrack(this.trackerActive.id, 1 , moment().format(this.trackerDateTimeFormat))
+                    .then(() => {
+                        this.trackerActive.id = null;
+                        this.trackerActive.status = 1;
+                        this.trackerActive.description = '';
+                        this.getTrackers();
+                    });
+            }
+        },
+        updateTrack(id, status, date_to, date_from = null) {
+            this.trackersOffset = 0;
+            let data = {
+                id,
+                status,
+                date_to: date_to ? moment(date_to).format(this.trackerDateTimeFormat) : null,
+            };
+            if (date_from) {
+                data = { ...data, date_from };
+            }
+            return this.$store.dispatch('Tracking/updateTrack', data)
+                .then(() => this.getTrackers());
+        },
+        startStopExistsTrackers(id, status) {
+            this.trackersOffset = 0;
+            if (status === 0) {
+                if (id === this.trackerActive.id) {
+                    this.trackerActive.id = null;
+                    this.trackerActive.status = 1;
+                    this.trackerActive.description = '';
+                }
+                return this.updateTrack(id, 1, moment().format(this.trackerDateTimeFormat));
+            } else {
+                return this.$store.dispatch('Tracking/duplicateTrack', id)
+                    .then(({ data, success }) => {
+                        if (success) {
+                            if (id === this.trackerActive.id) {
+                                this.trackerActive.id = data.id;
+                                this.trackerActive.status = data.status;
+                                this.trackerActive.description = data.description;
+                            }
+                            return this.updateTrack(data.id, 0, null, moment().format(this.trackerDateTimeFormat));
+                        }
+                    });
+            }
+        },
+        __globalTimer() {
+            return setTimeout(() => {
+                this.globalTimer = moment();
+                this.__globalTimer();
+            }, 1000);
+        },
     },
     computed: {
         checkProgress: function () {

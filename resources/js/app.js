@@ -29,6 +29,11 @@ Vue.directive('sortable-data-table', function (el, binding, vnode) {
         onUpdate: function (event) {
             // console.log(event.newDraggableIndex, event.oldDraggableIndex);
             vnode.child.$emit('sorted', event)
+        },
+        draggable: 'tr:not(.static)',
+        filter: '.static',
+        onMove: event => {
+            return !event.related.classList.contains('.static');
         }
     }
     Sortable.create(el.getElementsByTagName('tbody')[0], options)

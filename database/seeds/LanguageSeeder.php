@@ -312,6 +312,7 @@ class LanguageSeeder extends Seeder
                                 'reject_selected' => 'Reject selected',
                                 'project' => 'Project',
                                 'service' => 'Service',
+                                'timesheet_approved' => 'Timesheet was successfully approved',
                             ]
                         ],
                     'ticket_statuses' =>
@@ -591,6 +592,7 @@ class LanguageSeeder extends Seeder
                             'ticket_merge_child_msg' => 'This ticket was closed and merged with ticket $ticket_number "$ticket_subject" on $date by $unifier.',
                             'clear_agent' => 'Unassign agent',
                             'create_and_assign' => 'Create and assign',
+                            'followers' => 'Followers',
                         ],
                     'main' =>
                         [
@@ -1245,6 +1247,7 @@ class LanguageSeeder extends Seeder
                                 'reject_selected' => 'Reject selected',
                                 'project' => 'Projekt',
                                 'service' => 'Service',
+                                'timesheet_approved' => 'Timesheet wurde erfolgreich genehmigt',
                             ]
                         ],
                         'ticket_statuses' => [
@@ -1507,6 +1510,7 @@ class LanguageSeeder extends Seeder
                             'ticket_merge_child_msg' => 'Dieses Ticket wurde am $date von $unifier geschlossen und mit dem Ticket $ticket_number "$ticket_subject" zusammengeführt.',
                             'clear_agent' => 'Agent abmelden',
                             'create_and_assign' => 'Erstellen und zuordnen',
+                            'followers' => 'Followers',
                         ],
                         'main' => [
                             'create' => 'erstellen',

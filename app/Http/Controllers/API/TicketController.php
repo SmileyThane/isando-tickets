@@ -281,6 +281,16 @@ class TicketController extends Controller
         return self::showResponse(false);
     }
 
+    public function removeFilter(Request $request, $filterId)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_DELETE_ACCESS)) {
+            $result = $this->ticketRepo->removeFilter($filterId);
+            return self::showResponse($result ? true : false, $result);
+        }
+
+        return self::showResponse(false);
+    }
+
     public function getFilterParameters(Request $request)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {

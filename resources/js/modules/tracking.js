@@ -1,4 +1,5 @@
 import moment from 'moment-timezone';
+import helpers from '../helpers';
 
 export default {
     namespaced: true,
@@ -15,6 +16,7 @@ export default {
             }
         },
         reports: [],
+        trackers: [],
     },
     actions: {
         getSettings({ commit, state }) {
@@ -138,6 +140,38 @@ export default {
             commit('DELETE_CUSTOM_ROUNDING', data);
             dispatch('saveSettings');
         },
+        getTrackers({ commit }, { offset = 0, filters = {} }) {
+            const query = new URLSearchParams();
+            Object.keys(filters).map(field => {
+                query.append(field, filters[field]);
+            });
+            query.append('offset', offset.toString());
+            return axios.get(`/api/tracking/tracker?${query.toString()}`, { retry: 5, retryDelay: 1000 })
+                .then(({ data: { data, success } }) => {
+                    if (offset > 0) {
+                        commit('ADD_TRACKERS', data);
+                    } else {
+                        commit('SET_TRACKERS', data);
+                    }
+                    return data;
+                })
+        },
+        createTrack({commit}, data) {
+            return axios.post('/api/tracking/tracker', data)
+                .then(({ data: { data }, success }) => {
+                    if (success) {
+                        commit('ADD_TRACKERS', data);
+                    }
+                    return data;
+                });
+        },
+        duplicateTrack({commit}, id) {
+            return axios.post(`/api/tracking/tracker/${id}/duplicate`)
+                .then(({ data }) => {
+                    commit('ADD_TRACKERS', data.data);
+                    return data;
+                });
+        }
     },
     mutations: {
         SET_TOGGLE_TIMESHEET (state, timesheet) {
@@ -170,6 +204,21 @@ export default {
             const index = state.settings.settings.customRounding.findIndex(i => i.key === rounding.key);
             state.settings.settings.customRounding.splice(index, 1);
         },
+        SET_TRACKERS(state, trackers) {
+            state.trackers = trackers;
+        },
+        ADD_TRACKERS(state, trackers) {
+            state.trackers = state.trackers.concat(trackers);
+        },
+        CLEAR_TRACKERS(state) {
+            state.trackers = [];
+        },
+        UPDATE_TIME(state) {
+            state.trackers.filter(i => i.status === 0).forEach(tracker => {
+                const index = state.trackers.indexOf(tracker);
+                state.trackers[index].passed = helpers.time.getSecBetweenDates(tracker.date_from, moment(), true);
+            });
+        }
     },
     getters: {
         getSettings(state) {
@@ -177,6 +226,9 @@ export default {
         },
         getReports(state) {
             return state.reports;
+        },
+        getTrackers(state) {
+            return state.trackers.sort((a,b) => (moment(a.date_from).isAfter(b.date_from)));
         }
     }
 }

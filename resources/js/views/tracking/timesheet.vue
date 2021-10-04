@@ -443,6 +443,21 @@
                                     </template>
                                 </v-edit-dialog>
                             </template>
+
+                            <template v-slot:body.append="{ headers }">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 1), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 2), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 3), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 4), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 5), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 6), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 7), false) }}</th>
+                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTotalTime(item.items), false) }}</th>
+                                </tr>
+                            </template>
                         </v-data-table>
                     </td>
                 </template>
@@ -599,7 +614,7 @@
                     </th>
                 </template>
                 <template v-slot:body.prepend="{ headers }">
-                    <tr class="highlight">
+                    <tr class="highlight static">
                         <td :class="{'text-end': header.time >= 0}" v-for="header in headers" :style="{
                         width: header.width,
                         maxWidth: header.width,
@@ -615,7 +630,7 @@
                 <template v-slot:body.append="{ headers }"
                           v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_REQUESTS, STATUS_REJECTED].indexOf(typeOfItems) === -1"
                 >
-                    <tr>
+                    <tr class="static">
                         <td
                             :class="{ 'text-end': ['data-table-select', 'entity.name'].indexOf(header.value) === -1}"
                             v-for="header in headers"
@@ -1589,6 +1604,9 @@ th *:not(.v-icon) td, th, td *:not(.v-icon), .v-tooltip__content,
 .v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
     font-size: 12px !important;
 }
+.sortable-chosen {
+    transform: translateY(0);
+}
 </style>
 
 <script>
@@ -2000,7 +2018,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.mon,
                     align: 'end',
                     value: 'mon',
-                    width: '10%',
+                    width: '8%',
                     sortable: false,
                     time: days[0],
                     date: dates[0],
@@ -2010,7 +2028,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.tue,
                     align: 'end',
                     value: 'tue',
-                    width: '10%',
+                    width: '8%',
                     sortable: false,
                     time: days[1],
                     date: dates[1],
@@ -2020,7 +2038,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.wed,
                     align: 'end',
                     value: 'wed',
-                    width: '10%',
+                    width: '8%',
                     sortable: false,
                     time: days[2],
                     date: dates[2],
@@ -2030,7 +2048,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.thu,
                     align: 'end',
                     value: 'thu',
-                    width: '10%',
+                    width: '8%',
                     sortable: false,
                     time: days[3],
                     date: dates[3],
@@ -2040,7 +2058,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.fri,
                     align: 'end',
                     value: 'fri',
-                    width: '10%',
+                    width: '8%',
                     sortable: false,
                     time: days[4],
                     date: dates[4],
@@ -2050,7 +2068,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sat,
                     align: 'end',
                     value: 'sat',
-                    width: '10%',
+                    width: '8%',
                     sortable: false,
                     time: days[5],
                     date: dates[5],
@@ -2060,7 +2078,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sun,
                     align: 'end',
                     value: 'sun',
-                    width: '10%',
+                    width: '8%',
                     sortable: false,
                     time: days[6],
                     date: dates[6],
@@ -2070,7 +2088,7 @@ export default {
                     text: 'Total',
                     align: 'end',
                     value: 'total',
-                    width: '3%',
+                    width: '8%',
                     groupable: false,
                     time: days.reduce((acc, val) => acc + val, 0),
                 },
@@ -2110,6 +2128,9 @@ export default {
             })
                 .then(async () => {
                     this.$store.commit('Timesheet/SET_STATUS', item.items, this.STATUS_ARCHIVED);
+                    this.snackbarMessage = this.langMap.tracking.timesheet.timesheet_approved;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
                     this.debounceGetTimesheet();
                     await this._getTimesheetByStatus();
@@ -2257,6 +2278,23 @@ export default {
                 newIndex: event.newDraggableIndex
             })
             this.$store.dispatch('Timesheet/saveOrdering');
+        },
+        calculateTimeByDay(items = [], dayOfWeek = 1) {
+            let sumSec = 0;
+            items.map(i => {
+                const dayTime = i.times.find(t => t.dayOfWeek === dayOfWeek);
+                sumSec += dayTime.timeInSec;
+            });
+            return sumSec;
+        },
+        calculateTotalTime(items) {
+            let sumSec = 0;
+            items.map(i => {
+                i.times.map(t => {
+                    sumSec += t.timeInSec;
+                });
+            });
+            return sumSec;
         }
     },
     watch: {

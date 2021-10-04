@@ -353,64 +353,77 @@
                 </div>
             </div>
         </v-card>
-        <!-- CHARTS -->
-        <div
-            class="d-flex py-2 mt-3 flex-row"
-            v-if="doughnutData || barData"
-        >
-            <div class="d-inline-block flex-grow-0 mr-2">
-                <div class="d-flex flex-column align-stretch">
-                    <v-card
-                        class="d-inline-flex mb-2 align-content-start pa-6"
-                        outlined
-                    >
-                        <div class="d-flex flex-column">
-                            <v-icon x-large class="d-inline-flex">mdi-clock-outline</v-icon>
-                            <span class="d-inline-block text-center">{{langMap.tracking.report.total_time}}</span>
-                            <span class="d-inline-block text-center">
+        <!-- DATA -->
+        <v-card class="d-flex flex-column" style="min-height: 500px">
+
+            <v-overlay
+                absolute
+                :opacity="0.26"
+                :value="loadingGeneratePreview"
+                v-if="loadingGeneratePreview"
+            >
+                <v-progress-circular
+                    indeterminate
+                    size="64"
+                ></v-progress-circular>
+            </v-overlay>
+
+            <!-- CHARTS -->
+            <div
+                class="d-flex py-2 mt-3 flex-row"
+                v-if="doughnutData || barData"
+            >
+                <div class="d-inline-block flex-grow-0 mr-2">
+                    <div class="d-flex flex-column align-stretch">
+                        <v-card
+                            class="d-inline-flex mb-2 align-content-start pa-6"
+                            outlined
+                        >
+                            <div class="d-flex flex-column">
+                                <v-icon x-large class="d-inline-flex">mdi-clock-outline</v-icon>
+                                <span class="d-inline-block text-center">{{langMap.tracking.report.total_time}}</span>
+                                <span class="d-inline-block text-center">
                                 {{ $helpers.time.convertSecToTime(totalTime, false) }}
                             </span>
-                        </div>
-                    </v-card>
-                    <v-card
-                        class="d-inline-flex mt-2 align-content-end pa-6"
-                        outlined
-                        x-large
-                        v-if="$helpers.auth.checkPermissionByIds([69])"
-                    >
-                        <div class="d-flex flex-column">
-                            <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
-                            <span class="d-inline-block text-center">{{langMap.tracking.report.revenue}}</span>
-                            <span class="d-inline-block text-center">
+                            </div>
+                        </v-card>
+                        <v-card
+                            class="d-inline-flex mt-2 align-content-end pa-6"
+                            outlined
+                            x-large
+                            v-if="$helpers.auth.checkPermissionByIds([69])"
+                        >
+                            <div class="d-flex flex-column">
+                                <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
+                                <span class="d-inline-block text-center">{{langMap.tracking.report.revenue}}</span>
+                                <span class="d-inline-block text-center">
                                 <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{$helpers.numbers.numberFormat(totalRevenue, 2)}}
                             </span>
+                            </div>
+                        </v-card>
+                    </div>
+                </div>
+                <v-card
+                    class="d-inline-block flex-grow-1 ml-2"
+                    outlined
+                >
+                    <div class="d-flex flex-row">
+                        <div class="d-inline-flex px-3 py-3">
+                            <DoughnutChart
+                                :data="doughnutData"
+                                :options="chart.options"
+                            ></DoughnutChart>
                         </div>
-                    </v-card>
-                </div>
+                        <div class="d-inline-flex px-3 py-3">
+                            <BarChart
+                                v-if="barData"
+                                :data="barData"
+                                :options="chart.options"
+                            ></BarChart>
+                        </div>
+                    </div>
+                </v-card>
             </div>
-            <v-card
-                class="d-inline-block flex-grow-1 ml-2"
-                outlined
-            >
-                <div class="d-flex flex-row">
-                    <div class="d-inline-flex px-3 py-3">
-                        <DoughnutChart
-                            :data="doughnutData"
-                            :options="chart.options"
-                        ></DoughnutChart>
-                    </div>
-                    <div class="d-inline-flex px-3 py-3">
-                        <BarChart
-                            v-if="barData"
-                            :data="barData"
-                            :options="chart.options"
-                        ></BarChart>
-                    </div>
-                </div>
-            </v-card>
-        </div>
-        <!-- DATA -->
-        <v-card class="d-flex flex-column">
 
             <v-treeview
                 :items="reportData.entities.g1"
@@ -426,14 +439,14 @@
                     <div v-else class="d-flex flex-row">
                         <table class="v-data-table" :class="item.status === 'started' ? 'success lighten-5' : ''" border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
                             <tbody>
-                                <tr>
-                                    <td class="pa-2" align="right" width="10%">
-                                        {{ moment(item.date_from).format('DD MMM YYYY') }}
-                                    </td>
-                                    <td class="pa-2" align="left" width="15%">
-                                        <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>{{langMap.tracking.report.none}}</span>
-                                    </td>
-                                    <td class="pa-2" align="left">
+                            <tr>
+                                <td class="pa-2" align="right" width="10%">
+                                    {{ moment(item.date_from).format('DD MMM YYYY') }}
+                                </td>
+                                <td class="pa-2" align="left" width="15%">
+                                    <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>{{langMap.tracking.report.none}}</span>
+                                </td>
+                                <td class="pa-2" align="left">
                                         <span
                                             v-if="item.entity"
                                             :style="{ color: item.entity && item.entity.color ? item.entity.color : themeBgColor }"
@@ -442,10 +455,10 @@
                                             <span v-if="item.entity_type === 'App\\Ticket'">{{ langMap.tracking.report.ticket }}: </span>
                                             {{ item.entity.name }}
                                         </span>
-                                        <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
-                                        <span v-if="item.service">{{ item.service.name }}</span>
-                                        <v-icon v-if="(item.service && item.description) || (item.entity && item.description)" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
-                                        <span v-if="item.description">
+                                    <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
+                                    <span v-if="item.service">{{ item.service.name }}</span>
+                                    <v-icon v-if="(item.service && item.description) || (item.entity && item.description)" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
+                                    <span v-if="item.description">
                                             <v-tooltip top>
                                               <template v-slot:activator="{ on, attrs }">
                                                 <span
@@ -456,186 +469,186 @@
                                               <span>{{ item.description }}</span>
                                             </v-tooltip>
                                         </span>
-                                    </td>
-                                    <td class="pa-2" align="right" width="10%">
-                                        <TagField
-                                            disabled
-                                            readonly
-                                            :key="item.id"
-                                            :color="themeBgColor"
-                                            v-model="item.tags"
-                                        ></TagField>
-                                    </td>
-                                    <td class="pa-2" align="center" width="5%">
-                                        <span v-if="item.billable">{{ langMap.tracking.report.billable }}</span>
-                                        <span v-else>{{ langMap.tracking.report.non_billable }}</span>
-                                    </td>
-                                    <td class="pa-2" align="right" width="5%">
-                                        {{ $helpers.time.convertSecToTime(item.passed, false) }}
-                                    </td>
-                                    <td class="pa-2" align="right" width="5%">
+                                </td>
+                                <td class="pa-2" align="right" width="10%">
+                                    <TagField
+                                        disabled
+                                        readonly
+                                        :key="item.id"
+                                        :color="themeBgColor"
+                                        v-model="item.tags"
+                                    ></TagField>
+                                </td>
+                                <td class="pa-2" align="center" width="5%">
+                                    <span v-if="item.billable">{{ langMap.tracking.report.billable }}</span>
+                                    <span v-else>{{ langMap.tracking.report.non_billable }}</span>
+                                </td>
+                                <td class="pa-2" align="right" width="5%">
+                                    {{ $helpers.time.convertSecToTime(item.passed, false) }}
+                                </td>
+                                <td class="pa-2" align="right" width="5%">
                                         <span v-if="$helpers.auth.checkPermissionByIds([69])">
                                             <span v-if="currentCurrency">
                                                 {{ currentCurrency.slug }}
                                             </span> {{ $helpers.numbers.numberFormat(item.revenue) }}
                                         </span>
-                                    </td>
-                                    <td class="pa-2" align="center" width="5%">
+                                </td>
+                                <td class="pa-2" align="center" width="5%">
                                         <span
                                             v-if="item.status === 'started'"
                                             @click="stopTrack(item.id)"
                                         >
                                             <v-icon>mdi-stop</v-icon>
                                         </span>
-                                        <span class="pl-7" v-if="item.status !== 'started'"></span>
-                                        <v-dialog
-                                            v-if="isEditable(item)"
-                                            v-model="dialogEdit[item.id]"
-                                            width="500"
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-btn
-                                                    v-if="isEditable(item)"
-                                                    icon
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                    x-small
-                                                    @click="openEditDialog(item)"
-                                                >
-                                                    <v-icon>mdi-pencil</v-icon>
-                                                </v-btn>
-                                            </template>
+                                    <span class="pl-7" v-if="item.status !== 'started'"></span>
+                                    <v-dialog
+                                        v-if="isEditable(item)"
+                                        v-model="dialogEdit[item.id]"
+                                        width="500"
+                                    >
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                                v-if="isEditable(item)"
+                                                icon
+                                                v-bind="attrs"
+                                                v-on="on"
+                                                x-small
+                                                @click="openEditDialog(item)"
+                                            >
+                                                <v-icon>mdi-pencil</v-icon>
+                                            </v-btn>
+                                        </template>
 
-                                            <v-card v-if="isEditable(item)">
-                                                <v-card-title>
-                                                    {{ langMap.tracking.report.edit }}
-                                                </v-card-title>
-                                                <v-card-text>
-                                                    <div class="d-flex flex-row">
-                                                        <div class="d-flex-inline flex-grow-1">
-                                                            <v-select
-                                                                :items="$store.getters['Services/getServices']"
-                                                                :label="langMap.tracking.tracker.service_type"
-                                                                :placeholder="langMap.tracking.tracker.service_type"
-                                                                item-text="name"
-                                                                item-value="id"
-                                                                v-model="editForm.service"
-                                                                return-object
-                                                                dense
-                                                            ></v-select>
-                                                        </div>
+                                        <v-card v-if="isEditable(item)">
+                                            <v-card-title>
+                                                {{ langMap.tracking.report.edit }}
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <div class="d-flex flex-row">
+                                                    <div class="d-flex-inline flex-grow-1">
+                                                        <v-select
+                                                            :items="$store.getters['Services/getServices']"
+                                                            :label="langMap.tracking.tracker.service_type"
+                                                            :placeholder="langMap.tracking.tracker.service_type"
+                                                            item-text="name"
+                                                            item-value="id"
+                                                            v-model="editForm.service"
+                                                            return-object
+                                                            dense
+                                                        ></v-select>
                                                     </div>
-                                                    <div class="d-flex flex-row">
-                                                        <div class="d-flex-inline flex-grow-1 mb-5">
-                                                            <ProjectBtn
-                                                                :color="themeBgColor"
-                                                                v-model="editForm.entity"
-                                                                :label="langMap.tracking.report.project_or_Ticket"
-                                                            ></ProjectBtn>
-                                                        </div>
+                                                </div>
+                                                <div class="d-flex flex-row">
+                                                    <div class="d-flex-inline flex-grow-1 mb-5">
+                                                        <ProjectBtn
+                                                            :color="themeBgColor"
+                                                            v-model="editForm.entity"
+                                                            :label="langMap.tracking.report.project_or_Ticket"
+                                                        ></ProjectBtn>
                                                     </div>
-                                                    <div class="d-flex flex-row">
-                                                        <div class="d-flex-inline flex-grow-1">
-                                                            <TimeField
-                                                                v-model="editForm.date_from"
-                                                                style="max-width: 100px; height: 40px"
-                                                                :label="langMap.tracking.report.date_start"
-                                                                placeholder="hh:mm"
-                                                                format="HH:mm"
-                                                            ></TimeField>
-                                                        </div>
-                                                        <div class="d-flex-inline flex-grow-1">
-                                                            <TimeField
-                                                                v-model="editForm.date_to"
-                                                                style="max-width: 100px; height: 40px"
-                                                                :label="langMap.tracking.report.date_to"
-                                                                placeholder="hh:mm"
-                                                                format="HH:mm"
-                                                            ></TimeField>
-                                                        </div>
+                                                </div>
+                                                <div class="d-flex flex-row">
+                                                    <div class="d-flex-inline flex-grow-1">
+                                                        <TimeField
+                                                            v-model="editForm.date_from"
+                                                            style="max-width: 100px; height: 40px"
+                                                            :label="langMap.tracking.report.date_start"
+                                                            placeholder="hh:mm"
+                                                            format="HH:mm"
+                                                        ></TimeField>
                                                     </div>
-                                                    <div class="d-flex flex-row">
-                                                        <div class="d-flex-inline flex-grow-1">
-                                                            <TagField
-                                                                :key="item.id"
-                                                                :color="themeBgColor"
-                                                                v-model="editForm.tags"
-                                                                width="450"
-                                                            ></TagField>
-                                                        </div>
+                                                    <div class="d-flex-inline flex-grow-1">
+                                                        <TimeField
+                                                            v-model="editForm.date_to"
+                                                            style="max-width: 100px; height: 40px"
+                                                            :label="langMap.tracking.report.date_to"
+                                                            placeholder="hh:mm"
+                                                            format="HH:mm"
+                                                        ></TimeField>
                                                     </div>
-                                                    <div class="d-flex flex-row">
-                                                        <div class="d-flex-inline flex-grow-1">
-                                                            <v-checkbox
-                                                                :disabled="!isEditable(item)"
-                                                                v-model="editForm.billable"
-                                                                :label="langMap.tracking.report.billable"
-                                                            ></v-checkbox>
-                                                        </div>
+                                                </div>
+                                                <div class="d-flex flex-row">
+                                                    <div class="d-flex-inline flex-grow-1">
+                                                        <TagField
+                                                            :key="item.id"
+                                                            :color="themeBgColor"
+                                                            v-model="editForm.tags"
+                                                            width="450"
+                                                        ></TagField>
                                                     </div>
-                                                </v-card-text>
-                                                <v-divider></v-divider>
-                                                <v-card-actions>
-                                                    <v-spacer></v-spacer>
-                                                    <v-btn
-                                                        color="error"
-                                                        text
-                                                        @click="closeEditDialog(item)"
-                                                    >
-                                                        {{ langMap.tracking.report.cancel }}
-                                                    </v-btn>
-                                                    <v-btn
-                                                        color="success"
-                                                        text
-                                                        @click="saveChanges(item); closeEditDialog(item)"
-                                                    >
-                                                        {{ langMap.tracking.report.change }}
-                                                    </v-btn>
-                                                </v-card-actions>
-                                            </v-card>
-                                        </v-dialog>
-                                        <v-dialog
-                                            v-if="isEditable(item)"
-                                            v-model="dialogDelete[item.id]"
-                                            persistent
-                                            max-width="290"
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
+                                                </div>
+                                                <div class="d-flex flex-row">
+                                                    <div class="d-flex-inline flex-grow-1">
+                                                        <v-checkbox
+                                                            :disabled="!isEditable(item)"
+                                                            v-model="editForm.billable"
+                                                            :label="langMap.tracking.report.billable"
+                                                        ></v-checkbox>
+                                                    </div>
+                                                </div>
+                                            </v-card-text>
+                                            <v-divider></v-divider>
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
                                                 <v-btn
-                                                    v-if="isEditable(item)"
-                                                    x-small
-                                                    icon
-                                                    v-bind="attrs"
-                                                    v-on="on"
+                                                    color="error"
+                                                    text
+                                                    @click="closeEditDialog(item)"
                                                 >
-                                                    <v-icon>mdi-delete</v-icon>
+                                                    {{ langMap.tracking.report.cancel }}
                                                 </v-btn>
-                                            </template>
-                                            <v-card v-if="isEditable(item)">
-                                                <v-card-title class="headline">
-                                                    {{ langMap.tracking.report.are_you_sure }}
-                                                </v-card-title>
-                                                <v-card-actions>
-                                                    <v-spacer></v-spacer>
-                                                    <v-btn
-                                                        color="red darken-1"
-                                                        text
-                                                        @click="dialogDelete[item.id] = false"
-                                                    >
-                                                        {{ langMap.tracking.report.cancel }}
-                                                    </v-btn>
-                                                    <v-btn
-                                                        color="green darken-1"
-                                                        text
-                                                        @click="removeTrack(item.id); dialogDelete[item.id] = false"
-                                                    >
-                                                        {{ langMap.tracking.report.confirm }}
-                                                    </v-btn>
-                                                </v-card-actions>
-                                            </v-card>
-                                        </v-dialog>
-                                    </td>
-                                </tr>
+                                                <v-btn
+                                                    color="success"
+                                                    text
+                                                    @click="saveChanges(item); closeEditDialog(item)"
+                                                >
+                                                    {{ langMap.tracking.report.change }}
+                                                </v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
+                                    <v-dialog
+                                        v-if="isEditable(item)"
+                                        v-model="dialogDelete[item.id]"
+                                        persistent
+                                        max-width="290"
+                                    >
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                                v-if="isEditable(item)"
+                                                x-small
+                                                icon
+                                                v-bind="attrs"
+                                                v-on="on"
+                                            >
+                                                <v-icon>mdi-delete</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <v-card v-if="isEditable(item)">
+                                            <v-card-title class="headline">
+                                                {{ langMap.tracking.report.are_you_sure }}
+                                            </v-card-title>
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
+                                                <v-btn
+                                                    color="red darken-1"
+                                                    text
+                                                    @click="dialogDelete[item.id] = false"
+                                                >
+                                                    {{ langMap.tracking.report.cancel }}
+                                                </v-btn>
+                                                <v-btn
+                                                    color="green darken-1"
+                                                    text
+                                                    @click="removeTrack(item.id); dialogDelete[item.id] = false"
+                                                >
+                                                    {{ langMap.tracking.report.confirm }}
+                                                </v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -812,20 +825,20 @@
                                         :label="langMap.tracking.report.display_time_with_decimal"
                                     ></v-checkbox>
                                 </div>
-<!--                                <div class="d-inline-block">-->
-<!--                                    <v-select-->
-<!--                                        :items="csvForm.timeFormatItems"-->
-<!--                                        v-model="report.csv.timeFormat"-->
-<!--                                        label="Time format"-->
-<!--                                    ></v-select>-->
-<!--                                </div>-->
-<!--                                <div class="d-inline-block">-->
-<!--                                    <v-select-->
-<!--                                        :items="csvForm.dateFormatItems"-->
-<!--                                        v-model="report.csv.dateFormat"-->
-<!--                                        label="Date format"-->
-<!--                                    ></v-select>-->
-<!--                                </div>-->
+                                <!--                                <div class="d-inline-block">-->
+                                <!--                                    <v-select-->
+                                <!--                                        :items="csvForm.timeFormatItems"-->
+                                <!--                                        v-model="report.csv.timeFormat"-->
+                                <!--                                        label="Time format"-->
+                                <!--                                    ></v-select>-->
+                                <!--                                </div>-->
+                                <!--                                <div class="d-inline-block">-->
+                                <!--                                    <v-select-->
+                                <!--                                        :items="csvForm.dateFormatItems"-->
+                                <!--                                        v-model="report.csv.dateFormat"-->
+                                <!--                                        label="Date format"-->
+                                <!--                                    ></v-select>-->
+                                <!--                                </div>-->
                             </div>
                         </v-card-text>
                         <v-card-actions>
@@ -1266,6 +1279,7 @@ export default {
                 ],
             },
             query: null,
+            loadingGeneratePreview: false,
         }
     },
     created() {
@@ -1399,9 +1413,11 @@ export default {
             const index = this.builder.filters.findIndex(i => i.value === filter.value);
             if (index < 0) {
                 filter.selected = [];
-                const queryParam = this.createQuery(this.builder.filters);
+                let queryParam = this.createQuery(this.builder.filters);
                 if (filter.dispatch) {
-                    console.log(queryParam);
+                    Object.keys(filter.dispatchParams).map(f => {
+                        queryParam = { ...queryParam, [f]: filter.dispatchParams[f] };
+                    });
                     this.$store.dispatch(filter.dispatch, queryParam);
                 }
                 this.builder.filters.push(filter);
@@ -1425,8 +1441,10 @@ export default {
             }
             const query = this.builder;
             let queryStr = JSON.stringify(query);
+            this.loadingGeneratePreview = true;
             axios.post('/api/tracking/reports/generate', query)
                 .then(({ data: { data } }) => {
+                    this.loadingGeneratePreview = false;
                     if (queryStr === JSON.stringify(this.builder)) {
                         this.reportData.entities = data;
                         this.dialogEdit = {};
@@ -1780,6 +1798,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.co_worker,
                     store: 'Team/getCoworkers',
                     dispatch: 'Team/getCoworkers',
+                    dispatchParams: {},
                     items: [],
                     selected: [],
                     multiply: true
@@ -1789,6 +1808,7 @@ export default {
                     text: this.getTrackingProjectsLabel,
                     store: 'Projects/getProjects',
                     dispatch: 'Projects/getProjectList',
+                    dispatchParams: { search: null, includeArchives: true },
                     items: [],
                     selected: [],
                     multiply: true
@@ -1798,6 +1818,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.clients,
                     store: 'Clients/getClients',
                     dispatch: 'Clients/getClientList',
+                    dispatchParams: {},
                     items: [],
                     selected: [],
                     multiply: true
@@ -1807,6 +1828,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.services,
                     store: 'Services/getServices',
                     dispatch: 'Services/getServicesList',
+                    dispatchParams: {},
                     items: [],
                     selected: [],
                     multiply: true
@@ -1816,6 +1838,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.billable,
                     store: null,
                     dispatch: '',
+                    dispatchParams: {},
                     items: [
                         {
                             id: 1,
@@ -1834,6 +1857,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.report.tags,
                     store: 'Tags/getTags',
                     dispatch: 'Tags/getTagList',
+                    dispatchParams: {},
                     items: [],
                     selected: [],
                     multiply: true
