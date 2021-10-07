@@ -1433,7 +1433,6 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.relatedClients = response.data
-                    this.relatedClientsPanel = []
 
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
