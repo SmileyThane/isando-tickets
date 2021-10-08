@@ -202,8 +202,8 @@ class ClientRepository
 
     private function beforeDelete($client)
     {
-        if ($client->customLicense !== null) {
-            $users = (new CustomLicenseRepository())->getUsers($client->customLicense->remote_client_id);
+        if ($client !== null) {
+            $users = (new CustomLicenseRepository())->getUsers($client->id);
             foreach ($users->entities as $user) {
                 (new CustomLicenseRepository())
                     ->unassignFromIxarmaCompany($user->id);
