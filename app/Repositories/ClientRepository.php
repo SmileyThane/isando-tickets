@@ -190,22 +190,30 @@ class ClientRepository
 
     public function delete($id): bool
     {
-        $result = false;
         $client = Client::find($id);
         if ($client) {
-            ClientCompanyUser::where('client_id', $id)->delete();
+            $this->beforeDelete($client);
             $client->delete();
-            $result = true;
-            if ($client->customLicense !== null) {
-                $users = (new CustomLicenseRepository())->getUsers($client->customLicense->remote_client_id);
-                foreach ($users->entities as $user) {
-                    (new CustomLicenseRepository())
-                        ->unassignFromIxarmaCompany($user->id);
-                }
-            }
+            return true;
         }
 
-        return $result;
+        return false;
+    }
+
+    private function beforeDelete($client)
+    {
+        if ($client->customLicense !== null) {
+            $users = (new CustomLicenseRepository())->getUsers($client->customLicense->remote_client_id);
+            foreach ($users->entities as $user) {
+                (new CustomLicenseRepository())
+                    ->unassignFromIxarmaCompany($user->id);
+                $clearRequest = new Request();
+                $clearRequest->aliases = [];
+                $clearRequest->connection_links = [];
+                (new CustomLicenseRepository())->update($clearRequest, $client->id);
+            }
+        }
+        ClientCompanyUser::where('client_id', $client->id)->delete();
     }
 
     public function attach(Request $request)

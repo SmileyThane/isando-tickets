@@ -319,7 +319,9 @@
                                         <strong>{{ item.name }}:</strong>
                                         {{ langMap.custom_license.total_users + ': ' + item.custom_license.ixarma_object.limits.usersAllowed }} |
                                         {{ langMap.custom_license.users_available + ' ' + item.custom_license.ixarma_object.limits.usersLeft }} |
-                                        {{ langMap.custom_license.active + ' ' + item.custom_license.ixarma_object.limits.active }}
+                                        {{ langMap.custom_license.active + ' ' + item.custom_license.ixarma_object.limits.active }} |
+                                        {{ langMap.custom_license.expired_at + ' ' + item.custom_license.ixarma_object.limits.expiresAt }} |
+                                        {{ langMap.custom_license.trial_days + ' ' + item.custom_license.ixarma_object.limits.trialPeriodDays }}
                                     </span>
                                     <strong v-else>{{ item.name }}</strong>
                                     <template v-slot:actions>
@@ -1159,6 +1161,7 @@ export default {
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.getLicenseUsers();
+                    this.getRelatedClients();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -1433,7 +1436,6 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.relatedClients = response.data
-                    this.relatedClientsPanel = []
 
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
