@@ -1161,6 +1161,7 @@ export default {
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.getLicenseUsers();
+                    this.getRelatedClients();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
