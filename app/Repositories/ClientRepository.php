@@ -193,9 +193,6 @@ class ClientRepository
         $result = false;
         $client = Client::find($id);
         if ($client) {
-            ClientCompanyUser::where('client_id', $id)->delete();
-            $client->delete();
-            $result = true;
             if ($client->customLicense !== null) {
                 $users = (new CustomLicenseRepository())->getUsers($client->customLicense->remote_client_id);
                 foreach ($users->entities as $user) {
@@ -203,6 +200,9 @@ class ClientRepository
                         ->unassignFromIxarmaCompany($user->id);
                 }
             }
+            ClientCompanyUser::where('client_id', $id)->delete();
+            $client->delete();
+            $result = true;
         }
 
         return $result;
