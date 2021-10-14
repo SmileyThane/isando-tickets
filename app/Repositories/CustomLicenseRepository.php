@@ -241,7 +241,7 @@ class CustomLicenseRepository
 
     public function delete($remoteClientId): bool
     {
-        $this->makeIxArmaRequest("/api/v1/app/company/$remoteClientId", null, 'DELETE');
+        $this->makeIxArmaRequest("/api/v1/company/$remoteClientId", null, 'DELETE');
 
         return true;
     }
