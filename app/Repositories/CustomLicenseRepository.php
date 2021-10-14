@@ -239,8 +239,10 @@ class CustomLicenseRepository
         return $parsedResult['status'] === 'SUCCESS';
     }
 
-    public function delete(): bool
+    public function delete($remoteClientId): bool
     {
+        $this->makeIxArmaRequest("/api/v1/app/company/$remoteClientId", null, 'DELETE');
+
         return true;
     }
 }
