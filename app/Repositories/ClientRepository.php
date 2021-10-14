@@ -213,6 +213,9 @@ class ClientRepository
                 (new CustomLicenseRepository())->update($clearRequest, $client->id);
             }
         }
+        if ($client->customLicense) {
+            (new CustomLicenseRepository())->delete($client->customLicense->remote_client_id);
+        }
         ClientCompanyUser::where('client_id', $client->id)->delete();
     }
 
