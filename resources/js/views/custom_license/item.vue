@@ -388,7 +388,7 @@
                                                     <template v-slot:item.licensed="{ item }">
                                                         <v-btn
                                                             outlined
-                                                            @click.stop.prevent="manageLicenseUsers(item.id, item.licensed)"
+                                                            @click.stop.prevent="manageLicenseUsers(item.id, item.licensed); item.licensed = !item.licensed;"
                                                         >
                                                             <v-icon
                                                                 :color="item.licensed ? 'green' :'red'"
@@ -468,7 +468,7 @@
                                 <v-btn
                                     :disabled="client.is_portal === 1"
                                     outlined
-                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed)"
+                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed); item.licensed = !item.licensed;"
                                 >
                                     <v-icon
                                         :color="item.licensed ? 'green' :'red'"
@@ -1128,6 +1128,7 @@ export default {
                         this.childUsersAssigned =
                             this.selectedChildClientLicense.usersAllowed - this.selectedChildClientLicense.usersLeft;
                         this.getLicenseHistory(id);
+                        this.$forceUpdate()
                     } else {
                         this.license = response.data.limits
                         this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
@@ -1250,6 +1251,7 @@ export default {
                     this.getLicense();
                     this.getLicenseUsers();
                     this.getRelatedClients()
+                    this.$forceUpdate();
                     // this.licenseUsers = response.data.entities
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
