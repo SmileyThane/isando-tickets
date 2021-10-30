@@ -21,7 +21,7 @@ class CompanyUser extends Model
     {
         $result = null;
         $roles = $this->getRolesAttribute();
-        $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
+        $translationsArray = Language::query()->find(Auth::user()->language_id)->lang_map;
         foreach ($roles as $key => $role) {
             $roleName = $role->name;
             if (property_exists($translationsArray->roles, $roleName)) {
@@ -35,19 +35,22 @@ class CompanyUser extends Model
     public function getRolesAttribute()
     {
         $roleIds = $this->roleIds();
-        return Role::whereIn('id', $roleIds)->get();
+        return Role::query()->whereIn('id', $roleIds)->get();
     }
 
     public function roleIds()
     {
-        return ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
+        return ModelHasRole::query()->where(['model_id' => $this->attributes['id'], 'model_type' => self::class])
+          ->get()
+          ->pluck('role_id')
+          ->toArray();
     }
 
     public function getPermissionIds()
     {
         $roleIds = $this->roleIds();
         if ($roleIds) {
-            return RoleHasPermission::whereIn('role_id', $roleIds)->get()->pluck('permission_id')->toArray();
+            return RoleHasPermission::query()->whereIn('role_id', $roleIds)->get()->pluck('permission_id')->toArray();
         }
         return [];
     }
@@ -73,7 +76,7 @@ class CompanyUser extends Model
         $id = is_int($id) ? [$id] : $id;
         $roleIds = $this->roleIds();
         if ($roleIds) {
-            return RoleHasPermission::whereIn('role_id', $roleIds)->whereIn('permission_id', $id)->exists();
+            return RoleHasPermission::query()->whereIn('role_id', $roleIds)->whereIn('permission_id', $id)->exists();
         }
         return false;
     }
@@ -103,8 +106,8 @@ class CompanyUser extends Model
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
 
-    public function getColorAttribute() {
+    public function getColorAttribute()
+    {
           return $this->userData ? $this->userData->color : '';
     }
-
 }
