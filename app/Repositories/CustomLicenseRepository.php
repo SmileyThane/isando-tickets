@@ -232,7 +232,7 @@ class CustomLicenseRepository
         return __('validation.email');
     }
 
-    public function unassignFromIxarmaCompany($userID)
+    public function unassignFromIxarmaCompany($userID): bool
     {
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$userID/unassign", []);
         $parsedResult = json_decode($result->getContents(), true);
