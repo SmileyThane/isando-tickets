@@ -1,18 +1,18 @@
 Isando ticketing system
- 1 Requirements before installation:
-    1. installed and confugured LAMP server
-    2. installed and configured nodeJS with npm 
+ - Requirements before installation:
+    - installed and confugured LAMP server
+    - installed and configured nodeJS with npm 
 
- 2 Installation:
-    1. composer install
-    2. npm install
-    3. [create new database]
-    4. [create .env config]
-    5. php artisan migrate
-    6. php artisan db:seed
-    7. php artisan passport:install
-    8. php artisan storage:link
-    9. php artisan key:generate
-   10. [go to "/register" page and create your first company for using.]
+ - Installation:
+    - composer install
+    - npm install
+    - [create new database]
+    - [create .env config]
+    - php artisan migrate
+    - php artisan db:seed
+    - php artisan passport:install
+    - php artisan storage:link
+    - php artisan key:generate
+    - [go to "/register" page and create your first company for using.]
 _________________________________
 Good luck 🙂
