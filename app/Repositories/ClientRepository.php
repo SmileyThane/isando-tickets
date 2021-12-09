@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Throwable;
 
 class ClientRepository
@@ -133,7 +132,6 @@ class ClientRepository
             $clients = $clientsArray
                 ->orderBy('name', 'asc')
                 ->paginate($clientsArray->count());
-
         }
         foreach ($clients as $client) {
             $suppliers[] = ['name' => $client->name, 'item' => [Client::class => $client->id]];
@@ -173,7 +171,20 @@ class ClientRepository
         $client->supplier_id = $request->supplier_id;
         $client->supplier_type = $request->supplier_type;
         $client->save();
+        $this->setIsPortalAttriubte($client);
+
         return $client;
+    }
+
+    private function setIsPortalAttriubte($client): void
+    {
+        if (Client::class === $client->supplier_type) {
+            $parent = Client::query()->find($client->supplier_id);
+            if ($parent->supplier_type === Company::class) {
+                $parent->is_portal = true;
+                $parent->save();
+            }
+        }
     }
 
     public function update(Request $request, $id)
@@ -484,7 +495,6 @@ class ClientRepository
                         array_push($clientData['children'], $employeeData);
                     }
                 }
-
             }
 
             if ($clientData['children']) {

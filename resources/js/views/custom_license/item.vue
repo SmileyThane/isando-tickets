@@ -100,42 +100,42 @@
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
-                        <v-divider></v-divider>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <label>{{langMap.custom_license.aliases}}</label>
-                        <v-text-field
-                            v-for="(id, key) in client.aliases"
-                            :key="'aliases'+key"
-                            v-model="client.aliases[key]"
-                            :color="themeBgColor"
-                            :readonly="!enableToEdit"
-                            dense
-                            prepend-icon="mdi-text"
-                            required
-                            type="text"
-                        >
-                            <template v-slot:append>
-                                <v-icon
-                                    color="red"
-                                    @click="removeAlias(key)"
-                                >
-                                    mdi-cancel
-                                </v-icon>
-                            </template>
-                        </v-text-field>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <v-btn
-                            v-if="enableToEdit"
-                            color="green"
-                            outlined
-                            @click="addAlias(false)"
-                        >
-                            <v-icon>mdi-plus</v-icon>
-                        </v-btn>
+<!--                        <v-divider></v-divider>-->
+<!--                        <v-spacer>-->
+<!--                            &nbsp;-->
+<!--                        </v-spacer>-->
+<!--                        <label>{{langMap.custom_license.aliases}}</label>-->
+<!--                        <v-text-field-->
+<!--                            v-for="(id, key) in client.aliases"-->
+<!--                            :key="'aliases'+key"-->
+<!--                            v-model="client.aliases[key]"-->
+<!--                            :color="themeBgColor"-->
+<!--                            :readonly="!enableToEdit"-->
+<!--                            dense-->
+<!--                            prepend-icon="mdi-text"-->
+<!--                            required-->
+<!--                            type="text"-->
+<!--                        >-->
+<!--                            <template v-slot:append>-->
+<!--                                <v-icon-->
+<!--                                    color="red"-->
+<!--                                    @click="removeAlias(key)"-->
+<!--                                >-->
+<!--                                    mdi-cancel-->
+<!--                                </v-icon>-->
+<!--                            </template>-->
+<!--                        </v-text-field>-->
+<!--                        <v-spacer>-->
+<!--                            &nbsp;-->
+<!--                        </v-spacer>-->
+<!--                        <v-btn-->
+<!--                            v-if="enableToEdit"-->
+<!--                            color="green"-->
+<!--                            outlined-->
+<!--                            @click="addAlias(false)"-->
+<!--                        >-->
+<!--                            <v-icon>mdi-plus</v-icon>-->
+<!--                        </v-btn>-->
                     </v-card-text>
                 </v-card>
             </div>
@@ -652,42 +652,42 @@
                         ></v-checkbox>
                         <v-divider></v-divider>
                         <br>
-                        <label>{{langMap.custom_license.connection_links}}</label>
-                        <v-text-field
-                            v-for="(id, key) in selectedChildClient.connection_links"
-                            :key="'child_connection_links'+key"
-                            v-model="selectedChildClient.connection_links[key]"
-                            :color="themeBgColor"
-                            :readonly="!enableToEditChild"
-                            dense
-                            prepend-icon="mdi-link"
-                            required
-                            type="text"
-                        >
-                            <template v-slot:append>
-                                <v-icon
-                                    color="red"
-                                    @click="removeConnectionLink(key, true)"
-                                >
-                                    mdi-cancel
-                                </v-icon>
-                            </template>
-                        </v-text-field>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <v-btn
-                            v-if="enableToEditChild"
-                            color="green"
-                            outlined
-                            @click="addConnectionLink(true)"
-                        >
-                            <v-icon>mdi-plus</v-icon>
-                        </v-btn>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <v-divider></v-divider>
+<!--                        <label>{{langMap.custom_license.connection_links}}</label>-->
+<!--                        <v-text-field-->
+<!--                            v-for="(id, key) in selectedChildClient.connection_links"-->
+<!--                            :key="'child_connection_links'+key"-->
+<!--                            v-model="selectedChildClient.connection_links[key]"-->
+<!--                            :color="themeBgColor"-->
+<!--                            :readonly="!enableToEditChild"-->
+<!--                            dense-->
+<!--                            prepend-icon="mdi-link"-->
+<!--                            required-->
+<!--                            type="text"-->
+<!--                        >-->
+<!--                            <template v-slot:append>-->
+<!--                                <v-icon-->
+<!--                                    color="red"-->
+<!--                                    @click="removeConnectionLink(key, true)"-->
+<!--                                >-->
+<!--                                    mdi-cancel-->
+<!--                                </v-icon>-->
+<!--                            </template>-->
+<!--                        </v-text-field>-->
+<!--                        <v-spacer>-->
+<!--                            &nbsp;-->
+<!--                        </v-spacer>-->
+<!--                        <v-btn-->
+<!--                            v-if="enableToEditChild"-->
+<!--                            color="green"-->
+<!--                            outlined-->
+<!--                            @click="addConnectionLink(true)"-->
+<!--                        >-->
+<!--                            <v-icon>mdi-plus</v-icon>-->
+<!--                        </v-btn>-->
+<!--                        <v-spacer>-->
+<!--                            &nbsp;-->
+<!--                        </v-spacer>-->
+<!--                        <v-divider></v-divider>-->
                         <v-spacer>
                             &nbsp;
                         </v-spacer>

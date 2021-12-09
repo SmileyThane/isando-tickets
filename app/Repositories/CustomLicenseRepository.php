@@ -108,11 +108,21 @@ class CustomLicenseRepository
             'name' => $request->name,
             'serverUrls' => $request->connection_links,
             'aliases' => $request->aliases,
-//            'email' => 'testco@example.com'
         ];
         $result = $this->makeIxArmaRequest("/api/v1/company/$ixArmaId", $data, 'PUT');
         $parsedResult = json_decode($result->getContents(), true);
         return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+    }
+
+    public function updateProtalUrl($request)
+    {
+        $data = [
+            'urls' => $request->connection_links,
+        ];
+        $result = $this->makeIxArmaRequest("/api/v1/preferences/portal", $data, 'POST');
+        $parsedResult = json_decode($result->getContents(), true);
+
+        return $parsedResult['message'];
     }
 
     public function unassignedIxarmaUsersList()
@@ -232,7 +242,7 @@ class CustomLicenseRepository
         return __('validation.email');
     }
 
-    public function unassignFromIxarmaCompany($userID)
+    public function unassignFromIxarmaCompany($userID): bool
     {
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$userID/unassign", []);
         $parsedResult = json_decode($result->getContents(), true);
