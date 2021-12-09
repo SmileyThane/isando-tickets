@@ -408,7 +408,7 @@
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>{{langMap.company.delete_contact}}</span>
+                                                            <span>{{langMap.custom_license.unassign_contact}}</span>
                                                         </v-tooltip>
                                                     </template>
                                                 </v-data-table>
