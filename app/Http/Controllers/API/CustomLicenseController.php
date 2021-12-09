@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Client;
 use App\Http\Controllers\Controller;
 use App\Permission;
 use App\Repositories\CustomLicenseRepository;
@@ -67,7 +68,12 @@ class CustomLicenseController extends Controller
     public function update(Request $request, $id)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
-            return self::showResponse(true, $this->customLicenseRepository->update($request, $id));
+            $result = $this->customLicenseRepository->update($request, $id);
+            if (Client::query()->find($id)->is_portal === true) {
+                $this->customLicenseRepository->updateProtalUrl($request);
+            }
+
+            return self::showResponse(true, $result);
         }
 
         return self::showResponse(false);
@@ -119,5 +125,4 @@ class CustomLicenseController extends Controller
 
         return self::showResponse(false);
     }
-
 }
