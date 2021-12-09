@@ -8,6 +8,7 @@ use App\Permission;
 use App\Repositories\CustomLicenseRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CustomLicenseController extends Controller
 {
@@ -69,7 +70,8 @@ class CustomLicenseController extends Controller
     {
         if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
             $result = $this->customLicenseRepository->update($request, $id);
-            if (Client::query()->find($id)->is_portal === true) {
+            if (Client::query()->find($id)->is_portal === 1) {
+                Log::info(123);
                 $this->customLicenseRepository->updateProtalUrl($request);
             }
 

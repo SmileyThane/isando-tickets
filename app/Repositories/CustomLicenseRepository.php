@@ -122,7 +122,7 @@ class CustomLicenseRepository
         $result = $this->makeIxArmaRequest("/api/v1/preferences/portal", $data, 'POST');
         $parsedResult = json_decode($result->getContents(), true);
 
-        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+        return $parsedResult['message'];
     }
 
     public function unassignedIxarmaUsersList()
