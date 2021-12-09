@@ -100,42 +100,42 @@
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
-                        <v-divider></v-divider>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <label>{{langMap.custom_license.aliases}}</label>
-                        <v-text-field
-                            v-for="(id, key) in client.aliases"
-                            :key="'aliases'+key"
-                            v-model="client.aliases[key]"
-                            :color="themeBgColor"
-                            :readonly="!enableToEdit"
-                            dense
-                            prepend-icon="mdi-text"
-                            required
-                            type="text"
-                        >
-                            <template v-slot:append>
-                                <v-icon
-                                    color="red"
-                                    @click="removeAlias(key)"
-                                >
-                                    mdi-cancel
-                                </v-icon>
-                            </template>
-                        </v-text-field>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <v-btn
-                            v-if="enableToEdit"
-                            color="green"
-                            outlined
-                            @click="addAlias(false)"
-                        >
-                            <v-icon>mdi-plus</v-icon>
-                        </v-btn>
+<!--                        <v-divider></v-divider>-->
+<!--                        <v-spacer>-->
+<!--                            &nbsp;-->
+<!--                        </v-spacer>-->
+<!--                        <label>{{langMap.custom_license.aliases}}</label>-->
+<!--                        <v-text-field-->
+<!--                            v-for="(id, key) in client.aliases"-->
+<!--                            :key="'aliases'+key"-->
+<!--                            v-model="client.aliases[key]"-->
+<!--                            :color="themeBgColor"-->
+<!--                            :readonly="!enableToEdit"-->
+<!--                            dense-->
+<!--                            prepend-icon="mdi-text"-->
+<!--                            required-->
+<!--                            type="text"-->
+<!--                        >-->
+<!--                            <template v-slot:append>-->
+<!--                                <v-icon-->
+<!--                                    color="red"-->
+<!--                                    @click="removeAlias(key)"-->
+<!--                                >-->
+<!--                                    mdi-cancel-->
+<!--                                </v-icon>-->
+<!--                            </template>-->
+<!--                        </v-text-field>-->
+<!--                        <v-spacer>-->
+<!--                            &nbsp;-->
+<!--                        </v-spacer>-->
+<!--                        <v-btn-->
+<!--                            v-if="enableToEdit"-->
+<!--                            color="green"-->
+<!--                            outlined-->
+<!--                            @click="addAlias(false)"-->
+<!--                        >-->
+<!--                            <v-icon>mdi-plus</v-icon>-->
+<!--                        </v-btn>-->
                     </v-card-text>
                 </v-card>
             </div>
