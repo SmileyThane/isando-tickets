@@ -504,7 +504,7 @@ class LanguageSeeder extends Seeder
                             'licensed' => 'Licensed',
                             'platform' => 'Platform',
                             'active' => 'Active',
-                            'expired_at' => 'Expired at',
+                            'expired_at' => 'Trial expires',
                             'aliases' => 'Aliases',
                             'additional_licenses' => 'Additional licenses',
                             'license_users' => 'License Users',
@@ -512,8 +512,9 @@ class LanguageSeeder extends Seeder
                             'new_users' => 'New users',
                             'users_available' => 'Users available',
                             'trial_days' => 'Trial days',
-                            'last_activation' => 'Last activation',
-                            'connection_links' => 'Connection links'
+                            'last_activation' => 'Last active',
+                            'connection_links' => 'Connection links',
+                            'unassign_contact' => 'Unassign this phone number from this company'
                         ],
                     'team' =>
                         [
@@ -1432,7 +1433,8 @@ class LanguageSeeder extends Seeder
                                 'users_available' => 'Benutzer verfügbar',
                                 'trial_days' => 'Probetage',
                                 'last_activation' => 'Letzte Aktivierung',
-                                'connection_links' => 'Verbindungslinks'
+                                'connection_links' => 'Verbindungslinks',
+                                'unassign_contact' => 'Zuordnung dieser Telefonnummer zu diesem Unternehmen aufheben'
                             ],
                         'team' => [
                             'add_new' => 'Neues Team hinzufügen',
