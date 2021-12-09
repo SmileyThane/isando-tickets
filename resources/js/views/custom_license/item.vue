@@ -652,38 +652,38 @@
                         ></v-checkbox>
                         <v-divider></v-divider>
                         <br>
-                        <label>{{langMap.custom_license.connection_links}}</label>
-                        <v-text-field
-                            v-for="(id, key) in selectedChildClient.connection_links"
-                            :key="'child_connection_links'+key"
-                            v-model="selectedChildClient.connection_links[key]"
-                            :color="themeBgColor"
-                            :readonly="!enableToEditChild"
-                            dense
-                            prepend-icon="mdi-link"
-                            required
-                            type="text"
-                        >
-                            <template v-slot:append>
-                                <v-icon
-                                    color="red"
-                                    @click="removeConnectionLink(key, true)"
-                                >
-                                    mdi-cancel
-                                </v-icon>
-                            </template>
-                        </v-text-field>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <v-btn
-                            v-if="enableToEditChild"
-                            color="green"
-                            outlined
-                            @click="addConnectionLink(true)"
-                        >
-                            <v-icon>mdi-plus</v-icon>
-                        </v-btn>
+<!--                        <label>{{langMap.custom_license.connection_links}}</label>-->
+<!--                        <v-text-field-->
+<!--                            v-for="(id, key) in selectedChildClient.connection_links"-->
+<!--                            :key="'child_connection_links'+key"-->
+<!--                            v-model="selectedChildClient.connection_links[key]"-->
+<!--                            :color="themeBgColor"-->
+<!--                            :readonly="!enableToEditChild"-->
+<!--                            dense-->
+<!--                            prepend-icon="mdi-link"-->
+<!--                            required-->
+<!--                            type="text"-->
+<!--                        >-->
+<!--                            <template v-slot:append>-->
+<!--                                <v-icon-->
+<!--                                    color="red"-->
+<!--                                    @click="removeConnectionLink(key, true)"-->
+<!--                                >-->
+<!--                                    mdi-cancel-->
+<!--                                </v-icon>-->
+<!--                            </template>-->
+<!--                        </v-text-field>-->
+<!--                        <v-spacer>-->
+<!--                            &nbsp;-->
+<!--                        </v-spacer>-->
+<!--                        <v-btn-->
+<!--                            v-if="enableToEditChild"-->
+<!--                            color="green"-->
+<!--                            outlined-->
+<!--                            @click="addConnectionLink(true)"-->
+<!--                        >-->
+<!--                            <v-icon>mdi-plus</v-icon>-->
+<!--                        </v-btn>-->
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
