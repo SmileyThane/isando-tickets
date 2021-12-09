@@ -117,7 +117,7 @@ class CustomLicenseRepository
     public function updateProtalUrl($request)
     {
         $data = [
-            'portalUrls' => $request->connection_links,
+            'urls' => $request->connection_links,
         ];
         $result = $this->makeIxArmaRequest("/api/v1/preferences/portal", $data, 'POST');
         $parsedResult = json_decode($result->getContents(), true);
