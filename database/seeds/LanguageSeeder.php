@@ -514,7 +514,9 @@ class LanguageSeeder extends Seeder
                             'trial_days' => 'Trial days',
                             'last_activation' => 'Last active',
                             'connection_links' => 'Connection links',
-                            'unassign_contact' => 'Unassign this phone number from this company'
+                            'unassign_contact' => 'Unassign this phone number from this company',
+                            'auto_assign' => 'Auto assign'
+
                         ],
                     'team' =>
                         [
@@ -1434,7 +1436,8 @@ class LanguageSeeder extends Seeder
                                 'trial_days' => 'Probetage',
                                 'last_activation' => 'Letzte Aktivierung',
                                 'connection_links' => 'Verbindungslinks',
-                                'unassign_contact' => 'Zuordnung dieser Telefonnummer zu diesem Unternehmen aufheben'
+                                'unassign_contact' => 'Zuordnung dieser Telefonnummer zu diesem Unternehmen aufheben',
+                                'auto_assign' => 'Auto assign'
                             ],
                         'team' => [
                             'add_new' => 'Neues Team hinzufügen',
