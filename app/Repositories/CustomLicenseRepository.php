@@ -81,7 +81,7 @@ class CustomLicenseRepository
     public function setUserTrial(Request $request, $id)
     {
         $data = [
-            'trialExpirationDate' => Carbon::parse($request->trialExpirationDate)->format('m/d/Y')
+            'trialExpirationDate' => Carbon::parse($request->trialExpirationDate)->format('d/m/Y')
         ];
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$id/trial", $data, 'PUT');
         $parsedResult = json_decode($result->getContents(), true);
@@ -173,7 +173,7 @@ class CustomLicenseRepository
         $parsedResult = json_decode($response->getContents(), true);
         if ($parsedResult['status'] === 'SUCCESS') {
             if ($parsedResult['body']['expiresAt'] === "01/01/1970") {
-                $parsedResult['body']['expiresAt'] = now()->format('m/d/Y');
+                $parsedResult['body']['expiresAt'] = now()->format('d/m/Y');
             }
             $result['limits'] = $parsedResult['body'];
         } else {
@@ -195,7 +195,7 @@ class CustomLicenseRepository
         $data = [
             'newTrialDays' => $request->trialPeriodDays,
             'newAllowedUsers' => $request->usersAllowed,
-            'newExpires' => Carbon::parse($request->expiresAt)->format('m/d/Y')
+            'newExpires' => Carbon::parse($request->expiresAt)->format('d/m/Y')
         ];
         $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", $data, 'PUT');
         $parsedResult = json_decode($result->getContents(), true);
