@@ -195,14 +195,17 @@ class CustomLicenseRepository
         $data = [
             'newTrialDays' => $request->trialPeriodDays,
             'newAllowedUsers' => $request->usersAllowed,
-            'newExpires' => Carbon::parse($request->expiresAt)->format('d/m/Y')
+            'newExpires' => $request->expiresAt,
+            'autoLicensingEnabled' => $request->autoLicensingEnabled
         ];
         $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", $data, 'PUT');
         $parsedResult = json_decode($result->getContents(), true);
-        if ($request->active === true) {
-            $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/renew", $data, 'GET');
-        } else {
-            $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/suspend", $data, 'GET');
+        if ($request->renewable === true) {
+            if ($request->active === true) {
+                $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/renew", $data, 'GET');
+            } else {
+                $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/suspend", $data, 'GET');
+            }
         }
 
         return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
