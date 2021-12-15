@@ -99,6 +99,7 @@ class ClientController extends Controller
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request, false);
 
+//        dd($hasAccess, $isValid);
         if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->clientRepo->update($request, $id));
         }
