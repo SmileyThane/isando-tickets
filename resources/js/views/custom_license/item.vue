@@ -329,10 +329,11 @@
                                                                 ></v-checkbox>|
                                         {{ langMap.custom_license.expired_at + ' ' + item.custom_license.ixarma_object.limits.expiresAt }} |
                                         {{ langMap.custom_license.trial_days + ' ' + item.custom_license.ixarma_object.limits.trialPeriodDays }} |
-                                        {{ langMap.custom_license.trial_days}}
+                                        {{ langMap.custom_license.auto_assign}}
                                         <v-checkbox
+                                            @click.prevent.stop="updateAutoAssignFlag(item)"
                                             style="display: inline-block; margin-top: 0; padding-top: 0;"
-                                            v-model="item.custom_license.ixarma_object.limits.active"
+                                            v-model="item.custom_license.ixarma_object.limits.autoLicensingEnabled"
                                             color="success"
                                             hide-details
                                         ></v-checkbox>
@@ -1110,7 +1111,6 @@ export default {
                     client.client_description = response.data.description
                     if (isRelated) {
                         this.selectedChildClient = client
-                        console.log(this.selectedChildClient);
                         this.getLicense(client.id)
                     } else {
                         this.$store.state.pageName = this.client.client_name
@@ -1156,7 +1156,7 @@ export default {
                         this.getLicenseHistory();
 
                     }
-                    // console.log(this.client.connection_links);
+
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1170,6 +1170,11 @@ export default {
             this.unassignedUserForm.name = item.username
             this.unassignedUserForm.phone = item.phoneNumber
             this.unassignDialog = true
+        },
+        updateAutoAssignFlag(item) {
+            this.selectedChildClient = item;
+            this.selectedChildClientLicense = item.custom_license.ixarma_object.limits;
+            this.updateLicense(item.id, false);
         },
         unassignFromIxarmaCompany() {
             axios.post('/api/custom_license_user/unassign', this.unassignedUserForm, {
@@ -1187,7 +1192,6 @@ export default {
                     this.snackbar = true;
                 }
             });
-            // console.log(this.unassignedUserForm);
             this.unassignDialog = false
         },
         getLicenseHistory(id = null) {
@@ -1217,7 +1221,6 @@ export default {
             this.getLicenseUsers(id)
         },
         getLicenseUsers(id = null) {
-            // console.log(id);
             let isRelated = true;
             if (id === null) {
                 id = this.$route.params.id
@@ -1246,10 +1249,8 @@ export default {
                     }
                     if (isRelated) {
                         this.relatedLicenseUsers[id] = users;
-                        // console.log(this.relatedLicenseUsers);
                     } else {
                         this.licenseUsers = users;
-                        // console.log(this.licenseUsers);
                     }
                     this.$forceUpdate();
                 } else {
@@ -1261,8 +1262,6 @@ export default {
             });
         },
         manageLicenseUsers(remoteId, isLicensed) {
-            // console.log(remoteId);
-            // console.log(isLicensed);
             axios.get(`/api/custom_license/${this.$route.params.id}/user/${remoteId}/${isLicensed}`).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -1298,7 +1297,7 @@ export default {
                 }
             }
         },
-        updateLicense(id = null) {
+        updateLicense(id = null, renewable = true) {
             let license, isRelated;
             if (id === null) {
                 id = this.$route.params.id
@@ -1309,6 +1308,7 @@ export default {
                 license = this.selectedChildClientLicense
                 isRelated = 1
             }
+            license.renewable = renewable
             axios.put(`/api/custom_license/${id}/limits`, license).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -1402,7 +1402,6 @@ export default {
             } else {
                 this.client.connection_links.push(" ");
             }
-            // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
         removeConnectionLink(id, isRelated = false) {
@@ -1411,7 +1410,6 @@ export default {
             } else {
                 this.client.connection_links.splice(id, 1);
             }
-            // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
         addAlias(isRelated = false) {
@@ -1420,7 +1418,6 @@ export default {
             } else {
                 this.client.aliases.push(" ");
             }
-            // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
         removeAlias(id, isRelated = false) {
@@ -1429,7 +1426,6 @@ export default {
             } else {
                 this.client.aliases.splice(id, 1);
             }
-            // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
         getClients() {
@@ -1491,7 +1487,6 @@ export default {
                         this.snackbar = true;
                     }
                 });
-            // console.log(this.reassignedUserForm);
             this.assignCompanyDialog = false
         },
         setUserTrialDateItem() {
@@ -1509,8 +1504,6 @@ export default {
                         this.snackbar = true;
                     }
                 });
-            // console.log(this.selectedUserId);
-            // console.log(item);
             this.trialExpirationModal = false
         },
         setEnableToEdit(selectedClient = null) {
