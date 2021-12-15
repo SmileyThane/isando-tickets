@@ -319,9 +319,23 @@
                                         <strong>{{ item.name }}:</strong>
                                         {{ langMap.custom_license.total_users + ': ' + item.custom_license.ixarma_object.limits.usersAllowed }} |
                                         {{ langMap.custom_license.users_available + ' ' + item.custom_license.ixarma_object.limits.usersLeft }} |
-                                        {{ langMap.custom_license.active + ' ' + item.custom_license.ixarma_object.limits.active }} |
+                                        {{ langMap.custom_license.active }}
+                                                                <v-checkbox
+                                                                    style="display: inline-block; margin-top: 0; padding-top: 0;"
+                                                                    disabled
+                                                                    v-model="item.custom_license.ixarma_object.limits.active"
+                                                                    color="success"
+                                                                    hide-details
+                                                                ></v-checkbox>|
                                         {{ langMap.custom_license.expired_at + ' ' + item.custom_license.ixarma_object.limits.expiresAt }} |
-                                        {{ langMap.custom_license.trial_days + ' ' + item.custom_license.ixarma_object.limits.trialPeriodDays }}
+                                        {{ langMap.custom_license.trial_days + ' ' + item.custom_license.ixarma_object.limits.trialPeriodDays }} |
+                                        {{ langMap.custom_license.trial_days}}
+                                        <v-checkbox
+                                            style="display: inline-block; margin-top: 0; padding-top: 0;"
+                                            v-model="item.custom_license.ixarma_object.limits.active"
+                                            color="success"
+                                            hide-details
+                                        ></v-checkbox>
                                     </span>
                                     <strong v-else>{{ item.name }}</strong>
                                     <template v-slot:actions>
@@ -360,12 +374,13 @@
                                                     :items="relatedLicenseUsers[item.id]"
                                                     :loading-text="langMap.main.loading"
                                                     :options.sync="options"
-                                                    class="elevation-1"
+                                                    dense
                                                     hide-default-footer
                                                     @click:row="showAssignDialog"
                                                 >
                                                     <template v-slot:item.lastActivationChangeString="{ item }">
                                                         <v-text-field
+                                                            dense
                                                             v-model="item.lastActivationChangeString"
                                                             :color="themeBgColor"
                                                             prepend-icon="mdi-calendar"
@@ -373,17 +388,18 @@
                                                         ></v-text-field>
                                                     </template>
                                                     <template v-slot:item.trialExpirationAtString="{ item }">
-                                                        <div
+                                                        <span
                                                             @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
                                                         >
                                                             <v-text-field
+                                                                dense
                                                                 v-model="item.trialExpirationAtString"
                                                                 :color="themeBgColor"
                                                                 prepend-icon="mdi-calendar"
                                                                 readonly
                                                             ></v-text-field>
 
-                                                        </div>
+                                                        </span>
                                                     </template>
                                                     <template v-slot:item.licensed="{ item }">
                                                         <v-btn
@@ -444,6 +460,7 @@
                         >
                             <template v-slot:item.lastActivationChangeString="{ item }">
                                 <v-text-field
+                                    dense
                                     v-model="item.lastActivationChangeString"
                                     :color="themeBgColor"
                                     prepend-icon="mdi-calendar"
@@ -455,6 +472,7 @@
                                     @click.stop.prevent="showExpiredAtDialog"
                                 >
                                     <v-text-field
+                                        dense
                                         v-model="item.trialExpirationAtString"
                                         :color="themeBgColor"
                                         prepend-icon="mdi-calendar"
@@ -1123,7 +1141,7 @@ export default {
                             response.data.info.serverUrls : [""]
                         this.selectedChildClient.aliases = response.data.info !== null ?
                             response.data.info.aliases : [""]
-                        this.selectedChildClientLicense.expiresAt = this.moment(response.data.limits.expiresAt)
+                        this.selectedChildClientLicense.expiresAt = this.moment(response.data.limits.expiresAt, 'DD/MM/YYYY')
                             .format('YYYY-MM-DD')
                         this.childUsersAssigned =
                             this.selectedChildClientLicense.usersAllowed - this.selectedChildClientLicense.usersLeft;
@@ -1133,7 +1151,7 @@ export default {
                         this.license = response.data.limits
                         this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
                         this.client.aliases = response.data.info !== null ? response.data.info.aliases : [""]
-                        this.license.expiresAt = this.moment(response.data.limits.expiresAt).format('YYYY-MM-DD')
+                        this.license.expiresAt = this.moment(response.data.limits.expiresAt, 'DD/MM/YYYY').format('YYYY-MM-DD')
                         this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
                         this.getLicenseHistory();
 
@@ -1212,15 +1230,15 @@ export default {
                     for (let key in response.data.entities) {
 
                         if (response.data.entities[key].lastActivationChangeString !== "01/01/1970") {
-                            response.data.entities[key].lastActivationChangeString =
-                                this.moment(response.data.entities[key].lastActivationChangeString).format('DD-MM-YYYY')
+                            // response.data.entities[key].lastActivationChangeString =
+                            //     this.moment(response.data.entities[key].lastActivationChangeString).format('DD/MM/YYYY')
                         } else {
                             response.data.entities[key].lastActivationChangeString = ''
                         }
 
                         if (response.data.entities[key].trialExpirationAtString !== "01/01/1970") {
-                            response.data.entities[key].trialExpirationAtString =
-                                this.moment(response.data.entities[key].trialExpirationAtString).format('DD-MM-YYYY')
+                            // response.data.entities[key].trialExpirationAtString =
+                            //     this.moment(response.data.entities[key].trialExpirationAtString).format('DD/MM/YYYY')
                         } else {
                             response.data.entities[key].trialExpirationAtString = ''
                         }
@@ -1295,7 +1313,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.license = response.data
-                    this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
+                    this.license.expiresAt = this.moment(response.data.expiresAt, 'DD/MM/YYYY').format('YYYY-MM-DD')
                     this.snackbarMessage = this.license = this.langMap.main.update_successful;
                     this.actionColor = 'success';
                     this.snackbar = true;
