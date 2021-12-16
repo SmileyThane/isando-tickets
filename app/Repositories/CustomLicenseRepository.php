@@ -3,10 +3,11 @@
 
 namespace App\Repositories;
 
+use App\Client;
 use App\CustomLicense;
 use App\IxarmaAuthorization;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,7 @@ class CustomLicenseRepository
 
     public function getUsers($id)
     {
-        $client = \App\Client::find($id);
+        $client = Client::find($id);
         if ($client && $client->customLicense) {
             $ixArmaId = $client->customLicense->remote_client_id;
             $result = $this->makeIxArmaRequest("/api/v1/app/user/company/$ixArmaId/page/0", []);
@@ -42,7 +43,7 @@ class CustomLicenseRepository
     public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true)
     {
         try {
-            $guzzle = new Client([
+            $guzzle = new GuzzleClient([
                 'base_uri' => env('IXARMA_BASE_URL'),
             ]);
             $ixArmaAuth = IxarmaAuthorization::where('company_id', Auth::user()->employee->company_id)->first();
