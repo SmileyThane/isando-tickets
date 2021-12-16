@@ -23,7 +23,7 @@ class ClientRepository
     {
         $params = [
             'client_name' => 'required',
-            'number' => 'unique:clients',
+            'number' => 'nullable|unique:clients',
             // 'client_description' => 'required',
         ];
         if ($new === true) {
@@ -190,11 +190,11 @@ class ClientRepository
     public function update(Request $request, $id)
     {
         $client = Client::find($id);
-        $client->name = $request->client_name;
-        $client->description = $request->client_description;
-        $client->number = $request->number;
-        $client->short_name = $request->short_name;
-        $client->photo = $request->photo;
+        $client->name = $request->client_name ?? $client->name;
+        $client->description = $request->client_description ?? $client->description;
+        $client->number = $request->number ?? $client->number;
+        $client->short_name = $request->short_name ?? $client->short_name;
+        $client->photo = $request->photo ?? $client->photo;
         $client->save();
         return $client;
     }
@@ -215,13 +215,15 @@ class ClientRepository
     {
         if ($client !== null) {
             $users = (new CustomLicenseRepository())->getUsers($client->id);
-            foreach ($users->entities as $user) {
-                (new CustomLicenseRepository())
-                    ->unassignFromIxarmaCompany($user->id);
-                $clearRequest = new Request();
-                $clearRequest->aliases = [];
-                $clearRequest->connection_links = [];
-                (new CustomLicenseRepository())->update($clearRequest, $client->id);
+            if ($users) {
+                foreach ($users->entities as $user) {
+                    (new CustomLicenseRepository())
+                        ->unassignFromIxarmaCompany($user->id);
+                    $clearRequest = new Request();
+                    $clearRequest->aliases = [];
+                    $clearRequest->connection_links = [];
+                    (new CustomLicenseRepository())->update($clearRequest, $client->id);
+                }
             }
         }
         if ($client->customLicense) {
