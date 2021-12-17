@@ -341,6 +341,12 @@
                                     <strong v-else>{{ item.name }}</strong>
                                     <template v-slot:actions>
                                         <v-icon
+                                            v-if="item.custom_license === null"
+                                            @click.prevent.stop="linkClientToIxarmaCompany(item)"
+                                        >
+                                            mdi-plus
+                                        </v-icon>
+                                        <v-icon
                                             v-if="item.custom_license && item.custom_license.ixarma_object"
                                             @click.prevent.stop="showChildClientEditorDialog(item)"
                                         >
@@ -1309,11 +1315,17 @@ export default {
                 isRelated = 1
             }
             license.renewable = renewable
+            license.expiresAt = this.moment(license.expiresAt, 'YYYY-MM-DD').format('DD/MM/YYYY')
             axios.put(`/api/custom_license/${id}/limits`, license).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.license = response.data
-                    this.license.expiresAt = this.moment(response.data.expiresAt, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                    if (isRelated === 0) {
+                        this.license = response.data
+                        this.license.expiresAt = this.moment(response.data.expiresAt, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                    } else {
+                        this.selectedChildClientLicense = response.data
+                        this.selectedChildClientLicense.expiresAt = this.moment(response.data.expiresAt, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                    }
                     this.snackbarMessage = this.license = this.langMap.main.update_successful;
                     this.actionColor = 'success';
                     this.snackbar = true;
@@ -1469,6 +1481,25 @@ export default {
             this.childClientEditorDialog = true
             this.selectedChildClient = item
             this.getClient(this.selectedChildClient.id);
+        },
+        linkClientToIxarmaCompany(item) {
+            axios.get(`/api/custom_license/${item.id}/link`)
+                .then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.main.update_successful;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.getLicenseUsers();
+                        this.getRelatedClients();
+                        this.$forceUpdate();
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            this.assignCompanyDialog = false
         },
         assignToIxarmaCompany() {
             axios.post('/api/custom_license_unassigned/assign', this.reassignedUserForm, {})
