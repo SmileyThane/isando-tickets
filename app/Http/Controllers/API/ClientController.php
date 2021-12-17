@@ -56,13 +56,6 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-//  deprecated method
-//    public function get(Request $request)
-//    {
-//        $clients = $this->clientRepo->clients($request);
-//        return self::showResponse(true, $clients);
-//    }
-
     public function suppliers(Request $request)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
@@ -98,8 +91,6 @@ class ClientController extends Controller
     {
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request, false);
-
-//        dd($hasAccess, $isValid);
         if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->clientRepo->update($request, $id));
         }
