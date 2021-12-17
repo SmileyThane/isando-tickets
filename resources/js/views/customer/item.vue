@@ -34,7 +34,8 @@
                                        style="max-width: 80px; max-height: 80px"/>
                             </v-col>
                             <v-col :cols="client.logo_url ? 4 : 6">
-                                <h3 class="mb-3">{{ client.client_name }}</h3>
+                                <h3 class="mb-0">{{ client.client_name }}</h3>
+                                <h5 class="mb-3">{{ client.supplier_name }}</h5>
                                 <h4 class="mb-3">{{ client.number }}</h4>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
