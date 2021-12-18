@@ -17,7 +17,7 @@ class Client extends Model
     protected $fillable = ['name', 'short_name', 'description', 'photo', 'city', 'country_id', 'is_active', 'company_external_id', 'logo_url'];
 
     protected $appends = [
-        'contact_phone', 'contact_email'
+        'contact_phone', 'contact_email', 'supplier_name'
     ];
 
     public function clientable(): MorphTo
@@ -29,6 +29,7 @@ class Client extends Model
     {
         return $this->morphMany(self::class, 'supplier');
     }
+
 
     public function allClients(): MorphMany
     {
@@ -78,6 +79,18 @@ class Client extends Model
     public function Projects()
     {
         return $this->hasMany(TrackingProject::class, 'client_id', 'id');
+    }
+
+    public function getSupplierNameAttribute()
+    {
+        if ($this->supplier_type && $this->supplier_id) {
+            $supplier = $this->supplier_type::query()->find($this->supplier_id);
+            if ($supplier) {
+                return $supplier->name;
+            }
+        }
+
+        return null;
     }
 
     public function getContactPhoneAttribute()

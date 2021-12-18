@@ -195,7 +195,12 @@ class ClientRepository
         $client->number = $request->number ?? $client->number;
         $client->short_name = $request->short_name ?? $client->short_name;
         $client->photo = $request->photo ?? $client->photo;
+        if ($request->supplier_id && $request->supplier_type) {
+            $client->supplier_id = $request->supplier_id ?? $client->supplier_id;
+            $client->supplier_type = $request->supplier_type ?? $client->supplier_type;
+        }
         $client->save();
+
         return $client;
     }
 

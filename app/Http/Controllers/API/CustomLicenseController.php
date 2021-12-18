@@ -66,6 +66,18 @@ class CustomLicenseController extends Controller
         return self::showResponse(false);
     }
 
+    public function create($id)
+    {
+        if (Client::query()->find($id)->custom_license !== null) {
+            return self::showResponse(true);
+        }
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->customLicenseRepository->create($id));
+        }
+
+        return self::showResponse(false);
+    }
+
     public function update(Request $request, $id)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {

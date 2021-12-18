@@ -34,7 +34,8 @@
                                        style="max-width: 80px; max-height: 80px"/>
                             </v-col>
                             <v-col :cols="client.logo_url ? 4 : 6">
-                                <h3 class="mb-3">{{ client.client_name }}</h3>
+                                <h3 class="mb-0">{{ client.client_name }}</h3>
+                                <h5 class="mb-3">{{ client.supplier_name }}</h5>
                                 <h4 class="mb-3">{{ client.number }}</h4>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
@@ -126,7 +127,7 @@
                                                         type="text"
                                                     />
                                                 </v-col>
-                                                <v-col cols="3">
+                                                <v-col cols="6">
                                                     <v-text-field
                                                         v-model="client.short_name"
                                                         :color="themeBgColor"
@@ -136,7 +137,7 @@
                                                         type="text"
                                                     />
                                                 </v-col>
-                                                <v-col cols="3">
+                                                <v-col cols="6">
                                                     <v-text-field
                                                         v-model="client.number"
                                                         :color="themeBgColor"
@@ -145,6 +146,18 @@
                                                         prepend-icon="mdi-numeric"
                                                         type="text"
                                                         :rules="[false, 0, ]"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="6">
+                                                    <v-select
+                                                        dense
+                                                        :label="langMap.customer.supplier"
+                                                        :color="themeBgColor"
+                                                        :item-color="themeBgColor"
+                                                        item-text="name"
+                                                        item-value="item"
+                                                        v-model="client.supplier_object"
+                                                        :items="suppliers"
                                                     />
                                                 </v-col>
                                                 <v-col cols="12">
@@ -1552,6 +1565,7 @@ export default {
             snackbarMessage: '',
             errors: [],
             languages: [],
+            suppliers: [],
             options: {
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
             },
@@ -1572,6 +1586,7 @@ export default {
                 client_name: '',
                 short_name: '',
                 client_description: '',
+                supplier_object: {},
                 products: [
                     {
                         product_data: {}
@@ -1682,6 +1697,7 @@ export default {
         }
     },
     mounted() {
+        this.getSuppliers();
         this.getClient();
         this.getRoles();
         this.getLanguages();
@@ -1712,13 +1728,28 @@ export default {
                     this.client = response.data
                     this.client.client_name = response.data.name
                     this.client.client_description = response.data.description
+                    this.client.supplier_object = {}
+                    this.client.supplier_object[this.client.supplier_type] = this.client.supplier_id
                     this.$store.state.pageName = this.client.client_name
+                    console.log(this.client);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
                     this.snackbar = true;
                 }
 
+            })
+        },
+        getSuppliers() {
+            axios.get('/api/supplier').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.suppliers = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
             });
         },
         getLanguages() {
@@ -1835,6 +1866,8 @@ export default {
                     }
                 });
             }
+            this.client.supplier_type = Object.keys(this.client.supplier_object).shift()
+            this.client.supplier_id = Object.values(this.client.supplier_object).shift()
             axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
                 response = response.data
                 if (response.success === true) {

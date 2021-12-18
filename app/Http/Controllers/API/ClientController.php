@@ -13,6 +13,7 @@ use App\Repositories\LimitationGroupRepository;
 use App\Repositories\UserRepository;
 use App\Role;
 use App\RoleHasPermission;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,7 +30,7 @@ class ClientController extends Controller
         $this->companyUserRepo = $companyUserRepository;
     }
 
-    public function all(Request $request)
+    public function all(Request $request): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
             return self::showResponse(true, $this->clientRepo->all($request));
@@ -38,7 +39,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function clients(Request $request)
+    public function clients(Request $request): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
             return self::showResponse(true, $this->clientRepo->clients($request));
@@ -47,7 +48,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function relatedClients(Request $request, int $id)
+    public function relatedClients(Request $request, int $id): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
             return self::showResponse(true, $this->clientRepo->relatedClients($request, $id));
@@ -56,14 +57,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-//  deprecated method
-//    public function get(Request $request)
-//    {
-//        $clients = $this->clientRepo->clients($request);
-//        return self::showResponse(true, $clients);
-//    }
-
-    public function suppliers(Request $request)
+    public function suppliers(Request $request): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
             return self::showResponse(true, $this->clientRepo->suppliers($request));
@@ -72,7 +66,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function find($id)
+    public function find($id): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
             return self::showResponse(true, $this->clientRepo->find($id));
@@ -81,7 +75,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request);
@@ -94,12 +88,10 @@ class ClientController extends Controller
         return self::showResponse(false, $isValid);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): JsonResponse
     {
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request, false);
-
-//        dd($hasAccess, $isValid);
         if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->clientRepo->update($request, $id));
         }
@@ -107,7 +99,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function delete(Request $request, $id)
+    public function delete(Request $request, $id): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_DELETE_ACCESS)) {
             return self::showResponse(true, $this->clientRepo->delete($id));
@@ -116,7 +108,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function attach(Request $request)
+    public function attach(Request $request): JsonResponse
     {
         $result = false;
         $clientRole = null;
@@ -156,7 +148,7 @@ class ClientController extends Controller
         return self::showResponse($result, $companyUser);
     }
 
-    public function detach($id)
+    public function detach($id): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
             return self::showResponse($this->clientRepo->detach($id));
@@ -165,7 +157,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function changeIsActive(Request $request)
+    public function changeIsActive(Request $request): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
             return self::showResponse($this->clientRepo->changeIsActive($request));
@@ -174,7 +166,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function recipientsTree()
+    public function recipientsTree(): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
             return self::showResponse(true, $this->clientRepo->getClientsAsRecipientsTree());
@@ -183,7 +175,7 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function updateLogo(Request $request, $id = null)
+    public function updateLogo(Request $request, $id = null): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
             return self::showResponse(true, $this->clientRepo->updateLogo($request, $id));
