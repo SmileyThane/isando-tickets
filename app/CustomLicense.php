@@ -3,8 +3,10 @@
 namespace App;
 
 use App\Repositories\CustomLicenseRepository;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Throwable;
 
 class CustomLicense extends Model
 {
@@ -25,9 +27,17 @@ class CustomLicense extends Model
             $result = (new CustomLicenseRepository())->makeIxArmaRequest("/api/v1/company/full/$ixArmaId", []);
             $parsedResult = json_decode($result->getContents(), true);
             if ($parsedResult['status'] === 'SUCCESS') {
+                try {
+                    if ($parsedResult['body']['limits'] && $parsedResult['body']['limits']['expiresAt'] === "01/01/1970") {
+                        $parsedResult['body']['limits']['expiresAt'] = Carbon::now()->subDay()->format('d/m/Y');
+                    }
+                } catch (Throwable $throwable) {
+                }
+
                 return $parsedResult['body'];
             }
         }
+
         return null;
     }
 }
