@@ -504,7 +504,7 @@ class LanguageSeeder extends Seeder
                             'licensed' => 'Licensed',
                             'platform' => 'Platform',
                             'active' => 'Active',
-                            'expired_at' => 'Trial expires',
+                            'expired_at' => 'License expires',
                             'aliases' => 'Aliases',
                             'additional_licenses' => 'Additional licenses',
                             'license_users' => 'License Users',
