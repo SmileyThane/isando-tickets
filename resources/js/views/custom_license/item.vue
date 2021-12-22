@@ -65,7 +65,7 @@
                         ></v-checkbox>
                         <v-divider></v-divider>
                         <br>
-                        <label>{{langMap.custom_license.connection_links}}</label>
+                        <label>{{ langMap.custom_license.connection_links }}</label>
                         <v-text-field
                             v-for="(id, key) in client.connection_links"
                             :key="'connection_links'+key"
@@ -100,42 +100,42 @@
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
-<!--                        <v-divider></v-divider>-->
-<!--                        <v-spacer>-->
-<!--                            &nbsp;-->
-<!--                        </v-spacer>-->
-<!--                        <label>{{langMap.custom_license.aliases}}</label>-->
-<!--                        <v-text-field-->
-<!--                            v-for="(id, key) in client.aliases"-->
-<!--                            :key="'aliases'+key"-->
-<!--                            v-model="client.aliases[key]"-->
-<!--                            :color="themeBgColor"-->
-<!--                            :readonly="!enableToEdit"-->
-<!--                            dense-->
-<!--                            prepend-icon="mdi-text"-->
-<!--                            required-->
-<!--                            type="text"-->
-<!--                        >-->
-<!--                            <template v-slot:append>-->
-<!--                                <v-icon-->
-<!--                                    color="red"-->
-<!--                                    @click="removeAlias(key)"-->
-<!--                                >-->
-<!--                                    mdi-cancel-->
-<!--                                </v-icon>-->
-<!--                            </template>-->
-<!--                        </v-text-field>-->
-<!--                        <v-spacer>-->
-<!--                            &nbsp;-->
-<!--                        </v-spacer>-->
-<!--                        <v-btn-->
-<!--                            v-if="enableToEdit"-->
-<!--                            color="green"-->
-<!--                            outlined-->
-<!--                            @click="addAlias(false)"-->
-<!--                        >-->
-<!--                            <v-icon>mdi-plus</v-icon>-->
-<!--                        </v-btn>-->
+                        <!--                        <v-divider></v-divider>-->
+                        <!--                        <v-spacer>-->
+                        <!--                            &nbsp;-->
+                        <!--                        </v-spacer>-->
+                        <!--                        <label>{{langMap.custom_license.aliases}}</label>-->
+                        <!--                        <v-text-field-->
+                        <!--                            v-for="(id, key) in client.aliases"-->
+                        <!--                            :key="'aliases'+key"-->
+                        <!--                            v-model="client.aliases[key]"-->
+                        <!--                            :color="themeBgColor"-->
+                        <!--                            :readonly="!enableToEdit"-->
+                        <!--                            dense-->
+                        <!--                            prepend-icon="mdi-text"-->
+                        <!--                            required-->
+                        <!--                            type="text"-->
+                        <!--                        >-->
+                        <!--                            <template v-slot:append>-->
+                        <!--                                <v-icon-->
+                        <!--                                    color="red"-->
+                        <!--                                    @click="removeAlias(key)"-->
+                        <!--                                >-->
+                        <!--                                    mdi-cancel-->
+                        <!--                                </v-icon>-->
+                        <!--                            </template>-->
+                        <!--                        </v-text-field>-->
+                        <!--                        <v-spacer>-->
+                        <!--                            &nbsp;-->
+                        <!--                        </v-spacer>-->
+                        <!--                        <v-btn-->
+                        <!--                            v-if="enableToEdit"-->
+                        <!--                            color="green"-->
+                        <!--                            outlined-->
+                        <!--                            @click="addAlias(false)"-->
+                        <!--                        >-->
+                        <!--                            <v-icon>mdi-plus</v-icon>-->
+                        <!--                        </v-btn>-->
                     </v-card-text>
                 </v-card>
             </div>
@@ -162,7 +162,8 @@
                                @click="setEnableToEditLicense(null); getLicense();">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn v-if="enableToEditLicense" color="white" style="color: black;" @click="updateLicense(null)">
+                        <v-btn v-if="enableToEditLicense" color="white" style="color: black;"
+                               @click="updateLicense(null)">
                             {{ langMap.main.update }}
                         </v-btn>
                     </v-toolbar>
@@ -181,7 +182,8 @@
                                                 <v-icon>mdi-account-group</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="langMap.custom_license.total_users"></v-list-item-title>
+                                                <v-list-item-title
+                                                    v-text="langMap.custom_license.total_users"></v-list-item-title>
                                                 <v-list-item-subtitle
                                                     v-text="license.usersAllowed"></v-list-item-subtitle>
                                             </v-list-item-content>
@@ -191,7 +193,8 @@
                                                 <v-icon>mdi-account-multiple-minus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="langMap.custom_license.new_users"></v-list-item-title>
+                                                <v-list-item-title
+                                                    v-text="langMap.custom_license.new_users"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="usersAssigned"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
@@ -200,7 +203,8 @@
                                                 <v-icon>mdi-account-multiple-plus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="langMap.custom_license.users_available"></v-list-item-title>
+                                                <v-list-item-title
+                                                    v-text="langMap.custom_license.users_available"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="license.usersLeft"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
@@ -209,7 +213,8 @@
                                                 <v-icon>mdi-license</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="langMap.custom_license.active"></v-list-item-title>
+                                                <v-list-item-title
+                                                    v-text="langMap.custom_license.active"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="license.active"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
@@ -218,7 +223,8 @@
                                                 <v-icon> mdi-calendar-weekend-outline</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="langMap.custom_license.trial_days"></v-list-item-title>
+                                                <v-list-item-title
+                                                    v-text="langMap.custom_license.trial_days"></v-list-item-title>
                                                 <v-text-field
                                                     v-if="enableToEditLicense"
                                                     v-model="license.trialPeriodDays"
@@ -264,7 +270,7 @@
                                     {{ license.active ? 'suspend' : 'renew' }}
                                 </v-btn>
                                 <div class="overline mx-2">
-                                    {{langMap.custom_license.additional_licenses}}
+                                    {{ langMap.custom_license.additional_licenses }}
                                 </div>
                                 <v-row>
                                     <v-col md="6">
@@ -317,8 +323,12 @@
                                           class="text-left"
                                     >
                                         <strong>{{ item.name }}:</strong>
-                                        {{ langMap.custom_license.total_users + ': ' + item.custom_license.ixarma_object.limits.usersAllowed }} |
-                                        {{ langMap.custom_license.users_available + ' ' + item.custom_license.ixarma_object.limits.usersLeft }} |
+                                        {{
+                                            langMap.custom_license.total_users + ': ' + item.custom_license.ixarma_object.limits.usersAllowed
+                                        }} |
+                                        {{
+                                            langMap.custom_license.users_available + ' ' + item.custom_license.ixarma_object.limits.usersLeft
+                                        }} |
                                         {{ langMap.custom_license.active }}
                                                                 <v-checkbox
                                                                     style="display: inline-block; margin-top: 0; padding-top: 0;"
@@ -327,9 +337,13 @@
                                                                     color="success"
                                                                     hide-details
                                                                 ></v-checkbox>|
-                                        {{ langMap.custom_license.expired_at + ' ' + item.custom_license.ixarma_object.limits.expiresAt }} |
-                                        {{ langMap.custom_license.trial_days + ' ' + item.custom_license.ixarma_object.limits.trialPeriodDays }} |
-                                        {{ langMap.custom_license.auto_assign}}
+                                        {{
+                                            langMap.custom_license.expired_at + ' ' + item.custom_license.ixarma_object.limits.expiresAt
+                                        }} |
+                                        {{
+                                            langMap.custom_license.trial_days + ' ' + item.custom_license.ixarma_object.limits.trialPeriodDays
+                                        }} |
+                                        {{ langMap.custom_license.auto_assign }}
                                         <v-checkbox
                                             @click.prevent.stop="updateAutoAssignFlag(item)"
                                             style="display: inline-block; margin-top: 0; padding-top: 0;"
@@ -389,7 +403,7 @@
                                                         <v-icon>
                                                             mdi-calendar
                                                         </v-icon>
-                                                        {{item.lastActivationChangeString}}
+                                                        {{ item.lastActivationChangeString }}
                                                     </template>
                                                     <template v-slot:item.trialExpirationAtString="{ item }">
                                                         <v-icon
@@ -400,7 +414,7 @@
                                                         <span
                                                             @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
                                                         >
-                                                            {{item.trialExpirationAtString}}
+                                                            {{ item.trialExpirationAtString }}
                                                         </span>
                                                     </template>
                                                     <template v-slot:item.licensed="{ item }">
@@ -415,13 +429,14 @@
                                                     <template v-slot:item.actions="{ item }">
                                                         <v-tooltip top>
                                                             <template v-slot:activator="{ on, attrs }">
-                                                                <v-btn @click.stop.prevent="showUnassignDialog(item)" icon v-bind="attrs" v-on="on">
+                                                                <v-btn @click.stop.prevent="showUnassignDialog(item)"
+                                                                       icon v-bind="attrs" v-on="on">
                                                                     <v-icon>
                                                                         mdi-delete
                                                                     </v-icon>
                                                                 </v-btn>
                                                             </template>
-                                                            <span>{{langMap.custom_license.unassign_contact}}</span>
+                                                            <span>{{ langMap.custom_license.unassign_contact }}</span>
                                                         </v-tooltip>
                                                     </template>
                                                 </v-data-table>
@@ -442,7 +457,10 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.custom_license.license_users }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.custom_license.license_users
+                            }}
+                        </v-toolbar-title>
                     </v-toolbar>
                     <div class="card-body">
                         <v-data-table
@@ -460,7 +478,7 @@
                                 <v-icon>
                                     mdi-calendar
                                 </v-icon>
-                                {{item.lastActivationChangeString}}
+                                {{ item.lastActivationChangeString }}
                             </template>
                             <template v-slot:item.trialExpirationAtString="{ item }">
                                 <v-icon
@@ -471,7 +489,7 @@
                                 <span
                                     @click.stop.prevent="showExpiredAtDialog"
                                 >
-                                    {{item.trialExpirationAtString}}
+                                    {{ item.trialExpirationAtString }}
                                 </span>
                             </template>
                             <template v-slot:item.licensed="{ item }">
@@ -487,13 +505,14 @@
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn @click.stop.prevent="showUnassignDialog(item)" icon v-bind="attrs" v-on="on">
+                                        <v-btn @click.stop.prevent="showUnassignDialog(item)" icon v-bind="attrs"
+                                               v-on="on">
                                             <v-icon>
                                                 mdi-delete
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.company.delete_contact}}</span>
+                                    <span>{{ langMap.company.delete_contact }}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
@@ -659,46 +678,46 @@
                         ></v-checkbox>
                         <v-divider></v-divider>
                         <br>
-<!--                        <label>{{langMap.custom_license.connection_links}}</label>-->
-<!--                        <v-text-field-->
-<!--                            v-for="(id, key) in selectedChildClient.connection_links"-->
-<!--                            :key="'child_connection_links'+key"-->
-<!--                            v-model="selectedChildClient.connection_links[key]"-->
-<!--                            :color="themeBgColor"-->
-<!--                            :readonly="!enableToEditChild"-->
-<!--                            dense-->
-<!--                            prepend-icon="mdi-link"-->
-<!--                            required-->
-<!--                            type="text"-->
-<!--                        >-->
-<!--                            <template v-slot:append>-->
-<!--                                <v-icon-->
-<!--                                    color="red"-->
-<!--                                    @click="removeConnectionLink(key, true)"-->
-<!--                                >-->
-<!--                                    mdi-cancel-->
-<!--                                </v-icon>-->
-<!--                            </template>-->
-<!--                        </v-text-field>-->
-<!--                        <v-spacer>-->
-<!--                            &nbsp;-->
-<!--                        </v-spacer>-->
-<!--                        <v-btn-->
-<!--                            v-if="enableToEditChild"-->
-<!--                            color="green"-->
-<!--                            outlined-->
-<!--                            @click="addConnectionLink(true)"-->
-<!--                        >-->
-<!--                            <v-icon>mdi-plus</v-icon>-->
-<!--                        </v-btn>-->
-<!--                        <v-spacer>-->
-<!--                            &nbsp;-->
-<!--                        </v-spacer>-->
-<!--                        <v-divider></v-divider>-->
+                        <!--                        <label>{{langMap.custom_license.connection_links}}</label>-->
+                        <!--                        <v-text-field-->
+                        <!--                            v-for="(id, key) in selectedChildClient.connection_links"-->
+                        <!--                            :key="'child_connection_links'+key"-->
+                        <!--                            v-model="selectedChildClient.connection_links[key]"-->
+                        <!--                            :color="themeBgColor"-->
+                        <!--                            :readonly="!enableToEditChild"-->
+                        <!--                            dense-->
+                        <!--                            prepend-icon="mdi-link"-->
+                        <!--                            required-->
+                        <!--                            type="text"-->
+                        <!--                        >-->
+                        <!--                            <template v-slot:append>-->
+                        <!--                                <v-icon-->
+                        <!--                                    color="red"-->
+                        <!--                                    @click="removeConnectionLink(key, true)"-->
+                        <!--                                >-->
+                        <!--                                    mdi-cancel-->
+                        <!--                                </v-icon>-->
+                        <!--                            </template>-->
+                        <!--                        </v-text-field>-->
+                        <!--                        <v-spacer>-->
+                        <!--                            &nbsp;-->
+                        <!--                        </v-spacer>-->
+                        <!--                        <v-btn-->
+                        <!--                            v-if="enableToEditChild"-->
+                        <!--                            color="green"-->
+                        <!--                            outlined-->
+                        <!--                            @click="addConnectionLink(true)"-->
+                        <!--                        >-->
+                        <!--                            <v-icon>mdi-plus</v-icon>-->
+                        <!--                        </v-btn>-->
+                        <!--                        <v-spacer>-->
+                        <!--                            &nbsp;-->
+                        <!--                        </v-spacer>-->
+                        <!--                        <v-divider></v-divider>-->
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
-                        <label>{{langMap.custom_license.aliases}}</label>
+                        <label>{{ langMap.custom_license.aliases }}</label>
                         <v-text-field
                             v-for="(id, key) in selectedChildClient.aliases"
                             :key="'aliases'+key"
@@ -786,7 +805,8 @@
                                                 <v-icon>mdi-account-multiple-minus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="langMap.custom_license.new_users"></v-list-item-title>
+                                                <v-list-item-title
+                                                    v-text="langMap.custom_license.new_users"></v-list-item-title>
                                                 <v-list-item-subtitle
                                                     v-text="childUsersAssigned"></v-list-item-subtitle>
                                             </v-list-item-content>
@@ -796,7 +816,8 @@
                                                 <v-icon>mdi-account-multiple-plus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="langMap.custom_license.users_available"></v-list-item-title>
+                                                <v-list-item-title
+                                                    v-text="langMap.custom_license.users_available"></v-list-item-title>
                                                 <v-list-item-subtitle
                                                     v-text="selectedChildClientLicense.usersLeft"></v-list-item-subtitle>
                                             </v-list-item-content>
@@ -806,7 +827,8 @@
                                                 <v-icon>mdi-license</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="langMap.custom_license.active"></v-list-item-title>
+                                                <v-list-item-title
+                                                    v-text="langMap.custom_license.active"></v-list-item-title>
                                                 <v-list-item-subtitle
                                                     v-text="selectedChildClientLicense.active"></v-list-item-subtitle>
                                             </v-list-item-content>
@@ -816,7 +838,8 @@
                                                 <v-icon> mdi-calendar-weekend-outline</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="langMap.custom_license.trial_days"></v-list-item-title>
+                                                <v-list-item-title
+                                                    v-text="langMap.custom_license.trial_days"></v-list-item-title>
                                                 <v-text-field
                                                     v-if="enableToEditChildLicense"
                                                     v-model="selectedChildClientLicense.trialPeriodDays"
@@ -862,7 +885,7 @@
                                     {{ selectedChildClientLicense.active ? 'suspend' : 'renew' }}
                                 </v-btn>
                                 <div class="overline mx-2">
-                                    {{langMap.custom_license.additional_licenses}}
+                                    {{ langMap.custom_license.additional_licenses }}
                                 </div>
                                 <v-row>
                                     <v-col md="6">
@@ -936,13 +959,29 @@ export default {
                 // {text: 'id', value: 'id'},
                 {text: `${this.$store.state.lang.lang_map.custom_license.username}`, value: 'username'},
                 {text: `${this.$store.state.lang.lang_map.main.phone}`, value: 'phoneNumber', sortable: false},
-                {text: `${this.$store.state.lang.lang_map.custom_license.platform}`, value: 'platform', sortable: false},
+                {
+                    text: `${this.$store.state.lang.lang_map.custom_license.platform}`,
+                    value: 'platform',
+                    sortable: false
+                },
                 {text: `${this.$store.state.lang.lang_map.ticket.ip_address}`, value: 'serverIp'},
                 {text: `${this.$store.state.lang.lang_map.custom_license.organisation}`, value: 'orgPath'},
-                {text: `${this.$store.state.lang.lang_map.custom_license.licensed}`, value: 'licensed', sortable: false},
+                {
+                    text: `${this.$store.state.lang.lang_map.custom_license.licensed}`,
+                    value: 'licensed',
+                    sortable: false
+                },
                 {text: `${this.$store.state.lang.lang_map.custom_license.active}`, value: 'active', sortable: false},
-                {text: `${this.$store.state.lang.lang_map.custom_license.expired_at}`, value: 'trialExpirationAtString', sortable: false},
-                {text: `${this.$store.state.lang.lang_map.custom_license.last_activation}`, value: 'lastActivationChangeString', sortable: false},
+                {
+                    text: `${this.$store.state.lang.lang_map.custom_license.expired_at}`,
+                    value: 'trialExpirationAtString',
+                    sortable: false
+                },
+                {
+                    text: `${this.$store.state.lang.lang_map.custom_license.last_activation}`,
+                    value: 'lastActivationChangeString',
+                    sortable: false
+                },
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions'},
             ],
             menu2: false,
@@ -1165,8 +1204,7 @@ export default {
             this.updateLicense(item.id, false);
         },
         unassignFromIxarmaCompany() {
-            axios.post('/api/custom_license_user/unassign', this.unassignedUserForm, {
-            }).then(response => {
+            axios.post('/api/custom_license_user/unassign', this.unassignedUserForm, {}).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.snackbarMessage = this.langMap.main.update_successful;
@@ -1259,7 +1297,7 @@ export default {
                     this.$forceUpdate();
                     // this.licenseUsers = response.data.entities
                 } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.snackbarMessage = response.error;
                     this.actionColor = 'error';
                     this.snackbar = true;
                 }
@@ -1526,11 +1564,11 @@ export default {
                 isRelated = false
             }
             // if (selectedClient.is_portal === 0) {
-                if (isRelated) {
-                    this.enableToEditChild = !this.enableToEditChild
-                } else {
-                    this.enableToEdit = !this.enableToEdit
-                }
+            if (isRelated) {
+                this.enableToEditChild = !this.enableToEditChild
+            } else {
+                this.enableToEdit = !this.enableToEdit
+            }
             // }
             this.$forceUpdate();
 
@@ -1542,11 +1580,11 @@ export default {
                 isRelated = false
             }
             // if (selectedClient.is_portal === 0) {
-                if (isRelated) {
-                    this.enableToEditChildLicense = !this.enableToEditChildLicense
-                } else {
-                    this.enableToEditLicense = !this.enableToEditLicense
-                }
+            if (isRelated) {
+                this.enableToEditChildLicense = !this.enableToEditChildLicense
+            } else {
+                this.enableToEditLicense = !this.enableToEditLicense
+            }
             // }
         },
         showExpiredAtDialog() {
