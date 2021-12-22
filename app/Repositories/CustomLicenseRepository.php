@@ -218,10 +218,8 @@ class CustomLicenseRepository
         $activationAction = $isLicensed === 'true' ? 'deactivate' : 'activate';
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$remoteUserId/$activationAction", []);
         $parsedResult = json_decode($result->getContents(), true);
-        if ($parsedResult['status'] === 'SUCCESS') {
-            return $parsedResult['body'];
-        }
-        return null;
+//        dd($parsedResult);
+        return $parsedResult['status'] === 'SUCCESS' ?  $parsedResult['body'] : $parsedResult['message'];
     }
 
     public function create($id)
