@@ -327,7 +327,11 @@
                                                                     color="success"
                                                                     hide-details
                                                                 ></v-checkbox>|
-                                        {{ langMap.custom_license.expired_at + ' ' + item.custom_license.ixarma_object.limits.expiresAt }} |
+                                        {{ langMap.custom_license.expired_at + ' ' +
+                                            item.custom_license.ixarma_object.limits.expiresAt === '01/01/1970' ?
+                                            moment.substract(1, 'days') :
+                                            item.custom_license.ixarma_object.limits.expiresAt
+                                        }} |
                                         {{ langMap.custom_license.trial_days + ' ' + item.custom_license.ixarma_object.limits.trialPeriodDays }} |
                                         {{ langMap.custom_license.auto_assign}}
                                         <v-checkbox
