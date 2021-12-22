@@ -1297,7 +1297,7 @@ export default {
                     this.$forceUpdate();
                     // this.licenseUsers = response.data.entities
                 } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.snackbarMessage = response.error;
                     this.actionColor = 'error';
                     this.snackbar = true;
                 }
