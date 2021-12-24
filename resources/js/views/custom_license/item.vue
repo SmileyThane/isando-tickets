@@ -973,7 +973,7 @@ export default {
                 },
                 {text: `${this.$store.state.lang.lang_map.custom_license.active}`, value: 'active', sortable: false},
                 {
-                    text: `${this.$store.state.lang.lang_map.custom_license.expired_at}`,
+                    text: `${this.$store.state.lang.lang_map.custom_license.trial_expired_at}`,
                     value: 'trialExpirationAtString',
                     sortable: false
                 },
