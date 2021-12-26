@@ -61,7 +61,6 @@
                             :label="this.$store.state.lang.lang_map.customer.active"
                             color="success"
                             hide-details
-                            @change="changeIsActiveClient(client)"
                         ></v-checkbox>
                         <v-divider></v-divider>
                         <br>
@@ -113,7 +112,7 @@
                         <!--                            :readonly="!enableToEdit"-->
                         <!--                            dense-->
                         <!--                            prepend-icon="mdi-text"-->
-                        <!--                            required-->
+                        л<!--                            required-->
                         <!--                            type="text"-->
                         <!--                        >-->
                         <!--                            <template v-slot:append>-->
@@ -421,7 +420,7 @@
                                                         <v-checkbox
                                                             style="margin: 0;"
                                                             v-model="item.licensed"
-                                                            @click.stop.prevent="manageLicenseUsers(item.id, item.licensed); item.licensed = !item.licensed;"
+                                                            @click.stop.prevent="manageLicenseUsers(item.id, item.licensed);"
                                                             color="success"
                                                             hide-details
                                                         ></v-checkbox>
@@ -497,7 +496,7 @@
                                     :disabled="client.is_portal === 1"
                                     style="margin: 0;"
                                     v-model="item.licensed"
-                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed); item.licensed = !item.licensed;"
+                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed);"
                                     color="success"
                                     hide-details
                                 ></v-checkbox>
@@ -1259,15 +1258,11 @@ export default {
                     for (let key in response.data.entities) {
 
                         if (response.data.entities[key].lastActivationChangeString !== "01/01/1970") {
-                            // response.data.entities[key].lastActivationChangeString =
-                            //     this.moment(response.data.entities[key].lastActivationChangeString).format('DD/MM/YYYY')
                         } else {
                             response.data.entities[key].lastActivationChangeString = ''
                         }
 
                         if (response.data.entities[key].trialExpirationAtString !== "01/01/1970") {
-                            // response.data.entities[key].trialExpirationAtString =
-                            //     this.moment(response.data.entities[key].trialExpirationAtString).format('DD/MM/YYYY')
                         } else {
                             response.data.entities[key].trialExpirationAtString = ''
                         }
@@ -1288,6 +1283,7 @@ export default {
             });
         },
         manageLicenseUsers(remoteId, isLicensed) {
+            isLicensed = !isLicensed
             axios.get(`/api/custom_license/${this.$route.params.id}/user/${remoteId}/${isLicensed}`).then(response => {
                 response = response.data
                 if (response.success === true) {
