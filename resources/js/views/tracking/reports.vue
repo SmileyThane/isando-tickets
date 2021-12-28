@@ -1381,7 +1381,6 @@ export default {
             }
             this.builder.period.start = start ? moment(start).format(this.dateFormat) : start;
             this.builder.period.end = moment(end).format(this.dateFormat);
-            console.log(this.builder.period);
             const calendar = this.$refs.calendar;
             if (calendar) {
                 await calendar.updateValue({
@@ -1457,7 +1456,6 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log(err);
                     this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
@@ -1522,7 +1520,6 @@ export default {
                     this.dialogExportCSV = false;
                 })
                 .catch(err => {
-                    console.log(err);
                     this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
@@ -1653,7 +1650,6 @@ export default {
         createQuery(filters) {
             let query = { force: true };
             for (const i in filters) {
-                console.log(filters[i]);
                 query = { ...query, [filters[i].value]: filters[i].selected };
             }
             return query;
