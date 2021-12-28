@@ -112,7 +112,7 @@
                         <!--                            :readonly="!enableToEdit"-->
                         <!--                            dense-->
                         <!--                            prepend-icon="mdi-text"-->
-                        л<!--                            required-->
+                        <!--                            required-->
                         <!--                            type="text"-->
                         <!--                        >-->
                         <!--                            <template v-slot:append>-->
