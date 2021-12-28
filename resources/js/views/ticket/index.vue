@@ -537,7 +537,6 @@ export default {
                     });
                 }
             });
-            console.log(this.queryArray)
         },
         saveFilter() {
             let data = {
@@ -560,7 +559,6 @@ export default {
             });
         },
         removeFilter() {
-            console.log(this.filterId);
             axios.delete(`/api/ticket_filters/${this.filterId}`)
                 .then(
                     response => {
@@ -580,10 +578,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.products = response.data.data
-                } else {
-                    console.log('error')
                 }
-
             });
         },
         getTicketFilterParameters() {
@@ -591,8 +586,6 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.filterParams = response.data
-                } else {
-                    console.log('error')
                 }
 
             });
@@ -602,8 +595,6 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.priorities = response.data
-                } else {
-                    console.log('error')
                 }
 
             });
@@ -613,8 +604,6 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.types = response.data
-                } else {
-                    console.log('error')
                 }
 
             });
@@ -706,7 +695,6 @@ export default {
                     this.mergeTicketForm.child_ticket_id = null
                     this.mergeTicketDialog = false
                 } else {
-                    console.log('error')
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;

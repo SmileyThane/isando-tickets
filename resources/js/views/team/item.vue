@@ -268,33 +268,24 @@ themeBgColor: this.$store.state.themeBgColor,
                         this.team.team_name = response.data.name
                         this.team.team_description = response.data.description
                         this.getCompanies()
-                    } else {
-                        console.log('error')
                     }
 
                 });
             },
             getCompanies() {
-                // console.log(this.team);
                 axios.get(`/api/company/${this.team.team_owner_id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.companies = response.data
-                        // console.log(this.companies);
-                    } else {
-                        console.log('error')
                     }
 
                 });
             },
             addEmployee() {
-                // console.log(this.employeeForm);
                 axios.post(`/api/team/employee`, this.employeeForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getTeam()
-                    } else {
-                        console.log('error')
                     }
 
                 });
@@ -313,8 +304,6 @@ themeBgColor: this.$store.state.themeBgColor,
                         this.actionColor = 'success'
                         this.snackbar = true;
                         this.removeEmployeeDialog = false
-                    } else {
-                        console.log('error')
                     }
 
                 });
@@ -329,8 +318,6 @@ themeBgColor: this.$store.state.themeBgColor,
                         this.snackbarMessage = this.langMap.main.update_successful
                         this.actionColor = 'success'
                         this.snackbar = true;
-                    } else {
-                        console.log('error')
                     }
 
                 });
@@ -343,8 +330,6 @@ themeBgColor: this.$store.state.themeBgColor,
                     response = response.data
                     if (response.success === true) {
                         this.getTeam()
-                    } else {
-                        console.log('error')
                     }
 
                 });

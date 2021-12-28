@@ -226,8 +226,6 @@ themeBgColor: this.$store.state.themeBgColor,
                         this.totalTeams = response.data.total
                         this.lastPage = response.data.last_page
                         this.loading = false
-                    } else {
-                        console.log('error')
                     }
                 });
             },
@@ -237,8 +235,6 @@ themeBgColor: this.$store.state.themeBgColor,
                     if (response.success === true) {
                         this.getTeams()
                         this.teamForm = {}
-                    } else {
-                        console.log('error')
                     }
                 });
             },

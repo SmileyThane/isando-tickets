@@ -259,7 +259,6 @@ export default {
                     link.click();
                 })
                 .catch(err => {
-                    console.log(err);
                     this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
