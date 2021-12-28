@@ -218,7 +218,6 @@ export default {
                 'v-text-field--is-booted', 'v-text-field--placeholder', 'v-input--dense', 'time-field__flat'];
         },
         minTime: () => {
-            console.log(this.min);
             return undefined;
         },
     },
