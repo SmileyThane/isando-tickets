@@ -109,8 +109,6 @@ export default new Vuex.Store({
                     if (result.data.success === true && result.data.data.lang_map !== null) {
                         commit('setLang', result.data.data);
                         resolve();
-                    } else {
-                        console.log('ERROR: broken_lang_object!');
                     }
                 }).catch(error => {
                         reject(error.response && error.response.data.message || 'Error.');
