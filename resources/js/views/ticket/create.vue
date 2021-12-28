@@ -566,7 +566,6 @@
                 employees: [],
                 onFileChange(form) {
                     this[form].files = null;
-                    // console.log(event.target.files);
                     this[form].files = event.target.files;
                 },
                 createContactDlg: false,
@@ -654,9 +653,6 @@
                         this.ticketForm.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1].item : this.suppliers[0].item;
                         this.ticketForm.to = this.suppliers[0].item
                         this.getContacts(this.ticketForm.from)
-                        // console.log(this.ticketForm.from);
-                    } else {
-                        console.log('error')
                     }
                 });
             },
@@ -671,8 +667,6 @@
                     if (response.success === true) {
                         this.products = response.data.data
                         this.ticketForm.to_product_id = this.products[0].id
-                    } else {
-                        console.log('error')
                     }
 
                 });
@@ -683,8 +677,6 @@
                     if (response.success === true) {
                         this.priorities = response.data
                         this.ticketForm.priority_id = this.priorities[1].id
-                    } else {
-                        console.log('error')
                     }
 
                 });
@@ -694,8 +686,6 @@
                     response = response.data
                     if (response.success === true) {
                         this.types = response.data
-                    } else {
-                        console.log('error')
                     }
 
                 });
@@ -705,8 +695,6 @@
                     response = response.data
                     if (response.success === true) {
                         this.categories = response.data
-                    } else {
-                        console.log('error')
                     }
 
                 });
@@ -737,7 +725,6 @@
                         }
                         // this.ticketForm.contact_company_user_id = this.employees[0].id
                     } else {
-                        console.log('error')
                     }
 
                 });
@@ -746,7 +733,6 @@
                 if (!this.ticketForm.name) {
                     return false;
                 }
-                // console.log(this.ticketForm.from);
                 this.overlay = true;
                 this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0]
                 this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0]
@@ -785,7 +771,6 @@
                         this.snackbarMessage = 'Check ticket problems and try again, please!'
                         this.actionColor = 'error'
                         this.snackbar = true;
-                        console.log('error')
                     }
                 });
             },
