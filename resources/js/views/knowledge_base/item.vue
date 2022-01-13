@@ -105,9 +105,9 @@ export default {
         },
         openCategory() {
             if (parseInt(localStorage.getItem('kb_category'))) {
-                this.$router.push('/knowledge_base?category='+localStorage.getItem('kb_category'));
+                this.$router.push(`/${this.$route.params.alias}?category=${localStorage.getItem('kb_category')}`);
             } else {
-                this.$router.push('/knowledge_base');
+                this.$router.push(`/${this.$route.params.alias}`);
             }
         },
         download(url) {
