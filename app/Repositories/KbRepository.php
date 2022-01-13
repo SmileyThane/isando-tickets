@@ -13,26 +13,26 @@ use Illuminate\Support\Facades\Auth;
 
 class KbRepository
 {
-    public function getCategoriesTree()
+    public function getCategoriesTree($typeId)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
 
         $result = [];
         $company = Company::find($companyId);
         if ($company) {
-            $result = $company->kbCategories()->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get()->toTree();
+            $result = $company->kbCategories()->orderBy('name', 'ASC')->where('type_id', $typeId)->orderBy('name_de', 'ASC')->get()->toTree();
         }
         return $result;
     }
 
-    public function getCategories($category_id = null, $search)
+    public function getCategories($typeId, $category_id = null, $search)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
 
         $result = [];
         $company = Company::find($companyId);
         if ($company) {
-            $result = $company->kbCategories()->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+            $result = $company->kbCategories()->where('type_id', $typeId)->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
 
             $result = empty($category_id) ? $result->whereNull('parent_id') : $result->where('parent_id', $category_id);
 
@@ -51,9 +51,9 @@ class KbRepository
         return $result;
     }
 
-    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color)
+    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $type_id = null)
     {
-        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color'));
+        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'type_id'));
     }
 
     public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color)
@@ -67,9 +67,9 @@ class KbRepository
         return $category ? $category->delete() : false;
     }
 
-    public function getArticles($category_id, $search, $search_in_text = false, $tags = [])
+    public function getArticles($typeId, $category_id, $search, $search_in_text = false, $tags = [])
     {
-        $articles = KbArticle::with('tags', 'attachments')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+        $articles = KbArticle::with('tags', 'attachments')->where('type_id', $typeId)->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
         if ($category_id) {
             $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
                 $query->where('category_id', $category_id);
@@ -100,9 +100,9 @@ class KbRepository
         return $articles->get();
     }
 
-    public function getAllArticles()
+    public function getAllArticles($typeId)
     {
-        return KbArticle::select('id', 'name', 'name_de')->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
+        return KbArticle::select('id', 'name', 'name_de')->where('type_id', $typeId)->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
     }
 
     public function getArticle($id)
@@ -110,9 +110,9 @@ class KbRepository
         return KbArticle::with('categories', 'tags', 'attachments', 'next')->find($id);
     }
 
-    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1)
+    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $type_id = null)
     {
-        $article = KbArticle::create(compact('company_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color'));
+        $article = KbArticle::create(compact('company_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'type_id'));
 
         foreach ($categories as $category) {
             $article->categories()->attach($category);
