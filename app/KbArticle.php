@@ -14,7 +14,7 @@ class KbArticle extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'company_id', 'is_internal', 'featured_color', 'keywords', 'keywords_de'];
+    protected $fillable = ['name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'company_id', 'is_internal', 'featured_color', 'keywords', 'keywords_de', 'type_id'];
 
     protected $appends = ['featured_image'];
 
