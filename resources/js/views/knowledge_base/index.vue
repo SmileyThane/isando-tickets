@@ -17,14 +17,14 @@
                             </template>
 
                             <v-list>
-                                <v-list-item link>
-                                    <v-list-item-title @click="updateCategoryDlg = true">{{ langMap.kb.create_category }}</v-list-item-title>
+                                <v-list-item link @click.prevent="updateCategoryDlg = true">
+                                    <v-list-item-title >{{ langMap.kb.create_category }}</v-list-item-title>
                                     <v-list-item-action>
                                         <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
                                     </v-list-item-action>
                                 </v-list-item>
-                                <v-list-item link>
-                                    <v-list-item-title @click="createArticle">{{ langMap.kb.create_article }}</v-list-item-title>
+                                <v-list-item link @click.prevent="createArticle">
+                                    <v-list-item-title >{{ langMap.kb.create_article }}</v-list-item-title>
                                     <v-list-item-action>
                                         <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
                                     </v-list-item-action>
@@ -281,6 +281,7 @@ export default {
             updateCategoryDlg: false,
             deleteCategoryDlg: false,
             categoryForm: {
+                type: this.$route.params.alias,
                 id: null,
                 parent_id: this.$route.query.category ? this.$route.query.category: null,
                 name: '',
@@ -302,6 +303,12 @@ export default {
                 name: '',
                 name_de: ''
             }
+        }
+    },
+    watch: {
+        $route (to, from){
+            this.getCategories();
+            this.getArticles();
         }
     },
     mounted() {
@@ -332,7 +339,7 @@ export default {
             this.$store.dispatch('Tags/getTagList')
         },
         getCategories() {
-            axios.get('/api/kb/categories', {
+            axios.get(`/api/kb/categories?type=${this.$route.params.alias}`, {
                 params: {
                     search: this.searchWhere.includes(1) ? this.search : '',
                     category_id: this.$route.query && this.$route.query.category ? this.$route.query.category: null
@@ -349,7 +356,7 @@ export default {
             });
         },
         getCategoriesTree() {
-            axios.get('/api/kb/categories/tree').then(response => {
+            axios.get(`/api/kb/categories/tree?type=${this.$route.params.alias}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.categoriesTree = response.data;
@@ -361,7 +368,7 @@ export default {
             });
         },
         getArticles() {
-            axios.get('/api/kb/articles', {
+            axios.get(`/api/kb/articles?type=${this.$route.params.alias}`, {
                 params: {
                     search: this.searchWhere.includes(2) || this.searchWhere.includes(3) ? this.search : '',
                     search_in_text: this.searchWhere.includes(3),
@@ -385,10 +392,10 @@ export default {
 
             // let query = Object.assign({}, this.$route.query);
                 if (parseInt(id)) {
-                    this.$router.push(`/knowledge_base?category=${id}`, () => {})
+                    this.$router.push(`/${this.$route.params.alias}?category=${id}`, () => {})
                     // query.category = id;
                 } else if(this.$router.app.$route.fullPath !== this.$router.app.$route.path) {
-                    this.$router.push(`/knowledge_base`, () => {})
+                    this.$router.push(`/${this.$route.params.alias}`, () => {})
                     // delete query.category;
                 }
             // if (this.$route.query !== {})
@@ -404,6 +411,7 @@ export default {
         clearCategoryForm() {
             this.categoryForm = {
                 id: null,
+                type: this.$route.params.alias,
                 parent_id: this.$route.query.category ? this.$route.query.category: null,
                 name: '',
                 name_de: '',
@@ -417,6 +425,7 @@ export default {
         fillCategoryForm(category) {
             this.categoryForm = {
                 id: category.id,
+                type: this.$route.params.alias,
                 parent_id: category.parent_id,
                 name: category.name,
                 name_de: category.name_de,
@@ -497,13 +506,13 @@ export default {
 
         },
         readArticle(id) {
-            this.$router.push(`/knowledge_base/${id}`);
+            this.$router.push(`/${this.$route.params.alias}/${id}`);
         },
         createArticle() {
-            location.href = '/knowledge_base/create';
+            location.href = `/${this.$route.params.alias}/create`;
         },
         editArticle(id) {
-            this.$router.push(`/knowledge_base/${id}/edit`);
+            this.$router.push(`/${this.$route.params.alias}/${id}/edit`);
         },
         clearSelectedArticle() {
             this.selectedArticle = {
