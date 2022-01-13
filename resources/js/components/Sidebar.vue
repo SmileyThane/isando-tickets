@@ -71,16 +71,17 @@
             <v-divider></v-divider>
             <v-list dense>
                 <v-list-item
+                    v-for="item in kb"
                     style="background-color: white;"
                     dense
                     link
-                    to="/knowledge_base">
+                    :to="`/${item.alias}`">
                     <v-list-item-action>
                         <v-icon>mdi-book-open-page-variant</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>
-                            {{ langMap.sidebar.knowledge_base }}
+                            {{ item.alias }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -504,6 +505,7 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
+            kb: [],
             firstAlias: '',
             secondAlias: '',
             companyLogo: '',
@@ -532,6 +534,7 @@ export default {
         }
     },
     mounted() {
+        this.getKBTypes();
         this.getCompanyName();
         this.getCompanyLogo();
         this.getCompanySettings();
@@ -590,6 +593,12 @@ export default {
         },
         getTrackingSettings() {
             return this.$store.dispatch('Tracking/getSettings');
+        },
+        getKBTypes() {
+            axios.get(`/api/kb/types`)
+                .then( response => {
+                        this.kb = response.data.data
+                    })
         },
     },
     computed: {
