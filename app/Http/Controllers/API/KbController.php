@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\KbArticle;
+use App\KnowledgeBaseType;
 use App\Repositories\FileRepository;
 use App\Repositories\KbRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,12 +23,24 @@ class KbController extends Controller
         $this->fileRepo = $fileRepository;
     }
 
-    public function listCategories(Request $request) {
-        return self::showResponse(true, $this->kbRepo->getCategories($request->category_id, $request->search));
+    private function getTypeByAlias($alias)
+    {
+        $KBType = KnowledgeBaseType::query()->where('alias', $alias)->first();
+        return $KBType ? $KBType->id : 1;
+    }
+
+    public function listCategories(Request $request)
+    {
+        return self::showResponse(true, $this->kbRepo->getCategories($this->getTypeByAlias($request->type), $request->category_id, $request->search));
+    }
+
+    public function listTypes(Request $request): JsonResponse
+    {
+        return self::showResponse(true, KnowledgeBaseType::all());
     }
 
     public function categoriesTree(Request $request) {
-        return self::showResponse(true, $this->kbRepo->getCategoriesTree());
+        return self::showResponse(true, $this->kbRepo->getCategoriesTree($this->getTypeByAlias($request->type)));
     }
 
     public function addCategory(Request $request) {
@@ -38,7 +52,8 @@ class KbController extends Controller
             $request->description,
             $request->description_de,
             $request->icon ?? 'mdi-help',
-            $request->icon_color
+            $request->icon_color,
+            $this->getTypeByAlias($request->type)
         ));
     }
 
@@ -60,11 +75,11 @@ class KbController extends Controller
     }
 
     public function listArticles(Request $request) {
-        return self::showResponse(true, $this->kbRepo->getArticles($request->category_id, $request->search, $request->search_in_text, $request->tags));
+        return self::showResponse(true, $this->kbRepo->getArticles($this->getTypeByAlias($request->type), $request->category_id, $request->search, $request->search_in_text, $request->tags));
     }
 
     public function allArticles(Request $request) {
-        return self::showResponse(true, $this->kbRepo->getAllArticles());
+        return self::showResponse(true, $this->kbRepo->getAllArticles($this->getTypeByAlias($request->type)));
     }
 
 
@@ -89,7 +104,8 @@ class KbController extends Controller
             $request->keywords_de,
             $request->featured_color,
             $request->next ? json_decode($request->next) : [],
-            $request->step_type
+            $request->step_type,
+            $this->getTypeByAlias($request->type)
         );
 
         if ($request->has('files')) {
