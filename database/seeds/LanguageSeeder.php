@@ -899,7 +899,7 @@ class LanguageSeeder extends Seeder
                         'keywords' => 'Keywords',
                         'open_category' => 'Open category',
                         'return_to_parent' => 'Return to parent',
-                        'read_article' => 'Read post',
+                        'read_article' => 'Open',
                         'category_details' => 'Category details',
                         'article_details' => 'Post details',
                         'article_category' => 'Post category',

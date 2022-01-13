@@ -139,7 +139,7 @@
                                     </v-list>
                                 </v-menu>
                             </v-card-title>
-                            <v-card-text style="height: 10em;">
+                            <v-card-text style="height: 6em;">
                                 <v-chip-group v-if="article.tags">
                                     <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>
                                 </v-chip-group>
@@ -175,7 +175,14 @@
                                 </perfect-scrollbar>
                             </v-col>
                             <v-col cols="6">
-                                <v-combobox v-model="categoryForm.icon" :items="categoryIcons" :prepend-icon="categoryForm.icon" hide-selected :label="langMap.main.icon" :color="themeBgColor" />
+                                <label>{{ langMap.main.icon }}</label>
+                                <v-radio-group v-model="categoryForm.icon">
+                                    <v-radio v-for="item in categoryIcons" :key="item">
+                                        <template v-slot:label="{ item }">
+                                            {{ item.icon }}
+                                        </template>
+                                    </v-radio>
+                                </v-radio-group>
 
                                 <label>{{ langMap.kb.icon_color }}</label>
                                 <v-color-picker dot-size="25" mode="hexa" :model="categoryForm.icon_color" @update:color="updateCategoryColor"/>
