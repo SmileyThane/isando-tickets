@@ -389,7 +389,7 @@ export default [
         component: CustomLicenses
     },
     {
-        path: '/knowledge_base',
+        path: '/:alias',
         name: 'knowledge_base',
         meta: {
             requiresAuth: true,
@@ -397,7 +397,7 @@ export default [
         component: KnowledgeBase
     },
     {
-        path: '/knowledge_base/create',
+        path: '/:alias/create',
         name: 'knowledge_base_create',
         meta: {
             requiresAuth: true,
@@ -405,7 +405,7 @@ export default [
         component: KnowledgeBaseCreate
     },
     {
-        path: '/knowledge_base/:id/edit',
+        path: '/:alias/:id/edit',
         name: 'knowledge_base_update',
         meta: {
             requiresAuth: true,
@@ -413,7 +413,7 @@ export default [
         component: KnowledgeBaseCreate
     },
     {
-        path: '/knowledge_base/:id',
+        path: '/:alias/:id',
         name: 'knowledge_base_article',
         meta: {
             requiresAuth: true,

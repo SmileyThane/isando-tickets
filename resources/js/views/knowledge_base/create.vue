@@ -236,6 +236,7 @@ export default {
             themeBgColor: this.$store.state.themeBgColor,
             article: {
                 id: null,
+                type: this.$route.params.alias,
                 categories: [],
                 name: '',
                 name_de: '',
@@ -303,7 +304,7 @@ export default {
             this.$store.dispatch('Tags/getTagList');
         },
         getCategoriesTree() {
-            axios.get('/api/kb/categories/tree').then(response => {
+            axios.get(`/api/kb/categories/tree?type=${this.$route.params.alias}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.categoriesTree = response.data;
@@ -429,7 +430,7 @@ export default {
                         this.actionColor = 'success'
                         this.snackbar = true;
 
-                        this.$router.push(`/knowledge_base/${this.article.id}/edit`);
+                        this.$router.push(`/${this.$route.params.alias}`);
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.errorType = 'error';
@@ -469,9 +470,9 @@ export default {
         },
         openCategory() {
             if (parseInt(localStorage.getItem('kb_category'))) {
-                this.$router.push('/knowledge_base?category='+localStorage.getItem('kb_category'));
+                this.$router.push(`/${this.$route.params.alias}?category=`+localStorage.getItem('kb_category'));
             } else {
-                this.$router.push('/knowledge_base');
+                this.$router.push(`/${this.$route.params.alias}`);
             }
         },
         download(url) {

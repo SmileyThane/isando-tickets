@@ -310,6 +310,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('custom_license_user/{remoteUserId}/trial', 'API\CustomLicenseController@setUserTrial');
 
     // knowledge base
+    Route::get('kb/types', 'API\KbController@listTypes');
     Route::get('kb/categories', 'API\KbController@listCategories');
     Route::get('kb/categories/tree', 'API\KbController@categoriesTree');
     Route::post('kb/category', 'API\KbController@addCategory');
