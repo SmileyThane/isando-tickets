@@ -7,40 +7,15 @@
         <v-row>
             <v-col cols="12">
                 <v-card outlined>
-                    <v-card-title>
-                        <v-spacer></v-spacer>
-                        <v-menu bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" icon>
-                                    <v-icon>mdi-dots-vertical</v-icon>
-                                </v-btn>
-                            </template>
-
-                            <v-list>
-                                <v-list-item link @click.prevent="updateCategoryDlg = true">
-                                    <v-list-item-title >{{ langMap.kb.create_category }}</v-list-item-title>
-                                    <v-list-item-action>
-                                        <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
-                                    </v-list-item-action>
-                                </v-list-item>
-                                <v-list-item link @click.prevent="createArticle">
-                                    <v-list-item-title >{{ langMap.kb.create_article }}</v-list-item-title>
-                                    <v-list-item-action>
-                                        <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
-                                    </v-list-item-action>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
-                    </v-card-title>
-                    <v-card-text>
+                    <v-card-text style="padding: 5px 15px;">
                         <v-row>
-                            <v-col cols="6">
+                            <v-col cols="4">
                                 <v-text-field v-model="search" hide-details append-icon="mdi-magnify" :label="langMap.main.search" :color="themeBgColor" v-on:keyup="openCategory($route.query.category)" />
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="4">
                                 <v-select multiple v-model="searchWhere" hide-details :items="searchOptions" item-value="id" item-text="name" label="Search in" :color="themeBgColor" v-on:change="openCategory($route.query.category)" />
                             </v-col>
-                            <v-col cols="12">
+                            <v-col cols="3">
                                 <v-select v-model="activeTags"  :items="$store.getters['Tags/getTags']" item-value="id" item-text="name" :label="langMap.kb.tags" hide-selected multiple small-chips append-icon="mdi-tag-multiple-outline" :color="themeBgColor" v-on:change="getArticles();">
                                     <template v-slot:selection="{ attrs, item, parent, selected }">
                                         <v-chip small v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2" close @click:close="syncTags(item)">
@@ -53,6 +28,30 @@
                                         </v-chip>
                                     </template>
                                 </v-select>
+                            </v-col>
+                            <v-col cols="1" class="text-right">
+                                <v-menu bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn v-on="on" icon>
+                                            <v-icon>mdi-dots-vertical</v-icon>
+                                        </v-btn>
+                                    </template>
+
+                                    <v-list>
+                                        <v-list-item link @click.prevent="updateCategoryDlg = true">
+                                            <v-list-item-title >{{ langMap.kb.create_category }}</v-list-item-title>
+                                            <v-list-item-action>
+                                                <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
+                                            </v-list-item-action>
+                                        </v-list-item>
+                                        <v-list-item link @click.prevent="createArticle">
+                                            <v-list-item-title >{{ langMap.kb.create_article }}</v-list-item-title>
+                                            <v-list-item-action>
+                                                <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
+                                            </v-list-item-action>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-menu>
                             </v-col>
                         </v-row>
                     </v-card-text>
