@@ -111,8 +111,8 @@
                 <v-row>
                     <v-col v-for="article in articles" :key="'a'+article.id" cols="6">
                         <v-card outlined :style="`background-color: ${article.featured_color};`">
-                            <v-img v-if="article.featured_image" height="200px" :src="article.featured_image.link"/>
-                            <v-card-title>
+<!--                            <v-img v-if="article.featured_image" height="200px" :src="article.featured_image.link"/>-->
+                            <v-card-title style="cursor: pointer" @click="readArticle(article.id)">
                                 {{ $helpers.i18n.localized(article) }}
                                 <v-spacer></v-spacer>
                                 <v-menu bottom>
@@ -138,17 +138,17 @@
                                     </v-list>
                                 </v-menu>
                             </v-card-title>
-                            <v-card-text style="height: 6em;">
-                                <v-chip-group v-if="article.tags">
-                                    <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>
-                                </v-chip-group>
-                                <p v-else>{{ langMap.kb.no_tags}}</p>
-                                <v-spacer>&nbsp;</v-spacer>
-                                <p>{{ $helpers.i18n.localized(article, 'summary') }}</p>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-btn text :color="themeBgColor" v-text="langMap.kb.read_article" @click="readArticle(article.id)" />
-                            </v-card-actions>
+<!--                            <v-card-text style="height: 6em;">-->
+<!--                                <v-chip-group v-if="article.tags">-->
+<!--                                    <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>-->
+<!--                                </v-chip-group>-->
+<!--                                <p v-else>{{ langMap.kb.no_tags}}</p>-->
+<!--                                <v-spacer>&nbsp;</v-spacer>-->
+<!--                                <p>{{ $helpers.i18n.localized(article, 'summary') }}</p>-->
+<!--                            </v-card-text>-->
+<!--                            <v-card-actions>-->
+<!--                                <v-btn text :color="themeBgColor" v-text="langMap.kb.read_article" @click="readArticle(article.id)" />-->
+<!--                            </v-card-actions>-->
                         </v-card>
                     </v-col>
                 </v-row>
