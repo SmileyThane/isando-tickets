@@ -128,7 +128,7 @@ class CustomLicenseRepository
 
     public function unassignedIxarmaUsersList()
     {
-        $result = $this->makeIxArmaRequest("/api/v1/app/user/unassigned/page/0", []);
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/unassigned?page=0", []);
         $parsedResult = json_decode($result->getContents(), true);
         return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
     }

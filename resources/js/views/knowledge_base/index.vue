@@ -7,40 +7,15 @@
         <v-row>
             <v-col cols="12">
                 <v-card outlined>
-                    <v-card-title>
-                        <v-spacer></v-spacer>
-                        <v-menu bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" icon>
-                                    <v-icon>mdi-dots-vertical</v-icon>
-                                </v-btn>
-                            </template>
-
-                            <v-list>
-                                <v-list-item link @click.prevent="updateCategoryDlg = true">
-                                    <v-list-item-title >{{ langMap.kb.create_category }}</v-list-item-title>
-                                    <v-list-item-action>
-                                        <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
-                                    </v-list-item-action>
-                                </v-list-item>
-                                <v-list-item link @click.prevent="createArticle">
-                                    <v-list-item-title >{{ langMap.kb.create_article }}</v-list-item-title>
-                                    <v-list-item-action>
-                                        <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
-                                    </v-list-item-action>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
-                    </v-card-title>
-                    <v-card-text>
+                    <v-card-text style="padding: 5px 15px;">
                         <v-row>
-                            <v-col cols="6">
+                            <v-col cols="4">
                                 <v-text-field v-model="search" hide-details append-icon="mdi-magnify" :label="langMap.main.search" :color="themeBgColor" v-on:keyup="openCategory($route.query.category)" />
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="4">
                                 <v-select multiple v-model="searchWhere" hide-details :items="searchOptions" item-value="id" item-text="name" label="Search in" :color="themeBgColor" v-on:change="openCategory($route.query.category)" />
                             </v-col>
-                            <v-col cols="12">
+                            <v-col cols="3">
                                 <v-select v-model="activeTags"  :items="$store.getters['Tags/getTags']" item-value="id" item-text="name" :label="langMap.kb.tags" hide-selected multiple small-chips append-icon="mdi-tag-multiple-outline" :color="themeBgColor" v-on:change="getArticles();">
                                     <template v-slot:selection="{ attrs, item, parent, selected }">
                                         <v-chip small v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2" close @click:close="syncTags(item)">
@@ -53,6 +28,30 @@
                                         </v-chip>
                                     </template>
                                 </v-select>
+                            </v-col>
+                            <v-col cols="1" class="text-right">
+                                <v-menu bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn v-on="on" icon>
+                                            <v-icon>mdi-dots-vertical</v-icon>
+                                        </v-btn>
+                                    </template>
+
+                                    <v-list>
+                                        <v-list-item link @click.prevent="updateCategoryDlg = true">
+                                            <v-list-item-title >{{ langMap.kb.create_category }}</v-list-item-title>
+                                            <v-list-item-action>
+                                                <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
+                                            </v-list-item-action>
+                                        </v-list-item>
+                                        <v-list-item link @click.prevent="createArticle">
+                                            <v-list-item-title >{{ langMap.kb.create_article }}</v-list-item-title>
+                                            <v-list-item-action>
+                                                <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
+                                            </v-list-item-action>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-menu>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -112,8 +111,8 @@
                 <v-row>
                     <v-col v-for="article in articles" :key="'a'+article.id" cols="6">
                         <v-card outlined :style="`background-color: ${article.featured_color};`">
-                            <v-img v-if="article.featured_image" height="200px" :src="article.featured_image.link"/>
-                            <v-card-title>
+<!--                            <v-img v-if="article.featured_image" height="200px" :src="article.featured_image.link"/>-->
+                            <v-card-title style="cursor: pointer" @click="readArticle(article.id)">
                                 {{ $helpers.i18n.localized(article) }}
                                 <v-spacer></v-spacer>
                                 <v-menu bottom>
@@ -139,17 +138,17 @@
                                     </v-list>
                                 </v-menu>
                             </v-card-title>
-                            <v-card-text style="height: 6em;">
-                                <v-chip-group v-if="article.tags">
-                                    <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>
-                                </v-chip-group>
-                                <p v-else>{{ langMap.kb.no_tags}}</p>
-                                <v-spacer>&nbsp;</v-spacer>
-                                <p>{{ $helpers.i18n.localized(article, 'summary') }}</p>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-btn text :color="themeBgColor" v-text="langMap.kb.read_article" @click="readArticle(article.id)" />
-                            </v-card-actions>
+<!--                            <v-card-text style="height: 6em;">-->
+<!--                                <v-chip-group v-if="article.tags">-->
+<!--                                    <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>-->
+<!--                                </v-chip-group>-->
+<!--                                <p v-else>{{ langMap.kb.no_tags}}</p>-->
+<!--                                <v-spacer>&nbsp;</v-spacer>-->
+<!--                                <p>{{ $helpers.i18n.localized(article, 'summary') }}</p>-->
+<!--                            </v-card-text>-->
+<!--                            <v-card-actions>-->
+<!--                                <v-btn text :color="themeBgColor" v-text="langMap.kb.read_article" @click="readArticle(article.id)" />-->
+<!--                            </v-card-actions>-->
                         </v-card>
                     </v-col>
                 </v-row>
