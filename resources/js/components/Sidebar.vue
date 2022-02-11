@@ -71,7 +71,8 @@
             <v-divider></v-divider>
             <v-list dense>
                 <v-list-item
-                    v-for="item in kb"
+                    v-for="(item, index) in kb"
+                    :key="index"
                     style="background-color: white;"
                     dense
                     link

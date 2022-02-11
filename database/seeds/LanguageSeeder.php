@@ -62,7 +62,8 @@ class LanguageSeeder extends Seeder
                             'custom_licenses' => 'Licenses',
                             'custom_license' => 'License',
                             'custom_license_unassigned' => 'Unmapped',
-                            'tracking_timesheet' => 'Timesheet'
+                            'tracking_timesheet' => 'Timesheet',
+                            'incident_reporting' => 'Incident reporting'
                         ],
                     'tracking' =>
                         [
@@ -1000,7 +1001,8 @@ class LanguageSeeder extends Seeder
                             'custom_licenses' => 'Lizenzen',
                             'custom_license' => 'Lizenz',
                             'custom_license_unassigned' => 'Unzugeordnet',
-                            'tracking_timesheet' => 'Arbeitszeittabelle'
+                            'tracking_timesheet' => 'Arbeitszeittabelle',
+                            'incident_reporting' => 'Incident reporting'
                         ],
                         'tracking' => [
                             'name' => 'Name',

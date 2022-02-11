@@ -32,11 +32,14 @@ import TrackingProjectItem from './views/tracking/projects/item'
 import TrackingReports from './views/tracking/reports'
 import TrackingSettings from './views/tracking/settings'
 import ResetPassword from './views/auth/reset-password'
-import KnowledgeBase from './views/knowledge_base/index'
+import KnowledgeBase from './views/knowledge_base/initial'
+// import KnowledgeBase from './views/knowledge_base/index'
 import KnowledgeBaseArticle from './views/knowledge_base/item'
 import KnowledgeBaseCreate from './views/knowledge_base/create'
 import RoleManagement from './views/superadmin/roles'
 import Landing from './layouts/App'
+import IncidentReporting from './views/incident_reporting'
+import IncidentReportingMore from './views/incident_reporting/more-page'
 
 import store from './store';
 
@@ -387,6 +390,30 @@ export default [
             requiresAuth: true,
         },
         component: CustomLicenses
+    },
+    {
+        path: '/incident_reporting',
+        name: 'incident_reporting',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReporting
+    },
+    {
+        path: '/incident_reporting/:categoryId',
+        name: 'incident_reporting',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReporting
+    },
+    {
+        path: '/incident_reporting/:categoryId/:itemId',
+        name: 'incident_reporting',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReportingMore
     },
     {
         path: '/:alias',
