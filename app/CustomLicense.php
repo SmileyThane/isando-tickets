@@ -26,12 +26,12 @@ class CustomLicense extends Model
         if ($ixArmaId) {
             $result = (new CustomLicenseRepository())->makeIxArmaRequest("/api/v1/company/full/$ixArmaId", []);
             $parsedResult = json_decode($result->getContents(), true);
-            if ($parsedResult['status'] === 'SUCCESS') {
-                try {
-                    if ($parsedResult['body']['limits'] && $parsedResult['body']['limits']['expiresAt'] === "01/01/1970") {
-                        $parsedResult['body']['limits']['expiresAt'] = Carbon::now()->subDay()->format('d/m/Y');
-                    }
-                } catch (Throwable $throwable) {
+            if ($parsedResult && $parsedResult['status'] === 'SUCCESS') {
+                if ($parsedResult['body'] &&
+                    $parsedResult['body']['limits'] &&
+                    $parsedResult['body']['limits']['expiresAt'] === "01/01/1970"
+                ) {
+                    $parsedResult['body']['limits']['expiresAt'] = Carbon::now()->subDay()->format('d/m/Y');
                 }
 
                 return $parsedResult['body'];
