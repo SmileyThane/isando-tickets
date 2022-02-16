@@ -61,9 +61,7 @@
 
         <v-row>
             <v-col cols="4">
-                <incidentCategory :selected="false" />
-                <incidentCategory :selected="true" />
-                <incidentCategory :selected="false" />
+                <incidentCategory v-for="category in categories" :selected="false" />
             </v-col>
             <v-col cols="4">
                 <incidentCategoryItem :selected="false" />
@@ -110,6 +108,7 @@ export default {
                 {id: 2, name: this.$store.state.lang.lang_map.kb.search_in_article_names},
                 {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_article_names_and_contents}
             ],
+            categories: []
         }
     },
     created() {
@@ -123,10 +122,28 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
+        this.getCategories()
     },
     methods: {
         getTags() {
             this.$store.dispatch('Tags/getTagList')
+        },
+        getCategories() {
+            axios.get(`/api/kb/categories?type=incident_reporting`, {
+                params: {
+                    search: this.searchWhere.includes(1) ? this.search : '',
+                    category_id: this.$route.query && this.$route.query.category ? this.$route.query.category: null
+                }
+            }).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.categories = response.data;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
         },
     },
 }
