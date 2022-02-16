@@ -21,8 +21,8 @@ class KBTypeSeeder extends Seeder
         DB::table('knowledge_base_types')->updateOrInsert(
             ['id' => 2],
             [
-                'name' => 'Incident management',
-                'alias' => 'incident_management',
+                'name' => 'Incident reporting',
+                'alias' => 'incident_reporting',
             ]
         );
     }
