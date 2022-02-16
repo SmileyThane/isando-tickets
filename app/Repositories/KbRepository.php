@@ -150,7 +150,7 @@ class KbRepository
             $article->next()->attach($stepId, ['relation_type' => $step_type, 'position' => $i + 1]);
         }
 
-        if (count($client_ids) > 0) {
+        if ($client_ids && count($client_ids) > 0) {
             $article->clients()->sync($client_ids);
         }
 
@@ -206,7 +206,7 @@ class KbRepository
             }
             $article->next()->attach($stepId, ['relation_type' => $step_type, 'position' => $i + 1]);
 
-            if (count($client_ids) > 0) {
+            if ($client_ids && count($client_ids) > 0) {
                 $article->clients()->sync($client_ids);
             }
         }
