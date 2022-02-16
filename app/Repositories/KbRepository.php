@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 use App\Company;
 use App\KbArticle;
+use App\KbArticleClient;
 use App\KbCategory;
 use App\Language;
 use App\Tag;
@@ -107,10 +108,10 @@ class KbRepository
 
     public function getArticle($id)
     {
-        return KbArticle::with('categories', 'tags', 'attachments', 'next')->find($id);
+        return KbArticle::with('categories', 'tags', 'attachments', 'next', 'clients')->find($id);
     }
 
-    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $type_id = null)
+    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $type_id = null, $client_ids = [])
     {
         $article = KbArticle::create(compact('company_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'type_id'));
 
@@ -148,10 +149,14 @@ class KbRepository
             $article->next()->attach($stepId, ['relation_type' => $step_type, 'position' => $i + 1]);
         }
 
+        if (count($client_ids) > 0) {
+            $article->clients()->sync($client_ids);
+        }
+
         return $article;
     }
 
-    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $approved_at = null)
+    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $approved_at = null, $client_ids = [])
     {
         $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'approved_at'));
 
@@ -198,6 +203,10 @@ class KbRepository
                 $stepId = $step->id;
             }
             $article->next()->attach($stepId, ['relation_type' => $step_type, 'position' => $i + 1]);
+
+            if (count($client_ids) > 0) {
+                $article->clients()->sync($client_ids);
+            }
         }
 
         return $article;
