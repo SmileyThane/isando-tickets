@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Http\Controllers\API\KbController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\belongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,9 +15,9 @@ class KbArticle extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'company_id', 'is_internal', 'featured_color', 'keywords', 'keywords_de', 'type_id', 'owner_id', 'approved_at'];
+    protected $fillable = ['name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'company_id', 'is_internal', 'featured_color', 'keywords', 'keywords_de', 'type_id', 'owner_id', 'approved_at', 'importance_id'];
 
-    protected $appends = ['featured_image'];
+    protected $appends = ['featured_image', 'importance'];
 
     public function company(): BelongsTo
     {
@@ -76,4 +77,17 @@ class KbArticle extends Model
     {
         return CompanyUser::query()->find($this->owner_id);
     }
+
+    public function getImportanceAttribute()
+    {
+
+        return $this->importance_id ? KbController::IMPORTANCE[$this->importance_id] : '';
+    }
+
+    public function clients(): belongsToMany
+    {
+        return $this->belongsToMany(Client::class, 'kb_article_clients', 'client_id', 'kb_article_id');
+    }
+
+
 }
