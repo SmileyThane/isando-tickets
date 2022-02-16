@@ -113,7 +113,8 @@ class KbRepository
 
     public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $type_id = null, $client_ids = [])
     {
-        $article = KbArticle::create(compact('company_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'type_id'));
+        $owner_id = Auth::user()->employee->id;
+        $article = KbArticle::create(compact('company_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'type_id', 'owner_id'));
 
         foreach ($categories as $category) {
             $article->categories()->attach($category);
@@ -158,7 +159,8 @@ class KbRepository
 
     public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $approved_at = null, $client_ids = [])
     {
-        $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'approved_at'));
+        $owner_id = Auth::user()->employee->id;
+        $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'approved_at', 'owner_id'));
 
         foreach ($article->categories as $category) {
             $article->categories()->detach($category->id);
