@@ -214,6 +214,7 @@ class KbRepository
 
     public function deleteArticle($id)
     {
+        KbArticleClient::query()->where('kb_article_id', '=', $id)->delete();
         $article = KbArticle::find($id);
         return $article ? $article->delete() : false;
     }
