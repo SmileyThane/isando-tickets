@@ -16,6 +16,7 @@ class KbController extends Controller
 {
     protected $kbRepo;
     protected $fileRepo;
+    const IMPORTANCE = [3 => 'low', 2 => 'medium', 1 => 'high'];
 
     public function __construct(KbRepository $kbRepository, FileRepository $fileRepository)
     {
@@ -105,7 +106,8 @@ class KbController extends Controller
             $request->featured_color,
             $request->next ? json_decode($request->next) : [],
             $request->step_type,
-            $this->getTypeByAlias($request->type)
+            $this->getTypeByAlias($request->type),
+            $request->client_ids
         );
 
         if ($request->has('files')) {
@@ -135,7 +137,8 @@ class KbController extends Controller
             $request->keywords_de,
             $request->featured_color,
             $request->next ? json_decode($request->next) : [],
-            $request->step_type
+            $request->step_type,
+            $request->client_ids
         );
 
 
@@ -152,6 +155,11 @@ class KbController extends Controller
 
     public function deleteArticle(Request $request, $id) {
         return self::showResponse($this->kbRepo->deleteArticle($id));
+    }
+
+    public function importanceList()
+    {
+        return self::showResponse(true, self::IMPORTANCE);
     }
 
 }
