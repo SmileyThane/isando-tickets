@@ -14,7 +14,7 @@ class KbArticle extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'company_id', 'is_internal', 'featured_color', 'keywords', 'keywords_de', 'type_id'];
+    protected $fillable = ['name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'company_id', 'is_internal', 'featured_color', 'keywords', 'keywords_de', 'type_id', 'owner_id'];
 
     protected $appends = ['featured_image'];
 
@@ -70,5 +70,10 @@ class KbArticle extends Model
     public function getFeaturedImagesAttribute()
     {
         return $this->attachments()->where('service_info->type', 'kb_featured')->orderBy('service_info->order')->get();
+    }
+
+    public function getOwnerAttribute()
+    {
+        return CompanyUser::query()->find($this->owner_id);
     }
 }
