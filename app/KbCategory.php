@@ -13,7 +13,7 @@ class KbCategory extends Model
 {
     use SoftDeletes, NodeTrait;
 
-    protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'company_id', 'parent_id', 'type_id', 'risks_counter'];
+    protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'company_id', 'parent_id', 'type_id'];
 
     protected $appends = ['articles_count', 'categories_count'];
 
