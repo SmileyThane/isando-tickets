@@ -1,10 +1,10 @@
 <template>
     <v-card outlined style="cursor: pointer" class="mb-2"
         :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`"
-        @click="$router.push('/incident_reporting/1')"
+        @click="$store.getters['IncidentReporting/getSelectedCategory'] && $store.getters['IncidentReporting/getSelectedCategory'].id === item.id ? openCategory(item.parent_id) : openCategory(item.id)"
     >
         <v-card-title class="py-2">
-            {{Math.round(Math.random()*100)}}.00 Natural disasters
+            {{ item.name }}
             <v-spacer></v-spacer>
             <v-menu bottom offset-y class="float-right">
                 <template v-slot:activator="{ on, attrs }">
@@ -36,14 +36,25 @@
         <v-list-item class="py-0">
             <v-list-item-content class="py-0">
                 <div class="text-overline">
-                    Risks: {{Math.round(Math.random()*10)}}
+                    Risks: {{ item.articles_count }}
                 </div>
-                <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
 
         <v-card-actions class="py-0 pb-2">
-            <v-btn :color="themeBgColor" text>
+            <v-btn
+                v-if="$store.getters['IncidentReporting/getSelectedCategory'] && $store.getters['IncidentReporting/getSelectedCategory'].id === item.id"
+                :color="themeBgColor"
+                text @click="openCategory(item.id)"
+            >
+                Return to parent
+            </v-btn>
+            <v-btn
+                v-else
+                :color="themeBgColor"
+                text @click="openCategory(item.parent_id)"
+            >
                 Open category
             </v-btn>
         </v-card-actions>
@@ -59,6 +70,10 @@ export default {
         selected: {
             type: Boolean,
             default: false,
+        },
+        item: {
+            type: Object,
+            required: true,
         }
     },
     data() {
@@ -77,5 +92,21 @@ export default {
             that.themeBgColor = color;
         });
     },
+    methods: {
+        openCategory(categoryId) {
+            if (categoryId) {
+                this.$store.commit('IncidentReporting/unselectArticle')
+                this.$store.dispatch('IncidentReporting/callGetCategories', categoryId)
+                this.$store.commit('IncidentReporting/selectCategoryById', categoryId)
+                this.$store.dispatch('IncidentReporting/callGetArticles')
+                this.$router.push(`/incident_reporting/${categoryId}`)
+            } else {
+                this.$store.commit('IncidentReporting/unselectCategory')
+                this.$store.dispatch('IncidentReporting/callGetCategories')
+                this.$store.dispatch('IncidentReporting/callGetArticles')
+                this.$router.push(`/incident_reporting`)
+            }
+        }
+    }
 }
 </script>

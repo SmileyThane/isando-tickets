@@ -6,70 +6,22 @@
 
         <v-row>
             <v-col cols="12">
-                <v-card outlined>
-                    <v-card-text style="padding: 5px 15px;">
-                        <v-row>
-                            <v-col cols="4">
-                                <v-text-field v-model="search" hide-details append-icon="mdi-magnify" :label="langMap.main.search" :color="themeBgColor" v-on:keyup="openCategory($route.query.category)" />
-                            </v-col>
-                            <v-col cols="4">
-                                <v-select multiple v-model="searchWhere" hide-details :items="searchOptions" item-value="id" item-text="name" label="Search in" :color="themeBgColor" v-on:change="openCategory($route.query.category)" />
-                            </v-col>
-                            <v-col cols="3">
-                                <v-select v-model="activeTags"  :items="$store.getters['Tags/getTags']" item-value="id" item-text="name" :label="langMap.kb.tags" hide-selected multiple small-chips append-icon="mdi-tag-multiple-outline" :color="themeBgColor" v-on:change="getArticles();">
-                                    <template v-slot:selection="{ attrs, item, parent, selected }">
-                                        <v-chip small v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2" close @click:close="syncTags(item)">
-                                            {{ item.name }}
-                                        </v-chip>
-                                    </template>
-                                    <template v-slot:item="{ attrs, item, parent, selected }">
-                                        <v-chip v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2">
-                                            {{ item.name }}
-                                        </v-chip>
-                                    </template>
-                                </v-select>
-                            </v-col>
-                            <v-col cols="1" class="text-right">
-                                <v-menu bottom>
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn v-on="on" icon>
-                                            <v-icon>mdi-dots-vertical</v-icon>
-                                        </v-btn>
-                                    </template>
-
-                                    <v-list>
-                                        <v-list-item link @click.prevent="updateCategoryDlg = true">
-                                            <v-list-item-title >{{ langMap.kb.create_category }}</v-list-item-title>
-                                            <v-list-item-action>
-                                                <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
-                                            </v-list-item-action>
-                                        </v-list-item>
-                                        <v-list-item link @click.prevent="createArticle">
-                                            <v-list-item-title >{{ langMap.kb.create_article }}</v-list-item-title>
-                                            <v-list-item-action>
-                                                <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
-                                            </v-list-item-action>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-menu>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
+                <incidentSearch />
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="4" lg="4" xl="3">
-                <incidentCategoryItem :selected="false" :extended="true" />
-                <incidentCategoryItem :selected="true" :extended="true" />
-                <incidentCategoryItem :selected="false" :extended="true" />
-                <incidentCategoryItem :selected="false" :extended="true" />
-                <incidentCategoryItem :selected="false" :extended="true" />
-                <incidentCategoryItem :selected="false" :extended="true" />
+                <incidentCategoryItem
+                    v-for="article in $store.getters['IncidentReporting/getArticles']"
+                    :key="article.id"
+                    :item="article"
+                    :selected="$store.getters['IncidentReporting/getSelectedArticle'] && $store.getters['IncidentReporting/getSelectedArticle'].id === article.id"
+                    :extended="true"
+                />
             </v-col>
-            <v-col cols="8">
-                <div class="text-h6">Action board: Monitoring tasks</div>
+            <v-col cols="8" v-if="$store.getters['IncidentReporting/getSelectedArticle']">
+                <div class="text-h6">Action board: {{ $store.getters['IncidentReporting/getSelectedArticle'].name }}</div>
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>General</v-tab>
                     <v-tab>Action boards</v-tab>
@@ -98,6 +50,7 @@
 <script>
 import EventBus from "../../components/EventBus";
 import * as _ from "lodash";
+import incidentSearch from "./components/search";
 import incidentCategory from "./components/category";
 import incidentCategoryDescription from "./components/category-description";
 import incidentCategoryItem from "./components/category-item";
@@ -108,6 +61,7 @@ import incidentTabVersion from "./components/tab-version";
 
 export default {
     components: {
+        incidentSearch,
         incidentCategory,
         incidentCategoryItem,
         incidentCategoryDescription,
@@ -147,6 +101,16 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
+        if (this.$route.params.categoryId) {
+            this.$store.dispatch('IncidentReporting/callGetCategories', this.$route.params.categoryId)
+                .then(() => this.$store.commit('IncidentReporting/selectCategoryById', this.$route.params.categoryId))
+            this.$store.dispatch('IncidentReporting/callGetArticles', this.$route.params.categoryId)
+                .then(() => {
+                    if (this.$route.params.articleId) {
+                        this.$store.commit('IncidentReporting/selectArticleById', this.$route.params.articleId)
+                    }
+                })
+        }
     },
     methods: {
         getTags() {

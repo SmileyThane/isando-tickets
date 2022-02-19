@@ -4,7 +4,10 @@
             <v-col cols="6" xl="4" lg="6" md="6" sm="12">
                 <v-select
                     class="small"
-                    placeholder="Natural disasters"
+                    placeholder="Categories"
+                    :items="$store.getters['IncidentReporting/getCategories']"
+                    item-value="id"
+                    item-text="name"
                     multiple
                     dense
                     outlined
@@ -15,7 +18,10 @@
             <v-col cols="6" xl="4" lg="6" md="6" sm="12">
                 <v-select
                     class=""
-                    placeholder="Brauerei Luzern"
+                    placeholder="Clients"
+                    :items="$store.getters['IncidentReporting/getClients']"
+                    item-value="id"
+                    item-text="name"
                     dense
                     outlined
                     hide-details
@@ -39,7 +45,8 @@
             <v-col cols="6" xl="4" lg="6" md="6" sm="12">
                 <v-select
                     class=""
-                    placeholder="Valid from Potential impact: Low"
+                    placeholder="Importance"
+                    :items="$store.getters['IncidentReporting/getImportance']"
                     dense
                     outlined
                     hide-details
@@ -62,15 +69,8 @@
                     label="Description"
                     auto-grow
                     outlined
-                    value=""
+                    :value="$store.getters['IncidentReporting/getSelectedArticle'].content"
                 ></v-textarea>
-            </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12">
-                <v-file-input
-                    placeholder="Add attachments"
-                    truncate-length="15"
-                ></v-file-input>
             </v-col>
             <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
         </v-row>
@@ -84,6 +84,13 @@ export default {
         return {
 
         }
+    },
+    mounted() {
+        this.$store.dispatch('IncidentReporting/callGetClients');
+        this.$store.dispatch('IncidentReporting/callGetImportance');
+    },
+    methods: {
+
     }
 }
 </script>

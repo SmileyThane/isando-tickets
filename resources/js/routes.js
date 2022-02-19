@@ -408,7 +408,7 @@ export default [
         component: IncidentReporting
     },
     {
-        path: '/incident_reporting/:categoryId/:itemId',
+        path: '/incident_reporting/:categoryId/:articleId',
         name: 'incident_reporting',
         meta: {
             requiresAuth: true,
