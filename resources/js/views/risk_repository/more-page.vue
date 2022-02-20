@@ -79,14 +79,6 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
-            activeTags: [],
-            search: '',
-            searchWhere: [1, 2, 3],
-            searchOptions: [
-                {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_category_names},
-                {id: 2, name: this.$store.state.lang.lang_map.kb.search_in_article_names},
-                {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_article_names_and_contents}
-            ],
             tab: 0,
         }
     },

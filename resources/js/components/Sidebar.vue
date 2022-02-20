@@ -87,6 +87,66 @@
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
+
+            <v-divider></v-divider>
+            <v-list dense>
+                <v-list-group
+                    :style="'background-color: ' + 'white' + ';'"
+                    :value="sidebarGroups"
+                    color="#757575"
+                    multiple
+                    prepend-icon="mdi-alert-octagon"
+                >
+                    <template
+                        v-slot:activator
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>Incident reporting</v-list-item-title>
+                        </v-list-item-content>
+                    </template>
+                    <v-list-item
+                        color="#757575" link
+                        style="background-color:white;"
+                        to="/incident_reporting/create"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi-car-traction-control</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                Create incident
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item
+                        color="#757575" link
+                        style="background-color:white;"
+                        to="/incident_reporting/scenarios"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi-shape-rectangle-plus</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>Scenarios
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item
+                        color="#757575" link
+                        style="background-color:white;"
+                        to="/incident_reporting/action_boards"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi-gesture-double-tap</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>Action Boards
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list-group>
+            </v-list>
+
             <v-divider></v-divider>
             <v-list dense>
                 <v-list-item

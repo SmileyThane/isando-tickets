@@ -40,6 +40,9 @@ import RoleManagement from './views/superadmin/roles'
 import Landing from './layouts/App'
 import RiskRepository from './views/risk_repository'
 import RiskRepositoryMore from './views/risk_repository/more-page'
+import IncidentReportingCreate from './views/incident_reporting/create'
+import IncidentReportingActionBoards from './views/incident_reporting/action-boards'
+import IncidentReportingScenarios from './views/incident_reporting/scenarios'
 
 import store from './store';
 
@@ -401,7 +404,7 @@ export default [
     },
     {
         path: '/risk_repository/:categoryId',
-        name: 'risk_repository',
+        name: 'risk_repository_category',
         meta: {
             requiresAuth: true,
         },
@@ -409,11 +412,35 @@ export default [
     },
     {
         path: '/risk_repository/:categoryId/:articleId',
-        name: 'risk_repository',
+        name: 'risk_repository_article',
         meta: {
             requiresAuth: true,
         },
         component: RiskRepositoryMore
+    },
+    {
+        path: '/incident_reporting/create',
+        name: 'incident_reporting_create',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReportingCreate
+    },
+    {
+        path: '/incident_reporting/scenarios',
+        name: 'incident_reporting_scenarios',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReportingScenarios
+    },
+    {
+        path: '/incident_reporting/action_boards',
+        name: 'incident_reporting_action_boards',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReportingActionBoards
     },
     {
         path: '/:alias',
@@ -455,4 +482,4 @@ export default [
         },
         component: RoleManagement
     },
-    ];
+];

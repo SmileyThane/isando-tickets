@@ -7,10 +7,10 @@ import risk_repository from "../risk_repository";
 import knowledge_base from "./index";
 
 export default {
-    components: [
+    components: {
         risk_repository,
         knowledge_base
-    ],
+    },
     data: () => ({
         component: null,
     }),
