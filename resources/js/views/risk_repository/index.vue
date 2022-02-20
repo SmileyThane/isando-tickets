@@ -6,29 +6,29 @@
 
         <v-row>
             <v-col cols="12">
-                <incidentSearch />
+                <riskSearch />
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="4">
-                <incidentCategory
-                    v-for="category in $store.getters['IncidentReporting/getCategories']"
+                <riskCategory
+                    v-for="category in $store.getters['RiskRepository/getCategories']"
                     :key="category.id"
                     :item="category"
-                    :selected="$store.getters['IncidentReporting/getSelectedCategory'] && $store.getters['IncidentReporting/getSelectedCategory'].id === category.id"
+                    :selected="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedCategory'].id === category.id"
                 />
             </v-col>
-            <v-col cols="4" v-if="$store.getters['IncidentReporting/getSelectedCategory']">
-                <incidentCategoryItem
-                    v-for="article in $store.getters['IncidentReporting/getArticles']"
+            <v-col cols="4" v-if="$store.getters['RiskRepository/getSelectedCategory']">
+                <riskCategoryItem
+                    v-for="article in $store.getters['RiskRepository/getArticles']"
                     :key="article.id"
                     :item="article"
-                    :selected="$store.getters['IncidentReporting/getSelectedArticle'] && $store.getters['IncidentReporting/getSelectedArticle'].id === article.id"
+                    :selected="$store.getters['RiskRepository/getSelectedArticle'] && $store.getters['RiskRepository/getSelectedArticle'].id === article.id"
                 />
             </v-col>
-            <v-col cols="4" v-if="$store.getters['IncidentReporting/getSelectedCategory'] && $store.getters['IncidentReporting/getSelectedArticle']">
-                <incidentCategoryDescription />
+            <v-col cols="4" v-if="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedArticle']">
+                <riskCategoryDescription />
             </v-col>
         </v-row>
     </v-container>
@@ -37,19 +37,19 @@
 <script>
 import EventBus from "../../components/EventBus";
 import * as _ from "lodash";
-import incidentSearch from "./components/search";
-import incidentCategory from "./components/category";
-import incidentCategoryItem from "./components/category-item";
-import incidentCategoryDescription from "./components/category-description";
+import riskSearch from "./components/search";
+import riskCategory from "./components/category";
+import riskCategoryItem from "./components/category-item";
+import riskCategoryDescription from "./components/category-description";
 
 export default {
     components: {
-        incidentSearch,
-        incidentCategory,
-        incidentCategoryItem,
-        incidentCategoryDescription
+        riskSearch,
+        riskCategory,
+        riskCategoryItem,
+        riskCategoryDescription
     },
-    name: 'incident-reporting',
+    name: 'risk-repository',
     data() {
         return {
             snackbar: false,
@@ -71,22 +71,22 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
-        this.$store.dispatch('IncidentReporting/callGetCategories')
+        this.$store.dispatch('RiskRepository/callGetCategories')
             .catch(err => {
                 this.snackbarMessage = this.langMap.main.generic_error;
                 this.errorType = 'error';
                 this.alert = true;
             })
-        this.$store.dispatch('IncidentReporting/callGetArticles')
+        this.$store.dispatch('RiskRepository/callGetArticles')
             .catch(err => {
                 this.snackbarMessage = this.langMap.main.generic_error;
                 this.errorType = 'error';
                 this.alert = true;
             })
         if (this.$route.params.categoryId) {
-            this.$store.dispatch('IncidentReporting/callGetCategories', this.$route.params.categoryId)
-            .then(() => this.$store.commit('IncidentReporting/selectCategoryById', this.$route.params.categoryId))
-            this.$store.dispatch('IncidentReporting/callGetArticles', this.$route.params.categoryId)
+            this.$store.dispatch('RiskRepository/callGetCategories', this.$route.params.categoryId)
+            .then(() => this.$store.commit('RiskRepository/selectCategoryById', this.$route.params.categoryId))
+            this.$store.dispatch('RiskRepository/callGetArticles', this.$route.params.categoryId)
         }
     },
     methods: {

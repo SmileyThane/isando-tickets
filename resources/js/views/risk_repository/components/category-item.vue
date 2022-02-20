@@ -46,7 +46,7 @@
 import EventBus from "../../../components/EventBus";
 
 export default {
-    name: 'incident-category-item',
+    name: 'risk-category-item',
     props: {
         selected: {
             type: Boolean,
@@ -80,8 +80,8 @@ export default {
     methods: {
         openArticle() {
             console.log(this.item.id);
-            this.$store.commit('IncidentReporting/selectArticleById', this.item.id)
-            // this.$router.push(`/incident_reporting/${this.$route.params.categoryId}/${this.item.id}`)
+            this.$store.commit('RiskRepository/selectArticleById', this.item.id)
+            // this.$router.push(`/risk_repository/${this.$route.params.categoryId}/${this.item.id}`)
         }
     }
 }

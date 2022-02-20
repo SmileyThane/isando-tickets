@@ -26,7 +26,7 @@ export default {
     },
     actions: {
         callGetCategories({ state, commit }, categoryId = undefined) {
-            return axios.get(`/api/kb/categories?type=incident_reporting`, {
+            return axios.get(`/api/kb/categories?type=risk_repository`, {
                 params: {
                     search: state.searchWhere.includes(1) ? state.search : '',
                     category_id: categoryId ? categoryId : state.selectedCategory?.id ?? null
@@ -41,7 +41,7 @@ export default {
             });
         },
         callGetArticles({ state, commit }, categoryId = undefined) {
-            return axios.get(`/api/kb/articles?type=incident_reporting`, {
+            return axios.get(`/api/kb/articles?type=risk_repository`, {
                 params: {
                     search: state.searchWhere.includes(2) || state.searchWhere.includes(3) ? state.search : '',
                     search_in_text: state.searchWhere.includes(3),

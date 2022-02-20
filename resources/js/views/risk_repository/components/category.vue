@@ -1,7 +1,7 @@
 <template>
     <v-card outlined style="cursor: pointer" class="mb-2"
         :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`"
-        @click="$store.getters['IncidentReporting/getSelectedCategory'] && $store.getters['IncidentReporting/getSelectedCategory'].id === item.id ? openCategory(item.parent_id) : openCategory(item.id)"
+        @click="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedCategory'].id === item.id ? openCategory(item.parent_id) : openCategory(item.id)"
     >
         <v-card-title class="py-2">
             {{ item.name }}
@@ -44,7 +44,7 @@
 
         <v-card-actions class="py-0 pb-2">
             <v-btn
-                v-if="$store.getters['IncidentReporting/getSelectedCategory'] && $store.getters['IncidentReporting/getSelectedCategory'].id === item.id"
+                v-if="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedCategory'].id === item.id"
                 :color="themeBgColor"
                 text @click="openCategory(item.id)"
             >
@@ -65,7 +65,7 @@
 import EventBus from "../../../components/EventBus";
 
 export default {
-    name: 'incident-category',
+    name: 'risk-category',
     props: {
         selected: {
             type: Boolean,
@@ -95,16 +95,16 @@ export default {
     methods: {
         openCategory(categoryId) {
             if (categoryId) {
-                this.$store.commit('IncidentReporting/unselectArticle')
-                this.$store.dispatch('IncidentReporting/callGetCategories', categoryId)
-                this.$store.commit('IncidentReporting/selectCategoryById', categoryId)
-                this.$store.dispatch('IncidentReporting/callGetArticles')
-                this.$router.push(`/incident_reporting/${categoryId}`)
+                this.$store.commit('RiskRepository/unselectArticle')
+                this.$store.dispatch('RiskRepository/callGetCategories', categoryId)
+                this.$store.commit('RiskRepository/selectCategoryById', categoryId)
+                this.$store.dispatch('RiskRepository/callGetArticles')
+                this.$router.push(`/risk_repository/${categoryId}`)
             } else {
-                this.$store.commit('IncidentReporting/unselectCategory')
-                this.$store.dispatch('IncidentReporting/callGetCategories')
-                this.$store.dispatch('IncidentReporting/callGetArticles')
-                this.$router.push(`/incident_reporting`)
+                this.$store.commit('RiskRepository/unselectCategory')
+                this.$store.dispatch('RiskRepository/callGetCategories')
+                this.$store.dispatch('RiskRepository/callGetArticles')
+                this.$router.push(`/risk_repository`)
             }
         }
     }

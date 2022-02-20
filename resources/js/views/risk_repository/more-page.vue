@@ -6,22 +6,22 @@
 
         <v-row>
             <v-col cols="12">
-                <incidentSearch />
+                <riskSearch />
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="4" lg="4" xl="3">
-                <incidentCategoryItem
-                    v-for="article in $store.getters['IncidentReporting/getArticles']"
+                <riskCategoryItem
+                    v-for="article in $store.getters['RiskRepository/getArticles']"
                     :key="article.id"
                     :item="article"
-                    :selected="$store.getters['IncidentReporting/getSelectedArticle'] && $store.getters['IncidentReporting/getSelectedArticle'].id === article.id"
+                    :selected="$store.getters['RiskRepository/getSelectedArticle'] && $store.getters['RiskRepository/getSelectedArticle'].id === article.id"
                     :extended="true"
                 />
             </v-col>
-            <v-col cols="8" v-if="$store.getters['IncidentReporting/getSelectedArticle']">
-                <div class="text-h6">Action board: {{ $store.getters['IncidentReporting/getSelectedArticle'].name }}</div>
+            <v-col cols="8" v-if="$store.getters['RiskRepository/getSelectedArticle']">
+                <div class="text-h6">Action board: {{ $store.getters['RiskRepository/getSelectedArticle'].name }}</div>
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>General</v-tab>
                     <v-tab>Action boards</v-tab>
@@ -30,16 +30,16 @@
                 </v-tabs>
                 <v-tabs-items v-model="tab">
                     <v-tab-item>
-                        <incidentTabGeneral />
+                        <riskTabGeneral />
                     </v-tab-item>
                     <v-tab-item>
-                        <incidentTabActionBoards />
+                        <riskTabActionBoards />
                     </v-tab-item>
                     <v-tab-item>
-                        <incidentTabAttachments />
+                        <riskTabAttachments />
                     </v-tab-item>
                     <v-tab-item>
-                        <incidentTabVersion />
+                        <riskTabVersion />
                     </v-tab-item>
                 </v-tabs-items>
             </v-col>
@@ -50,27 +50,27 @@
 <script>
 import EventBus from "../../components/EventBus";
 import * as _ from "lodash";
-import incidentSearch from "./components/search";
-import incidentCategory from "./components/category";
-import incidentCategoryDescription from "./components/category-description";
-import incidentCategoryItem from "./components/category-item";
-import incidentTabGeneral from "./components/tab-general";
-import incidentTabActionBoards from "./components/tab-action-boards";
-import incidentTabAttachments from "./components/tab-attachments";
-import incidentTabVersion from "./components/tab-version";
+import riskSearch from "./components/search";
+import riskCategory from "./components/category";
+import riskCategoryDescription from "./components/category-description";
+import riskCategoryItem from "./components/category-item";
+import riskTabGeneral from "./components/tab-general";
+import riskTabActionBoards from "./components/tab-action-boards";
+import riskTabAttachments from "./components/tab-attachments";
+import riskTabVersion from "./components/tab-version";
 
 export default {
     components: {
-        incidentSearch,
-        incidentCategory,
-        incidentCategoryItem,
-        incidentCategoryDescription,
-        incidentTabGeneral,
-        incidentTabActionBoards,
-        incidentTabAttachments,
-        incidentTabVersion
+        riskSearch,
+        riskCategory,
+        riskCategoryItem,
+        riskCategoryDescription,
+        riskTabGeneral,
+        riskTabActionBoards,
+        riskTabAttachments,
+        riskTabVersion
     },
-    name: 'incident-reporting',
+    name: 'risk-repository',
     data() {
         return {
             snackbar: false,
@@ -102,12 +102,12 @@ export default {
             that.themeBgColor = color;
         });
         if (this.$route.params.categoryId) {
-            this.$store.dispatch('IncidentReporting/callGetCategories', this.$route.params.categoryId)
-                .then(() => this.$store.commit('IncidentReporting/selectCategoryById', this.$route.params.categoryId))
-            this.$store.dispatch('IncidentReporting/callGetArticles', this.$route.params.categoryId)
+            this.$store.dispatch('RiskRepository/callGetCategories', this.$route.params.categoryId)
+                .then(() => this.$store.commit('RiskRepository/selectCategoryById', this.$route.params.categoryId))
+            this.$store.dispatch('RiskRepository/callGetArticles', this.$route.params.categoryId)
                 .then(() => {
                     if (this.$route.params.articleId) {
-                        this.$store.commit('IncidentReporting/selectArticleById', this.$route.params.articleId)
+                        this.$store.commit('RiskRepository/selectArticleById', this.$route.params.articleId)
                     }
                 })
         }

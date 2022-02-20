@@ -14,7 +14,7 @@
 
 <script>
 export default {
-    name: 'incident-tab-attachments',
+    name: 'risk-tab-attachments',
     data() {
         return {
 

@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import EventBus from "./components/EventBus";
 import {
     Clients, Products, Projects, Tags, Services, Tracking, Team, Tickets, Currencies, Languages,
-    Timesheet, IncidentReporting,
+    Timesheet, RiskRepository,
 } from './modules';
 
 Vue.use(Vuex);
@@ -21,7 +21,7 @@ export default new Vuex.Store({
         Currencies,
         Languages,
         Timesheet,
-        IncidentReporting,
+        RiskRepository,
     },
     state: {
         roles: {},

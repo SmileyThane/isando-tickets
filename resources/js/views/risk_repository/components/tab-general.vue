@@ -5,7 +5,7 @@
                 <v-select
                     class="small"
                     placeholder="Categories"
-                    :items="$store.getters['IncidentReporting/getCategories']"
+                    :items="$store.getters['RiskRepository/getCategories']"
                     item-value="id"
                     item-text="name"
                     multiple
@@ -19,7 +19,7 @@
                 <v-select
                     class=""
                     placeholder="Clients"
-                    :items="$store.getters['IncidentReporting/getClients']"
+                    :items="$store.getters['RiskRepository/getClients']"
                     item-value="id"
                     item-text="name"
                     dense
@@ -46,7 +46,7 @@
                 <v-select
                     class=""
                     placeholder="Importance"
-                    :items="$store.getters['IncidentReporting/getImportance']"
+                    :items="$store.getters['RiskRepository/getImportance']"
                     dense
                     outlined
                     hide-details
@@ -69,7 +69,7 @@
                     label="Description"
                     auto-grow
                     outlined
-                    :value="$store.getters['IncidentReporting/getSelectedArticle'].content"
+                    :value="$store.getters['RiskRepository/getSelectedArticle'].content"
                 ></v-textarea>
             </v-col>
             <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
@@ -79,15 +79,15 @@
 
 <script>
 export default {
-    name: 'incident-tab-general',
+    name: 'risk-tab-general',
     data() {
         return {
 
         }
     },
     mounted() {
-        this.$store.dispatch('IncidentReporting/callGetClients');
-        this.$store.dispatch('IncidentReporting/callGetImportance');
+        this.$store.dispatch('RiskRepository/callGetClients');
+        this.$store.dispatch('RiskRepository/callGetImportance');
     },
     methods: {
 

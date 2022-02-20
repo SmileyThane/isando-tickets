@@ -38,8 +38,8 @@ import KnowledgeBaseArticle from './views/knowledge_base/item'
 import KnowledgeBaseCreate from './views/knowledge_base/create'
 import RoleManagement from './views/superadmin/roles'
 import Landing from './layouts/App'
-import IncidentReporting from './views/incident_reporting'
-import IncidentReportingMore from './views/incident_reporting/more-page'
+import RiskRepository from './views/risk_repository'
+import RiskRepositoryMore from './views/risk_repository/more-page'
 
 import store from './store';
 
@@ -392,28 +392,28 @@ export default [
         component: CustomLicenses
     },
     {
-        path: '/incident_reporting',
-        name: 'incident_reporting',
+        path: '/risk_repository',
+        name: 'risk_repository',
         meta: {
             requiresAuth: true,
         },
-        component: IncidentReporting
+        component: RiskRepository
     },
     {
-        path: '/incident_reporting/:categoryId',
-        name: 'incident_reporting',
+        path: '/risk_repository/:categoryId',
+        name: 'risk_repository',
         meta: {
             requiresAuth: true,
         },
-        component: IncidentReporting
+        component: RiskRepository
     },
     {
-        path: '/incident_reporting/:categoryId/:articleId',
-        name: 'incident_reporting',
+        path: '/risk_repository/:categoryId/:articleId',
+        name: 'risk_repository',
         meta: {
             requiresAuth: true,
         },
-        component: IncidentReportingMore
+        component: RiskRepositoryMore
     },
     {
         path: '/:alias',

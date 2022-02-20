@@ -68,7 +68,7 @@
 import EventBus from "../../../components/EventBus";
 
 export default {
-    name: 'incident-search',
+    name: 'risk-search',
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
@@ -93,26 +93,26 @@ export default {
     computed: {
         search: {
             get() {
-                return this.$store.getters['IncidentReporting/getSearch']
+                return this.$store.getters['RiskRepository/getSearch']
             },
             set(val) {
-                this.$store.commit('IncidentReporting/setSearch', val)
+                this.$store.commit('RiskRepository/setSearch', val)
             }
         },
         searchWhere: {
             get() {
-                return this.$store.getters['IncidentReporting/getSearchWhere']
+                return this.$store.getters['RiskRepository/getSearchWhere']
             },
             set(val) {
-                this.$store.commit('IncidentReporting/setSearchWhere', val)
+                this.$store.commit('RiskRepository/setSearchWhere', val)
             }
         },
         activeTags: {
             get() {
-                return this.$store.getters['IncidentReporting/getActiveTags']
+                return this.$store.getters['RiskRepository/getActiveTags']
             },
             set(val) {
-                this.$store.commit('IncidentReporting/setActiveTags', val)
+                this.$store.commit('RiskRepository/setActiveTags', val)
             }
         }
     }

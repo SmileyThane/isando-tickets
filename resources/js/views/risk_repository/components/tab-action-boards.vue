@@ -6,7 +6,7 @@
 
 <script>
 export default {
-    name: 'incident-tab-action-boards',
+    name: 'risk-tab-action-boards',
     data() {
         return {
 

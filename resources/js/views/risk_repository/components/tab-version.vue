@@ -6,7 +6,7 @@
 
 <script>
 export default {
-    name: 'incident-tab-version',
+    name: 'risk-tab-version',
     data() {
         return {
 
