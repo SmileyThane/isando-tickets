@@ -9,6 +9,8 @@
                         :label="langMap.main.search"
                         :color="themeBgColor"
                         v-on:keyup="openCategory($route.query.category)"
+                        class="pb-0 mr-4"
+                        style="height: 50px;"
                     />
                 </v-col>
                 <v-col cols="4">
@@ -19,10 +21,23 @@
                         item-value="id" item-text="name"
                         label="Search in" :color="themeBgColor"
                         v-on:change="openCategory($route.query.category)"
+                        class="pb-0 mr-4"
+                        style="height: 50px;"
                     />
                 </v-col>
                 <v-col cols="3">
-                    <v-select v-model="activeTags"  :items="$store.getters['Tags/getTags']" item-value="id" item-text="name" :label="langMap.kb.tags" hide-selected multiple small-chips append-icon="mdi-tag-multiple-outline" :color="themeBgColor" v-on:change="getArticles();">
+                    <v-select
+                        v-model="activeTags"
+                        :items="$store.getters['Tags/getTags']"
+                        item-value="id" item-text="name"
+                        :label="langMap.kb.tags"
+                        hide-selected multiple small-chips
+                        append-icon="mdi-tag-multiple-outline"
+                        :color="themeBgColor"
+                        v-on:change="getArticles();"
+                        class="pb-0"
+                        style="height: 50px;"
+                    >
                         <template v-slot:selection="{ attrs, item, parent, selected }">
                             <v-chip small v-bind="attrs" :color="item.color" :text-color="$helpers.color.invertColor(item.color)" label class="ml-2" close @click:close="syncTags(item)">
                                 {{ item.name }}
