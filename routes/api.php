@@ -324,6 +324,37 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('kb/article/{id}', 'API\KbController@editArticle');
     Route::delete('kb/article/{id}', 'API\KbController@deleteArticle');
 
+
+    // incident reporting
+    Route::get('ir/action_types', 'API\IncidentReportingController@listActionTypes');
+    Route::post('ir/action_type', 'API\IncidentReportingController@addActionType');
+    Route::put('ir/action_type/{id}', 'API\IncidentReportingController@editActionType');
+    Route::delete('ir/action_type/{id}', 'API\IncidentReportingController@deleteActionType');
+    Route::get('ir/event_types', 'API\IncidentReportingController@listEventTypes');
+    Route::post('ir/event_type', 'API\IncidentReportingController@addEventType');
+    Route::put('ir/event_type/{id}', 'API\IncidentReportingController@editEventType');
+    Route::delete('ir/event_type/{id}', 'API\IncidentReportingController@deleteEventType');
+    Route::get('ir/focus_priorities', 'API\IncidentReportingController@listFocusPriorities');
+    Route::post('ir/focus_priority', 'API\IncidentReportingController@addFocusPriority');
+    Route::put('ir/focus_priority/{id}', 'API\IncidentReportingController@editFocusPriority');
+    Route::delete('ir/focus_priority/{id}', 'API\IncidentReportingController@deleteFocusPriority');
+    Route::get('ir/impact_potentials', 'API\IncidentReportingController@listImpactPotentials');
+    Route::post('ir/impact_potential', 'API\IncidentReportingController@addImpactPotential');
+    Route::put('ir/impact_potential/{id}', 'API\IncidentReportingController@editImpactPotential');
+    Route::delete('ir/impact_potential/{id}', 'API\IncidentReportingController@deleteImpactPotential');
+    Route::get('ir/process_states', 'API\IncidentReportingController@listProcessStates');
+    Route::post('ir/process_state', 'API\IncidentReportingController@addProcessState');
+    Route::put('ir/process_state/{id}', 'API\IncidentReportingController@editProcessState');
+    Route::delete('ir/process_state/{id}', 'API\IncidentReportingController@deleteProcessState');
+    Route::get('ir/resource_types', 'API\IncidentReportingController@listResourceTypes');
+    Route::post('ir/resource_type', 'API\IncidentReportingController@addResourceType');
+    Route::put('ir/resource_type/{id}', 'API\IncidentReportingController@editResourceType');
+    Route::delete('ir/resource_type/{id}', 'API\IncidentReportingController@deleteResourceType');
+    Route::get('ir/stakeholder_types', 'API\IncidentReportingController@listStakeholderTypes');
+    Route::post('ir/stakeholder_type', 'API\IncidentReportingController@addStakeholderType');
+    Route::put('ir/stakeholder_type/{id}', 'API\IncidentReportingController@editStakeholderType');
+    Route::delete('ir/stakeholder_type/{id}', 'API\IncidentReportingController@deleteStakeholderType');
+
     // files
     Route::get('file/{id}', 'API\FileController@find');
     Route::post('file', 'API\FileController@add');
