@@ -3,20 +3,20 @@
 </template>
 
 <script>
-import incident_reporting from "../incident_reporting";
+import risk_repository from "../risk_repository";
 import knowledge_base from "./index";
 
 export default {
-    components: [
-        incident_reporting,
+    components: {
+        risk_repository,
         knowledge_base
-    ],
+    },
     data: () => ({
         component: null,
     }),
     created() {
         switch (this.$route.params.alias) {
-            case 'incident_reporting': this.component = incident_reporting; break;
+            case 'risk_repository': this.component = risk_repository; break;
             default: this.component = knowledge_base
         }
     },

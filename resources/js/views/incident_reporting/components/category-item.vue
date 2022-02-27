@@ -1,12 +1,12 @@
 <template>
     <v-card outlined style="cursor: pointer" class="mb-2"
         :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`"
-        @click="$router.push('/incident_reporting/1')"
+        @click=""
     >
         <v-list-item>
             <v-list-item-content>
                 <v-list-item-title class="text-h6 mb-1">
-                    <div class="float-left">{{ Math.round(Math.random()*100) }}.00 Natural disasters</div>
+                    <div class="float-left">{{ item.name }}</div>
                     <v-spacer v-if="extended"></v-spacer>
                     <v-chip v-if="extended"
                         class="float-right text-uppercase"
@@ -26,7 +26,7 @@
                     Risk incident potential: From Low
                 </v-list-item-title>
                 <v-list-item-title v-if="extended">
-                    <v-chip v-for="(item, index) in ['monitoring', 'mobilization', 'handling', 'assessment']"
+                    <v-chip v-for="(tag, index) in item.tags"
                             :key="index"
                             class="text-uppercase"
                             label
@@ -34,7 +34,7 @@
                             x-small
                             outlined
                     >
-                        {{ item }}
+                        {{ tag }}
                     </v-chip>
                 </v-list-item-title>
             </v-list-item-content>
@@ -55,6 +55,10 @@ export default {
         extended: {
             type: Boolean,
             default: false,
+        },
+        item: {
+            type: Object,
+            required: true,
         }
     },
     data() {
@@ -73,7 +77,8 @@ export default {
             that.themeBgColor = color;
         });
     },
-    computed: {
+    methods: {
+
     }
 }
 </script>
