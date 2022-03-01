@@ -2,16 +2,16 @@
 
 namespace App\IncidentReporting;
 
-class FocusPriority extends ReferenceBook
+class ProcessState extends ReferenceBook
 {
-    protected $table = 'incident_reporting_focus_priorities';
+    protected $table = 'incident_reporting_process_states';
 
     public static function boot() {
         parent::boot();
 
         self::creating(function($model){
             if (!$model->position) {
-                $model->position = FocusPriority::where('company_id', $model->company_id)->max('position') + 1;
+                $model->position = ProcessState::where('company_id', $model->company_id)->max('position') + 1;
             }
         });
     }
