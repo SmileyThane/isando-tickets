@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 
-class IncidentReporting
+class IncidentReportingRepository
 {
     protected function _create($referenceBook, $name, $name_de = null, $position = null, $company_id = null): ReferenceBook
     {

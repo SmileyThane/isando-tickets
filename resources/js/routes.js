@@ -43,6 +43,7 @@ import RiskRepositoryMore from './views/risk_repository/more-page'
 import IncidentReportingCreate from './views/incident_reporting/create'
 import IncidentReportingActionBoards from './views/incident_reporting/action-boards'
 import IncidentReportingScenarios from './views/incident_reporting/scenarios'
+import SettingsIncidentSettings from './views/settings/incident_settings'
 
 import store from './store';
 
@@ -194,6 +195,14 @@ export default [
             requiresAuth: true,
         },
         component: SystemSettings
+    },
+    {
+        path: '/settings/incident',
+        name: 'settings_incident',
+        meta: {
+            requiresAuth: true,
+        },
+        component: SettingsIncidentSettings
     },
     {
         path: '/notify',

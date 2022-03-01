@@ -2,8 +2,6 @@
 
 namespace App\IncidentReporting;
 
-use App\IncidentReporting\ReferenceBook;
-
 class ImpactPotential extends ReferenceBook
 {
     protected $table = 'incident_reporting_impact_potentials';

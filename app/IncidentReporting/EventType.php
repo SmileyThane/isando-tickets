@@ -2,8 +2,6 @@
 
 namespace App\IncidentReporting;
 
-use App\IncidentReporting\ReferenceBook;
-
 class EventType extends ReferenceBook
 {
     protected $table = 'incident_reporting_event_types';

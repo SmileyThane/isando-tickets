@@ -2,8 +2,6 @@
 
 namespace App\IncidentReporting;
 
-use App\IncidentReporting\ReferenceBook;
-
 class FocusPriority extends ReferenceBook
 {
     protected $table = 'incident_reporting_focus_priorities';

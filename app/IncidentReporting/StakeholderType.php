@@ -2,8 +2,6 @@
 
 namespace App\IncidentReporting;
 
-use App\IncidentReporting\ReferenceBook;
-
 class StakeholderType extends ReferenceBook
 {
     protected $table = 'incident_reporting_stakeholder_types';
