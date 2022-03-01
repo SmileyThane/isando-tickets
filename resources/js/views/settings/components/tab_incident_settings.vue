@@ -1,10 +1,10 @@
 <template>
-    <v-card>
+    <v-card style="height: 100%">
         <v-simple-table dense>
             <template v-slot:default>
                 <thead>
                 <tr>
-                    <th class="text-left">Name</th>
+                    <th style="width: 90%" class="text-left">Name</th>
                     <th class="text-left">Actions</th>
                 </tr>
                 </thead>
@@ -15,12 +15,24 @@
                         <v-btn icon @click="editItem(item.id)">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
-                        <v-btn icon @click="deleteItem(ite.id)">
+                        <v-btn icon @click="deleteItem(item.id)">
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
                     </td>
                 </tr>
                 </tbody>
+                <tfoot>
+                <tr>
+                    <td>
+                        <v-text-field v-model="name" placeholder="Create new" />
+                    </td>
+                    <td>
+                        <v-btn icon @click="addItem()">
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                    </td>
+                </tr>
+                </tfoot>
             </template>
         </v-simple-table>
     </v-card>
@@ -37,7 +49,7 @@ export default {
     },
     data: function() {
         return {
-
+            name: '',
         }
     },
     mounted() {
@@ -45,13 +57,13 @@ export default {
     },
     methods: {
         addItem() {
-
+            this.$store.dispatch(`SettingsIncident/${this.entity}/callAdd`, { name: this.name });
         },
-        editItem(id) {
-
+        editItem() {
+            this.$store.dispatch(`SettingsIncident/${this.entity}/callEdit`);
         },
         deleteItem(id) {
-
+            this.$store.dispatch(`SettingsIncident/${this.entity}/callDelete`, id);
         }
     },
 }

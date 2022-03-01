@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card style="height: 80vh">
         <v-tabs
             v-model="tab"
             align-with-title

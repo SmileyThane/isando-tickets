@@ -17,10 +17,9 @@ export default {
                     }
                     return []
                 })
-                .catch(e)
         },
         calAdd({ commit }, data) {
-            return axios.post(`/api/ir/process_state`, { retry: 5, retryDelay: 1000 })
+            return axios.post(`/api/ir/process_state`, data,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         commit('addActionType', data)
@@ -28,10 +27,9 @@ export default {
                     }
                     return []
                 })
-                .catch(e)
         },
-        calEdit({ commit }, data) {
-            return axios.put(`/api/ir/process_state/${data.id}`, { retry: 5, retryDelay: 1000 })
+        calEdit({ commit, state }) {
+            return axios.put(`/api/ir/process_state/${state.process_state.id}`, state.process_state,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         commit('editActionType', data)
@@ -39,7 +37,6 @@ export default {
                     }
                     return []
                 })
-                .catch(e)
         },
         calDelete({ commit }, id) {
             return axios.delete(`/api/ir/process_state/${id}`, { retry: 5, retryDelay: 1000 })
@@ -50,7 +47,6 @@ export default {
                     }
                     return []
                 })
-                .catch(e)
         }
     },
     mutations: {

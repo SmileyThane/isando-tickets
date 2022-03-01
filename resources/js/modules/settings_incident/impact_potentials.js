@@ -17,10 +17,9 @@ export default {
                     }
                     return []
                 })
-                .catch(e)
         },
         calAdd({ commit }, data) {
-            return axios.post(`/api/ir/impact_potential`, { retry: 5, retryDelay: 1000 })
+            return axios.post(`/api/ir/impact_potential`, data,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         commit('addActionType', data)
@@ -28,10 +27,9 @@ export default {
                     }
                     return []
                 })
-                .catch(e)
         },
-        calEdit({ commit }, data) {
-            return axios.put(`/api/ir/impact_potential/${data.id}`, { retry: 5, retryDelay: 1000 })
+        calEdit({ commit, state }) {
+            return axios.put(`/api/ir/impact_potential/${state.impact_potential.id}`, state.impact_potential,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         commit('editActionType', data)
@@ -39,7 +37,6 @@ export default {
                     }
                     return []
                 })
-                .catch(e)
         },
         calDelete({ commit }, id) {
             return axios.delete(`/api/ir/impact_potential/${id}`, { retry: 5, retryDelay: 1000 })
@@ -50,7 +47,6 @@ export default {
                     }
                     return []
                 })
-                .catch(e)
         }
     },
     mutations: {
