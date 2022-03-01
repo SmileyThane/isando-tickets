@@ -24,7 +24,7 @@
                 <tfoot>
                 <tr>
                     <td>
-                        <v-text-field v-model="name" placeholder="Create new" />
+                        <v-text-field v-model="name" placeholder="Create new" dense outlined hide-details />
                     </td>
                     <td>
                         <v-btn icon @click="addItem()">

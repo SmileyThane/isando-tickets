@@ -37,12 +37,12 @@ export default {
                 {
                     name: 'Impact potential',
                     component: tabIncidentSettings,
-                    entity: 'ImpactPotential',
+                    entity: 'ImpactPotentials',
                 },
                 {
-                    name: 'Process stages',
+                    name: 'Process states',
                     component: tabIncidentSettings,
-                    entity: 'ProcessStages',
+                    entity: 'ProcessStates',
                 },
                 {
                     name: 'Event types',
