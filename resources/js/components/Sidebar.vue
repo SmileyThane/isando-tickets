@@ -543,6 +543,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
+                        v-if="$helpers.auth.checkPermissionByIds([28])"
                         link
                         style="background-color:white;"
                         to="/settings/incident"

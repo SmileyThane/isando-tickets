@@ -96,3 +96,18 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+*,
+>>> .v-input,
+>>> label,
+>>> .v-btn__content {
+    font-size: 12px;
+}
+.heading {
+    font-size: 16px;
+}
+.clearfix {
+    clear: both;
+}
+</style>
