@@ -48,7 +48,7 @@
             width="500"
         >
             <v-card>
-                <v-card-title class="text-h5 grey lighten-2">
+                <v-card-title>
                     Edit item
                 </v-card-title>
 
@@ -141,3 +141,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+>>> .v-input *,
+>>> .v-card__title,
+>>> .v-btn__content {
+    font-size: 14px !important;
+}
+</style>

@@ -75,3 +75,9 @@ export default {
 
 }
 </script>
+
+<style scoped>
+>>> .v-tabs-bar .v-tab {
+    font-size: 12px !important;
+}
+</style>
