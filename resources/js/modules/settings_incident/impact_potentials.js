@@ -18,7 +18,7 @@ export default {
                     return []
                 })
         },
-        calAdd({ commit }, data) {
+        callAdd({ commit }, data) {
             return axios.post(`/api/ir/impact_potential`, data,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -28,7 +28,7 @@ export default {
                     return []
                 })
         },
-        calEdit({ commit, state }) {
+        callEdit({ commit, state }) {
             return axios.put(`/api/ir/impact_potential/${state.impact_potential.id}`, state.impact_potential,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -38,7 +38,7 @@ export default {
                     return []
                 })
         },
-        calDelete({ commit }, id) {
+        callDelete({ commit }, id) {
             return axios.delete(`/api/ir/impact_potential/${id}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -54,9 +54,15 @@ export default {
         addActionType: (state, data) => state.impact_potentials.push(data),
         editActionType: (state, data) => state.impact_potentials.splice(state.impact_potentials.findIndex(i=>i.id === data.id), 1, data),
         deleteActionType: (state, id) => state.impact_potentials.splice(state.impact_potentials.findIndex(i=>i.id === id), 1),
+        selectItem: (state, id) => state.impact_potential = state.impact_potentials.find(i => i.id === id),
+        unSelectItem: (state) => state.impact_potential = {
+            id: null,
+            name: '',
+        },
+        setName: (state, name) => state.impact_potential.name = name,
     },
     getters: {
         getItems: state => state.impact_potentials,
-        getItem: (state, id) => state.impact_potentials.find(i => i.id === id),
+        getItem: (state, id) => state.impact_potential,
     },
 }

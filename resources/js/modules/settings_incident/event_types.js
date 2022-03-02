@@ -18,7 +18,7 @@ export default {
                     return []
                 })
         },
-        calAdd({ commit }, data) {
+        callAdd({ commit }, data) {
             return axios.post(`/api/ir/event_type`, data,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -28,7 +28,7 @@ export default {
                     return []
                 })
         },
-        calEdit({ commit, state }) {
+        callEdit({ commit, state }) {
             return axios.put(`/api/ir/event_type/${state.event_type.id}`, state.event_type, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -38,7 +38,7 @@ export default {
                     return []
                 })
         },
-        calDelete({ commit }, id) {
+        callDelete({ commit }, id) {
             return axios.delete(`/api/ir/event_type/${id}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -54,9 +54,15 @@ export default {
         addActionType: (state, data) => state.event_types.push(data),
         editActionType: (state, data) => state.event_types.splice(state.event_types.findIndex(i=>i.id === data.id), 1, data),
         deleteActionType: (state, id) => state.event_types.splice(state.event_types.findIndex(i=>i.id === id), 1),
+        selectItem: (state, id) => state.event_type = state.event_types.find(i => i.id === id),
+        unSelectItem: (state) => state.event_type = {
+            id: null,
+            name: '',
+        },
+        setName: (state, name) => state.event_type.name = name,
     },
     getters: {
         getItems: state => state.event_types,
-        getItem: (state, id) => state.event_types.find(i => i.id === id),
+        getItem: (state, id) => state.event_type,
     },
 }

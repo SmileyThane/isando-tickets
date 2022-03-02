@@ -18,7 +18,7 @@ export default {
                     return []
                 })
         },
-        calAdd({ commit }, data) {
+        callAdd({ commit }, data) {
             return axios.post(`/api/ir/resource_type`, data, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -28,7 +28,7 @@ export default {
                     return []
                 })
         },
-        calEdit({ commit, state }) {
+        callEdit({ commit, state }) {
             return axios.put(`/api/ir/resource_type/${state.resource_type.id}`, state.resource_type,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -38,7 +38,7 @@ export default {
                     return []
                 })
         },
-        calDelete({ commit }, id) {
+        callDelete({ commit }, id) {
             return axios.delete(`/api/ir/resource_type/${id}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -54,9 +54,15 @@ export default {
         addActionType: (state, data) => state.resource_types.push(data),
         editActionType: (state, data) => state.resource_types.splice(state.resource_types.findIndex(i=>i.id === data.id), 1, data),
         deleteActionType: (state, id) => state.resource_types.splice(state.resource_types.findIndex(i=>i.id === id), 1),
+        selectItem: (state, id) => state.resource_type = state.resource_types.find(i => i.id === id),
+        unSelectItem: (state) => state.resource_type = {
+            id: null,
+            name: '',
+        },
+        setName: (state, name) => state.resource_type.name = name,
     },
     getters: {
         getItems: state => state.resource_types,
-        getItem: (state, id) => state.resource_types.find(i => i.id === id),
+        getItem: (state, id) => state.resource_type,
     },
 }
