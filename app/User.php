@@ -220,4 +220,9 @@ class User extends Authenticatable
         }
         return '';
     }
+
+    public function ixarmaLink(): HasOne
+    {
+        return $this->hasOne(IxarmaLink::class, 'user_id', 'id');
+    }
 }

@@ -965,6 +965,98 @@
                         </v-row>
                     </v-card-text>
                 </v-card>
+                <v-card>
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.profile.link_to_ixarma }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn v-if="!enableToEditIxarma" :color="themeBgColor" icon @click="enableToEditIxarma = true">
+                            <v-icon :color="themeFgColor" dense small>mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn v-if="enableToEditIxarma" :color="themeBgColor" icon @click="cancelUserData">
+                            <v-icon :color="themeFgColor" dense small>mdi-close</v-icon>
+                        </v-btn>
+                    </v-toolbar>
+
+                    <v-card-text v-if="!enableToEditIxarma">
+                        <v-row>
+                            <v-col cols="6">
+                                <p class="mb-0">
+                                    <v-icon v-if="userData.ixarma_link.login && userData.ixarma_link.password" color="success" dense left small>
+                                        mdi-check-circle
+                                    </v-icon>
+                                    <v-icon v-else dense left small>mdi-cancel</v-icon>
+                                    {{ langMap.profile.ixarma_connected }}
+                                </p>
+                            </v-col>
+                            <v-col cols="6">
+                                <p class="mb-0">
+                                    {{ langMap.profile.ixarma_login }}
+                                    {{ userData.ixarma_link.login }}
+                                </p>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                    <v-expand-transition>
+                        <v-card v-if="enableToEditIxarma" class="transition-fast-in-fast-out">
+                            <v-card-text>
+                                <v-form>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-text-field
+                                                v-model="userData.ixarma_link.login"
+                                                :color="themeBgColor"
+                                                :error-messages="errors.ixarma_login"
+                                                :label="langMap.profile.ixarma_login"
+                                                dense
+                                                name="ixarma_login"
+                                                prepend-icon="mdi-book-account-outline"
+                                                type="text"
+                                            />
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-text-field
+                                                v-model="userData.ixarma_link.password"
+                                                :append-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+                                                :color="themeBgColor"
+                                                :error-messages="errors.ixarma_password"
+                                                :label="langMap.profile.ixarma_password"
+                                                :type="isPasswordVisible ? 'text' : 'password'"
+                                                class="input-group--focused"
+                                                dense
+                                                name="ixarma_password"
+                                                prepend-icon="mdi-lock"
+                                                @click:append="isPasswordVisible = !isPasswordVisible"
+                                            />
+                                        </v-col>
+                                    </v-row>
+                                </v-form>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                    color="grey darken"
+                                    text
+                                    @click="cancelUserData"
+                                >
+                                    {{ langMap.main.cancel }}
+                                </v-btn>
+                                <v-btn
+                                    :color="themeBgColor"
+                                    text
+                                    @click="updateUserIxarma"
+                                >
+                                    {{ langMap.profile.check_and_save_ixarma_link }}
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-expand-transition>
+                </v-card>
+
             </v-col>
             <v-col cols="6">
                 <v-card>
@@ -1422,6 +1514,7 @@ export default {
             snackbarMessage: '',
             errors: [],
             enableToEdit: false,
+            enableToEditIxarma: false,
             enableToEditColor: false,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
@@ -1443,7 +1536,11 @@ export default {
                 timezone_id: '',
                 notification_statuses: [],
                 number: '',
-                avatar_url: ''
+                avatar_url: '',
+                ixarma_link: {
+                    login: '',
+                    password: ''
+                }
             },
             notificationStatuses: [],
             phoneForm: {
@@ -1742,8 +1839,28 @@ export default {
                 }
             });
         },
+        updateUserIxarma() {
+            this.snackbar = false;
+            axios.post('/api/user/ixarma/'+this.userData.id, this.userData.ixarma_link).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.enableToEdit = false
+                    this.enableToEditIxarma = false
+                    this.getUser()
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                    this.errors = response.error;
+                }
+            });
+        },
         cancelUserData() {
             this.enableToEdit = false;
+            this.enableToEditIxarma = false;
             this.getUser();
         },
         updateNotificationsSettings() {

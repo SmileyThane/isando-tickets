@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Permission;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\IxarmaRepository;
 use App\Role;
 use App\User;
 use Illuminate\Http\JsonResponse;
@@ -18,11 +19,13 @@ class UserController extends Controller
 {
     protected $userRepo;
     protected $roleRepo;
+    protected $ixarmaRepo;
 
-    public function __construct(UserRepository $userRepository, RoleRepository $roleRepository)
+    public function __construct(UserRepository $userRepository, RoleRepository $roleRepository, IxarmaRepository $ixarmaRepository)
     {
         $this->userRepo = $userRepository;
         $this->roleRepo = $roleRepository;
+        $this->ixarmaRepo = $ixarmaRepository;
     }
 
     public function find($id = null)
@@ -126,5 +129,11 @@ class UserController extends Controller
     public function restoreDeleted(Request $request)
     {
         return self::showResponse(true, $this->userRepo->restoreDeleted($request->id));
+    }
+
+    public function updateIxarmaLink(Request $request, $id)
+    {
+        $data = $request->toArray();
+        return self::showResponse($this->ixarmaRepo->login($request->login, $request->password, $request->id));
     }
 }

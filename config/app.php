@@ -178,6 +178,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\IxarmaServiceProvider::class,
 
         Tremby\LaravelGitVersion\GitVersionServiceProvider::class,
     ],

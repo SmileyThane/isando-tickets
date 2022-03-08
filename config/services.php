@@ -30,4 +30,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'ixarma' => [
+        'endpoint' => env('IXARMA_ENDPOINT', 'https://ixarma6.inax.ch/rest/api/'),
+    ],
 ];
