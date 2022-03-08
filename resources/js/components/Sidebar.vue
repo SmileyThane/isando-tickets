@@ -542,6 +542,20 @@
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
+                    <v-list-item
+                        v-if="$helpers.auth.checkPermissionByIds([28])"
+                        link
+                        style="background-color:white;"
+                        to="/settings/incident"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi-car-traction-control</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ langMap.sidebar.incident_reporting }}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                 </v-list-group>
             </v-list>
         </perfect-scrollbar>

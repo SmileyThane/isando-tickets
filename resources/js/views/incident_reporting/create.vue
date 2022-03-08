@@ -177,8 +177,8 @@
                         <v-col cols="12">
                             <v-card
                                 class="d-inline-flex flex-column mr-2 mb-2"
-                                max-width="200"
-                                min-width="200"
+                                max-width="170"
+                                min-width="170"
                                 outlined
                                 v-for="(taskGroup, index) in taskGroups"
                                 :key="index"
@@ -233,7 +233,7 @@
             <v-col cols="12" md="6" lg="4">
                 <v-row no-gutters>
                     <v-col cols="12">
-                        <h4 class="heading float-left">Log of Actions</h4>
+                        <h4 class="heading headline float-left">Log of Actions</h4>
                         <v-spacer></v-spacer>
                         <v-menu
                             bottom
@@ -401,8 +401,14 @@ export default {
 </script>
 
 <style scoped>
-.v-input, ::v-deep(label) {
-    font-size: 14px;
+*,
+>>> .v-input,
+>>> label,
+>>> .v-btn__content {
+    font-size: 12px;
+}
+.heading {
+    font-size: 16px;
 }
 .clearfix {
     clear: both;

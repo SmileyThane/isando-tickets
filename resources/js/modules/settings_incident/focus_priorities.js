@@ -18,7 +18,7 @@ export default {
                     return []
                 })
         },
-        calAdd({ commit }, data) {
+        callAdd({ commit }, data) {
             return axios.post(`/api/ir/focus_priority`, data,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -28,7 +28,7 @@ export default {
                     return []
                 })
         },
-        calEdit({ commit, state }) {
+        callEdit({ commit, state }) {
             return axios.put(`/api/ir/focus_priority/${state.focus_priority.id}`, state.focus_priority,{ retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -38,7 +38,7 @@ export default {
                     return []
                 })
         },
-        calDelete({ commit }, id) {
+        callDelete({ commit }, id) {
             return axios.delete(`/api/ir/focus_priority/${id}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
@@ -54,9 +54,15 @@ export default {
         addActionType: (state, data) => state.focus_priorities.push(data),
         editActionType: (state, data) => state.focus_priorities.splice(state.focus_priorities.findIndex(i=>i.id === data.id), 1, data),
         deleteActionType: (state, id) => state.focus_priorities.splice(state.focus_priorities.findIndex(i=>i.id === id), 1),
+        selectItem: (state, id) => state.focus_priority = state.focus_priorities.find(i => i.id === id),
+        unSelectItem: (state) => state.focus_priority = {
+            id: null,
+            name: '',
+        },
+        setName: (state, name) => state.focus_priority.name = name,
     },
     getters: {
         getItems: state => state.focus_priorities,
-        getItem: (state, id) => state.focus_priorities.find(i => i.id === id),
+        getItem: (state, id) => state.focus_priority,
     },
 }

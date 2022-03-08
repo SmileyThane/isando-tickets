@@ -10,9 +10,9 @@
                 </thead>
                 <tbody>
                 <tr v-for="item in $store.getters[`SettingsIncident/${entity}/getItems`]">
-                    <td>name</td>
+                    <td>{{ item.name }}</td>
                     <td>
-                        <v-btn icon @click="editItem(item.id)">
+                        <v-btn icon @click="open(item.id)">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn icon @click="deleteItem(item.id)">
@@ -23,11 +23,19 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td>
-                        <v-text-field v-model="name" placeholder="Create new" dense outlined hide-details />
+                    <td class="mt-4">
+                        <v-text-field
+                            v-model="name"
+                            placeholder="Create new"
+                            dense outlined hide-details
+                            class="mt-4"
+                            @keydown="pressEnter"
+                        />
                     </td>
                     <td>
-                        <v-btn icon @click="addItem()">
+                        <v-btn :disabled="name.length < 3"
+                            class="mt-4"
+                            icon @click="addItem()">
                             <v-icon>mdi-plus</v-icon>
                         </v-btn>
                     </td>
@@ -35,6 +43,44 @@
                 </tfoot>
             </template>
         </v-simple-table>
+        <v-dialog
+            v-model="editDialog"
+            width="500"
+        >
+            <v-card>
+                <v-card-title>
+                    Edit item
+                </v-card-title>
+
+                <v-card-text>
+                    <v-text-field
+                        class="mt-4"
+                        v-model="selName"
+                        dense outlined hide-details
+                    />
+                </v-card-text>
+
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="error"
+                        text
+                        @click="cancel"
+                    >
+                        Cancel
+                    </v-btn>
+                    <v-btn
+                        color="success"
+                        text
+                        @click="editItem"
+                    >
+                        Apply
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-card>
 </template>
 
@@ -50,21 +96,56 @@ export default {
     data: function() {
         return {
             name: '',
+            editDialog: false,
         }
     },
     mounted() {
         this.$store.dispatch(`SettingsIncident/${this.entity}/callList`);
     },
     methods: {
+        pressEnter(event) {
+            if (event.code === 'Enter') {
+                this.addItem()
+            }
+        },
+        open(id) {
+            this.$store.commit(`SettingsIncident/${this.entity}/selectItem`, id);
+            this.editDialog = true;
+        },
+        cancel() {
+            this.$store.commit(`SettingsIncident/${this.entity}/unSelectItem`);
+            this.$store.dispatch(`SettingsIncident/${this.entity}/callList`);
+            this.editDialog = false;
+        },
         addItem() {
             this.$store.dispatch(`SettingsIncident/${this.entity}/callAdd`, { name: this.name });
+            this.name = '';
         },
         editItem() {
             this.$store.dispatch(`SettingsIncident/${this.entity}/callEdit`);
+            this.editDialog = false;
         },
         deleteItem(id) {
             this.$store.dispatch(`SettingsIncident/${this.entity}/callDelete`, id);
         }
     },
+    computed: {
+        selName: {
+            get: function () {
+                return this.$store.getters[`SettingsIncident/${this.entity}/getItem`]?.name ?? '';
+            },
+            set: function (val) {
+                return this.$store.commit(`SettingsIncident/${this.entity}/setName`, val);
+            }
+        }
+    }
 }
 </script>
+
+<style scoped>
+>>> .v-input *,
+>>> .v-card__title,
+>>> .v-btn__content {
+    font-size: 14px !important;
+}
+</style>

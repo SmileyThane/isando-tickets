@@ -10,6 +10,7 @@ use App\IncidentReporting\ImpactPotential;
 use App\IncidentReporting\ReferenceBook;
 use App\IncidentReporting\ResourceType;
 use App\IncidentReporting\StakeholderType;
+use App\IncidentReporting\ProcessState;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
