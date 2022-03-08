@@ -847,6 +847,7 @@ class LanguageSeeder extends Seeder
                             'ixarma_connected' => 'Connected to iXarma',
                             'ixarma_login' => 'iXarma username',
                             'ixarma_password' => 'iXarma password',
+                            'check_and_save_ixarma_link' => 'Check & save iXarma link',
                         ],
                     'notification' =>
                         [
@@ -1765,6 +1766,7 @@ class LanguageSeeder extends Seeder
                             'ixarma_connected' => 'Connected to iXarma /en/',
                             'ixarma_login' => 'iXarma Einloggen',
                             'ixarma_password' => 'iXarma Passwort',
+                            'check_and_save_ixarma_link' => 'Check & save iXarma link /en/',
                         ],
                         'notification' => [
                             'template' => 'Vorlage',
