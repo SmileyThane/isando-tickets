@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('user', 'API\UserController@find');
         Route::get('user/find/{id}', 'API\UserController@find');
         Route::post('user', 'API\UserController@update');
+        Route::post('user/ixarma/{id}', 'API\UserController@updateIxarmaLink');
         Route::post('user/invite', 'API\UserController@sendInvite');
         Route::post('user/is_active', 'API\UserController@changeIsActive');
         Route::get('user/roles/id', 'API\UserController@authorizedRoleIds');
@@ -354,6 +355,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('ir/stakeholder_type', 'API\IncidentReportingController@addStakeholderType');
     Route::put('ir/stakeholder_type/{id}', 'API\IncidentReportingController@editStakeholderType');
     Route::delete('ir/stakeholder_type/{id}', 'API\IncidentReportingController@deleteStakeholderType');
+    Route::get('ir/ixarma/companies', 'API\IncidentReportingController@listIxarmaCompanies');
+    Route::get('ir/ixarma/participants', 'API\IncidentReportingController@listIxarmaParticipants');
 
     // files
     Route::get('file/{id}', 'API\FileController@find');
