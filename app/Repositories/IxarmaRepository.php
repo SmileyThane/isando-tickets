@@ -3,7 +3,6 @@
 
 namespace App\Repositories;
 
-use App\IxarmaLink;
 use App\Providers\IxarmaServiceProvider;
 
 class IxarmaRepository
@@ -14,7 +13,7 @@ class IxarmaRepository
      */
     protected $service;
 
-    public function __construct(IxarmaServiceProvider $service)
+    public function initRepo(IxarmaServiceProvider $service)
     {
         $this->service = $service;
     }

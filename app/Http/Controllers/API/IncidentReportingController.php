@@ -3,12 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\IncidentReporting\ActionType;
-use App\IncidentReporting\EventType;
-use App\IncidentReporting\FocusPriority;
-use App\IncidentReporting\ImpactPotential;
-use App\IncidentReporting\ResourceType;
-use App\IncidentReporting\StakeholderType;
+use App\Providers\IxarmaServiceProvider;
 use App\Repositories\IncidentReportingRepository;
 use App\Repositories\IxarmaRepository;
 use App\Http\Controllers\Controller;
@@ -19,10 +14,11 @@ class IncidentReportingController extends Controller
     protected $incidentRepo;
     protected $ixarmaRepo;
 
-    public function __construct(IncidentincidentReportingRepository $incidentRepo, IxarmaRepository $ixarmaRepo)
+    public function __construct(IxarmaServiceProvider $service, IncidentReportingRepository $incidentRepo, IxarmaRepository $ixarmaRepo)
     {
         $this->incidentRepo = $incidentRepo;
         $this->ixarmaRepo = $ixarmaRepo;
+        $this->ixarmaRepo->initRepo($service);
     }
 
 

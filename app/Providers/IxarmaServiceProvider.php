@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\IxarmaLink;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\ServiceProvider;
@@ -16,14 +17,14 @@ class IxarmaServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->client = new GuzzleClient([
             'base_uri' => config('services.ixarma.endpoint'),
         ]);
     }
 
-    protected function getHeaders($authToken = null, $data = [])
+    protected function getHeaders($authToken = null, $data = []): array
     {
         return [
             RequestOptions::HEADERS => [
@@ -36,7 +37,7 @@ class IxarmaServiceProvider extends ServiceProvider
         ];
     }
 
-    public function login($userId, $ixarmaLogin, $ixarmaPassword)
+    public function login($userId, $ixarmaLogin, $ixarmaPassword): bool
     {
         $response = $this->client->post('auth', $this->getHeaders(null, [
             'username' => $ixarmaLogin,
@@ -64,7 +65,8 @@ class IxarmaServiceProvider extends ServiceProvider
         return true;
     }
 
-    public function isLoggedIn($userId) {
+    public function isLoggedIn($userId): bool
+    {
         $link = IxarmaLink::where('user_id', $userId)->first();
         return $link && !empty($link->password);
     }

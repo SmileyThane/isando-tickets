@@ -386,6 +386,8 @@ export default {
                     email: ''
                 },
             ],
+            menu: false,
+            activePicker: false,
         }
     },
     mounted() {
@@ -397,6 +399,11 @@ export default {
             that.themeBgColor = color;
         });
     },
+    methods: {
+        save: function () {
+
+        }
+    }
 }
 </script>
 
