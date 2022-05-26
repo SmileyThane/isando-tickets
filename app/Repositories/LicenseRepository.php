@@ -46,6 +46,17 @@ class LicenseRepository
         return null;
     }
 
+    private function processPayment($planPriceId, $cardHash)
+    {
+        $planPrice = PlanPrice::find($planPriceId);
+        $plan = Plan::find($planPrice->plan_id);
+        if ($plan->is_default === 1) {
+            return $plan;
+        }
+
+        return null;
+    }
+
     public function update(Request $request, $id)
     {
         $license = License::find($id);
@@ -67,16 +78,5 @@ class LicenseRepository
         }
 
         return $result;
-    }
-
-    private function processPayment($planPriceId, $cardHash)
-    {
-        $planPrice = PlanPrice::find($planPriceId);
-        $plan = Plan::find($planPrice->plan_id);
-        if ($plan->is_default === 1) {
-            return $plan;
-        }
-
-        return null;
     }
 }
