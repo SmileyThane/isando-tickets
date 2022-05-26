@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\Auth;
 
 class TicketUpdateRepository
 {
+    public function setCompanyUserId($oldValue, $value, $ticketId, $companyUserId = null)
+    {
+        if ($oldValue !== $value) {
+            if ($value) {
+                $fullName = CompanyUser::find($value)->userData->full_name;
+                $historyItem = $this->makeHistoryDescription('employee_attached', $fullName);
+            } else {
+                $fullName = $oldValue ? CompanyUser::find($oldValue)->userData->full_name : '';
+                $historyItem = $this->makeHistoryDescription('employee_detached', $fullName);
+            }
+            $this->addHistoryItem($ticketId, $companyUserId, $historyItem);
+        }
+        return $value;
+    }
+
     public function makeHistoryDescription($action, $item = null, $shouldBeTranslated = false, $translationGroup = null)
     {
         return json_encode([
@@ -32,21 +47,6 @@ class TicketUpdateRepository
         $ticketHistory->description = $description;
         $ticketHistory->save();
         return true;
-    }
-
-    public function setCompanyUserId($oldValue, $value, $ticketId, $companyUserId = null)
-    {
-        if ($oldValue !== $value) {
-            if ($value) {
-                $fullName = CompanyUser::find($value)->userData->full_name;
-                $historyItem = $this->makeHistoryDescription('employee_attached', $fullName);
-            } else {
-                $fullName = $oldValue ? CompanyUser::find($oldValue)->userData->full_name : '';
-                $historyItem = $this->makeHistoryDescription('employee_detached', $fullName);
-            }
-            $this->addHistoryItem($ticketId, $companyUserId, $historyItem);
-        }
-        return $value;
     }
 
     public function setContactCompanyUserId($oldValue, $value, $ticketId, $companyUserId = null)
