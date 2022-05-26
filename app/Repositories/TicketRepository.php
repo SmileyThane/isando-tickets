@@ -17,6 +17,7 @@ use App\TicketFilter;
 use App\TicketMerge;
 use App\TicketNotice;
 use App\TicketStatus;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -32,7 +33,7 @@ class TicketRepository
     protected $ticketSelectRepo;
 
     public function __construct(
-        FileRepository $fileRepository,
+        FileRepository         $fileRepository,
         TicketUpdateRepository $ticketUpdateRepository,
         TicketSelectRepository $ticketSelectRepository
     )
@@ -53,9 +54,11 @@ class TicketRepository
             'name' => 'required',
         ];
         $validator = Validator::make($request->all(), $params);
+
         if ($validator->fails()) {
             return $validator->errors();
         }
+
         return true;
     }
 
@@ -125,7 +128,7 @@ class TicketRepository
             $ticketResult->where('to_company_user_id', Auth::user()->employee->id);
         }
         if ($request->only_open === "true") {
-            $ticketResult->whereIn('status_id', [1,2,4]);
+            $ticketResult->whereIn('status_id', [1, 2, 4]);
         }
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
@@ -181,6 +184,7 @@ class TicketRepository
             $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);
         }
 //        dd(DB::getQueryLog());
+
         return $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
 
@@ -237,9 +241,9 @@ class TicketRepository
                     ->where('replicated_to_entity_id', Auth::user()->employee->company_id);
             });
         }
+
         return $tickets;
     }
-
 
     public function find($id)
     {
@@ -296,6 +300,7 @@ class TicketRepository
         }
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_created');
         $this->ticketUpdateRepo->addHistoryItem($ticket->id, $employeeId, $historyDescription);
+
         return $ticket;
     }
 
@@ -339,18 +344,6 @@ class TicketRepository
             $ticket->save();
             $request->status_id = 2;
             $this->updateStatus($request, $id, null, false);
-        }
-        return $ticket;
-    }
-
-    public function updateDescription(Request $request, $id) {
-        $ticket = Ticket::find($id);
-        $ticket->description = $request->description;
-        $ticket->save();
-
-        $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
-        foreach ($files as $file) {
-            $this->fileRepo->store($file, $ticket->id, Ticket::class);
         }
 
         return $ticket;
@@ -425,6 +418,20 @@ class TicketRepository
         return true;
     }
 
+    public function updateDescription(Request $request, $id)
+    {
+        $ticket = Ticket::find($id);
+        $ticket->description = $request->description;
+        $ticket->save();
+
+        $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
+        foreach ($files as $file) {
+            $this->fileRepo->store($file, $ticket->id, Ticket::class);
+        }
+
+        return $ticket;
+    }
+
     public function delete($id): bool
     {
         $result = false;
@@ -459,6 +466,7 @@ class TicketRepository
         $ticket->team_id = $request->team_id;
         $ticket->save();
         $this->ticketUpdateRepo->setTeamId($ticket->team_id, $request->team_id, $ticket->id);
+
         return true;
     }
 
@@ -472,10 +480,11 @@ class TicketRepository
             $request->to_company_user_id,
             $ticket->id
         );
+
         return true;
     }
 
-    public function attachContact(Request $request, $id)
+    public function attachContact(Request $request, $id): bool
     {
         $ticket = Ticket::find($id);
         $ticket->contact_company_user_id = $request->contact_company_user_id;
@@ -485,6 +494,7 @@ class TicketRepository
             $request->contact_company_user_id,
             $ticket->id
         );
+
         return true;
     }
 
@@ -508,6 +518,7 @@ class TicketRepository
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_added');
         $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, null, $historyDescription);
+
         return true;
     }
 
@@ -530,6 +541,7 @@ class TicketRepository
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_updated');
         $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, null, $historyDescription);
+
         return true;
     }
 
@@ -542,6 +554,7 @@ class TicketRepository
         $ticketNotice->save();
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('notice_added');
         $this->ticketUpdateRepo->addHistoryItem($ticketNotice->ticket_id, null, $historyDescription);
+
         return true;
     }
 
@@ -552,6 +565,7 @@ class TicketRepository
         $ticketNotice->save();
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('notice_updated');
         $this->ticketUpdateRepo->addHistoryItem($ticketNotice->ticket_id, null, $historyDescription);
+
         return true;
     }
 
@@ -582,8 +596,10 @@ class TicketRepository
             $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged', $childNumbers);
             $this->ticketUpdateRepo->addHistoryItem($parentTicket->id, null, $historyDescription);
             $parentTicket->save();
+
             return true;
         }
+
         return false;
     }
 
@@ -604,8 +620,10 @@ class TicketRepository
                     $this->ticketUpdateRepo->addHistoryItem($request->parent_ticket_id, null, $historyDescription);
                 }
             }
+
             return true;
         }
+
         return false;
     }
 
@@ -617,6 +635,7 @@ class TicketRepository
             $ticketFilter->name = $request->name;
             $ticketFilter->filter_parameters = json_encode($request->filter_parameters);
             $ticketFilter->save();
+
             return $ticketFilter;
         } catch (Throwable $throwable) {
             return null;
@@ -628,13 +647,15 @@ class TicketRepository
         return TicketFilter::where('user_id', Auth::id())->get();
     }
 
-    public function removeFilter($filterId) {
+    public function removeFilter($filterId): bool
+    {
         try {
             TicketFilter::where('user_id', Auth::id())
                 ->where('id', '=', $filterId)
                 ->delete();
+
             return true;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return false;
         }
     }
@@ -650,6 +671,7 @@ class TicketRepository
         $ticket->parent_id = null;
         $ticket->status_id = TicketStatus::OPEN;
         $ticket->save();
+
         return true;
     }
 }
