@@ -86,7 +86,6 @@ class CompanyUserRepository
             ->withTrashed($request->with_trashed);
 
 
-
         if ($request->search) {
             $request['page'] = 1;
             $companyUsers = $companyUsers->whereHas(
@@ -211,10 +210,10 @@ class CompanyUserRepository
             if ($request['phones']) {
                 foreach ($request['phones'] as $phone) {
                     Phone::firstOrCreate([
-                            'entity_id' => $user->id,
-                            'entity_type' => User::class,
-                            'phone' => $phone['phone'],
-                            'phone_type' => $phone['phone_type']
+                        'entity_id' => $user->id,
+                        'entity_type' => User::class,
+                        'phone' => $phone['phone'],
+                        'phone_type' => $phone['phone_type']
                     ]);
 
                 }
