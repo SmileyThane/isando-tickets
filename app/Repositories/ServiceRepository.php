@@ -7,7 +7,8 @@ use App\Service;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
-class ServiceRepository {
+class ServiceRepository
+{
 
     protected $rules = [
         'name' => 'string|required'
@@ -23,15 +24,18 @@ class ServiceRepository {
         return true;
     }
 
-    public function all(Request $request) {
+    public function all(Request $request)
+    {
         return Service::MyCompany()->get();
     }
 
-    public function find($service_id) {
+    public function find($service_id)
+    {
         return Service::find($service_id);
     }
 
-    public function create(Request $request, $company_id) {
+    public function create(Request $request, $company_id)
+    {
         $service = new Service();
         $service->name = $request->name;
         $service->company_id = $company_id;
@@ -39,7 +43,8 @@ class ServiceRepository {
         return $service;
     }
 
-    public function update(Request $request, $service_id) {
+    public function update(Request $request, $service_id)
+    {
         $service = Service::findOrFail($service_id);
         if ($request->has('name')) {
             $service->name = $request->name;
@@ -48,7 +53,8 @@ class ServiceRepository {
         return $service;
     }
 
-    public function delete($service_id) {
+    public function delete($service_id)
+    {
         $service = Service::findOrFail($service_id);
         $service->delete();
         return true;

@@ -843,6 +843,11 @@ class LanguageSeeder extends Seeder
                             'personal_id' => 'Personal ID number',
                             'avatar' => 'Avatar picture',
                             'internal_billing' => 'Internal billing',
+                            'link_to_ixarma' => 'Link to iXarma',
+                            'ixarma_connected' => 'Connected to iXarma',
+                            'ixarma_login' => 'iXarma username',
+                            'ixarma_password' => 'iXarma password',
+                            'check_and_save_ixarma_link' => 'Check & save iXarma link',
                         ],
                     'notification' =>
                         [
@@ -1757,6 +1762,11 @@ class LanguageSeeder extends Seeder
                             'personal_id' => 'Persönliche ID-Nummer',
                             'avatar' => 'Avatar Bild',
                             'internal_billing' => 'Internal billing',
+                            'link_to_ixarma' => 'Link to iXarma /en/',
+                            'ixarma_connected' => 'Connected to iXarma /en/',
+                            'ixarma_login' => 'iXarma Einloggen',
+                            'ixarma_password' => 'iXarma Passwort',
+                            'check_and_save_ixarma_link' => 'Check & save iXarma link /en/',
                         ],
                         'notification' => [
                             'template' => 'Vorlage',

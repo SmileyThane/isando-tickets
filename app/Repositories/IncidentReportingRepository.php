@@ -10,12 +10,24 @@ use App\IncidentReporting\ImpactPotential;
 use App\IncidentReporting\ReferenceBook;
 use App\IncidentReporting\ResourceType;
 use App\IncidentReporting\StakeholderType;
+use App\IncidentReporting\ProcessState;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 
-class IncidentReporting
+class IncidentReportingRepository
 {
+    public function getActionTypesInCompanyContext($companyId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        return ActionType::where('company_id', $companyId)->orderBy('position', 'ASC')->get();
+    }
+
+    public function createActionType($name, $name_de = null, $position = null, $company_id = null): ActionType
+    {
+        return $this->_create(ActionType::class, $name, $name_de, $position, $company_id);
+    }
+
     protected function _create($referenceBook, $name, $name_de = null, $position = null, $company_id = null): ReferenceBook
     {
         $company_id = $company_id ?? Auth::user()->employee->companyData->id;
@@ -25,6 +37,13 @@ class IncidentReporting
             'name_de' => $name_de,
             'position' => $position
         ]);
+    }
+
+    // ActionType
+
+    public function updateActionType($id, $name, $name_de = null, $position = null): ?ActionType
+    {
+        return $this->_update(ActionType::class, $id, $name, $name_de, $position);
     }
 
     protected function _update($referenceBook, $id, $name, $name_de = null, $position = null): ?ReferenceBook
@@ -42,6 +61,11 @@ class IncidentReporting
         return $item;
     }
 
+    public function deleteActionType($id): bool
+    {
+        return $this->_delete(ActionType::class, $id);
+    }
+
     protected function _delete($referenceBook, $id): bool
     {
         try {
@@ -52,29 +76,8 @@ class IncidentReporting
         }
     }
 
-    // ActionType
-    public function getActionTypesInCompanyContext($companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        return ActionType::where('company_id', $companyId)->orderBy('position', 'ASC')->get();
-    }
-
-    public function createActionType($name, $name_de = null, $position = null, $company_id = null): ActionType
-    {
-        return $this->_create(ActionType::class, $name, $name_de, $position, $company_id);
-    }
-
-    public function updateActionType($id, $name, $name_de = null, $position = null): ?ActionType
-    {
-        return $this->_update(ActionType::class, $id, $name, $name_de, $position);
-    }
-
-    public function deleteActionType($id): bool
-    {
-        return $this->_delete(ActionType::class, $id);
-    }
-
     // EventType
+
     public function getEventTypesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;

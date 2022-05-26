@@ -3,6 +3,7 @@
 namespace App\IncidentReporting;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 abstract class ReferenceBook extends Model
 {

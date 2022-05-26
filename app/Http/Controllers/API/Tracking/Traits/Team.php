@@ -26,9 +26,8 @@ trait Team
                     Projects::class,
                 ])
                 ->thenReturn();
-//            dd($coworkers->toSql());
             $coworkers = $coworkers->get()
-                ->map(function($user) {
+                ->map(function ($user) {
                     $user->userData->name = $user->userData->name . ' ' . $user->userData->surname;
                     return $user->userData;
                 });
@@ -41,6 +40,7 @@ trait Team
         } else {
             $coworkers[] = Auth::user()->employee->userData;
         }
+
         return self::showResponse((bool)COUNT($coworkers), $coworkers);
     }
 
@@ -58,25 +58,29 @@ trait Team
 
     public function getManagersOfTeams(Request $request)
     {
-        $teams = \App\Team::whereHas('employees', function ($query) {
-            return $query->where('company_user_id', '=', Auth::user()->employee->id);
-        })
+        $teams = \App\Team::query()
+            ->whereHas('employees', function ($query) {
+                return $query->where('company_user_id', '=', Auth::user()->employee->id);
+            })
             ->with('employees.employee.userData')
             ->get();
+
         $teamManagers = collect();
         foreach ($teams as $team) {
-            $managers = $team->employees->filter(function($item) {
+            $managers = $team->employees->filter(function ($item) {
                 return $item->is_manager;
             });
             if ($managers->count()) {
-
-                $items = $team->employees->filter(function($item) {
-                        return $item->is_manager;
-                    })
-                        ->map(function($item) { return $item->employee->userData; });
+                $items = $team->employees->filter(function ($item) {
+                    return $item->is_manager;
+                })
+                    ->map(function ($item) {
+                        return $item->employee->userData;
+                    });
                 $teamManagers = $teamManagers->merge($items);
             }
         }
+
         return self::showResponse((bool)$teams, $teamManagers->unique()->all());
     }
 }

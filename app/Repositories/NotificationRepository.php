@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class NotificationRepository
 {
@@ -88,7 +89,7 @@ class NotificationRepository
         try {
             NotificationTemplate::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }
@@ -129,7 +130,7 @@ class NotificationRepository
         try {
             NotificationType::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }

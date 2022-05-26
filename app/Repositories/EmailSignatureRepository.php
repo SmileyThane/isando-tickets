@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\User;
 use App\EmailSignature;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class EmailSignatureRepository
 {
@@ -39,7 +40,7 @@ class EmailSignatureRepository
         try {
             EmailSignature::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }

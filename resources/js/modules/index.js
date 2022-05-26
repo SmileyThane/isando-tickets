@@ -11,3 +11,4 @@ export { default as Languages } from './languages';
 export { default as Timesheet } from './timesheet';
 export { default as RiskRepository } from './risk_repository';
 export { default as IncidentReporting } from './incident_reporting';
+export { default as SettingsIncident } from './settings_incident';
