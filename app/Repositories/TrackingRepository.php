@@ -14,6 +14,7 @@ use App\TrackingProject;
 use App\TrackingLogger;
 use App\TrackingTimesheet;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
@@ -64,47 +65,6 @@ class TrackingRepository
         return true;
     }
 
-    private function acl()
-    {
-        $isLicensed = false;
-        $roleId = null;
-        $teams = [];
-
-//        Auth::user()->employee->userData->company_id
-//        dd(Auth::user()->employee->role_names); // all roles in company
-
-        // USER ROLE
-//→ we need to have one role that has access to time tracking (just my own time tracking entries)
-//based on license purchase by the license company - when license company purchases license for time tracking,
-// everyone from the license company has access to the time tracking (their own entries)
-        $hasLicensed = Auth::user()->employee->companyData->license;
-        $company = Auth::user()->employee->companyData;
-//        dd($company->id);
-        // TEAM MANAGER
-//→ we need to be able to select who is manager in each team on the team page, possibly as a tick box in the list of members.
-// The tickbox header should have hover text "Team manager role allows view, edit and approve time tracking of the team members"
-//license company purchased the license for time tracking , AND
-//they are managers role and linked to a specific team
-        $isManager = Auth::user()->employee->hasRoleId(Role::MANAGER);
-//        $teams = Auth::user()->employee->assignedToTeams()->with('teamData')->get();
-        $teams = Team::whereHas('employees', function ($query) {
-            return $query->where('company_user_id', '=', Auth::user()->employee->id);
-        })->with('employees.employee.userData')->first();
-        $teamEmployees = $teams;
-        dd($teams);
-
-        // COMPANY ADMIN
-//→ additionally, there should be a role that can view & edit time tracking of all license company users TIME TRACKING ADMIN
-//license company purchased the license for time tracking , AND
-//has got role Time tracking Admin
-        $isAdmin = Auth::user()->employee->hasRoleId(Role::ADMIN);
-        $company = Auth::user()->employee->companyData()->with('employees.userData')->first();
-        $employees = $company;
-
-//        $employee = Auth::user()->employee->assignedToClients;//->clients->customLicense;
-        dd($company->employees->first());
-    }
-
     public function all(Request $request)
     {
         $permissionIds = Auth::user()->employee->getPermissionIds();
@@ -114,7 +74,7 @@ class TrackingRepository
             !in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds) &&
             !in_array(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS, $permissionIds)
         ) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
 
         // User
@@ -143,7 +103,7 @@ class TrackingRepository
             $tracking
 //            ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
                 ->where('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
-                ->where(function($query) use ($request) {
+                ->where(function ($query) use ($request) {
                     $query->where('date_to', '<=', Carbon::parse($request->date_to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
                         ->orWhereNull('date_to');
                 });
@@ -179,7 +139,7 @@ class TrackingRepository
     public function create(Request $request)
     {
         if (!Auth::user()->employee->hasPermissionId(40)) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
         $tracking = new Tracking();
         $tracking->is_manual = true;
@@ -190,7 +150,7 @@ class TrackingRepository
         $tracking->date_from = Carbon::parse($request->date_from)->format(Tracking::$DATETIME_FORMAT);
         if ($request->has('date_from') && $request->has('date_to') && !is_null($request->date_to)) {
             if (Carbon::parse($request->date_from)->gt(Carbon::parse($request->date_to))) {
-                throw new \Exception('The date from must be a date before date to.');
+                throw new Exception('The date from must be a date before date to.');
             }
         }
         $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->format(Tracking::$DATETIME_FORMAT) : null;
@@ -258,6 +218,24 @@ class TrackingRepository
             ->first();
     }
 
+    protected function logTracking($trackingId, $action, $from = null, $to = null)
+    {
+        if ($action === TrackingLogger::UPDATE_TAGS && empty($from) && empty($to)) {
+            return false;
+        }
+        $trackingLog = new TrackingLogger();
+        $trackingLog->user_id = Auth::user()->id;
+        $trackingLog->tracking_id = $trackingId;
+        $trackingLog->action = $action;
+        $trackingLog->from = $from;
+        $trackingLog->to = $to;
+        try {
+            $trackingLog->save();
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+    }
+
     public function update(Request $request, Tracking $tracking)
     {
         $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
@@ -266,16 +244,16 @@ class TrackingRepository
             && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS)
             && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS)
         ) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 14) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 7) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
         if ($tracking->user_id !== Auth::user()->id && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_TEAM_TIME_ACCESS)) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
 
         $oldTracking = $tracking;
@@ -290,13 +268,13 @@ class TrackingRepository
         }
         if ($request->has('date_from')) {
             if (!$request->has('date_to') && Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {
-                throw new \Exception('The date from must be a date before date to.');
+                throw new Exception('The date from must be a date before date to.');
             }
             $tracking->date_from = Carbon::parse($request->date_from)->format(Tracking::$DATETIME_FORMAT);
         }
         if ($request->has('date_to')) {
             if (!is_null($request->date_to) && Carbon::parse($tracking->date_from)->gt(Carbon::parse($request->date_to))) {
-                throw new \Exception('The date to must be a date after date from.');
+                throw new Exception('The date to must be a date after date from.');
             }
             $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->format(Tracking::$DATETIME_FORMAT) : null;
         }
@@ -379,17 +357,17 @@ class TrackingRepository
             && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS)
             && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS)
         ) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 14) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 7) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
 
         if ($tracking->user_id !== Auth::user()->id && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_DELETE_TEAM_TIME_ACCESS)) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
         $oldTracking = $tracking;
         $oldService = $oldTracking->service;
@@ -427,27 +405,50 @@ class TrackingRepository
         return false;
     }
 
-    protected function logTracking($trackingId, $action, $from = null, $to = null)
-    {
-        if ($action === TrackingLogger::UPDATE_TAGS && empty($from) && empty($to)) {
-            return false;
-        }
-        $trackingLog = new TrackingLogger();
-        $trackingLog->user_id = Auth::user()->id;
-        $trackingLog->tracking_id = $trackingId;
-        $trackingLog->action = $action;
-        $trackingLog->from = $from;
-        $trackingLog->to = $to;
-        try {
-            $trackingLog->save();
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-        }
-    }
-
     public function getCurrentUserTracking()
     {
         $user = Auth::user();
         return $user->tracking()->where('status', '=', Tracking::$STATUS_STARTED)->get();
+    }
+
+    private function acl()
+    {
+        $isLicensed = false;
+        $roleId = null;
+        $teams = [];
+
+//        Auth::user()->employee->userData->company_id
+//        dd(Auth::user()->employee->role_names); // all roles in company
+
+        // USER ROLE
+//→ we need to have one role that has access to time tracking (just my own time tracking entries)
+//based on license purchase by the license company - when license company purchases license for time tracking,
+// everyone from the license company has access to the time tracking (their own entries)
+        $hasLicensed = Auth::user()->employee->companyData->license;
+        $company = Auth::user()->employee->companyData;
+//        dd($company->id);
+        // TEAM MANAGER
+//→ we need to be able to select who is manager in each team on the team page, possibly as a tick box in the list of members.
+// The tickbox header should have hover text "Team manager role allows view, edit and approve time tracking of the team members"
+//license company purchased the license for time tracking , AND
+//they are managers role and linked to a specific team
+        $isManager = Auth::user()->employee->hasRoleId(Role::MANAGER);
+//        $teams = Auth::user()->employee->assignedToTeams()->with('teamData')->get();
+        $teams = Team::whereHas('employees', function ($query) {
+            return $query->where('company_user_id', '=', Auth::user()->employee->id);
+        })->with('employees.employee.userData')->first();
+        $teamEmployees = $teams;
+        dd($teams);
+
+        // COMPANY ADMIN
+//→ additionally, there should be a role that can view & edit time tracking of all license company users TIME TRACKING ADMIN
+//license company purchased the license for time tracking , AND
+//has got role Time tracking Admin
+        $isAdmin = Auth::user()->employee->hasRoleId(Role::ADMIN);
+        $company = Auth::user()->employee->companyData()->with('employees.userData')->first();
+        $employees = $company;
+
+//        $employee = Auth::user()->employee->assignedToClients;//->clients->customLicense;
+        dd($company->employees->first());
     }
 }

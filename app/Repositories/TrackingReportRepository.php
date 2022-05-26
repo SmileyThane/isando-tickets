@@ -17,6 +17,7 @@ use App\TrackingSettings;
 use App\TrackingTimesheet;
 use App\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -33,18 +34,26 @@ class TrackingReportRepository
     protected $company;
     protected $currency = 'EUR';
 
-    public function all(Request $request) {
+    public function all(Request $request)
+    {
         if (!Auth::user()->employee->hasPermissionId(61)) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
         return $this->getUserReports();
     }
 
-    public function find($reportId) {
+    public function getUserReports()
+    {
+        return Auth::user()->trackingReports()->orderBy('id', 'desc')->get();
+    }
+
+    public function find($reportId)
+    {
         return Auth::user()->trackingReports()->find($reportId);
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $request->validate([
             'name' => 'required|string|max:255',
             'configuration' => 'required'
@@ -58,7 +67,8 @@ class TrackingReportRepository
         return $report;
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $report = Auth::user()->trackingReports()->findOrFail($id);
         $report->delete();
     }
@@ -66,16 +76,16 @@ class TrackingReportRepository
     public function validate($request, $new = true)
     {
         $params = [
-            'period'                => 'required|array',
-            'period.start'          => 'required_without:period.end|date|nullable',
-            'period.end'            => 'required|date',
-            'sort'                  => 'required|array',
-            'sort.value'            => 'required|string|in:alph-asc,chron-desc,duration-desc,duration-asc,revenue-desc,revenue-asc',
-            'round'                 => 'required|string',
-            'group'                 => 'array',
-            'group.*.value'         => 'string|in:day,description,week,billability,month',
-            'filters'               => 'array',
-            'filters.*.value'       => 'string|in:coworkers,projects,clients,services,billable'
+            'period' => 'required|array',
+            'period.start' => 'required_without:period.end|date|nullable',
+            'period.end' => 'required|date',
+            'sort' => 'required|array',
+            'sort.value' => 'required|string|in:alph-asc,chron-desc,duration-desc,duration-asc,revenue-desc,revenue-asc',
+            'round' => 'required|string',
+            'group' => 'array',
+            'group.*.value' => 'string|in:day,description,week,billability,month',
+            'filters' => 'array',
+            'filters.*.value' => 'string|in:coworkers,projects,clients,services,billable'
         ];
         $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {
@@ -84,403 +94,8 @@ class TrackingReportRepository
         return true;
     }
 
-    protected function getData(Request $request) {
-
-        $permissionIds = Auth::user()->employee->getPermissionIds();
-
-        if (!in_array(Permission::TRACKER_REPORT_VIEW_OWN_TIME_ACCESS, $permissionIds) &&
-            !in_array(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS, $permissionIds) &&
-            !in_array(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS, $permissionIds)
-        ) {
-            throw new \Exception('Access denied');
-        }
-
-        $tracking = Tracking::with('User.employee.assignedToTeams')
-            ->with('Tags.Translates');
-//            ->where(function($query) {
-//                $query
-//                    ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
-//                    ->orWhereNull('status');
-//            });
-
-        if (in_array(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS, $permissionIds)) {
-            // Company Admin
-            $tracking = $tracking->CompanyAdmin();
-        } elseif (in_array(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS, $permissionIds)) {
-            // Manager
-            $tracking = $tracking->TeamManager();
-        } else {
-            // User
-            $tracking = $tracking->SimpleUser();
-        }
-
-        $this->company = Auth::user()->employee->companyData;
-        $this->currency = $this->company && $this->company->currency ? $this->company->currency->slug : $this->currency;
-        $sorting        = $request->sort['value'];
-        $grouping       = $request->group;
-        if (isset($request->group) && isset($request->group['value']) && $request->group['value'] === 'custom') {
-            $grouping = $request->group['items'];
-        }
-        if (isset($request->group) && isset($request->group['value']) && in_array($request->group['value'], ['all_no_group', 'all_chron'])) {
-            $grouping = [];
-        }
-        $grouping       = collect($grouping)->map(function ($item) { return $item['value']; });
-        $filtering      = collect($request->filters)
-            ->map(function($item) {
-                return [
-                    'value' => $item['value'],
-                    'selected' => $item['selected']
-                ];
-            })
-            ->filter(function ($item) {
-                if (is_array($item['selected']) && count($item['selected'])) {
-                    return true;
-                } elseif (is_numeric($item['selected'])) {
-                    return true;
-                }
-                return false;
-            });
-
-        if ($request->has('period') && isset($request->period['start'])) {
-            $tracking->where('tracking.date_from', '>=', Carbon::parse($request->period['start'])->startOf('day'));
-        }
-        if ($request->has('period') && isset($request->period['end'])) {
-            $tracking->where(function($query) use ($request) {
-                $query
-                    ->where('tracking.date_to', '<=', Carbon::parse($request->period['end'])->endOf('day'))
-                    ->orWhereNull('tracking.date_to');
-            });
-        }
-
-        switch ($sorting) {
-            case 'alph-asc':
-                $tracking
-                    ->orderBy('tracking.date_from', 'asc')
-                    ->orderBy('tracking.date_to', 'asc');
-                break;
-            case 'chron-desc':
-                $tracking
-                    ->orderBy('tracking.date_to', 'desc')
-                    ->orderBy('tracking.date_from', 'desc');
-                break;
-        }
-
-        if ($filtering->isNotEmpty()) {
-            foreach ($filtering as $filter) {
-                switch ($filter['value']) {
-                    case 'coworkers':
-                        $tracking->whereIn('user_id', $filter['selected']);
-                        break;
-                    case 'projects':
-                        $projectIds = TrackingProject::whereIn('id', $filter['selected'])->pluck('id')->all();
-                        $tracking->whereIn('entity_id', $projectIds)
-                                 ->where('entity_type', TrackingProject::class);
-                        break;
-                    case 'clients':
-                        $clients = Client::whereIn('id', $filter['selected'])->pluck('id')->all();
-                        $projectIds = TrackingProject::whereIn('client_id', $clients)->pluck('id')->all();
-                        $ticketIds = Ticket::where('to_entity_type', Client::class)
-                            ->whereIn('to_entity_id', $clients)
-                            ->pluck('id')
-                            ->all();
-
-                        $tracking->where(function($query) use ($projectIds, $ticketIds) {
-                            // project
-                            if (count($projectIds)) {
-                                $query->where(function($q) use ($projectIds) {
-                                    return $q
-                                        ->where('entity_type', '=', TrackingProject::class)
-                                        ->whereIn('entity_id', $projectIds);
-                                });
-                            }
-                            // ticket
-                            if (count($ticketIds)) {
-                                if (count($projectIds)) {
-                                    $query->where(function($q) use ($ticketIds) {
-                                        return $q
-                                            ->where('entity_type', '=', Ticket::class)
-                                            ->whereIn('entity_id', $ticketIds);
-                                    });
-                                } else {
-                                    $query->orWhere(function($q) use ($ticketIds) {
-                                        return $q
-                                            ->where('entity_type', '=', Ticket::class)
-                                            ->whereIn('entity_id', $ticketIds);
-                                    });
-                                }
-                            }
-                        });
-                        break;
-                    case 'services':
-                        $tracking->whereHas(
-                            'Services',
-                            function ($query) use ($filter) {
-                                $query->whereIn('serviceable.service_id', $filter['selected']);
-                            }
-                        );
-                        break;
-                    case 'billable':
-                        if (Auth::user()->employee->hasPermissionId(65)) {
-                            $tracking->where('tracking.billable', '=', (int)$filter['selected']);
-                        }
-                        break;
-                    case 'tag':
-                        $tracking->whereHas('Tags', function($query) use ($filter) {
-                            $query->whereIn('tags.id', $filter['selected']);
-                        });
-                        break;
-                }
-            }
-        }
-
-        $tracks = $tracking->get()->toArray();
-
-        $this->round = $request->get('round', 0);
-        $round = $this->round;
-
-        if (!empty($round)) {
-            $tracks = collect($tracks)->map(function ($track) use ($round) {
-                $time = $this->convertSecondsToTimeFormat($track['passed']);
-                $roundedTime = $this->getRoundTime($time, $round);
-                $passed = $this->convertTimeToSeconds($roundedTime);
-                $track['passed'] = $passed;
-                if ($track['billable'] && Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_REVENUE_PREVIEW_ACCESS)) {
-                    $track['revenue'] = number_format((float)$track['rate'] * (float)$this->convertSecondsToDecimal((float)$passed), 2, '.', '');
-                } else {
-                    $track['revenue'] = 0;
-                }
-                return $track;
-            });
-        }
-
-        return [
-            'tracks' => $tracks,
-            'grouping' => $grouping
-        ];
-    }
-
-    function getRoundTime($time, $round = '5') {
-        if ($round === 0) return $time;
-        $minutes = $round;
-        $direction = 'nearest';
-        if (!is_numeric($round)) {
-            try {
-                $round = explode('_', $round);
-                if ($round[0] !== 'custom' || count($round) !== 4) return $time;
-                $minutes = $round[1];
-                $direction = $round[2];
-            } catch (\Exception $exception) {
-                return $time;
-            }
-        }
-        $time = explode(':', $time);
-        $seconds = (int)$time[0] * 60 * 60 + (int)$time[1] * 60;
-        if (isset($time[2])) $seconds += (int)$time[2];
-        switch ($direction) {
-            case 'up': $rounded = ceil((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60); break;
-            case 'down': $rounded = floor((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60); break;
-            default: $rounded = round((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60);
-        }
-//        dd($time, $minutes, $rounded, $this->convertSecondsToTimeFormat($rounded));
-        return $this->convertSecondsToTimeFormat($rounded);
-    }
-
-    public function generate(Request $request) {
-        $result = $this->getData($request);
-        $grouping = $result['grouping'];
-        $tracks = $result['tracks'];
-
-        if ($grouping->isEmpty()) return [
-            'g1' => $tracks,
-            'g2' => $tracks,
-        ];
-
-        $group = $grouping->shift();
-        $items = $this->makeList($group, $tracks);
-
-        $items2 = $this->makeList($group === 'project' ? 'service' : 'project', $tracks);
-        return [
-            'g1' => array_values($this->makeStructure($grouping->toArray(), 0, $items)),
-            'g2' => array_values($this->makeStructure([], 0, $items2)),
-        ];
-
-    }
-
-    protected function getFieldData($tracking, $field = 'description') {
-        switch ($field) {
-            case 'month':
-                return Carbon::parse($tracking['date_from'])->format('F Y');
-            case 'week':
-                $startWeek = Carbon::parse($tracking['date_from'])->startOfWeek(Carbon::MONDAY);
-                $endWeek = Carbon::parse($tracking['date_from'])->endOfWeek(Carbon::SUNDAY);
-                return 'Week of '
-                    . $startWeek->format('j M')
-                    . ' ('
-                        . $startWeek->format('D j M Y')
-                        . ' - '
-                        . $endWeek->format('D j M Y')
-                    . ')';
-            case 'day':
-                return Carbon::parse($tracking['date_from'])->format('l, j M');
-            case 'description':
-                return $tracking['description'] ?? 'None';
-            case 'billability':
-                return $tracking['billable'] ? 'Billable' : 'Non-billable';
-            case 'service':
-                return $tracking['service'] ? $tracking['service']['name'] : 'None';
-            case 'project':
-                return $tracking['entity'] ? $tracking['entity']['name'] : 'None';
-            case 'client':
-                return isset($tracking) && isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['name'] : 'None';
-            case 'coworker':
-                return $tracking['user']['full_name'];
-        }
-        return null;
-    }
-
-    protected function makeList($group, $trackings) {
-        $items = [];
-        foreach ($trackings as $tracking) {
-            $data = $this->getFieldData($tracking, $group);
-            $items[$data]['name'] = $data;
-            if ($group === 'project') {
-                $items[$data]['client'] = $this->getFieldData($tracking, 'client');
-            }
-            $items[$data]['children'][] = $tracking;
-        }
-        return $items;
-    }
-
-    protected function makeStructure($grouping, $groupIndex, $tracks) {
-        if (!isset($grouping[$groupIndex])) return $tracks;
-        foreach ($tracks as $key => $track) {
-            $list = $this->makeList($grouping[$groupIndex], $track['children']);
-            $tracks[$key]['name'] = $key;
-            $tracks[$key]['children'] = array_values($this->makeStructure($grouping, $groupIndex+1, $list));
-        }
-        return array_values($tracks);
-    }
-
-    protected function prepareDataForPDF($entities) {
-        $items = [];
-        $currency = $company = Auth::user()->employee->companyData->currency;
-        foreach ($entities as $key => $entity) {
-            $start = Carbon::parse($entity['date_from'])->format('H:i');
-            $end = Carbon::parse($entity['date_to'])->format('H:i');
-            $total = $this->convertSecondsToTimeFormat($entity['passed'], false);
-            $item = [
-                'date' => Carbon::parse($entity['date_from'])->format('d M Y'),
-                'start' => $this->timeInDecimal ? $this->convertTimeToDecimal($start) : $start,
-                'end' => $this->timeInDecimal ? $this->convertTimeToDecimal($end) : $end,
-                'total' => $this->timeInDecimal ? number_format($entity['passed_decimal'], 2) : $total,
-                'coworker' => $entity['user']['full_name'],
-                'customer' => isset($entity['entity']) && isset($entity['entity']['client'])
-                    ? $entity['entity']['client']['name']
-                    : (
-                        isset($entity['entity']['from_company_name'])
-                            ? $entity['entity']['from_company_name']
-                            : ''
-                    ),
-                'project' => isset($entity['entity']) ? $entity['entity']['name'] : '',
-                'service' => isset($entity['service']) ? $entity['service']['name'] : '',
-                'description' => isset($entity['description']) ? $entity['description'] : '',
-                'billable' => $entity['billable'] ? 'Yes' : 'No',
-                'revenue' => $entity['revenue']
-                    ?
-                        (
-                            $currency
-                            ? $currency->slug . ' '
-                            : ''
-                        ) . $entity['revenue']
-                    : ''
-            ];
-            array_push($items, $item);
-        }
-        return $items;
-    }
-
-    function convertTimeToDecimal($time) {
-        $hms = explode(":", $time);
-        return number_format(($hms[0] + ($hms[1]/60)), 2);
-    }
-
-    function convertSecondsToDecimal(int $seconds) {
-        return number_format($seconds / 60 / 60, 2);
-    }
-
-    function convertSecondsToTimeFormat($value, $withSeconds = true) {
-//        $M = floor($value /2592000);
-//        if (!empty($M)) {
-//            $result[] = $M . ' months,';
-//        }
-//        $d = floor(($value %2592000)/86400);
-//        if (!empty($d)) {
-//            $result[] = $d . ' days,';
-//        }
-        $h = floor($value / 60 / 60);
-        $m = floor(($value - ($h * 60 * 60)) / 60);
-        if ($withSeconds) {
-            return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
-        }
-        return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
-    }
-
-    function convertTimeToSeconds($time) {
-        $time = explode(':', $time);
-        $seconds = 0;
-        if (isset($time[0])) $seconds += $time[0] * 60 * 60;
-        if (isset($time[1])) $seconds += $time[1] * 60;
-        if (isset($time[2])) $seconds += $time[2];
-        return $seconds;
-    }
-
-    private function recalculateHeaderWidths($headers, $exclude = []) {
-        $headers = collect($headers);
-        $exclude = $headers->filter(function ($item) use ($exclude) {
-            return in_array($item['slug'], $exclude);
-        });
-        $headers = $headers->filter(function ($item) use ($exclude) {
-            return !in_array($item['slug'], $exclude->map(function($i) { return $i['slug']; })->toArray());
-        });
-        $sumWidth = $exclude->sum(function($item) { return $item['width']; });
-        $countResizableColumns = $headers
-            ->filter(function($item) { return $item['resizable']; })
-            ->sum(function () { return 1; });
-        $maxStep = (int)ceil($sumWidth / $countResizableColumns);
-        $headers = $headers->toArray();
-        foreach ($headers as $key => $header) {
-            if ($sumWidth <= 0) break;
-            if ($header['resizable']) {
-                if ($sumWidth < $maxStep && $sumWidth > 0) {
-                    $headers[$key]['width'] += $sumWidth;
-                    $sumWidth -= $sumWidth;
-                } else {
-                    $headers[$key]['width'] += $maxStep;
-                    $sumWidth -= $maxStep;
-                }
-            }
-        }
-        return $headers;
-    }
-
-    private function getProjectLabel() {
-        $settings = TrackingSettings::where([
-            ['entity_id', '=', Auth::user()->id],
-            ['entity_type', '=', User::class]
-        ])->first();
-
-        $projectLabel = 'Project';
-        if (isset($settings->data['projectType'])) {
-            switch ($settings->data['projectType']) {
-                case 1: $projectLabel = 'Department'; break;
-                case 2: $projectLabel = 'Profit center'; break;
-                default: $projectLabel = 'Project'; break;
-            }
-        }
-        return $projectLabel;
-    }
-
-    public function genPDF($request) {
+    public function genPDF($request)
+    {
 
         // Pre-define some variables
         $reportName = $request->get('name', 'Report');
@@ -527,7 +142,7 @@ class TrackingReportRepository
             $y += 60;
             // Report name
             $pdf->SetFont('Arial', '', 10);
-            $pdf->SetXY($pdf->GetCenterX($reportName, $pdf->GetPageWidth()) , $y);
+            $pdf->SetXY($pdf->GetCenterX($reportName, $pdf->GetPageWidth()), $y);
             $pdf->Write(3, $reportName);
 
             // Co-workers
@@ -573,7 +188,7 @@ class TrackingReportRepository
 
         if ($request->has('showRevenue') && $request->get('showRevenue') === false) {
             $headers = $this->recalculateHeaderWidths($headers, ['revenue']);
-            $data = collect($data)->map(function($item) {
+            $data = collect($data)->map(function ($item) {
                 unset($item['revenue']);
                 return $item;
             })->toArray();
@@ -581,12 +196,12 @@ class TrackingReportRepository
 
         if ($request->has('hideColumns') && !empty($request->get('hideColumns')) && is_array($request->get('hideColumns'))) {
             $hideColumns = collect($request->get('hideColumns'))
-                ->map(function($item) {
+                ->map(function ($item) {
                     return $item['value'];
                 })
                 ->toArray();
             $headers = $this->recalculateHeaderWidths($headers, $hideColumns);
-            $data = collect($data)->map(function($item) use ($hideColumns) {
+            $data = collect($data)->map(function ($item) use ($hideColumns) {
                 foreach ($hideColumns as $key) {
                     if (isset($item[strtolower($key)])) {
                         unset($item[$key]);
@@ -610,21 +225,502 @@ class TrackingReportRepository
             if (File::exists($tmpFileName)) {
                 $email = $request->get('email', Auth::user()->contact_email->email);
                 if (
-                        $request->has('sendByEmail') && $request->get('sendByEmail') === true
-                    &&  $request->has('email') && $email
+                    $request->has('sendByEmail') && $request->get('sendByEmail') === true
+                    && $request->has('email') && $email
                 ) {
                     Notification::route('mail', $email)
                         ->notify(new SendTrackingReportByEmail($tmpFileName));
                 }
                 return response()->file($tmpFileName)->deleteFileAfterSend();
             }
-        } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
+        } catch (Exception $exception) {
+            throw new Exception($exception->getMessage());
         }
-        throw new \Exception('Error generating file');
+        throw new Exception('Error generating file');
     }
 
-    protected function prepareDataForCSV($entities, $items = []) {
+    private function getProjectLabel()
+    {
+        $settings = TrackingSettings::where([
+            ['entity_id', '=', Auth::user()->id],
+            ['entity_type', '=', User::class]
+        ])->first();
+
+        $projectLabel = 'Project';
+        if (isset($settings->data['projectType'])) {
+            switch ($settings->data['projectType']) {
+                case 1:
+                    $projectLabel = 'Department';
+                    break;
+                case 2:
+                    $projectLabel = 'Profit center';
+                    break;
+                default:
+                    $projectLabel = 'Project';
+                    break;
+            }
+        }
+        return $projectLabel;
+    }
+
+    protected function getData(Request $request)
+    {
+
+        $permissionIds = Auth::user()->employee->getPermissionIds();
+
+        if (!in_array(Permission::TRACKER_REPORT_VIEW_OWN_TIME_ACCESS, $permissionIds) &&
+            !in_array(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS, $permissionIds) &&
+            !in_array(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS, $permissionIds)
+        ) {
+            throw new Exception('Access denied');
+        }
+
+        $tracking = Tracking::with('User.employee.assignedToTeams')
+            ->with('Tags.Translates');
+//            ->where(function($query) {
+//                $query
+//                    ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
+//                    ->orWhereNull('status');
+//            });
+
+        if (in_array(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS, $permissionIds)) {
+            // Company Admin
+            $tracking = $tracking->CompanyAdmin();
+        } elseif (in_array(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS, $permissionIds)) {
+            // Manager
+            $tracking = $tracking->TeamManager();
+        } else {
+            // User
+            $tracking = $tracking->SimpleUser();
+        }
+
+        $this->company = Auth::user()->employee->companyData;
+        $this->currency = $this->company && $this->company->currency ? $this->company->currency->slug : $this->currency;
+        $sorting = $request->sort['value'];
+        $grouping = $request->group;
+        if (isset($request->group) && isset($request->group['value']) && $request->group['value'] === 'custom') {
+            $grouping = $request->group['items'];
+        }
+        if (isset($request->group) && isset($request->group['value']) && in_array($request->group['value'], ['all_no_group', 'all_chron'])) {
+            $grouping = [];
+        }
+        $grouping = collect($grouping)->map(function ($item) {
+            return $item['value'];
+        });
+        $filtering = collect($request->filters)
+            ->map(function ($item) {
+                return [
+                    'value' => $item['value'],
+                    'selected' => $item['selected']
+                ];
+            })
+            ->filter(function ($item) {
+                if (is_array($item['selected']) && count($item['selected'])) {
+                    return true;
+                } elseif (is_numeric($item['selected'])) {
+                    return true;
+                }
+                return false;
+            });
+
+        if ($request->has('period') && isset($request->period['start'])) {
+            $tracking->where('tracking.date_from', '>=', Carbon::parse($request->period['start'])->startOf('day'));
+        }
+        if ($request->has('period') && isset($request->period['end'])) {
+            $tracking->where(function ($query) use ($request) {
+                $query
+                    ->where('tracking.date_to', '<=', Carbon::parse($request->period['end'])->endOf('day'))
+                    ->orWhereNull('tracking.date_to');
+            });
+        }
+
+        switch ($sorting) {
+            case 'alph-asc':
+                $tracking
+                    ->orderBy('tracking.date_from', 'asc')
+                    ->orderBy('tracking.date_to', 'asc');
+                break;
+            case 'chron-desc':
+                $tracking
+                    ->orderBy('tracking.date_to', 'desc')
+                    ->orderBy('tracking.date_from', 'desc');
+                break;
+        }
+
+        if ($filtering->isNotEmpty()) {
+            foreach ($filtering as $filter) {
+                switch ($filter['value']) {
+                    case 'coworkers':
+                        $tracking->whereIn('user_id', $filter['selected']);
+                        break;
+                    case 'projects':
+                        $projectIds = TrackingProject::whereIn('id', $filter['selected'])->pluck('id')->all();
+                        $tracking->whereIn('entity_id', $projectIds)
+                            ->where('entity_type', TrackingProject::class);
+                        break;
+                    case 'clients':
+                        $clients = Client::whereIn('id', $filter['selected'])->pluck('id')->all();
+                        $projectIds = TrackingProject::whereIn('client_id', $clients)->pluck('id')->all();
+                        $ticketIds = Ticket::where('to_entity_type', Client::class)
+                            ->whereIn('to_entity_id', $clients)
+                            ->pluck('id')
+                            ->all();
+
+                        $tracking->where(function ($query) use ($projectIds, $ticketIds) {
+                            // project
+                            if (count($projectIds)) {
+                                $query->where(function ($q) use ($projectIds) {
+                                    return $q
+                                        ->where('entity_type', '=', TrackingProject::class)
+                                        ->whereIn('entity_id', $projectIds);
+                                });
+                            }
+                            // ticket
+                            if (count($ticketIds)) {
+                                if (count($projectIds)) {
+                                    $query->where(function ($q) use ($ticketIds) {
+                                        return $q
+                                            ->where('entity_type', '=', Ticket::class)
+                                            ->whereIn('entity_id', $ticketIds);
+                                    });
+                                } else {
+                                    $query->orWhere(function ($q) use ($ticketIds) {
+                                        return $q
+                                            ->where('entity_type', '=', Ticket::class)
+                                            ->whereIn('entity_id', $ticketIds);
+                                    });
+                                }
+                            }
+                        });
+                        break;
+                    case 'services':
+                        $tracking->whereHas(
+                            'Services',
+                            function ($query) use ($filter) {
+                                $query->whereIn('serviceable.service_id', $filter['selected']);
+                            }
+                        );
+                        break;
+                    case 'billable':
+                        if (Auth::user()->employee->hasPermissionId(65)) {
+                            $tracking->where('tracking.billable', '=', (int)$filter['selected']);
+                        }
+                        break;
+                    case 'tag':
+                        $tracking->whereHas('Tags', function ($query) use ($filter) {
+                            $query->whereIn('tags.id', $filter['selected']);
+                        });
+                        break;
+                }
+            }
+        }
+
+        $tracks = $tracking->get()->toArray();
+
+        $this->round = $request->get('round', 0);
+        $round = $this->round;
+
+        if (!empty($round)) {
+            $tracks = collect($tracks)->map(function ($track) use ($round) {
+                $time = $this->convertSecondsToTimeFormat($track['passed']);
+                $roundedTime = $this->getRoundTime($time, $round);
+                $passed = $this->convertTimeToSeconds($roundedTime);
+                $track['passed'] = $passed;
+                if ($track['billable'] && Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_REVENUE_PREVIEW_ACCESS)) {
+                    $track['revenue'] = number_format((float)$track['rate'] * (float)$this->convertSecondsToDecimal((float)$passed), 2, '.', '');
+                } else {
+                    $track['revenue'] = 0;
+                }
+                return $track;
+            });
+        }
+
+        return [
+            'tracks' => $tracks,
+            'grouping' => $grouping
+        ];
+    }
+
+    function convertSecondsToTimeFormat($value, $withSeconds = true)
+    {
+//        $M = floor($value /2592000);
+//        if (!empty($M)) {
+//            $result[] = $M . ' months,';
+//        }
+//        $d = floor(($value %2592000)/86400);
+//        if (!empty($d)) {
+//            $result[] = $d . ' days,';
+//        }
+        $h = floor($value / 60 / 60);
+        $m = floor(($value - ($h * 60 * 60)) / 60);
+        if ($withSeconds) {
+            return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
+        }
+        return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
+    }
+
+    function getRoundTime($time, $round = '5')
+    {
+        if ($round === 0) return $time;
+        $minutes = $round;
+        $direction = 'nearest';
+        if (!is_numeric($round)) {
+            try {
+                $round = explode('_', $round);
+                if ($round[0] !== 'custom' || count($round) !== 4) return $time;
+                $minutes = $round[1];
+                $direction = $round[2];
+            } catch (Exception $exception) {
+                return $time;
+            }
+        }
+        $time = explode(':', $time);
+        $seconds = (int)$time[0] * 60 * 60 + (int)$time[1] * 60;
+        if (isset($time[2])) $seconds += (int)$time[2];
+        switch ($direction) {
+            case 'up':
+                $rounded = ceil((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60);
+                break;
+            case 'down':
+                $rounded = floor((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60);
+                break;
+            default:
+                $rounded = round((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60);
+        }
+//        dd($time, $minutes, $rounded, $this->convertSecondsToTimeFormat($rounded));
+        return $this->convertSecondsToTimeFormat($rounded);
+    }
+
+    function convertTimeToSeconds($time)
+    {
+        $time = explode(':', $time);
+        $seconds = 0;
+        if (isset($time[0])) $seconds += $time[0] * 60 * 60;
+        if (isset($time[1])) $seconds += $time[1] * 60;
+        if (isset($time[2])) $seconds += $time[2];
+        return $seconds;
+    }
+
+    function convertSecondsToDecimal(int $seconds)
+    {
+        return number_format($seconds / 60 / 60, 2);
+    }
+
+    protected function prepareDataForPDF($entities)
+    {
+        $items = [];
+        $currency = $company = Auth::user()->employee->companyData->currency;
+        foreach ($entities as $key => $entity) {
+            $start = Carbon::parse($entity['date_from'])->format('H:i');
+            $end = Carbon::parse($entity['date_to'])->format('H:i');
+            $total = $this->convertSecondsToTimeFormat($entity['passed'], false);
+            $item = [
+                'date' => Carbon::parse($entity['date_from'])->format('d M Y'),
+                'start' => $this->timeInDecimal ? $this->convertTimeToDecimal($start) : $start,
+                'end' => $this->timeInDecimal ? $this->convertTimeToDecimal($end) : $end,
+                'total' => $this->timeInDecimal ? number_format($entity['passed_decimal'], 2) : $total,
+                'coworker' => $entity['user']['full_name'],
+                'customer' => isset($entity['entity']) && isset($entity['entity']['client'])
+                    ? $entity['entity']['client']['name']
+                    : (
+                    isset($entity['entity']['from_company_name'])
+                        ? $entity['entity']['from_company_name']
+                        : ''
+                    ),
+                'project' => isset($entity['entity']) ? $entity['entity']['name'] : '',
+                'service' => isset($entity['service']) ? $entity['service']['name'] : '',
+                'description' => isset($entity['description']) ? $entity['description'] : '',
+                'billable' => $entity['billable'] ? 'Yes' : 'No',
+                'revenue' => $entity['revenue']
+                    ?
+                    (
+                    $currency
+                        ? $currency->slug . ' '
+                        : ''
+                    ) . $entity['revenue']
+                    : ''
+            ];
+            array_push($items, $item);
+        }
+        return $items;
+    }
+
+    function convertTimeToDecimal($time)
+    {
+        $hms = explode(":", $time);
+        return number_format(($hms[0] + ($hms[1] / 60)), 2);
+    }
+
+    private function recalculateHeaderWidths($headers, $exclude = [])
+    {
+        $headers = collect($headers);
+        $exclude = $headers->filter(function ($item) use ($exclude) {
+            return in_array($item['slug'], $exclude);
+        });
+        $headers = $headers->filter(function ($item) use ($exclude) {
+            return !in_array($item['slug'], $exclude->map(function ($i) {
+                return $i['slug'];
+            })->toArray());
+        });
+        $sumWidth = $exclude->sum(function ($item) {
+            return $item['width'];
+        });
+        $countResizableColumns = $headers
+            ->filter(function ($item) {
+                return $item['resizable'];
+            })
+            ->sum(function () {
+                return 1;
+            });
+        $maxStep = (int)ceil($sumWidth / $countResizableColumns);
+        $headers = $headers->toArray();
+        foreach ($headers as $key => $header) {
+            if ($sumWidth <= 0) break;
+            if ($header['resizable']) {
+                if ($sumWidth < $maxStep && $sumWidth > 0) {
+                    $headers[$key]['width'] += $sumWidth;
+                    $sumWidth -= $sumWidth;
+                } else {
+                    $headers[$key]['width'] += $maxStep;
+                    $sumWidth -= $maxStep;
+                }
+            }
+        }
+        return $headers;
+    }
+
+    public function genCSV($request)
+    {
+        if (isset($request->group) && $request->group['value'] === 'custom') {
+            $data = $this->generate($request);
+        } else {
+            if (is_array($this->getData($request)['tracks'])) {
+                $data = $this->getData($request)['tracks'];
+            } else {
+                $data = $this->getData($request)['tracks']->toArray();
+            }
+        }
+
+        if ($request->has('timeInDecimal') && $request->get('timeInDecimal') === true) {
+            $this->timeInDecimal = $request->get('timeInDecimal');
+        }
+
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        fputcsv($out, $this->getHeaderCSV(), ';');
+
+        $result = $this->prepareDataForCSV($data);
+        foreach ($result as $key => $item) {
+//            $result[$key] = $this->getDataCSV($item);
+            fputcsv($out, $this->getDataCSV($item), ';');
+        }
+        return stream_get_contents($out);
+    }
+
+    public function generate(Request $request)
+    {
+        $result = $this->getData($request);
+        $grouping = $result['grouping'];
+        $tracks = $result['tracks'];
+
+        if ($grouping->isEmpty()) return [
+            'g1' => $tracks,
+            'g2' => $tracks,
+        ];
+
+        $group = $grouping->shift();
+        $items = $this->makeList($group, $tracks);
+
+        $items2 = $this->makeList($group === 'project' ? 'service' : 'project', $tracks);
+        return [
+            'g1' => array_values($this->makeStructure($grouping->toArray(), 0, $items)),
+            'g2' => array_values($this->makeStructure([], 0, $items2)),
+        ];
+
+    }
+
+    protected function makeList($group, $trackings)
+    {
+        $items = [];
+        foreach ($trackings as $tracking) {
+            $data = $this->getFieldData($tracking, $group);
+            $items[$data]['name'] = $data;
+            if ($group === 'project') {
+                $items[$data]['client'] = $this->getFieldData($tracking, 'client');
+            }
+            $items[$data]['children'][] = $tracking;
+        }
+        return $items;
+    }
+
+    protected function getFieldData($tracking, $field = 'description')
+    {
+        switch ($field) {
+            case 'month':
+                return Carbon::parse($tracking['date_from'])->format('F Y');
+            case 'week':
+                $startWeek = Carbon::parse($tracking['date_from'])->startOfWeek(Carbon::MONDAY);
+                $endWeek = Carbon::parse($tracking['date_from'])->endOfWeek(Carbon::SUNDAY);
+                return 'Week of '
+                    . $startWeek->format('j M')
+                    . ' ('
+                    . $startWeek->format('D j M Y')
+                    . ' - '
+                    . $endWeek->format('D j M Y')
+                    . ')';
+            case 'day':
+                return Carbon::parse($tracking['date_from'])->format('l, j M');
+            case 'description':
+                return $tracking['description'] ?? 'None';
+            case 'billability':
+                return $tracking['billable'] ? 'Billable' : 'Non-billable';
+            case 'service':
+                return $tracking['service'] ? $tracking['service']['name'] : 'None';
+            case 'project':
+                return $tracking['entity'] ? $tracking['entity']['name'] : 'None';
+            case 'client':
+                return isset($tracking) && isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['name'] : 'None';
+            case 'coworker':
+                return $tracking['user']['full_name'];
+        }
+        return null;
+    }
+
+    protected function makeStructure($grouping, $groupIndex, $tracks)
+    {
+        if (!isset($grouping[$groupIndex])) return $tracks;
+        foreach ($tracks as $key => $track) {
+            $list = $this->makeList($grouping[$groupIndex], $track['children']);
+            $tracks[$key]['name'] = $key;
+            $tracks[$key]['children'] = array_values($this->makeStructure($grouping, $groupIndex + 1, $list));
+        }
+        return array_values($tracks);
+    }
+
+    protected function getHeaderCSV()
+    {
+        return [
+            'Co-worker',
+            'Personnel number',
+            'Customer',
+            'Customer number',
+            $this->getProjectLabel(),
+            $this->getProjectLabel() . " number",
+            'Service',
+            'Service number',
+            'Description',
+            'Billable',
+            'Hourly rate in ' . $this->currency,
+            'Date',
+            'Start',
+            'End',
+            'Total time',
+            'Revenue in ' . $this->currency
+        ];
+    }
+
+    protected function prepareDataForCSV($entities, $items = [])
+    {
         $entities = (array)$entities;
         foreach ($entities as $entity) {
             if (isset($entity['children'])) {
@@ -638,12 +734,8 @@ class TrackingReportRepository
         return $items;
     }
 
-    private function fixCharacters($text) {
-        return $text;
-//        return iconv('utf-8', 'windows-1252', $text);
-    }
-
-    protected function getDataCSV($tracking) {
+    protected function getDataCSV($tracking)
+    {
         try {
             $row = [];
             $row[] = $tracking['user'] ? $this->fixCharacters($tracking['user']['full_name']) : '';
@@ -668,60 +760,19 @@ class TrackingReportRepository
             $row[] = $this->timeInDecimal ? $this->convertSecondsToDecimal($tracking['passed']) : $this->convertSecondsToTimeFormat($tracking['passed'], false);
             $row[] = $tracking['revenue'];
             return $row;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             dd($exception->getMessage(), $exception->getLine(), $tracking);
         }
     }
 
-    protected function getHeaderCSV() {
-        return [
-            'Co-worker',
-            'Personnel number',
-            'Customer',
-            'Customer number',
-            $this->getProjectLabel(),
-            $this->getProjectLabel() . " number",
-            'Service',
-            'Service number',
-            'Description',
-            'Billable',
-            'Hourly rate in ' . $this->currency,
-            'Date',
-            'Start',
-            'End',
-            'Total time',
-            'Revenue in ' . $this->currency
-        ];
+    private function fixCharacters($text)
+    {
+        return $text;
+//        return iconv('utf-8', 'windows-1252', $text);
     }
 
-    public function genCSV($request) {
-        if (isset($request->group) && $request->group['value'] === 'custom') {
-            $data = $this->generate($request);
-        } else {
-            if (is_array($this->getData($request)['tracks'])) {
-                $data = $this->getData($request)['tracks'];
-            } else {
-                $data = $this->getData($request)['tracks']->toArray();
-            }
-        }
-
-        if ($request->has('timeInDecimal') && $request->get('timeInDecimal') === true) {
-            $this->timeInDecimal = $request->get('timeInDecimal');
-        }
-
-        $out = fopen('php://output', 'w');
-        fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
-        fputcsv($out, $this->getHeaderCSV(), ';');
-
-        $result = $this->prepareDataForCSV($data);
-        foreach ($result as $key => $item) {
-//            $result[$key] = $this->getDataCSV($item);
-            fputcsv($out, $this->getDataCSV($item), ';');
-        }
-        return stream_get_contents($out);
-    }
-
-    public function getTotalTimeByServices($from, $to, $team = null) {
+    public function getTotalTimeByServices($from, $to, $team = null)
+    {
         $user = Auth::user();
 
         if (!Auth::user()->employee->hasPermissionId([
@@ -729,7 +780,7 @@ class TrackingReportRepository
             Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS,
             Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS
         ])) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
 
         $tracking = DB::table('tracking');
@@ -740,7 +791,7 @@ class TrackingReportRepository
                 ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
                 ->with('userData')
                 ->first();
-            $tracking->where(function($query) use ($company, $user) {
+            $tracking->where(function ($query) use ($company, $user) {
                 $query->where('tracking.user_id', '=', $user->id)
                     ->orWhere('tracking.company_id', '=', $company->company_id);
             });
@@ -762,12 +813,12 @@ class TrackingReportRepository
         }
 
         $tracking
-            ->leftJoin('serviceable', function($join) {
+            ->leftJoin('serviceable', function ($join) {
                 $join->on('tracking.id', '=', 'serviceable.serviceable_id')
                     ->where('serviceable.serviceable_type', '=', Tracking::class);
             })
             ->leftJoin('services', 'services.id', '=', 'serviceable.service_id')
-            ->where(function($query) use ($from, $to) {
+            ->where(function ($query) use ($from, $to) {
                 $query->where('date_to', '>=', $from)
                     ->where('date_from', '<=', $to);
             })
@@ -777,7 +828,8 @@ class TrackingReportRepository
         return $tracking->get();
     }
 
-    public function getTotalTimeByProjects($from, $to, $team = null) {
+    public function getTotalTimeByProjects($from, $to, $team = null)
+    {
         $user = Auth::user();
 
         if (!Auth::user()->employee->hasPermissionId([
@@ -785,7 +837,7 @@ class TrackingReportRepository
             Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS,
             Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS
         ])) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
 
         $tracking = DB::table('tracking');
@@ -796,7 +848,7 @@ class TrackingReportRepository
                 ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
                 ->with('userData')
                 ->first();
-            $tracking->where(function($query) use ($company, $user) {
+            $tracking->where(function ($query) use ($company, $user) {
                 $query->where('tracking.user_id', '=', $user->id)
                     ->orWhere('tracking.company_id', '=', $company->company_id);
             });
@@ -818,12 +870,12 @@ class TrackingReportRepository
         }
 
         $tracking
-            ->leftJoin('tracking_projects', function($join) {
+            ->leftJoin('tracking_projects', function ($join) {
                 $join->on('tracking.entity_id', '=', 'tracking_projects.id')
                     ->where('tracking.entity_type', '=', TrackingProject::class);
             })
             ->leftJoin('clients', 'clients.id', '=', 'tracking_projects.client_id')
-            ->where(function($query) use ($from, $to) {
+            ->where(function ($query) use ($from, $to) {
                 $query->where('date_to', '>=', $from)
                     ->where('date_from', '<=', $to);
             })
@@ -834,11 +886,8 @@ class TrackingReportRepository
         return $tracking->get();
     }
 
-    public function getUserReports() {
-        return Auth::user()->trackingReports()->orderBy('id', 'desc')->get();
-    }
-
-    public function getTopProjects($from, $to, int $numberOfProjects = 10, $team = null) {
+    public function getTopProjects($from, $to, int $numberOfProjects = 10, $team = null)
+    {
         $user = Auth::user();
 
         if (!Auth::user()->employee->hasPermissionId([
@@ -846,7 +895,7 @@ class TrackingReportRepository
             Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS,
             Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS
         ])) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
 
         $tracking = DB::table('tracking');
@@ -857,7 +906,7 @@ class TrackingReportRepository
                 ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
                 ->with('userData')
                 ->first();
-            $tracking->where(function($query) use ($company, $user) {
+            $tracking->where(function ($query) use ($company, $user) {
                 $query->where('tracking.user_id', '=', $user->id)
                     ->orWhere('tracking.company_id', '=', $company->company_id);
             });
@@ -879,12 +928,12 @@ class TrackingReportRepository
         }
 
         $tracking
-            ->leftJoin('tracking_projects', function($join) {
+            ->leftJoin('tracking_projects', function ($join) {
                 $join->on('tracking.entity_id', '=', 'tracking_projects.id')
                     ->where('tracking.entity_type', '=', TrackingProject::class);
             })
             ->leftJoin('clients', 'clients.id', '=', 'tracking_projects.client_id')
-            ->where(function($query) use ($from, $to) {
+            ->where(function ($query) use ($from, $to) {
                 $query->where('date_to', '>=', $from)
                     ->where('date_from', '<=', $to);
             })
@@ -910,7 +959,8 @@ class TrackingReportRepository
         return $tracking->get();
     }
 
-    public function getLastActivity($from, $to, $team = null) {
+    public function getLastActivity($from, $to, $team = null)
+    {
         $user = Auth::user();
 
         if (!Auth::user()->employee->hasPermissionId([
@@ -918,7 +968,7 @@ class TrackingReportRepository
             Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS,
             Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS
         ])) {
-            throw new \Exception('Access denied');
+            throw new Exception('Access denied');
         }
 
         $tracking = DB::table('tracking');
@@ -929,7 +979,7 @@ class TrackingReportRepository
                 ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
                 ->with('userData')
                 ->first();
-            $tracking->where(function($query) use ($company, $user) {
+            $tracking->where(function ($query) use ($company, $user) {
                 $query->where('tracking.company_id', '=', $company->company_id);
             });
         } elseif ($user->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {
@@ -952,7 +1002,7 @@ class TrackingReportRepository
         $tracking
             ->leftJoin('teams', 'teams.id', '=', 'tracking.team_id')
             ->leftJoin('users', 'users.id', '=', 'tracking.user_id')
-            ->where(function($query) use ($from, $to) {
+            ->where(function ($query) use ($from, $to) {
                 $query->where('date_to', '>=', $from)
                     ->where('date_from', '<=', $to);
             })
@@ -980,7 +1030,7 @@ class TrackingReportRepository
 
         $teams = [];
         foreach ($teamsData as $team) {
-            $tracker = Tracking::where(function($query) use ($from, $to) {
+            $tracker = Tracking::where(function ($query) use ($from, $to) {
                 $query->where('date_to', '>=', $from)
                     ->where('date_from', '<=', $to);
             })
@@ -998,31 +1048,29 @@ class TrackingReportRepository
         return (array)array_values($teams);
     }
 
-    public function getTrackerDataToReportDetail($from, $to, $clients = [], $coworkers = [])
+    public function getReportDetail($source, $from, $to, $clients = [], $coworkers = [])
     {
-        $trackers = Tracking::where('date_from', '<=', Carbon::parse($to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
-            ->where(function ($query) use ($from, $to) {
-                $query
-                    ->where('date_to', '>=', Carbon::parse($from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
-                    ->orWhereNull('date_to');
-            });
-        if (!empty($coworkers)) {
-            $trackers->whereIn('user_id', $coworkers);
-        }
-        if (!empty($clients)) {
-            $projectIds = TrackingProject::whereIn('client_id', $clients)->pluck('id')->all();
-            $trackers->where('entity_type', '=', TrackingProject::class)
-                ->whereIn('entity_id', $projectIds);
-        }
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-//        dd($trackers->toSql(), $trackers->get());
-        $trackers->with('Tags.Translates:name,lang,color')
-            ->with('User:id,name,surname,middle_name,number,avatar_url')
-            ->orderBy('date_from', 'desc');
-        return $trackers;
+        switch ($source) {
+            case 'tracker':
+                $result = $this->prepareTrackerDataToReportDetail($this->getTrackerDataToReportDetail($from, $to, $clients, $coworkers));
+                break;
+            case 'timesheet':
+                $result = $this->prepareTimesheetDataToReportDetail($this->getTimesheetDataToReportDetail($from, $to, $clients, $coworkers));
+                break;
+            default:
+                $result = [];
+        }
+        foreach ($result as $key => $row) {
+            fputcsv($out, $row, ';');
+        }
+        return stream_get_contents($out);
     }
 
-    protected function prepareTrackerDataToReportDetail($trackers) {
+    protected function prepareTrackerDataToReportDetail($trackers)
+    {
         $trackers = $trackers->get();
         $rows = [
             [
@@ -1033,11 +1081,20 @@ class TrackingReportRepository
         ];
         foreach ($trackers as $tracker) {
             switch ($tracker->status) {
-                case Tracking::$STATUS_STARTED: $status = 'started'; break;
-                case Tracking::$STATUS_STOPPED: $status = 'stopped'; break;
-                case Tracking::$STATUS_PAUSED: $status = 'paused'; break;
-                case Tracking::$STATUS_ARCHIVED: $status = 'archived'; break;
-                default: $status = '';
+                case Tracking::$STATUS_STARTED:
+                    $status = 'started';
+                    break;
+                case Tracking::$STATUS_STOPPED:
+                    $status = 'stopped';
+                    break;
+                case Tracking::$STATUS_PAUSED:
+                    $status = 'paused';
+                    break;
+                case Tracking::$STATUS_ARCHIVED:
+                    $status = 'archived';
+                    break;
+                default:
+                    $status = '';
             }
             $row = [
                 'id' => $tracker->id,
@@ -1068,40 +1125,32 @@ class TrackingReportRepository
         return $rows;
     }
 
-    public function getTimesheetDataToReportDetail($from, $to, $clients = [], $coworkers = []) {
-        $timesheets = TrackingTimesheet::with('User')
-            ->with('Service')
-            ->with('Approver')
-            ->with(['Times' => function ($q) {
-                $q->orderBy('date', 'asc');
-            }])
-            ->whereIn('status', [
-                TrackingTimesheet::STATUS_TRACKED,
-                TrackingTimesheet::STATUS_PENDING,
-                TrackingTimesheet::STATUS_REJECTED,
-                TrackingTimesheet::STATUS_APPROVED,
-                TrackingTimesheet::STATUS_ARCHIVED,
-                TrackingTimesheet::STATUS_UNSUBMITTED,
-            ])
-            ->where(function ($q) use ($from, $to) {
-                $q->where('from', '<=', Carbon::parse($to)->format(Tracking::$DATE_FORMAT))
-                    ->where('to', '>=', Carbon::parse($from)->format(Tracking::$DATE_FORMAT));
+    public function getTrackerDataToReportDetail($from, $to, $clients = [], $coworkers = [])
+    {
+        $trackers = Tracking::where('date_from', '<=', Carbon::parse($to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
+            ->where(function ($query) use ($from, $to) {
+                $query
+                    ->where('date_to', '>=', Carbon::parse($from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
+                    ->orWhereNull('date_to');
             });
+        if (!empty($coworkers)) {
+            $trackers->whereIn('user_id', $coworkers);
+        }
         if (!empty($clients)) {
             $projectIds = TrackingProject::whereIn('client_id', $clients)->pluck('id')->all();
-            $timesheets->where('entity_type', '=', TrackingProject::class)
+            $trackers->where('entity_type', '=', TrackingProject::class)
                 ->whereIn('entity_id', $projectIds);
         }
 
-        if (!empty($coworkers)) {
-            $timesheets->whereIn('user_id', $coworkers);
-        }
-
-        $timesheets->orderBy('id', 'desc');
-        return $timesheets;
+//        dd($trackers->toSql(), $trackers->get());
+        $trackers->with('Tags.Translates:name,lang,color')
+            ->with('User:id,name,surname,middle_name,number,avatar_url')
+            ->orderBy('date_from', 'desc');
+        return $trackers;
     }
 
-    protected function prepareTimesheetDataToReportDetail($timesheets) {
+    protected function prepareTimesheetDataToReportDetail($timesheets)
+    {
         $timesheets = $timesheets->get();
         $rows = [
             [
@@ -1113,13 +1162,26 @@ class TrackingReportRepository
         ];
         foreach ($timesheets as $timesheet) {
             switch ($timesheet->status) {
-                case TrackingTimesheet::STATUS_TRACKED: $status = 'tracked'; break;
-                case TrackingTimesheet::STATUS_PENDING: $status = 'pending'; break;
-                case TrackingTimesheet::STATUS_REJECTED: $status = 'rejected'; break;
-                case TrackingTimesheet::STATUS_ARCHIVED: $status = 'archived'; break;
-                case TrackingTimesheet::STATUS_APPROVED: $status = 'approved'; break;
-                case TrackingTimesheet::STATUS_UNSUBMITTED: $status = 'unsubmitted'; break;
-                default: $status = '';
+                case TrackingTimesheet::STATUS_TRACKED:
+                    $status = 'tracked';
+                    break;
+                case TrackingTimesheet::STATUS_PENDING:
+                    $status = 'pending';
+                    break;
+                case TrackingTimesheet::STATUS_REJECTED:
+                    $status = 'rejected';
+                    break;
+                case TrackingTimesheet::STATUS_ARCHIVED:
+                    $status = 'archived';
+                    break;
+                case TrackingTimesheet::STATUS_APPROVED:
+                    $status = 'approved';
+                    break;
+                case TrackingTimesheet::STATUS_UNSUBMITTED:
+                    $status = 'unsubmitted';
+                    break;
+                default:
+                    $status = '';
             }
             $row = [
                 'id' => $timesheet->id,
@@ -1154,22 +1216,54 @@ class TrackingReportRepository
         return $rows;
     }
 
-    public function getReportDetail($source, $from, $to, $clients = [], $coworkers = []) {
-        $out = fopen('php://output', 'w');
-        fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
-
-        switch ($source) {
-            case 'tracker': $result = $this->prepareTrackerDataToReportDetail($this->getTrackerDataToReportDetail($from, $to, $clients, $coworkers)); break;
-            case 'timesheet': $result = $this->prepareTimesheetDataToReportDetail($this->getTimesheetDataToReportDetail($from, $to, $clients, $coworkers)); break;
-            default: $result = [];
+    public function getTimesheetDataToReportDetail($from, $to, $clients = [], $coworkers = [])
+    {
+        $timesheets = TrackingTimesheet::with('User')
+            ->with('Service')
+            ->with('Approver')
+            ->with(['Times' => function ($q) {
+                $q->orderBy('date', 'asc');
+            }])
+            ->whereIn('status', [
+                TrackingTimesheet::STATUS_TRACKED,
+                TrackingTimesheet::STATUS_PENDING,
+                TrackingTimesheet::STATUS_REJECTED,
+                TrackingTimesheet::STATUS_APPROVED,
+                TrackingTimesheet::STATUS_ARCHIVED,
+                TrackingTimesheet::STATUS_UNSUBMITTED,
+            ])
+            ->where(function ($q) use ($from, $to) {
+                $q->where('from', '<=', Carbon::parse($to)->format(Tracking::$DATE_FORMAT))
+                    ->where('to', '>=', Carbon::parse($from)->format(Tracking::$DATE_FORMAT));
+            });
+        if (!empty($clients)) {
+            $projectIds = TrackingProject::whereIn('client_id', $clients)->pluck('id')->all();
+            $timesheets->where('entity_type', '=', TrackingProject::class)
+                ->whereIn('entity_id', $projectIds);
         }
+
+        if (!empty($coworkers)) {
+            $timesheets->whereIn('user_id', $coworkers);
+        }
+
+        $timesheets->orderBy('id', 'desc');
+        return $timesheets;
+    }
+
+    public function getReportReconciliationDetail($from, $to, $groupBy = 'client')
+    {
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+        $result = $this->getReconciliationDataToReport($from, $to, $groupBy);
         foreach ($result as $key => $row) {
             fputcsv($out, $row, ';');
         }
         return stream_get_contents($out);
     }
 
-    public function getReconciliationDataToReport($from, $to, $groupBy = 'client') {
+    public function getReconciliationDataToReport($from, $to, $groupBy = 'client')
+    {
 
         $trackers = $this->getTrackerDataToReportDetail($from, $to);
         $trackers = $this->prepareTrackerDataToReportDetail($trackers);
@@ -1222,9 +1316,10 @@ class TrackingReportRepository
         );
     }
 
-    public function prepareReconciliationDataToReport($trackers, $timesheets) {
+    public function prepareReconciliationDataToReport($trackers, $timesheets)
+    {
         $rows = [
-            [ 'id', 'name', 'tracker_passed', 'passed_decimal', 'timesheet', 'passed_decimal' ]
+            ['id', 'name', 'tracker_passed', 'passed_decimal', 'timesheet', 'passed_decimal']
         ];
         foreach ($trackers as $item) {
             $rows[$item['id']]['id'] = $item['id'];
@@ -1248,16 +1343,5 @@ class TrackingReportRepository
         }
 
         return $rows;
-    }
-
-    public function getReportReconciliationDetail($from, $to, $groupBy = 'client') {
-        $out = fopen('php://output', 'w');
-        fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
-
-        $result = $this->getReconciliationDataToReport($from, $to, $groupBy);
-        foreach ($result as $key => $row) {
-            fputcsv($out, $row, ';');
-        }
-        return stream_get_contents($out);
     }
 }
