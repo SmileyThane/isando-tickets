@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 use Webklex\IMAP\Client as IMAPClient;
 
 class EmailReceiverRepository
@@ -45,7 +46,7 @@ class EmailReceiverRepository
             $this->handleEmailMessages($messages, $type);
             Log::info('mail receiving process was finished.');
             return ['success' => true];
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th);
             return $th;
         }
@@ -88,7 +89,7 @@ class EmailReceiverRepository
                         Log::info('system starts creating new ticket');
                         $responseBody = $this->createTicketFromEmail($senderEmail, $message, $ticketSubject, $attachments);
                     }
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     Log::info('connection was broken' . $th);
                 }
             } elseif (in_array($senderEmail, MailCache::CONTACT_FORM_ADDRESSES, true)) {
