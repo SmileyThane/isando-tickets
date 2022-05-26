@@ -9,7 +9,7 @@ class IxarmaRepository
 {
 
     /**
-     * @var \App\Providers\IxarmaServiceProvider
+     * @var IxarmaServiceProvider
      */
     protected $service;
 
