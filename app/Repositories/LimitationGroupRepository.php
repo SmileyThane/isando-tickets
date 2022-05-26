@@ -96,7 +96,7 @@ class LimitationGroupRepository
 
     public function limitationAutoAssignProcess($entity): bool
     {
-        $type = LimitationType::query()->where('model', 'App\\'.class_basename($entity))->first();
+        $type = LimitationType::query()->where('model', 'App\\' . class_basename($entity))->first();
         if ($type) {
             $limitationGroups = LimitationGroup::query()
                 ->where('is_auto_assign_new_entities', true)
