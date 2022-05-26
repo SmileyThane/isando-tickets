@@ -16,8 +16,7 @@ class Coworkers extends Filter
                 ->with('employee.companyData')
                 ->with('employee.assignedToTeams')
                 ->get();
-//            dd($coworkers);
-            $builder->where(function($query) use ($coworkers) {
+            $builder->where(function ($query) use ($coworkers) {
                 foreach ($coworkers as $coworker) {
                     $query->orWhere(function ($subQuery) use ($coworker) {
                         $subQuery->where('company_id', '=', $coworker->employee->company_id);
@@ -27,8 +26,10 @@ class Coworkers extends Filter
                     });
                 }
             });
+
             return $builder;
         }
+
         return $builder;
     }
 }
