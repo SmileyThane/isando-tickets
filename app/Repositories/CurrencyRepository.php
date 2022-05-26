@@ -36,15 +36,18 @@ class CurrencyRepository
         return true;
     }
 
-    public function all(Request $request) {
+    public function all(Request $request)
+    {
         return Currency::all();
     }
 
-    public function find(Request $request, Currency $currency) {
+    public function find(Request $request, Currency $currency)
+    {
         return $currency;
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $currency = new Currency();
         $currency->name = $request->get('name');
         $currency->slug = $request->get('slug');
@@ -53,7 +56,8 @@ class CurrencyRepository
         return $currency;
     }
 
-    public function update(Request $request, Currency $currency) {
+    public function update(Request $request, Currency $currency)
+    {
         if ($request->has('name')) {
             $currency->name = $request->get('name');
         }
@@ -67,7 +71,8 @@ class CurrencyRepository
         return $currency;
     }
 
-    public function delete(Request $request, Currency $currency) {
+    public function delete(Request $request, Currency $currency)
+    {
         $currency->delete();
         return null;
     }
