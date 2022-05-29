@@ -184,11 +184,13 @@ class User extends Authenticatable
         return $this->attributes['avatar_url'];
     }
 
-    public function trackingReports() {
+    public function trackingReports() 
+    {
         return $this->hasMany(TrackingReport::class,'user_id', 'id');
     }
 
-    public function favoriteTrackingProjects() {
+    public function favoriteTrackingProjects() 
+    {
         return $this->morphedByMany(
             TrackingProject::class,
             'entity',
@@ -205,12 +207,14 @@ class User extends Authenticatable
         return $this->morphMany(InternalBilling::class, 'entity');
     }
 
-    public function Timesheet() {
+    public function Timesheet() 
+    {
         return $this->hasMany(TrackingTimesheet::class, 'user_id', 'id')
             ->with('Timesheet.Times');
     }
 
-    public function getColorAttribute() {
+    public function getColorAttribute() 
+    {
         $settings = Settings::where([
             ['entity_id', '=', $this->id],
             ['entity_type', '=', User::class]
