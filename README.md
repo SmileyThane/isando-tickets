@@ -2,7 +2,6 @@ Isando ticketing system
  - Requirements before installation:
     - installed and confugured LAMP server
     - installed and configured nodeJS with npm 
-
  - Installation:
     - composer install
     - npm install
