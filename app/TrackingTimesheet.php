@@ -31,7 +31,49 @@ class TrackingTimesheet extends Model
         'billable' => 'boolean'
     ];
 
-    public function getEntityAttribute() {
+    public static function boot()
+    {
+        parent::boot();
+
+        static::retrieved(function ($trackingTimesheet) {
+//            if ($trackingTimesheet->Times()->count() < 7) {
+////                $trackingTimesheet->Times()->delete();
+//                $daysOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+//                foreach ($daysOfWeek as $index => $dayOfWeek) {
+//                    $time = new TrackingTimesheetTime();
+//                    $time->type = TrackingTimesheetTime::TYPE_WORK;
+//                    $time->date = Carbon::parse($trackingTimesheet->from)->addDays($index)->format('Y-m-d');
+//                    $time->time = '00:00:00';
+//                    $time->description = '';
+//                    $time->timesheet_id = $trackingTimesheet->id;
+//                    $time->save();
+//                }
+//            }
+        });
+
+        static::deleting(function ($trackingTimesheet) {
+//            if (!$trackingTimesheet->is_manually) {
+//                Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->update(['timesheet_id' => null]);
+//            } else {
+            Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->delete();
+//            }
+            $trackingTimesheet->Times()->delete();
+        });
+
+        static::updating(function ($trackingTimesheet) {
+            $trackings = Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->get();
+            foreach ($trackings as $tracking) {
+                if (is_null($trackingTimesheet->service_id)) {
+                    $tracking->Services()->sync([]);
+                } else {
+                    $tracking->Services()->sync([$trackingTimesheet->service_id]);
+                }
+            }
+        });
+    }
+
+    public function getEntityAttribute()
+    {
         if (isset($this->entity_type)) {
             if ($this->entity_type === TrackingProject::class) {
                 return $this->entity_type::with('Client')
@@ -45,27 +87,28 @@ class TrackingTimesheet extends Model
         return null;
     }
 
-    public function Times() {
-        return $this->hasMany(TrackingTimesheetTime::class, 'timesheet_id', 'id');
-    }
-
-    public function User() {
+    public function User()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function Approver() {
+    public function Approver()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function Trackers() {
+    public function Trackers()
+    {
         return $this->hasMany(Tracking::class);
     }
 
-    public function Service() {
+    public function Service()
+    {
         return $this->belongsTo(Service::class);
     }
 
-    public function getTotalTimeAttribute() {
+    public function getTotalTimeAttribute()
+    {
         $items = $this->Times()->get();
         if (!count($items)) {
             $this->genTimes();
@@ -85,51 +128,30 @@ class TrackingTimesheet extends Model
         return $total; // in seconds
     }
 
-    public function getIsEmptyAttribute() {
+    public function Times()
+    {
+        return $this->hasMany(TrackingTimesheetTime::class, 'timesheet_id', 'id');
+    }
+
+    public function genTimes()
+    {
+        for ($i = 0; $i <= 6; $i++) {
+            $trackingTimesheetTime = new TrackingTimesheetTime();
+            $trackingTimesheetTime->timesheet_id = $this->id;
+            $trackingTimesheetTime->type = TrackingTimesheetTime::TYPE_WORK;
+            $trackingTimesheetTime->date = Carbon::parse($this->from)->addDays($i)->format('Y-m-d');
+            $trackingTimesheetTime->time = TrackingTimesheetRepository::convertSecondsToTimeFormat(0, true);
+            $trackingTimesheetTime->save();
+        }
+    }
+
+    public function getIsEmptyAttribute()
+    {
         return $this->total_time === 0;
     }
 
-    public static function boot() {
-        parent::boot();
-
-        static::retrieved(function($trackingTimesheet) {
-//            if ($trackingTimesheet->Times()->count() < 7) {
-////                $trackingTimesheet->Times()->delete();
-//                $daysOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-//                foreach ($daysOfWeek as $index => $dayOfWeek) {
-//                    $time = new TrackingTimesheetTime();
-//                    $time->type = TrackingTimesheetTime::TYPE_WORK;
-//                    $time->date = Carbon::parse($trackingTimesheet->from)->addDays($index)->format('Y-m-d');
-//                    $time->time = '00:00:00';
-//                    $time->description = '';
-//                    $time->timesheet_id = $trackingTimesheet->id;
-//                    $time->save();
-//                }
-//            }
-        });
-
-        static::deleting(function($trackingTimesheet) {
-//            if (!$trackingTimesheet->is_manually) {
-//                Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->update(['timesheet_id' => null]);
-//            } else {
-                Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->delete();
-//            }
-            $trackingTimesheet->Times()->delete();
-        });
-
-        static::updating(function($trackingTimesheet) {
-            $trackings = Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->get();
-            foreach ($trackings as $tracking) {
-                if (is_null($trackingTimesheet->service_id)) {
-                    $tracking->Services()->sync([]);
-                } else {
-                    $tracking->Services()->sync([$trackingTimesheet->service_id]);
-                }
-            }
-        });
-    }
-
-    public function genNumber() {
+    public function genNumber()
+    {
         $maxNumber = TrackingTimesheet::where([
             ['company_id', '=', $this->company_id]
         ])->max('number');
@@ -141,7 +163,8 @@ class TrackingTimesheet extends Model
         return $maxNumber;
     }
 
-    public function duplicate() {
+    public function duplicate()
+    {
         $new = $this->replicate();
         $new->from = Carbon::parse($new->from)->addWeek()->format('Y-m-d');
         $new->to = Carbon::parse($new->to)->addWeek()->format('Y-m-d');
@@ -155,17 +178,6 @@ class TrackingTimesheet extends Model
             $newTime->save();
         }
         return $new;
-    }
-
-    public function genTimes() {
-        for ($i = 0; $i <= 6; $i++) {
-            $trackingTimesheetTime = new TrackingTimesheetTime();
-            $trackingTimesheetTime->timesheet_id = $this->id;
-            $trackingTimesheetTime->type = TrackingTimesheetTime::TYPE_WORK;
-            $trackingTimesheetTime->date = Carbon::parse($this->from)->addDays($i)->format('Y-m-d');
-            $trackingTimesheetTime->time = TrackingTimesheetRepository::convertSecondsToTimeFormat(0, true);
-            $trackingTimesheetTime->save();
-        }
     }
 
 }
