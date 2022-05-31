@@ -9,15 +9,12 @@ class Tag extends Model
 {
     protected $fillable = ['id', 'name', 'color', 'tag_id', 'lang'];
 
-    public function Translates() {
-        return $this->hasMany(Tag::class, 'tag_id', 'id');
-    }
-
-    public static function boot() {
+    public static function boot()
+    {
 
         parent::boot();
 
-        static::deleted(function($tag) {
+        static::deleted(function ($tag) {
             $tagIds = Tag::where('tag_id', '=', $tag->id)->pluck('id')->toArray();
             Tag::whereIn('id', $tagIds)->delete();
             array_push($tagIds, $tag->id);
@@ -27,7 +24,13 @@ class Tag extends Model
         });
     }
 
-    public static function randomHexColor() {
+    public static function randomHexColor()
+    {
         return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+    }
+
+    public function Translates()
+    {
+        return $this->hasMany(Tag::class, 'tag_id', 'id');
     }
 }
