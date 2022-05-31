@@ -80,7 +80,7 @@ class ResetPasswordEmail extends Notification
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject('Sie wurden zum Ticketsystem eingeladen!')
                 ->greeting(' ')
-                ->line('Hallo '. $this->name . ',')
+                ->line('Hallo ' . $this->name . ',')
                 ->line("Willkommen zurück zu unserem Ticketing-System der INAX AG. Ihr Konto wurde wiederhergestellt.")
                 ->line("Bitte benutzen Sie Ihr neues Passwort, um sich in Ihr Konto anzumelden:")
                 ->line('Ihr Login-Name: ' . $this->email)
