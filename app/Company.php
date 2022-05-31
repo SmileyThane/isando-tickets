@@ -50,11 +50,6 @@ class Company extends Model
         return $this->morphMany(Team::class, 'team_owner');
     }
 
-    public function phones(): MorphMany
-    {
-        return $this->morphMany(Phone::class, 'entity');
-    }
-
     public function phoneTypes(): MorphMany
     {
         return $this->morphMany(PhoneType::class, 'entity');
@@ -78,11 +73,6 @@ class Company extends Model
     public function socialTypes(): MorphMany
     {
         return $this->morphMany(SocialType::class, 'entity');
-    }
-
-    public function emails(): MorphMany
-    {
-        return $this->morphMany(Email::class, 'entity');
     }
 
     public function emailTypes(): MorphMany
@@ -110,9 +100,19 @@ class Company extends Model
         return $this->phones()->with('type')->first();
     }
 
+    public function phones(): MorphMany
+    {
+        return $this->morphMany(Phone::class, 'entity');
+    }
+
     public function getContactEmailAttribute()
     {
         return $this->emails()->with('type')->first();
+    }
+
+    public function emails(): MorphMany
+    {
+        return $this->morphMany(Email::class, 'entity');
     }
 
     public function emailSignatures(): MorphMany
