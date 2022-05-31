@@ -31,7 +31,7 @@
   "dependencies": {
     "@tinymce/tinymce-vue": "^3.2.8",
     "chart.js": "^2.9.4",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.32",
     "sortablejs": "^1.14.0",
     "v-calendar": "^2.2.3",
