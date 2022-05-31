@@ -75,7 +75,7 @@ class NewTicket extends Notification
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject('Neues Ticket für Sie!')
-                ->line('Hallo '. $this->name . ',')
+                ->line('Hallo ' . $this->name . ',')
                 ->line('Sie haben ein neues Ticket in Ihrem Profil: ' . $this->ticket_subject)
                 ->action('Online ansehen:', env('APP_URL') . '/ticket/' . $this->ticket_id)
                 ->line('oder antworten Sie direkt auf diese E-Mail.')

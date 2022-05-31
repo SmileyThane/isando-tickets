@@ -25,15 +25,14 @@ class Client extends Model
         return $this->morphTo();
     }
 
-    public function clients(): MorphMany
-    {
-        return $this->morphMany(self::class, 'supplier');
-    }
-
-
     public function allClients(): MorphMany
     {
         return $this->clients()->with('allClients');
+    }
+
+    public function clients(): MorphMany
+    {
+        return $this->morphMany(self::class, 'supplier');
     }
 
     public function teams(): MorphMany
@@ -46,11 +45,6 @@ class Client extends Model
         return $this->hasMany(ClientCompanyUser::class, 'client_id', 'id');
     }
 
-    public function phones(): MorphMany
-    {
-        return $this->morphMany(Phone::class, 'entity');
-    }
-
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'entity');
@@ -59,11 +53,6 @@ class Client extends Model
     public function socials(): MorphMany
     {
         return $this->morphMany(Social::class, 'entity');
-    }
-
-    public function emails(): MorphMany
-    {
-        return $this->morphMany(Email::class, 'entity');
     }
 
     public function products(): HasMany
@@ -98,9 +87,19 @@ class Client extends Model
         return $this->phones()->with('type')->first();
     }
 
+    public function phones(): MorphMany
+    {
+        return $this->morphMany(Phone::class, 'entity');
+    }
+
     public function getContactEmailAttribute()
     {
         return $this->emails()->with('type')->first();
+    }
+
+    public function emails(): MorphMany
+    {
+        return $this->morphMany(Email::class, 'entity');
     }
 
     public function customLicense(): HasOne
