@@ -46,7 +46,6 @@ class TicketAnswer extends Model
     }
 
 
-
     public function employee(): HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'company_user_id')->withTrashed();
