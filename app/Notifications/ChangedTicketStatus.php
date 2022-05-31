@@ -105,7 +105,7 @@ class ChangedTicketStatus extends Notification implements ShouldQueue
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject($subject)
-                ->line('Hallo '. $this->name . ',')
+                ->line('Hallo ' . $this->name . ',')
                 ->line($firstLine)
                 ->action('Online ansehen', env('APP_URL') . '/ticket/' . $this->ticket_id)
                 ->line($secondLine)
