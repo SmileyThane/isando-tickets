@@ -6,7 +6,6 @@ use App\Repositories\CustomLicenseRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Throwable;
 
 class CustomLicense extends Model
 {
