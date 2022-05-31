@@ -14,7 +14,8 @@ class TrackingTimesheetTemplate extends Model
         'data' => 'array',
     ];
 
-    public function User() {
+    public function User()
+    {
         return $this->belongsTo(User::class);
     }
 }
