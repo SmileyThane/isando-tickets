@@ -3,13 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -53,11 +52,6 @@ class User extends Authenticatable
         return $this->hasOne(CompanyUser::class, 'user_id', 'id');
     }
 
-    public function phones(): MorphMany
-    {
-        return $this->morphMany(Phone::class, 'entity');
-    }
-
     public function phoneTypes(): MorphMany
     {
         return $this->morphMany(PhoneType::class, 'entity');
@@ -81,11 +75,6 @@ class User extends Authenticatable
     public function socialTypes(): MorphMany
     {
         return $this->morphMany(SocialType::class, 'entity');
-    }
-
-    public function emails(): MorphMany
-    {
-        return $this->morphMany(Email::class, 'entity');
     }
 
     public function emailTypes(): MorphMany
@@ -113,10 +102,20 @@ class User extends Authenticatable
         return $this->phones()->with('type')->first();
     }
 
+    public function phones(): MorphMany
+    {
+        return $this->morphMany(Phone::class, 'entity');
+    }
+
     public function getEmailAttribute()
     {
         $email = $this->emails()->orderBy('email_type')->first();
         return $email ? $email->email : null;
+    }
+
+    public function emails(): MorphMany
+    {
+        return $this->morphMany(Email::class, 'entity');
     }
 
     public function getEmailIdAttribute()
@@ -152,7 +151,7 @@ class User extends Authenticatable
 
     public function notificationStatuses(): hasMany
     {
-        return $this->hasMany(UserNotificationStatus::class,'user_id', 'id');
+        return $this->hasMany(UserNotificationStatus::class, 'user_id', 'id');
     }
 
     public function getNumberAttribute()
@@ -184,12 +183,12 @@ class User extends Authenticatable
         return $this->attributes['avatar_url'];
     }
 
-    public function trackingReports() 
+    public function trackingReports()
     {
-        return $this->hasMany(TrackingReport::class,'user_id', 'id');
+        return $this->hasMany(TrackingReport::class, 'user_id', 'id');
     }
 
-    public function favoriteTrackingProjects() 
+    public function favoriteTrackingProjects()
     {
         return $this->morphedByMany(
             TrackingProject::class,
@@ -207,13 +206,13 @@ class User extends Authenticatable
         return $this->morphMany(InternalBilling::class, 'entity');
     }
 
-    public function Timesheet() 
+    public function Timesheet()
     {
         return $this->hasMany(TrackingTimesheet::class, 'user_id', 'id')
             ->with('Timesheet.Times');
     }
 
-    public function getColorAttribute() 
+    public function getColorAttribute()
     {
         $settings = Settings::where([
             ['entity_id', '=', $this->id],

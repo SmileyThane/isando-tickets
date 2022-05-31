@@ -41,9 +41,9 @@ class CompanyUser extends Model
     public function roleIds()
     {
         return ModelHasRole::query()->where(['model_id' => $this->attributes['id'], 'model_type' => self::class])
-          ->get()
-          ->pluck('role_id')
-          ->toArray();
+            ->get()
+            ->pluck('role_id')
+            ->toArray();
     }
 
     public function getPermissionIds()
@@ -108,6 +108,6 @@ class CompanyUser extends Model
 
     public function getColorAttribute()
     {
-          return $this->userData ? $this->userData->color : '';
+        return $this->userData ? $this->userData->color : '';
     }
 }

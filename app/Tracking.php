@@ -3,22 +3,19 @@
 namespace App;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class Tracking extends Model
 {
-    protected $table = 'tracking';
-
     static $DATETIME_FORMAT = 'Y-m-d\TH:i:s';
     static $DATE_FORMAT = 'Y-m-d';
-
-    static $STATUS_STARTED = 0;//'started';
-    static $STATUS_STOPPED = 1;//'stopped';
-    static $STATUS_PAUSED = 2;//'paused';
-    static $STATUS_ARCHIVED = 3;//'archived';
-
+static $STATUS_STARTED = 0;
+static $STATUS_STOPPED = 1;//'started';
+    static $STATUS_PAUSED = 2;//'stopped';
+    static $STATUS_ARCHIVED = 3;//'paused';
+        protected $table = 'tracking';//'archived';
     protected $fillable = [
         'entity_id',
         'entity_type'
@@ -28,11 +25,22 @@ class Tracking extends Model
         'passed', 'service', 'entity', 'passed_decimal', 'revenue', 'timesheet_status', 'readonly'
     ];
 
-    public function User() {
+    public static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($tracking) {
+
+        });
+    }
+
+    public function User()
+    {
         return $this->hasOne('App\User', 'id', 'user_id');
     }
 
-    public function getEntityAttribute() {
+    public function getEntityAttribute()
+    {
         if (isset($this->entity_type)) {
             if ($this->entity_type === TrackingProject::class) {
                 return $this->entity_type::with('Client')
@@ -46,35 +54,29 @@ class Tracking extends Model
         return null;
     }
 
-    public function Tags() {
+    public function Tags()
+    {
         return $this->morphToMany(
             Tag::class,
             'taggable'
         );
     }
 
-    public function Services() {
-        return $this->morphToMany(
-            Service::class,
-            'serviceable',
-            'serviceable',
-            'serviceable_id',
-            'service_id'
-        );
-    }
-
-    public function Timesheet() {
-        return $this->belongsTo(TrackingTimesheet::class, 'timesheet_id', 'id');
-    }
-
-    public function getTimesheetStatusAttribute() {
+    public function getTimesheetStatusAttribute()
+    {
         if ($this->Timesheet()->first()) {
             return $this->Timesheet()->first()->status;
         }
         return null;
     }
 
-    public function getReadonlyAttribute() {
+    public function Timesheet()
+    {
+        return $this->belongsTo(TrackingTimesheet::class, 'timesheet_id', 'id');
+    }
+
+    public function getReadonlyAttribute()
+    {
         if ($this->status === self::$STATUS_ARCHIVED) {
             return true;
         }
@@ -87,18 +89,32 @@ class Tracking extends Model
         return true;
     }
 
-    public function getServiceAttribute() {
+    public function getServiceAttribute()
+    {
         return $this->Services()->first();
     }
 
-    public function getPassedAttribute() {
+    public function Services()
+    {
+        return $this->morphToMany(
+            Service::class,
+            'serviceable',
+            'serviceable',
+            'serviceable_id',
+            'service_id'
+        );
+    }
+
+    public function getPassedAttribute()
+    {
         return Carbon::parse($this->date_from)->diffInSeconds($this->status === self::$STATUS_STARTED ? now() : Carbon::parse($this->date_to));
     }
 
-    public function getPassedDecimalAttribute() {
+    public function getPassedDecimalAttribute()
+    {
         try {
             return round($this->passed / 60 / 60 * 100) / 100;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return 0;
         }
     }
@@ -108,18 +124,21 @@ class Tracking extends Model
         $this->attributes['passed'] = $value;
     }
 
-    public function getDateFromAttribute() {
+    public function getDateFromAttribute()
+    {
         return Carbon::parse($this->attributes['date_from'])->format(self::$DATETIME_FORMAT);
     }
 
-    public function getDateToAttribute() {
+    public function getDateToAttribute()
+    {
         if ($this->attributes['date_to']) {
             return Carbon::parse($this->attributes['date_to'])->format(self::$DATETIME_FORMAT);
         }
         return null;
     }
 
-    public function getRevenueAttribute() {
+    public function getRevenueAttribute()
+    {
         if (!$this->billable) return 0;
         if (isset($this->rate) && !empty($this->rate)) {
             return round(($this->rate * $this->passed_decimal) * 100) / 100;
@@ -127,11 +146,13 @@ class Tracking extends Model
         return 0;
     }
 
-    public function scopeSimpleUser($query) {
+    public function scopeSimpleUser($query)
+    {
         return $query->where('user_id', '=', Auth::user()->id);
     }
 
-    public function scopeTeamManager($query) {
+    public function scopeTeamManager($query)
+    {
         $result = $query->SimpleUser();
         $teams = Team::query()->whereHas('employees', function ($query) {
             return $query
@@ -146,7 +167,8 @@ class Tracking extends Model
         return $result;
     }
 
-    public function scopeCompanyAdmin($query) {
+    public function scopeCompanyAdmin($query)
+    {
         $employee = Auth::user()->employee;
         $result = $query->SimpleUser();
         if ($employee->is_clientable === 0) {
@@ -155,14 +177,5 @@ class Tracking extends Model
 
         return $result;
 
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::updated(function($tracking) {
-
-        });
     }
 }

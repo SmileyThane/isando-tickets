@@ -5,10 +5,9 @@ namespace App;
 use App\Http\Controllers\API\KbController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\belongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class KbArticle extends Model
@@ -29,27 +28,14 @@ class KbArticle extends Model
         return $this->belongsToMany(KbCategory::class, 'kb_article_categories', 'article_id', 'category_id');
     }
 
-    public function attachments($lang = null): MorphMany
+    public function tags(): MorphToMany
     {
-        if ($lang) {
-            return $this->morphMany(File::class, 'model')->where('service_info->lang', $lang);
-        } else {
-            return $this->morphMany(File::class, 'model');
-        }
-    }
-
-    public function tags(): MorphToMany {
         return $this->morphToMany(Tag::class, 'taggable');
     }
 
     public function previous(): belongsToMany
     {
         return $this->belongsToMany(KbArticle::class, 'kb_article_relations', 'next_article_id', 'article_id');
-    }
-
-    public function next(): belongsToMany
-    {
-        return $this->belongsToMany(KbArticle::class, 'kb_article_relations', 'article_id', 'next_article_id');
     }
 
     public function delete()
@@ -63,9 +49,23 @@ class KbArticle extends Model
         return parent::delete();
     }
 
+    public function next(): belongsToMany
+    {
+        return $this->belongsToMany(KbArticle::class, 'kb_article_relations', 'article_id', 'next_article_id');
+    }
+
     public function getFeaturedImageAttribute()
     {
         return $this->attachments()->where('service_info->type', 'kb_featured')->first();
+    }
+
+    public function attachments($lang = null): MorphMany
+    {
+        if ($lang) {
+            return $this->morphMany(File::class, 'model')->where('service_info->lang', $lang);
+        } else {
+            return $this->morphMany(File::class, 'model');
+        }
     }
 
     public function getFeaturedImagesAttribute()

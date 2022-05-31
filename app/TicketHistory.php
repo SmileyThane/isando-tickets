@@ -36,7 +36,7 @@ class TicketHistory extends Model
             if ($descriptionArray['item'] !== null) {
                 $translationGroup = $descriptionArray['translationGroup'];
                 $item = $descriptionArray['item'];
-                $result .= $descriptionArray['should_be_translated'] === true  && isset($translationsArray->$translationGroup->$item) ?
+                $result .= $descriptionArray['should_be_translated'] === true && isset($translationsArray->$translationGroup->$item) ?
                     $translationsArray->$translationGroup->$item :
                     $item;
             }

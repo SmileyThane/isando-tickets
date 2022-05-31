@@ -22,7 +22,7 @@ class Ticket extends Model
         'to_product_id', 'priority_id', 'status_id', 'due_date', 'connection_details', 'access_details', 'availability',
         'category_id', 'parent_id', 'unifier_id', 'merged_at'
     ];
-    protected $appends = [ 'from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
+    protected $appends = ['from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
         'replicated_to', 'ticket_type', 'created_at_time', 'merged_parent_info', 'merged_child_info', 'original_name'];
     protected $hidden = ['to'];
 
@@ -296,7 +296,8 @@ class Ticket extends Model
         return $this->hasOne(InternalBilling::class, 'id', 'internal_billing_id');
     }
 
-    public function followers() {
+    public function followers()
+    {
         return $this->belongsToMany(
             User::class,
             'ticket_followers',

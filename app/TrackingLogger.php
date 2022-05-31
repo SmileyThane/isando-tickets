@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrackingLogger extends Model
 {
-    protected $table = 'tracking_logger';
-
     const CREATE = 'create';
     const ATTACH_TAGS = 'attach_tags';
     const UPDATE_TAGS = 'update_tags';
@@ -15,7 +13,7 @@ class TrackingLogger extends Model
     const UPDATE = 'update';
     const DELETE = 'delete';
     const DUPLICATE = 'duplicate';
-
+    protected $table = 'tracking_logger';
     protected $casts = [
         'from' => 'array',
         'to' => 'array'
