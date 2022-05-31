@@ -14,7 +14,8 @@ class Serviceable extends Model
         return $this->morphTo();
     }
 
-    public function Service() {
+    public function Service()
+    {
         return $this->hasOne(Service::class, 'id', 'service_id');
     }
 }
