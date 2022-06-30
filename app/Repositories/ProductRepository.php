@@ -4,7 +4,6 @@
 namespace App\Repositories;
 
 use App\CompanyProduct;
-use App\LimitationGroup;
 use App\LimitationGroupHasModel;
 use App\Permission;
 use App\Product;
