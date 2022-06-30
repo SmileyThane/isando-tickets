@@ -7,7 +7,6 @@ use App\Client;
 use App\Http\Controllers\API\Tracking\PDF;
 use App\Notifications\SendTrackingReportByEmail;
 use App\Permission;
-use App\Role;
 use App\Team;
 use App\Ticket;
 use App\Tracking;
@@ -21,10 +20,10 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\File;
 
 class TrackingReportRepository
 {
