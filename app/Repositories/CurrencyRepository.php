@@ -6,7 +6,6 @@ namespace App\Repositories;
 use App\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class CurrencyRepository
 {
