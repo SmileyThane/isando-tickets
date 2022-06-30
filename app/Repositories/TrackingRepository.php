@@ -10,15 +10,13 @@ use App\Service;
 use App\Team;
 use App\Ticket;
 use App\Tracking;
-use App\TrackingProject;
 use App\TrackingLogger;
-use App\TrackingTimesheet;
+use App\TrackingProject;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
