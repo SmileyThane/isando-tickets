@@ -10,7 +10,6 @@ use App\Http\Controllers\API\Tracking\Filters\Projects\Coworkers;
 use App\LimitationGroupHasModel;
 use App\Permission;
 use App\Product;
-use App\Team;
 use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
