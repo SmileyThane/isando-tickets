@@ -3,8 +3,8 @@
 
 namespace App\Repositories;
 
-use App\User;
 use App\EmailSignature;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
