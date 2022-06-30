@@ -50,8 +50,8 @@ import store from './store';
 export default [
     {
         path: '/',
-            name: 'main',
-            component: Landing
+        name: 'main',
+        component: Landing
     },
     {
         path: '/login',

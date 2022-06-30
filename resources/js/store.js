@@ -2,8 +2,20 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import EventBus from "./components/EventBus";
 import {
-    Clients, Products, Projects, Tags, Services, Tracking, Team, Tickets, Currencies, Languages,
-    Timesheet, RiskRepository, IncidentReporting, SettingsIncident,
+    Clients,
+    Currencies,
+    IncidentReporting,
+    Languages,
+    Products,
+    Projects,
+    RiskRepository,
+    Services,
+    SettingsIncident,
+    Tags,
+    Team,
+    Tickets,
+    Timesheet,
+    Tracking,
 } from './modules';
 
 Vue.use(Vuex);
@@ -52,7 +64,7 @@ export default new Vuex.Store({
             state.roles = roles;
         },
         setPermissions(state, permissions) {
-            state.permissions = [...new Set(permissions)].sort((a,b) => a-b);
+            state.permissions = [...new Set(permissions)].sort((a, b) => a - b);
         },
         setLang(state, lang) {
             state.lang = lang;
@@ -89,11 +101,11 @@ export default new Vuex.Store({
         getRoles({commit}) {
             return new Promise((resolve, reject) => {
                 axios.get('/api/user/roles/id').then(result => {
-                        commit('setRoles', result.data.data);
-                        resolve();
-                    }).catch(error => {
-                        reject(error.response && error.response.data.message || 'Error.');
-                    });
+                    commit('setRoles', result.data.data);
+                    resolve();
+                }).catch(error => {
+                    reject(error.response && error.response.data.message || 'Error.');
+                });
             });
         },
         getPermissions({commit}) {
@@ -114,8 +126,8 @@ export default new Vuex.Store({
                         resolve();
                     }
                 }).catch(error => {
-                        reject(error.response && error.response.data.message || 'Error.');
-                    });
+                    reject(error.response && error.response.data.message || 'Error.');
+                });
             });
         },
         getThemeBgColor({commit}) {
@@ -174,13 +186,13 @@ export default new Vuex.Store({
         getAppVersion({commit}) {
             return new Promise((resolve, reject) => {
                 axios.get('/api/version').then(result => {
-                        if (result.data.success === true) {
-                            commit('setAppVersion', result.data.data);
-                            resolve();
-                        }
-                    }).catch(error => {
-                        reject(error.response && error.response.data.message || 'Error.');
-                    });
+                    if (result.data.success === true) {
+                        commit('setAppVersion', result.data.data);
+                        resolve();
+                    }
+                }).catch(error => {
+                    reject(error.response && error.response.data.message || 'Error.');
+                });
             });
         },
         getCurrentUser({commit}) {
