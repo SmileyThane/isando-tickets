@@ -468,6 +468,14 @@ export default [
         component: KnowledgeBaseCreate
     },
     {
+        path: '/admin/role',
+        name: 'admin_role',
+        meta: {
+            requiresAuth: true,
+        },
+        component: RoleManagement
+    },
+    {
         path: '/:alias/:id/edit',
         name: 'knowledge_base_update',
         meta: {
@@ -482,13 +490,5 @@ export default [
             requiresAuth: true,
         },
         component: KnowledgeBaseArticle
-    },
-    {
-        path: '/admin/role',
-        name: 'admin_role',
-        meta: {
-            requiresAuth: true,
-        },
-        component: RoleManagement
     },
 ];
