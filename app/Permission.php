@@ -62,6 +62,14 @@ class Permission extends Model
     public const EMPLOYEE_TICKET_ADMIN_ACCESS = 39;
 
     //custom permissions
+	public const IR_CREATE_ACCESS = 104;
+	public const KB_CREATE_ACCESS = 103;
+	public const IR_DELETE_ACCESS = 102;
+	public const IR_EDIT_ACCESS = 101;
+	public const IR_VIEW_ACCESS = 100;
+	public const KB_DELETE_ACCESS = 99;
+	public const KB_EDIT_ACCESS = 98;
+	public const KB_VIEW_ACCESS = 97;
     public const TRACKER_SETTINGS_CONTROL_REPORT = 96;
     public const SETTINGS_VIEW_COMPANY_LOGO = 95;
     public const SETTINGS_EDIT_COMPANY_LOGO = 94;

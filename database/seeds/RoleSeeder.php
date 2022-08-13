@@ -99,5 +99,29 @@ class RoleSeeder extends Seeder
                 'is_public' => false
             ]
         );
+        DB::table('roles')->updateOrInsert(
+            ['id' => 13],
+            [
+                'name' => 'client_kb',
+                'guard_name' => 'web',
+                'is_public' => false
+            ]
+        );
+        DB::table('roles')->updateOrInsert(
+            ['id' => 14],
+            [
+                'name' => 'client_ticket',
+                'guard_name' => 'web',
+                'is_public' => false
+            ]
+        );
+        DB::table('roles')->updateOrInsert(
+            ['id' => 15],
+            [
+                'name' => 'client_tt',
+                'guard_name' => 'web',
+                'is_public' => false
+            ]
+        );
     }
 }

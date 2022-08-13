@@ -30,7 +30,10 @@
                                 </v-select>
                             </v-col>
                             <v-col cols="1" class="text-right">
-                                <v-menu bottom>
+                                <v-menu
+                                    v-if="$helpers.auth.checkPermissionByIds([103])"
+                                    bottom
+                                >
                                     <template v-slot:activator="{ on }">
                                         <v-btn v-on="on" icon>
                                             <v-icon>mdi-dots-vertical</v-icon>
@@ -68,7 +71,10 @@
                             <v-icon large left :color="category.icon_color" v-text="category.icon ? category.icon : 'mdi-help'" />
                             {{ $helpers.i18n.localized(category) }}
                             <v-spacer></v-spacer>
-                            <v-menu bottom>
+                            <v-menu
+                                v-if="$helpers.auth.checkPermissionByIds([98])"
+                                bottom
+                            >
                                 <template v-slot:activator="{ on }">
                                     <v-btn v-on="on" icon>
                                         <v-icon>mdi-dots-vertical</v-icon>
@@ -115,7 +121,10 @@
                             <v-card-title style="cursor: pointer" @click="readArticle(article.id)">
                                 {{ $helpers.i18n.localized(article) }}
                                 <v-spacer></v-spacer>
-                                <v-menu bottom>
+                                <v-menu
+                                    v-if="$helpers.auth.checkPermissionByIds([98])"
+                                    bottom
+                                >
                                     <template v-slot:activator="{ on }">
                                         <v-btn v-on="on" icon>
                                             <v-icon>mdi-dots-vertical</v-icon>

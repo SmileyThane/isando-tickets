@@ -69,7 +69,10 @@
                 </v-list-item>
             </v-list>
             <v-divider></v-divider>
-            <v-list dense>
+            <v-list
+                v-if="$helpers.auth.checkPermissionByIds([97])"
+                dense
+            >
                 <v-list-item
                     v-for="(item, index) in kb"
                     :key="index"
@@ -87,9 +90,13 @@
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
-
-            <v-divider></v-divider>
-            <v-list dense>
+            <v-divider
+                v-if="$helpers.auth.checkPermissionByIds([97])"
+            ></v-divider>
+            <v-list
+                v-if="$helpers.auth.checkPermissionByIds([100])"
+                dense
+            >
                 <v-list-group
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
@@ -146,8 +153,9 @@
                     </v-list-item>
                 </v-list-group>
             </v-list>
-
-            <v-divider></v-divider>
+            <v-divider
+                v-if="$helpers.auth.checkPermissionByIds([100])"
+            ></v-divider>
             <v-list dense>
                 <v-list-item
                     v-if="$helpers.auth.checkPermissionByIds([25])"
