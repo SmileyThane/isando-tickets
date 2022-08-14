@@ -491,7 +491,8 @@
             </v-list>
             <v-divider
                 v-if="$helpers.auth.checkPermissionByIds([22])"
-            >&nbsp;</v-divider>
+            >&nbsp;
+            </v-divider>
             <v-list dense>
                 <v-list-group
                     :style="'background-color: ' + 'white' + ';'"
@@ -679,9 +680,9 @@ export default {
         },
         getKBTypes() {
             axios.get(`/api/kb/types`)
-                .then( response => {
-                        this.kb = response.data.data
-                    })
+                .then(response => {
+                    this.kb = response.data.data
+                })
         },
     },
     computed: {
@@ -693,12 +694,15 @@ export default {
             return this.$store.getters['Tracking/getSettings'].settings && this.$store.getters['Tracking/getSettings'].settings.enableTimesheet;
         },
         getTrackingProjectLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.departments;
-                case 2: return this.langMap.tracking.profit_centres;
-                default: return this.langMap.tracking.projects;
+                case 1:
+                    return this.langMap.tracking.departments;
+                case 2:
+                    return this.langMap.tracking.profit_centres;
+                default:
+                    return this.langMap.tracking.projects;
             }
         }
     }
