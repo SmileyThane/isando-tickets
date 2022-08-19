@@ -102,8 +102,13 @@
                                                 <v-icon :color="themeBgColor">mdi-folder-edit-outline</v-icon>
                                             </v-list-item-action>
                                         </v-list-item>
-                                        <v-list-item link>
-                                            <v-list-item-title @click="deleteCategory(category)">{{
+                                        <v-list-item
+                                            v-if="$helpers.auth.checkPermissionByIds([99])"
+                                            link
+                                        >
+                                            <v-list-item-title
+                                                @click="deleteCategory(category)">
+                                                {{
                                                     langMap.kb.delete
                                                 }}
                                             </v-list-item-title>
@@ -161,8 +166,14 @@
                                                 <v-icon :color="themeBgColor">mdi-file-edit-outline</v-icon>
                                             </v-list-item-action>
                                         </v-list-item>
-                                        <v-list-item link>
-                                            <v-list-item-title @click="deleteArticle(article)">{{
+                                        <v-list-item
+                                            v-if="$helpers.auth.checkPermissionByIds([99])"
+                                            link
+                                        >
+                                            <v-list-item-title
+                                                @click="deleteArticle(article)"
+                                            >
+                                                {{
                                                     langMap.kb.delete
                                                 }}
                                             </v-list-item-title>
