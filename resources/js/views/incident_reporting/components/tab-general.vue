@@ -86,6 +86,8 @@ export default {
         }
     },
     mounted() {
+        this.$store.dispatch('RiskRepository/callGetCategories');
+        this.$store.dispatch('RiskRepository/callGetArticles');
         this.$store.dispatch('RiskRepository/callGetClients');
         this.$store.dispatch('RiskRepository/callGetImportance');
     },
