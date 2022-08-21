@@ -12,7 +12,7 @@ class IncidentReportingSeeder extends Seeder
      */
     public function run() {
 
-        $companies = DB::table('users')->select('id')->get();
+        $companies = DB::table('companies')->select('id')->get();
 
         $id = 0;
 
