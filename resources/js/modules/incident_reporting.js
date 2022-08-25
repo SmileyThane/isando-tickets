@@ -3,7 +3,12 @@ export default {
     state: {
         selectedIR: {
             id: 0,
-            version: ''
+            version: '',
+            categories: [],
+            clients: [],
+            actions: [],
+            description: '',
+            stage_monitoring: null
         },
         IR: [],
         search: '',
