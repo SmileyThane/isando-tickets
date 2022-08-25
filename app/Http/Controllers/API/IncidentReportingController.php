@@ -3,10 +3,12 @@
 
 namespace App\Http\Controllers\API;
 
+use App\IncidentReportingActionBoard;
 use App\Providers\IxarmaServiceProvider;
 use App\Repositories\IncidentReportingRepository;
 use App\Repositories\IxarmaRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class IncidentReportingController extends Controller
@@ -14,11 +16,18 @@ class IncidentReportingController extends Controller
     protected $incidentRepo;
     protected $ixarmaRepo;
 
-    public function __construct(IxarmaServiceProvider $service, IncidentReportingRepository $incidentRepo, IxarmaRepository $ixarmaRepo)
+//    public function __construct(IxarmaServiceProvider $service, IncidentReportingRepository $incidentRepo, IxarmaRepository $ixarmaRepo)
+//    {
+//        $this->incidentRepo = $incidentRepo;
+//        $this->ixarmaRepo = $ixarmaRepo;
+//        $this->ixarmaRepo->initRepo($service);
+//    }
+
+    public function __construct(IncidentReportingRepository $incidentRepo, IxarmaRepository $ixarmaRepo)
     {
         $this->incidentRepo = $incidentRepo;
         $this->ixarmaRepo = $ixarmaRepo;
-        $this->ixarmaRepo->initRepo($service);
+//        $this->ixarmaRepo->initRepo($service);
     }
 
 
@@ -217,5 +226,18 @@ class IncidentReportingController extends Controller
 
     public function listIxarmaParticipants(Request $request) {
         return self::showResponse($this->ixarmaRepo->getParticipants($request->company_id));
+    }
+
+    public function store(Request $request)
+    {
+
+    }
+
+    public function index(): JsonResponse
+    {
+        $actionBoards = IncidentReportingActionBoard::query()
+            ->with(['actions', 'categories', 'clients', 'stageMonitoring', 'priority', 'access', 'state'])
+            ->get();
+        return self::showResponse(true, $actionBoards);
     }
 }
