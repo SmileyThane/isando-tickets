@@ -13,11 +13,11 @@
         <v-row>
             <v-col cols="2">
                 <IncidentCategoryItem
-                    v-for="item in items"
+                    v-for="item in $store.getters['IncidentReporting/getIR']"
                     :key="item.id"
                     :extended="true"
                     :item="item"
-                    :selected="item.id === 3"
+                    :selected="item.id === $store.getters['IncidentReporting/getSelectedIR'].id"
                 />
             </v-col>
             <v-col cols="10">
@@ -68,35 +68,6 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
-            items: [
-                {
-                    id: 1,
-                    name: 'Initial review',
-                    status: 'draft',
-                    group: 'Risk group',
-                    organization: 'Including all child organizations',
-                    potential: 'Risk incident potential',
-                    tags: ['all'],
-                },
-                {
-                    id: 2,
-                    name: 'Activate backup location',
-                    status: 'approved',
-                    group: 'Risk group',
-                    organization: 'Including all child organizations',
-                    potential: 'Risk incident potential',
-                    tags: ['all'],
-                },
-                {
-                    id: 3,
-                    name: 'Assessment of damage to physical facilities',
-                    status: 'approved',
-                    group: 'Natural disasters',
-                    organization: 'Including all child organizations',
-                    potential: 'Medium',
-                    tags: ['handling'],
-                }
-            ],
             tab: 0,
         }
     },
@@ -108,7 +79,10 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
+        this.$store.dispatch('IncidentReporting/callGetIR');
     },
+    methods: {
+    }
 }
 </script>
 
