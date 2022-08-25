@@ -24,7 +24,7 @@
                 <div class="text-h6">Action board: Assessment of damage to physical facilities</div>
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>General</v-tab>
-                    <v-tab>Action boards</v-tab>
+                    <v-tab>Actions</v-tab>
                     <v-tab>Version</v-tab>
                 </v-tabs>
                 <v-tabs-items v-model="tab">
