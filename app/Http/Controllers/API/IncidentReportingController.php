@@ -236,7 +236,7 @@ class IncidentReportingController extends Controller
     public function index(): JsonResponse
     {
         $actionBoards = IncidentReportingActionBoard::query()
-            ->with(['actions', 'categories', 'clients', 'stageMonitoring', 'priority', 'access', 'state'])
+            ->with(['actions.assignee', 'categories', 'clients', 'stageMonitoring', 'priority', 'access', 'state'])
             ->get();
         return self::showResponse(true, $actionBoards);
     }
