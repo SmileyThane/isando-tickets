@@ -21,7 +21,7 @@
                 />
             </v-col>
             <v-col cols="10">
-                <div class="text-h6">Action board: Assessment of damage to physical facilities</div>
+                <div class="text-h6">{{$store.getters['IncidentReporting/getSelectedIR'] ? $store.getters['IncidentReporting/getSelectedIR'].name : ''}}</div>
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>General</v-tab>
                     <v-tab>Actions</v-tab>

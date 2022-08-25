@@ -15,6 +15,7 @@ class AddressController extends Controller
         $this->addressRepo = $addressRepository;
     }
 
+
     public function add(Request $request)
     {
         $address = $this->addressRepo->create($request['entity_id'], $request['entity_type'], $request['address'], $request['address_type']);
