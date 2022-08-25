@@ -1,12 +1,14 @@
 <template>
     <v-card outlined style="cursor: pointer" class="mb-2"
         :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`"
-        @click=""
+            @click="selectIR(item)"
     >
-        <v-list-item>
+        <v-list-item >
             <v-list-item-content>
                 <v-list-item-title class="text-h6 mb-1">
-                    <div class="float-left">{{ item.name }}</div>
+                    <div class="float-left"
+                         style="text-overflow: ellipsis; overflow: hidden; max-width: 35vh;"
+                    >{{ item.name }}</div>
                     <v-spacer v-if="extended"></v-spacer>
                     <v-chip v-if="extended"
                         class="float-right text-uppercase"
@@ -15,18 +17,14 @@
                         :textColor="$helpers.color.invertColor(themeBgColor)"
                         x-small
                     >
-                        approved
+                        {{item.state.name}}
                     </v-chip>
                 </v-list-item-title>
                 <v-list-item-title v-if="extended">
-                    Natural disaster
-                    <br>
-                    Brauerei Luzern including all child organizations
-                    <br>
-                    Risk incident potential: From Low
+                    {{item.description}}
                 </v-list-item-title>
                 <v-list-item-title v-if="extended">
-                    <v-chip v-for="(tag, index) in item.tags"
+                    <v-chip v-for="(tag, index) in item.categories"
                             :key="index"
                             class="text-uppercase"
                             label
@@ -34,7 +32,7 @@
                             x-small
                             outlined
                     >
-                        {{ tag }}
+                        {{ tag.name }}
                     </v-chip>
                 </v-list-item-title>
             </v-list-item-content>
@@ -78,6 +76,9 @@ export default {
         });
     },
     methods: {
+        selectIR(item) {
+            this.$store.dispatch('IncidentReporting/callSetSelectedIR', item);
+        }
 
     }
 }

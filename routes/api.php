@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ClientGroupController;
+use App\Http\Controllers\API\IncidentReportingController;
 use App\Http\Controllers\API\InternalBillingController;
 use App\Http\Controllers\API\LimitationGroupController;
 use Illuminate\Support\Facades\Route;
@@ -357,6 +358,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('ir/stakeholder_type/{id}', 'API\IncidentReportingController@deleteStakeholderType');
     Route::get('ir/ixarma/companies', 'API\IncidentReportingController@listIxarmaCompanies');
     Route::get('ir/ixarma/participants', 'API\IncidentReportingController@listIxarmaParticipants');
+
+    Route::get('ir', [IncidentReportingController::class, 'index']);
 
     // files
     Route::get('file/{id}', 'API\FileController@find');

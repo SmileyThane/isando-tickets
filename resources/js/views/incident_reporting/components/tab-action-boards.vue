@@ -10,7 +10,7 @@
                 <v-card
                     class="mx-auto mb-2"
                     outlined
-                    v-for="action in actions"
+                    v-for="action in $store.getters['IncidentReporting/getSelectedIR'].actions"
                     :key="action.id"
                 >
                     <v-list-item three-line>
@@ -22,10 +22,10 @@
                                     <small>{{ action.type }}</small>
                                 </v-col>
                                 <v-col cols="2">
-                                    {{ action.deadline }}
+                                    {{ action.expired_at }}
                                 </v-col>
                                 <v-col cols="2">
-                                    {{ action.assignedTo }}
+                                    {{ action.assignee ? action.assignee.email : 'not assinged' }}
                                 </v-col>
                                 <v-col cols="1" class="text-right">
                                     <v-menu
