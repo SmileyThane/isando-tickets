@@ -3,6 +3,7 @@
         <v-row>
             <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
                 <v-select
+                    v-if="isEditable"
                     class="small"
                     placeholder="Categories"
                     :items="$store.getters['RiskRepository/getCategories']"
@@ -13,6 +14,12 @@
                     outlined
                     hide-details
                 ></v-select>
+                <div v-else>
+                    <p v-for="category in item.categories">
+                        {{category}}
+                    </p>
+
+                </div>
             </v-col>
             <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
             <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
@@ -82,7 +89,8 @@ export default {
     name: 'incident-tab-general',
     data() {
         return {
-
+            isEditable: false,
+            item: {}
         }
     },
     mounted() {
@@ -90,6 +98,7 @@ export default {
         this.$store.dispatch('RiskRepository/callGetArticles');
         this.$store.dispatch('RiskRepository/callGetClients');
         this.$store.dispatch('RiskRepository/callGetImportance');
+        this.item = this.$store.getters['IncidentReporting/getSelectedIR']
     },
     methods: {
 

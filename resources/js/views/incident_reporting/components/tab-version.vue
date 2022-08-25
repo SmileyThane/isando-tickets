@@ -1,6 +1,6 @@
 <template>
     <div>
-
+{{$store.getters['IncidentReporting/getSelectedIR'].version}}
     </div>
 </template>
 
