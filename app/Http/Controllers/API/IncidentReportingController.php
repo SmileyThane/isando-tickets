@@ -247,7 +247,26 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $board);
     }
 
-    public function index(): JsonResponse
+    public function update(Request $request, $id): JsonResponse
+    {
+        $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
+        $board->update($request->all());
+        $this->syncActionBoardRelations($request, $board);
+
+        return self::showResponse(true, $board);
+    }
+
+    public function delete(Request $request, $id): JsonResponse
+    {
+        $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
+        $request->action_ids = $request->category_ids = $request->client_ids = [];
+        $this->syncActionBoardRelations($request, $board);
+        $board->delete();
+
+        return self::showResponse(true);
+    }
+
+    private function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
     {
         $board->actions()->sync($request->action_ids);
         $board->categories()->sync($request->category_ids);
