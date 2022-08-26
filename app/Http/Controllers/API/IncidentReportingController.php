@@ -241,7 +241,10 @@ class IncidentReportingController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $board = IncidentReportingActionBoard::create($request->all());
+        $this->syncActionBoardRelations($request, $board);
 
+        return self::showResponse(true, $board);
     }
 
     public function index(): JsonResponse
