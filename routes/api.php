@@ -360,6 +360,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('ir/ixarma/participants', 'API\IncidentReportingController@listIxarmaParticipants');
 
     Route::get('ir', [IncidentReportingController::class, 'index']);
+    Route::post('ir', [IncidentReportingController::class, 'store']);
+    Route::put('ir/{id}', [IncidentReportingController::class, 'update']);
+    Route::delete('ir/{id}', [IncidentReportingController::class, 'delete']);
 
     // files
     Route::get('file/{id}', 'API\FileController@find');
