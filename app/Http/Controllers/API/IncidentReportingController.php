@@ -228,16 +228,48 @@ class IncidentReportingController extends Controller
         return self::showResponse($this->ixarmaRepo->getParticipants($request->company_id));
     }
 
-    public function store(Request $request)
-    {
-
-    }
-
     public function index(): JsonResponse
     {
         $actionBoards = IncidentReportingActionBoard::query()
-            ->with(['actions.assignee', 'categories', 'clients', 'stageMonitoring', 'priority', 'access', 'state'])
+            ->with([
+                'actions.assignee', 'categories', 'clients',
+                'stageMonitoring', 'priority', 'access', 'state'
+            ])
             ->get();
         return self::showResponse(true, $actionBoards);
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        $board = IncidentReportingActionBoard::create($request->all());
+        $this->syncActionBoardRelations($request, $board);
+
+        return self::showResponse(true, $board);
+    }
+
+    public function update(Request $request, $id): JsonResponse
+    {
+        $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
+        $board->update($request->all());
+        $this->syncActionBoardRelations($request, $board);
+
+        return self::showResponse(true, $board);
+    }
+
+    public function delete(Request $request, $id): JsonResponse
+    {
+        $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
+        $request->action_ids = $request->category_ids = $request->client_ids = [];
+        $this->syncActionBoardRelations($request, $board);
+        $board->delete();
+
+        return self::showResponse(true);
+    }
+
+    private function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
+    {
+        $board->actions()->sync($request->action_ids);
+        $board->categories()->sync($request->category_ids);
+        $board->clients()->sync($request->client_ids);
     }
 }
