@@ -24,7 +24,9 @@
                             label
                             style="margin: 5px;"
                             :color="themeBgColor"
-                            :textColor="$helpers.color.invertColor(themeBgColor)"
+                            :textColor="themeBgColor"
+                            x-small
+                            outlined
                     >
                         {{category.name}}
                     </v-chip>
@@ -53,7 +55,9 @@
                         label
                         style="margin: 5px;"
                         :color="themeBgColor"
-                        :textColor="$helpers.color.invertColor(themeBgColor)"
+                        :textColor="themeBgColor"
+                        x-small
+                        outlined
                     >
                         {{client.name}}
                     </v-chip>
@@ -85,7 +89,9 @@
                         label
                         style="margin: 5px;"
                         :color="themeBgColor"
-                        :textColor="$helpers.color.invertColor(themeBgColor)"
+                        :textColor="themeBgColor"
+                        x-small
+                        outlined
                     >
                         {{
                             $store.getters['IncidentReporting/getSelectedIR'].stage_monitoring ?
@@ -117,7 +123,9 @@
                         label
                         style="margin: 5px;"
                         :color="themeBgColor"
-                        :textColor="$helpers.color.invertColor(themeBgColor)"
+                        :textColor="themeBgColor"
+                        x-small
+                        outlined
                     >
                         {{
                             $store.getters['IncidentReporting/getSelectedIR'].priority ?
@@ -149,7 +157,9 @@
                         label
                         style="margin: 5px;"
                         :color="themeBgColor"
-                        :textColor="$helpers.color.invertColor(themeBgColor)"
+                        :textColor="themeBgColor"
+                        x-small
+                        outlined
                     >
                         {{
                             $store.getters['IncidentReporting/getSelectedIR'].access ?
