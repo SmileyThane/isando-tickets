@@ -228,7 +228,18 @@ class IncidentReportingController extends Controller
         return self::showResponse($this->ixarmaRepo->getParticipants($request->company_id));
     }
 
-    public function store(Request $request)
+    public function index(): JsonResponse
+    {
+        $actionBoards = IncidentReportingActionBoard::query()
+            ->with([
+                'actions.assignee', 'categories', 'clients',
+                'stageMonitoring', 'priority', 'access', 'state'
+            ])
+            ->get();
+        return self::showResponse(true, $actionBoards);
+    }
+
+    public function store(Request $request): JsonResponse
     {
 
     }
