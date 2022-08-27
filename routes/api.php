@@ -361,6 +361,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('ir', [IncidentReportingController::class, 'index']);
     Route::post('ir', [IncidentReportingController::class, 'store']);
+    Route::post('ir/{id}/clone', [IncidentReportingController::class, 'clone']);
     Route::put('ir/{id}', [IncidentReportingController::class, 'update']);
     Route::delete('ir/{id}', [IncidentReportingController::class, 'delete']);
 
