@@ -22,6 +22,9 @@ export default {
             }).then(({ status, data: { data, success } }) => {
                 if (status === 200 && success) {
                     commit('setIR', data)
+                    if (data.length > 0) {
+                        commit('setSelectedIR', data[0])
+                    }
                     return Promise.resolve(data)
                 }
                 commit('setIR', [])

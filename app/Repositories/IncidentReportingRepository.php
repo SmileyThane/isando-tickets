@@ -11,6 +11,8 @@ use App\IncidentReporting\ProcessState;
 use App\IncidentReporting\ReferenceBook;
 use App\IncidentReporting\ResourceType;
 use App\IncidentReporting\StakeholderType;
+use App\IncidentReportingActionBoard;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
@@ -209,4 +211,10 @@ class IncidentReportingRepository
         return $this->_delete(StakeholderType::class, $id);
     }
 
+    public function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
+    {
+        $board->actions()->sync($request->action_ids);
+        $board->categories()->sync($request->category_ids);
+        $board->clients()->sync($request->client_ids);
+    }
 }
