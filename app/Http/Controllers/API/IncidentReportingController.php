@@ -242,7 +242,7 @@ class IncidentReportingController extends Controller
     public function store(Request $request): JsonResponse
     {
         $board = IncidentReportingActionBoard::create($request->all());
-        $this->syncActionBoardRelations($request, $board);
+        $this->incidentRepo->syncActionBoardRelations($request, $board);
 
         return self::showResponse(true, $board);
     }
@@ -251,7 +251,7 @@ class IncidentReportingController extends Controller
     {
         $request->parent_id = $id;
         $board = IncidentReportingActionBoard::create($request->all());
-        $this->syncActionBoardRelations($request, $board);
+        $this->incidentRepo->syncActionBoardRelations($request, $board);
 
         return self::showResponse(true, $board);
     }
@@ -260,7 +260,7 @@ class IncidentReportingController extends Controller
     {
         $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
         $board->update($request->all());
-        $this->syncActionBoardRelations($request, $board);
+        $this->incidentRepo->syncActionBoardRelations($request, $board);
 
         return self::showResponse(true, $board);
     }
@@ -269,16 +269,9 @@ class IncidentReportingController extends Controller
     {
         $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
         $request->action_ids = $request->category_ids = $request->client_ids = [];
-        $this->syncActionBoardRelations($request, $board);
+        $this->incidentRepo->syncActionBoardRelations($request, $board);
         $board->delete();
 
         return self::showResponse(true);
-    }
-
-    private function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
-    {
-        $board->actions()->sync($request->action_ids);
-        $board->categories()->sync($request->category_ids);
-        $board->clients()->sync($request->client_ids);
     }
 }
