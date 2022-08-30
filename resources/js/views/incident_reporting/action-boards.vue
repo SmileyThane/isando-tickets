@@ -45,6 +45,28 @@
                             </v-list-item>
                         </v-list>
                     </v-menu>
+                    <div v-if="$store.getters['IncidentReporting/getIsEditable']">
+                        <v-btn
+                            text
+                            @click="cancelEditing"
+                        >
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn
+                            :color="themeBgColor"
+                            text
+                            @click="saveIR(false)"
+                        >
+                            {{ langMap.main.save }}
+                        </v-btn>
+                        <v-btn
+                            :color="themeBgColor"
+                            text
+                            @click="saveIR(true)"
+                        >
+                            {{ langMap.main.clone }}
+                        </v-btn>
+                    </div>
                 </div>
 
                 <v-tabs v-model="tab" :color="themeBgColor">
@@ -105,10 +127,22 @@ export default {
             that.themeBgColor = color;
         });
         this.$store.dispatch('IncidentReporting/callGetIR');
+        this.$store.dispatch('IncidentReporting/callGetIROptions');
     },
     methods: {
         setIsEditable() {
             this.$store.dispatch('IncidentReporting/callSetIsEditable', true)
+        },
+        cancelEditing() {
+            this.$store.dispatch('IncidentReporting/callSetIsEditable', false).then(() => {
+                this.$store.dispatch('IncidentReporting/callGetIR')
+            })
+        },
+        saveIR(incrementVersion) {
+            this.$store.dispatch('IncidentReporting/callStoreIR', incrementVersion).then(() => {
+                this.$store.dispatch('IncidentReporting/callGetIR')
+            })
+
         }
     }
 }
