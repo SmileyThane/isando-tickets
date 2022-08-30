@@ -60,7 +60,7 @@ class ClientController extends Controller
     public function suppliers(Request $request): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
-            return self::showResponse(true, $this->clientRepo->suppliers($request));
+            return self::showResponse(true, $this->clientRepo->suppliers());
         }
 
         return self::showResponse(false);

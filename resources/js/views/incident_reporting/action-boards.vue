@@ -10,7 +10,7 @@
             </v-col>
         </v-row>
 
-        <v-row>
+        <v-row v-if="$store.getters['IncidentReporting/getSelectedIR']">
             <v-col cols="2">
                 <IncidentCategoryItem
                     v-for="item in $store.getters['IncidentReporting/getIR']"
@@ -21,7 +21,54 @@
                 />
             </v-col>
             <v-col cols="10">
-                <div class="text-h6">{{$store.getters['IncidentReporting/getSelectedIR'] ? $store.getters['IncidentReporting/getSelectedIR'].name : ''}}</div>
+                <div class="text-h6">
+                    {{$store.getters['IncidentReporting/getSelectedIR'].name}}
+                    <v-menu v-if="!$store.getters['IncidentReporting/getIsEditable']" bottom>
+                        <template v-slot:activator="{ on }">
+                            <v-btn v-on="on" icon>
+                                <v-icon>mdi-dots-vertical</v-icon>
+                            </v-btn>
+                        </template>
+
+                        <v-list>
+                            <v-list-item link @click.prevent="setIsEditable">
+                                <v-list-item-title >{{ langMap.main.edit }}</v-list-item-title>
+                                <v-list-item-action>
+                                    <v-icon :color="themeBgColor">mdi-pencil</v-icon>
+                                </v-list-item-action>
+                            </v-list-item>
+                            <v-list-item link @click.prevent="$store.dispatch('IncidentReporting/callDeleteIR', $store.getters['IncidentReporting/getSelectedIR'].id)">
+                                <v-list-item-title >{{ langMap.main.delete }}</v-list-item-title>
+                                <v-list-item-action>
+                                    <v-icon :color="themeBgColor">mdi-delete</v-icon>
+                                </v-list-item-action>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                    <div v-if="$store.getters['IncidentReporting/getIsEditable']">
+                        <v-btn
+                            text
+                            @click="cancelEditing"
+                        >
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn
+                            :color="themeBgColor"
+                            text
+                            @click="saveIR(false)"
+                        >
+                            {{ langMap.main.save }}
+                        </v-btn>
+                        <v-btn
+                            :color="themeBgColor"
+                            text
+                            @click="saveIR(true)"
+                        >
+                            {{ langMap.main.clone }}
+                        </v-btn>
+                    </div>
+                </div>
+
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>General</v-tab>
                     <v-tab>Actions</v-tab>
@@ -80,8 +127,23 @@ export default {
             that.themeBgColor = color;
         });
         this.$store.dispatch('IncidentReporting/callGetIR');
+        this.$store.dispatch('IncidentReporting/callGetIROptions');
     },
     methods: {
+        setIsEditable() {
+            this.$store.dispatch('IncidentReporting/callSetIsEditable', true)
+        },
+        cancelEditing() {
+            this.$store.dispatch('IncidentReporting/callSetIsEditable', false).then(() => {
+                this.$store.dispatch('IncidentReporting/callGetIR')
+            })
+        },
+        saveIR(incrementVersion) {
+            this.$store.dispatch('IncidentReporting/callStoreIR', incrementVersion).then(() => {
+                this.$store.dispatch('IncidentReporting/callGetIR')
+            })
+
+        }
     }
 }
 </script>

@@ -4,6 +4,11 @@
 namespace App\Http\Controllers\API;
 
 use App\IncidentReportingActionBoard;
+use App\IncidentReportingActionBoardAccess;
+use App\IncidentReportingActionBoardCategory;
+use App\IncidentReportingActionBoardPriority;
+use App\IncidentReportingActionBoardStageMonitoring;
+use App\IncidentReportingActionBoardState;
 use App\Providers\IxarmaServiceProvider;
 use App\Repositories\IncidentReportingRepository;
 use App\Repositories\IxarmaRepository;
@@ -239,8 +244,21 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $actionBoards);
     }
 
+    public function options()
+    {
+        $options = [
+            'categories' => IncidentReportingActionBoardCategory::all(),
+            'priorities' => IncidentReportingActionBoardPriority::all(),
+            'states' => IncidentReportingActionBoardState::all(),
+            'accesses' => IncidentReportingActionBoardAccess::all(),
+            'stage_monitorings' => IncidentReportingActionBoardStageMonitoring::all()
+        ];
+        return self::showResponse(true, $options);
+    }
+
     public function store(Request $request): JsonResponse
     {
+        $request['state_id'] = 1;
         $board = IncidentReportingActionBoard::create($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
@@ -262,7 +280,10 @@ class IncidentReportingController extends Controller
         $board->update($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
-        return self::showResponse(true, $board);
+        return self::showResponse(true, $board->with([
+            'actions.assignee', 'categories', 'clients',
+            'stageMonitoring', 'priority', 'access', 'state'
+        ])->first());
     }
 
     public function delete(Request $request, $id): JsonResponse

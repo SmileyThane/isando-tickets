@@ -213,8 +213,23 @@ class IncidentReportingRepository
 
     public function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
     {
-        $board->actions()->sync($request->action_ids);
-        $board->categories()->sync($request->category_ids);
-        $board->clients()->sync($request->client_ids);
+        $board->actions()->sync($this->prepareRelationToSync($request->actions));
+        $board->categories()->sync($this->prepareRelationToSync($request->categories));
+        $board->clients()->sync($this->prepareRelationToSync($request->clients));
+    }
+
+    private function prepareRelationToSync($relation)
+    {
+        $temp = [];
+        if (is_array($relation) && count($relation) > 0) {
+            foreach ($relation as $item) {
+                if (!is_integer($item)) {
+                    $temp[] = $item['id'];
+                }
+            }
+
+        }
+
+        return count($temp) > 0 ? $temp : $relation;
     }
 }

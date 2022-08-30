@@ -19,7 +19,7 @@
                                 <v-col cols="7">
                                     <span class="text-overline mb-4">{{ action.name }}</span>
                                     <br>
-                                    <small>{{ action.type }}</small>
+                                    <small>{{ action.description }}</small>
                                 </v-col>
                                 <v-col cols="2">
                                     {{ action.expired_at }}
