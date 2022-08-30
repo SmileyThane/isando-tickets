@@ -31,6 +31,17 @@ export default {
                 return Promise.reject([])
             });
         },
+        callDeleteIR({ commit, dispatch }, id) {
+            return axios.delete(`/api/ir/${id}`, {
+                params: {}
+            }).then(({ status, data: { data, success } }) => {
+                if (status === 200 && success) {
+                    dispatch('callGetIR')
+                }
+                commit('setIR', [])
+                return Promise.reject([])
+            });
+        },
         callSetSelectedIR({commit}, data) {
             commit('setSelectedIR', data)
         }
