@@ -58,7 +58,7 @@ export default {
             });
         },
         callGetClients({ state, commit }) {
-            return axios.get(`/api/client?per_page=1000&sort_by=name&sort_val=false`)
+            return axios.get(`/api/client`)
                 .then(({ data: { data, success }, status }) => {
                     if (status === 200 && success) {
                         commit('setClients', data)
