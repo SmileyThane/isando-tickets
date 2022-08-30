@@ -4,7 +4,7 @@
             <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
                 <label>Categories:</label>
                 <v-select
-                    v-if="isEditable"
+                    v-if="$store.getters['IncidentReporting/getIsEditable']"
                     class="small"
                     placeholder="Categories"
                     :items="$store.getters['RiskRepository/getCategories']"
@@ -33,33 +33,11 @@
                 </div>
             </v-col>
             <v-col cols="6" xl="8" lg="6" md="6" sm="12">
-                <v-menu v-if="!isEditable" bottom>
-                    <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" icon>
-                            <v-icon>mdi-dots-vertical</v-icon>
-                        </v-btn>
-                    </template>
-
-                    <v-list>
-                        <v-list-item link @click.prevent="isEditable = true">
-                            <v-list-item-title >{{ langMap.main.edit }}</v-list-item-title>
-                            <v-list-item-action>
-                                <v-icon :color="themeBgColor">mdi-pencil</v-icon>
-                            </v-list-item-action>
-                        </v-list-item>
-                        <v-list-item link @click.prevent="deleteIR()">
-                            <v-list-item-title >{{ langMap.main.delete }}</v-list-item-title>
-                            <v-list-item-action>
-                                <v-icon :color="themeBgColor">mdi-delete</v-icon>
-                            </v-list-item-action>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
             </v-col>
             <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
                 <label v-if="$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0">Clients:</label>
                 <v-select
-                    v-if="isEditable"
+                    v-if="$store.getters['IncidentReporting/getIsEditable']"
                     class=""
                     placeholder="Clients"
                     :items="$store.getters['RiskRepository/getClients']"
@@ -87,14 +65,14 @@
                 </div>
             </v-col>
             <v-col cols="6" xl="8" lg="6" md="6" sm="12" class="pb-0">
-                <v-checkbox v-if="isEditable" class="mt-0"
+                <v-checkbox v-if="$store.getters['IncidentReporting/getIsEditable']" class="mt-0"
                     label="Include child organizations"
                 ></v-checkbox>
             </v-col>
             <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
                 <label v-if="$store.getters['IncidentReporting/getSelectedIR'].stage_monitoring !== null">Valid from Stage Monitoring:</label>
                 <v-select
-                    v-if="isEditable"
+                    v-if="$store.getters['IncidentReporting/getIsEditable']"
                     class=""
                     placeholder="Valid from Stage Monitoring"
                     :items="$store.getters['RiskRepository/getClients']"
@@ -128,7 +106,7 @@
             <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
                 <label v-if="$store.getters['IncidentReporting/getSelectedIR'].priority">Importance:</label>
                 <v-select
-                    v-if="isEditable"
+                    v-if="$store.getters['IncidentReporting/getIsEditable']"
                     class=""
                     placeholder="Importance"
                     :items="$store.getters['RiskRepository/getImportance']"
@@ -162,7 +140,7 @@
             <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
                 <label v-if="$store.getters['IncidentReporting/getSelectedIR'].access">Access:</label>
                 <v-select
-                    v-if="isEditable"
+                    v-if="$store.getters['IncidentReporting/getIsEditable']"
                     class=""
                     placeholder="Access"
                     :items="$store.getters['RiskRepository/getImportance']"
@@ -195,19 +173,20 @@
             <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
             <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
                 <v-textarea
+                    :readonly="!$store.getters['IncidentReporting/getIsEditable']"
                     name="input-7-1"
                     label="Description"
                     auto-grow
                     outlined
-                    :value="$store.getters['IncidentReporting/getSelectedIR'].description"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
                 ></v-textarea>
             </v-col>
             <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
         </v-row>
-        <div v-if="isEditable">
+        <div v-if="$store.getters['IncidentReporting/getIsEditable']">
             <v-btn
                 text
-                @click=""
+                @click="cancelEditing"
             >
                 {{ langMap.main.cancel }}
             </v-btn>
@@ -229,7 +208,6 @@ export default {
     name: 'incident-tab-general',
     data() {
         return {
-            isEditable: false,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
@@ -250,11 +228,11 @@ export default {
 
     },
     methods: {
-        deleteIR() {
-            this.$store.dispatch('IncidentReporting/callDeleteIR', this.$store.getters['IncidentReporting/getSelectedIR'].id)
-                .then(() => {
-                this.$store.dispatch('IncidentReporting/callGetIR');
-            });
+
+        cancelEditing() {
+            this.$store.dispatch('IncidentReporting/callSetIsEditable', false).then(() => {
+                this.$store.dispatch('IncidentReporting/callGetIR')
+            })
         }
     }
 }
