@@ -32,7 +32,30 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
+            <v-col cols="6" xl="8" lg="6" md="6" sm="12">
+                <v-menu v-if="!isEditable" bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn v-on="on" icon>
+                            <v-icon>mdi-dots-vertical</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <v-list>
+                        <v-list-item link @click.prevent="isEditable = true">
+                            <v-list-item-title >{{ langMap.main.edit }}</v-list-item-title>
+                            <v-list-item-action>
+                                <v-icon :color="themeBgColor">mdi-pencil</v-icon>
+                            </v-list-item-action>
+                        </v-list-item>
+                        <v-list-item link @click.prevent="deleteIR()">
+                            <v-list-item-title >{{ langMap.main.delete }}</v-list-item-title>
+                            <v-list-item-action>
+                                <v-icon :color="themeBgColor">mdi-delete</v-icon>
+                            </v-list-item-action>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+            </v-col>
             <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
                 <label v-if="$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0">Clients:</label>
                 <v-select
@@ -181,6 +204,21 @@
             </v-col>
             <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
         </v-row>
+        <div v-if="isEditable">
+            <v-btn
+                text
+                @click=""
+            >
+                {{ langMap.main.cancel }}
+            </v-btn>
+            <v-btn
+                :color="themeBgColor"
+                text
+                @click=""
+            >
+                {{ langMap.main.save }}
+            </v-btn>
+        </div>
     </v-card>
 </template>
 
@@ -194,7 +232,7 @@ export default {
             isEditable: false,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
-
+            langMap: this.$store.state.lang.lang_map,
         }
     },
     mounted() {
@@ -212,7 +250,12 @@ export default {
 
     },
     methods: {
-
+        deleteIR() {
+            this.$store.dispatch('IncidentReporting/callDeleteIR', this.$store.getters['IncidentReporting/getSelectedIR'].id)
+                .then(() => {
+                this.$store.dispatch('IncidentReporting/callGetIR');
+            });
+        }
     }
 }
 </script>
