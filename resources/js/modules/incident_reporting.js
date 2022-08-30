@@ -32,7 +32,18 @@ export default {
                 return Promise.reject([])
             });
         },
-        callDeleteIR({ commit, dispatch }, id) {
+        callGetIROptions({commit}) {
+            return axios.get(`/api/ir/options`)
+                .then(({status, data: {data, success}}) => {
+                    if (status === 200 && success) {
+                        commit('setIROptions', data)
+                        return Promise.resolve(data)
+                    }
+                    commit('setIROptions', [])
+                    return Promise.reject([])
+                });
+        },
+        callDeleteIR({commit, dispatch}, id) {
             return axios.delete(`/api/ir/${id}`, {
                 params: {}
             }).then(({ status, data: { data, success } }) => {
