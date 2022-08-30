@@ -59,7 +59,7 @@
                         </template>
 
                         <v-list>
-                            <v-list-item link @click.prevent="updateCategoryDlg = true">
+                            <v-list-item link @click.prevent="createIR">
                                 <v-list-item-title >{{ langMap.main.create }}</v-list-item-title>
                                 <v-list-item-action>
                                     <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
@@ -123,6 +123,13 @@ export default {
             set(val) {
                 this.$store.commit('IncidentReporting/setActiveTags', val)
             }
+        }
+    },
+    methods: {
+        createIR()
+        {
+            this.$store.dispatch('IncidentReporting/callSetIsEditable', true)
+            this.$store.dispatch('IncidentReporting/callSetSelectedIR', null)
         }
     }
 }
