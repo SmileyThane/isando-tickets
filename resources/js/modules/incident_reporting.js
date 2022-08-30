@@ -54,6 +54,30 @@ export default {
                 return Promise.reject([])
             });
         },
+        callStoreIR({commit, dispatch, state}, incrementVersion) {
+            let method = 'post'
+            let url = `/api/ir`
+            if (state.selectedIR.id) {
+                method = 'put'
+                url += `/${state.selectedIR.id}`
+                if (incrementVersion === true) {
+                    method = 'post'
+                    url += '/clone'
+                }
+            }
+
+            return axios({method, url, data: state.selectedIR})
+                .then(({status, data: {data, success}}) => {
+                if (status === 200 && success) {
+                    commit('setSelectedIR', data)
+                    dispatch('callSetIsEditable', false)
+                    return Promise.resolve(data)
+                }
+                dispatch('callGetIR')
+                return Promise.reject([])
+            });
+
+        },
         callSetSelectedIR({commit}, data) {
             commit('setSelectedIR', data)
         },
