@@ -244,6 +244,18 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $actionBoards);
     }
 
+    public function options()
+    {
+        $options = [
+            'categories' => IncidentReportingActionBoardCategory::all(),
+            'priorities' => IncidentReportingActionBoardPriority::all(),
+            'states' => IncidentReportingActionBoardState::all(),
+            'accesses' => IncidentReportingActionBoardAccess::all(),
+            'stage_monitorings' => IncidentReportingActionBoardStageMonitoring::all()
+        ];
+        return self::showResponse(true, $options);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $request['state_id'] = 1;
