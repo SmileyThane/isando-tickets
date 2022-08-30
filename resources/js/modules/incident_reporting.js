@@ -10,6 +10,7 @@ export default {
             description: '',
             stage_monitoring: null
         },
+        isEditable: false,
         IR: [],
         search: '',
         searchWhere: [1,2,3],
@@ -44,10 +45,14 @@ export default {
         },
         callSetSelectedIR({commit}, data) {
             commit('setSelectedIR', data)
+        },
+        callSetIsEditable({commit}, data) {
+            commit('setIsEditable', data)
         }
     },
     mutations: {
         setIR: (state, data) => state.IR = data,
+        setIsEditable: (state, data) => state.isEditable = data,
         setSelectedIR: (state, data) => {
             state.selectedIR = data
         },
@@ -57,6 +62,7 @@ export default {
     },
     getters: {
         getIR: state => state.IR,
+        getIsEditable: state => state.isEditable,
         getSelectedIR: state => state.selectedIR,
         getSearch: state => state.search,
         getSearchWhere: state => state.searchWhere,
