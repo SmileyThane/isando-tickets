@@ -7,7 +7,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class IncidentReportingActionBoard extends Model
 {
-    protected $hidden = ['priority_id', 'access_id', 'state_id', 'stage_monitoring_id', 'created_at', 'updated_at', 'deleted_at'];
+    protected $hidden = [
+//        'priority_id', 'access_id', 'state_id', 'stage_monitoring_id',
+        'created_at', 'updated_at', 'deleted_at'];
+
+    protected $fillable = [
+        'name', 'description', 'stage_monitoring_id',
+        'priority_id', 'access_id', 'version',
+        'parent_id', 'with_child_clients', 'state_id'
+    ];
 
     public function actions(): BelongsToMany
     {
