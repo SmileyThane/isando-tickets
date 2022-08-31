@@ -37,9 +37,11 @@ export default {
                     if (data.length > 0) {
                         commit('setSelectedIR', data[0])
                     }
+
                     return Promise.resolve(data)
                 }
                 commit('setIR', [])
+
                 return Promise.reject([])
             });
         },
@@ -48,9 +50,11 @@ export default {
                 .then(({status, data: {data, success}}) => {
                     if (status === 200 && success) {
                         commit('setIROptions', data)
+
                         return Promise.resolve(data)
                     }
                     commit('setIROptions', [])
+
                     return Promise.reject([])
                 });
         },
@@ -62,6 +66,7 @@ export default {
                     dispatch('callGetIR')
                 }
                 commit('setIR', [])
+
                 return Promise.reject([])
             });
         },
@@ -79,14 +84,15 @@ export default {
 
             return axios({method, url, data: state.selectedIR})
                 .then(({status, data: {data, success}}) => {
-                if (status === 200 && success) {
-                    commit('setSelectedIR', data)
-                    dispatch('callSetIsEditable', false)
-                    return Promise.resolve(data)
-                }
-                dispatch('callGetIR')
-                return Promise.reject([])
-            });
+                    if (status === 200 && success) {
+                        commit('setSelectedIR', data)
+                        dispatch('callSetIsEditable', false)
+                        return Promise.resolve(data)
+                    }
+                    dispatch('callGetIR')
+
+                    return Promise.reject([])
+                });
 
         },
         callSetSelectedIR({commit}, data) {
