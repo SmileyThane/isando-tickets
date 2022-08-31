@@ -82,4 +82,9 @@ class IncidentReportingActionBoard extends Model
             'state_id'
         );
     }
+
+    public function childVersions()
+    {
+        return $this->hasMany(self::class, 'parent_id', 'id');
+    }
 }
