@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class IncidentReportingActionBoard extends Model
@@ -84,7 +85,7 @@ class IncidentReportingActionBoard extends Model
         );
     }
 
-    public function childVersions()
+    public function childVersions(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id', 'id');
     }
