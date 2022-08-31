@@ -1,36 +1,37 @@
 <template>
-    <v-card outlined style="cursor: pointer" class="mb-2"
-        :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`"
+    <v-card :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`" class="mb-2" outlined
+            style="cursor: pointer"
             @click="selectIR(item)"
     >
-        <v-list-item >
+        <v-list-item>
             <v-list-item-content>
                 <v-list-item-title class="text-h6 mb-1">
                     <div class="float-left"
                          style="text-overflow: ellipsis; overflow: hidden; max-width: 35vh;"
-                    >{{ item.name }}</div>
+                    >{{ item.name }}
+                    </div>
                     <v-spacer v-if="extended"></v-spacer>
                     <v-chip v-if="extended"
-                        class="float-right text-uppercase"
-                        label
-                        :color="themeBgColor"
-                        :textColor="$helpers.color.invertColor(themeBgColor)"
-                        x-small
+                            :color="themeBgColor"
+                            :textColor="$helpers.color.invertColor(themeBgColor)"
+                            class="float-right text-uppercase"
+                            label
+                            x-small
                     >
-                        {{item.state.name}}
+                        {{ item.state.name }}
                     </v-chip>
                 </v-list-item-title>
                 <v-list-item-title v-if="extended">
-                    {{item.description}}
+                    {{ item.description }}
                 </v-list-item-title>
                 <v-list-item-title v-if="extended">
                     <v-chip v-for="(tag, index) in item.categories"
                             :key="index"
+                            :color="themeBgColor"
                             class="text-uppercase"
                             label
-                            :color="themeBgColor"
-                            x-small
                             outlined
+                            x-small
                     >
                         {{ tag.name }}
                     </v-chip>
