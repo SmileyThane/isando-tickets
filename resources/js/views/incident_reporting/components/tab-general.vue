@@ -2,222 +2,223 @@
     <v-card class="my-2">
         <v-row v-if="$store.getters['IncidentReporting/getSelectedIR']">
             <v-col
-                cols="6" xl="4" lg="6" md="6" sm="12"
-                v-if="$store.getters['IncidentReporting/getIsEditable']"
-                class="pb-0">
+                v-if="$store.getters['IncidentReporting/getIsEditable']" class="pb-0" cols="6" lg="6" md="6"
+                sm="12"
+                xl="4">
                 <v-text-field
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].name"
                     :color="themeBgColor"
                     :label="langMap.main.name"
-                    type="text"
-                    v-model="$store.getters['IncidentReporting/getSelectedIR'].name"
                     prepend-icon="mdi-text"
                     required
+                    type="text"
                 ></v-text-field>
             </v-col>
             <v-col
                 v-if="$store.getters['IncidentReporting/getIsEditable']"
-                cols="6" xl="8" lg="6" md="6" sm="12">
+                cols="6" lg="6" md="6" sm="12" xl="8">
             </v-col>
             <v-col
-                cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <label>Categories:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
-                    class="small"
-                    placeholder="Categories"
-                    :items="$store.getters['IncidentReporting/getIROptions'].categories"
-                    item-value="id"
-                    item-text="name"
-                    multiple
-                    dense
-                    outlined
-                    hide-details
-                    required
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].categories"
+                    :items="$store.getters['IncidentReporting/getIROptions'].categories"
+                    class="small"
+                    dense
+                    hide-details
+                    item-text="name"
+                    item-value="id"
+                    multiple
+                    outlined
+                    placeholder="Categories"
+                    required
                 ></v-select>
                 <div
-                    v-else
                     v-for="category in $store.getters['IncidentReporting/getSelectedIR'].categories"
+                    v-else
                 >
                     <v-chip
-                            class="float-right text-uppercase"
-                            label
-                            style="margin: 5px;"
-                            :color="themeBgColor"
-                            :textColor="themeBgColor"
-                            x-small
-                            outlined
+                        :color="themeBgColor"
+                        :textColor="themeBgColor"
+                        class="float-right text-uppercase"
+                        label
+                        outlined
+                        style="margin: 5px;"
+                        x-small
                     >
-                        {{category.name}}
+                        {{ category.name }}
                     </v-chip>
                 </div>
             </v-col>
             <v-col
-                cols="6" xl="8" lg="6" md="6" sm="12">
+                cols="6" lg="6" md="6" sm="12" xl="8">
             </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                   cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+                   class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <label>Clients:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
-                    class=""
-                    placeholder="Clients"
-                    :items="$store.getters['RiskRepository/getClients']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                    item-value="id"
-                    item-text="name"
-                    multiple
+                    :items="$store.getters['RiskRepository/getClients']"
+                    class=""
                     dense
-                    outlined
                     hide-details
+                    item-text="name"
+                    item-value="id"
+                    multiple
+                    outlined
+                    placeholder="Clients"
                     required
                 ></v-select>
                 <div
-                    v-else
                     v-for="client in $store.getters['IncidentReporting/getSelectedIR'].clients"
+                    v-else
                 >
                     <v-chip
-                        class="float-right text-uppercase"
-                        label
-                        style="margin: 5px;"
                         :color="themeBgColor"
                         :textColor="themeBgColor"
-                        x-small
+                        class="float-right text-uppercase"
+                        label
                         outlined
+                        style="margin: 5px;"
+                        x-small
                     >
-                        {{client.name}}
+                        {{ client.name }}
                     </v-chip>
                 </div>
             </v-col>
             <v-col
-                cols="6" xl="8" lg="6" md="6" sm="12" class="pb-0">
+                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="8">
                 <v-checkbox
                     v-if="$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0"
-                    :disabled="!$store.getters['IncidentReporting/getIsEditable']" class="mt-0"
-                    v-model="$store.getters['IncidentReporting/getSelectedIR'].with_child_clients"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].with_child_clients" :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                    class="mt-0"
                     label="Include child organizations"
                 ></v-checkbox>
             </v-col>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <label>
                     Valid from Stage Monitoring:
                 </label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
-                    class=""
-                    placeholder="Valid from Stage Monitoring"
-                    :items="$store.getters['IncidentReporting/getIROptions'].stage_monitorings"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].stage_monitoring_id"
-                    item-value="id"
-                    item-text="name"
-                    dense
-                    outlined
-                    hide-details
-                    required
-                ></v-select>
-                <div
-                    v-else
-                >
-                    <v-chip
-                        class="float-right text-uppercase"
-                        label
-                        style="margin: 5px;"
-                        :color="themeBgColor"
-                        :textColor="themeBgColor"
-                        x-small
-                        outlined
-                    >
-                        {{  $store.getters['IncidentReporting/getSelectedIR'].stage_monitoring ?
-                            $store.getters['IncidentReporting/getSelectedIR'].stage_monitoring.name :
-                            ''
-                        }}
-                    </v-chip>
-                </div>
-            </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12">
-            </v-col>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
-                <label >Importance:</label>
-                <v-select
-                    v-if="$store.getters['IncidentReporting/getIsEditable']"
+                    :items="$store.getters['IncidentReporting/getIROptions'].stage_monitorings"
                     class=""
-                    placeholder="Importance"
-                    :items="$store.getters['IncidentReporting/getIROptions'].priorities"
-                    v-model="$store.getters['IncidentReporting/getSelectedIR'].priority_id"
-                    item-value="id"
-                    item-text="name"
                     dense
-                    outlined
                     hide-details
+                    item-text="name"
+                    item-value="id"
+                    outlined
+                    placeholder="Valid from Stage Monitoring"
                     required
                 ></v-select>
                 <div
                     v-else
                 >
                     <v-chip
-                        class="float-right text-uppercase"
-                        label
-                        style="margin: 5px;"
                         :color="themeBgColor"
                         :textColor="themeBgColor"
-                        x-small
+                        class="float-right text-uppercase"
+                        label
                         outlined
+                        style="margin: 5px;"
+                        x-small
                     >
                         {{
-                                $store.getters['IncidentReporting/getSelectedIR'].priority.name
+                            $store.getters['IncidentReporting/getSelectedIR'].stage_monitoring ?
+                                $store.getters['IncidentReporting/getSelectedIR'].stage_monitoring.name :
+                                ''
                         }}
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12">
+            <v-col cols="6" lg="6" md="6" sm="12" xl="8">
+            </v-col>
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
+                <label>Importance:</label>
+                <v-select
+                    v-if="$store.getters['IncidentReporting/getIsEditable']"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].priority_id"
+                    :items="$store.getters['IncidentReporting/getIROptions'].priorities"
+                    class=""
+                    dense
+                    hide-details
+                    item-text="name"
+                    item-value="id"
+                    outlined
+                    placeholder="Importance"
+                    required
+                ></v-select>
+                <div
+                    v-else
+                >
+                    <v-chip
+                        :color="themeBgColor"
+                        :textColor="themeBgColor"
+                        class="float-right text-uppercase"
+                        label
+                        outlined
+                        style="margin: 5px;"
+                        x-small
+                    >
+                        {{
+                            $store.getters['IncidentReporting/getSelectedIR'].priority.name
+                        }}
+                    </v-chip>
+                </div>
+            </v-col>
+            <v-col cols="6" lg="6" md="6" sm="12" xl="8">
             </v-col>
             <v-col
-                cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <label>Access:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
-                    class=""
-                    placeholder="Access"
-                    :items="$store.getters['IncidentReporting/getIROptions'].accesses"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].access_id"
-                    item-value="id"
-                    item-text="name"
+                    :items="$store.getters['IncidentReporting/getIROptions'].accesses"
+                    class=""
                     dense
-                    outlined
                     hide-details
+                    item-text="name"
+                    item-value="id"
+                    outlined
+                    placeholder="Access"
                     required
                 ></v-select>
                 <div
                     v-else
                 >
                     <v-chip
-                        class="float-right text-uppercase"
-                        label
-                        style="margin: 5px;"
                         :color="themeBgColor"
                         :textColor="themeBgColor"
-                        x-small
+                        class="float-right text-uppercase"
+                        label
                         outlined
+                        style="margin: 5px;"
+                        x-small
                     >
                         {{
-                                $store.getters['IncidentReporting/getSelectedIR'].access.name
+                            $store.getters['IncidentReporting/getSelectedIR'].access.name
                         }}
                     </v-chip>
                 </div>
             </v-col>
             <v-col
-                cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+                cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <v-textarea
-                    :readonly="!$store.getters['IncidentReporting/getIsEditable']"
-                    name="input-7-1"
-                    label="Description"
-                    auto-grow
-                    outlined
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
+                    :readonly="!$store.getters['IncidentReporting/getIsEditable']"
+                    auto-grow
+                    label="Description"
+                    name="input-7-1"
+                    outlined
                 ></v-textarea>
             </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
+            <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
         </v-row>
         <div v-else>
             <h3>No data</h3>
@@ -248,8 +249,7 @@ export default {
         });
 
     },
-    methods: {
-    }
+    methods: {}
 }
 </script>
 

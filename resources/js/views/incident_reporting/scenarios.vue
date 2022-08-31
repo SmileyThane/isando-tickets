@@ -6,7 +6,7 @@
 
         <v-row>
             <v-col cols="12">
-                <IncidentSearch />
+                <IncidentSearch/>
             </v-col>
         </v-row>
 
@@ -29,13 +29,13 @@
                 </v-tabs>
                 <v-tabs-items v-model="tab">
                     <v-tab-item>
-                        <IncidentTabGeneral />
+                        <IncidentTabGeneral/>
                     </v-tab-item>
                     <v-tab-item>
-                        <IncidentTabActionBoards />
+                        <IncidentTabActionBoards/>
                     </v-tab-item>
                     <v-tab-item>
-                        <IncidentTabVersion />
+                        <IncidentTabVersion/>
                     </v-tab-item>
                 </v-tabs-items>
             </v-col>
@@ -119,9 +119,11 @@ export default {
 >>> .v-btn__content {
     font-size: 12px;
 }
+
 .heading {
     font-size: 16px;
 }
+
 .clearfix {
     clear: both;
 }

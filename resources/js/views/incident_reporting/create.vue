@@ -1,13 +1,14 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col style="border-right: 1px solid gray" cols="12" md="6" lg="4">
+            <v-col cols="12" lg="4" md="6" style="border-right: 1px solid gray">
 
                 <v-row>
-                    <v-col cols="6" class="text-left">
-                        <v-text-field class="float-left" id="incident_number" placeholder="Number" dense hide-details readonly />
+                    <v-col class="text-left" cols="6">
+                        <v-text-field id="incident_number" class="float-left" dense hide-details placeholder="Number"
+                                      readonly/>
                     </v-col>
-                    <v-col cols="6" class="text-right">
+                    <v-col class="text-right" cols="6">
                         <label class="float-right" for="incident_number">STATUS</label>
                     </v-col>
                     <v-col cols="12">
@@ -21,74 +22,83 @@
                             <v-tab-item>
                                 <v-card flat>
                                     <v-row no-gutters>
-                                        <v-col cols="5" class="pr-2 pt-2">
-                                            <v-text-field placeholder="Version" class="mb-2" hide-details dense outlined />
+                                        <v-col class="pr-2 pt-2" cols="5">
+                                            <v-text-field class="mb-2" dense hide-details outlined
+                                                          placeholder="Version"/>
                                         </v-col>
-                                        <v-col cols="5" class="px-2 pt-2">
+                                        <v-col class="px-2 pt-2" cols="5">
                                             <v-menu
                                                 ref="menu"
                                                 v-model="menu"
                                                 :close-on-content-click="false"
-                                                transition="scale-transition"
-                                                offset-y
                                                 min-width="auto"
+                                                offset-y
+                                                transition="scale-transition"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        placeholder="Valid till"
                                                         class="mb-2"
+                                                        dense
                                                         hide-details
-                                                        dense outlined
+                                                        outlined placeholder="Valid till"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :color="themeBgColor"
                                                     :active-picker.sync="activePicker"
+                                                    :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @change="save"
                                                 ></v-date-picker>
                                             </v-menu>
                                         </v-col>
-                                        <v-col cols="2" class="text-right pt-2">
-                                            <v-btn icon :color="themeBgColor">
+                                        <v-col class="text-right pt-2" cols="2">
+                                            <v-btn :color="themeBgColor" icon>
                                                 <v-icon>mdi-pencil</v-icon>
                                             </v-btn>
                                         </v-col>
                                         <v-col cols="12">
-                                            <v-select placeholder="Stage" class="mb-2" hide-details dense outlined></v-select>
-                                            <v-select placeholder="Risk event" class="mb-2" hide-details dense outlined></v-select>
-                                            <v-select placeholder="Natural disasters" class="mb-2" hide-details dense outlined></v-select>
-                                            <v-select placeholder="All organizations" class="mb-2" hide-details dense outlined></v-select>
-                                            <v-checkbox label="Include child organizations" class="mb-2" hide-details dense outlined />
-                                            <v-select placeholder="Medium" class="mb-2" hide-details dense outlined></v-select>
-                                            <v-textarea placeholder="Description" class="mb-2" hide-details dense outlined></v-textarea>
-                                            <v-text-field placeholder="Source" class="mb-2" hide-details dense outlined />
+                                            <v-select class="mb-2" dense hide-details outlined
+                                                      placeholder="Stage"></v-select>
+                                            <v-select class="mb-2" dense hide-details outlined
+                                                      placeholder="Risk event"></v-select>
+                                            <v-select class="mb-2" dense hide-details outlined
+                                                      placeholder="Natural disasters"></v-select>
+                                            <v-select class="mb-2" dense hide-details outlined
+                                                      placeholder="All organizations"></v-select>
+                                            <v-checkbox class="mb-2" dense hide-details
+                                                        label="Include child organizations" outlined/>
+                                            <v-select class="mb-2" dense hide-details outlined
+                                                      placeholder="Medium"></v-select>
+                                            <v-textarea class="mb-2" dense hide-details outlined
+                                                        placeholder="Description"></v-textarea>
+                                            <v-text-field class="mb-2" dense hide-details outlined
+                                                          placeholder="Source"/>
                                         </v-col>
                                         <v-col cols="4">
                                             <v-menu
                                                 ref="menu"
                                                 v-model="menu"
                                                 :close-on-content-click="false"
-                                                transition="scale-transition"
-                                                offset-y
                                                 min-width="auto"
+                                                offset-y
+                                                transition="scale-transition"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        placeholder="Occurred on"
                                                         class="mb-2"
+                                                        dense
                                                         hide-details
-                                                        dense outlined
+                                                        outlined placeholder="Occurred on"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :color="themeBgColor"
                                                     :active-picker.sync="activePicker"
+                                                    :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @change="save"
@@ -100,23 +110,23 @@
                                                 ref="menu"
                                                 v-model="menu"
                                                 :close-on-content-click="false"
-                                                transition="scale-transition"
-                                                offset-y
                                                 min-width="auto"
+                                                offset-y
+                                                transition="scale-transition"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        placeholder="Detected on"
                                                         class="mb-2"
+                                                        dense
                                                         hide-details
-                                                        dense outlined
+                                                        outlined placeholder="Detected on"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :color="themeBgColor"
                                                     :active-picker.sync="activePicker"
+                                                    :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @change="save"
@@ -128,23 +138,23 @@
                                                 ref="menu"
                                                 v-model="menu"
                                                 :close-on-content-click="false"
-                                                transition="scale-transition"
-                                                offset-y
                                                 min-width="auto"
+                                                offset-y
+                                                transition="scale-transition"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        placeholder="Reported on"
                                                         class="mb-2"
+                                                        dense
                                                         hide-details
-                                                        dense outlined
+                                                        outlined placeholder="Reported on"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :color="themeBgColor"
                                                     :active-picker.sync="activePicker"
+                                                    :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @change="save"
@@ -161,33 +171,36 @@
                 </v-row>
 
             </v-col>
-            <v-col style="border-right: 1px solid gray" cols="12" md="6" lg="4">
+            <v-col cols="12" lg="4" md="6" style="border-right: 1px solid gray">
                 <h4 class="heading headline">Incident tasks</h4>
                 <v-row no-gutters>
                     <v-row>
                         <v-col cols="12">
                             <v-chip
-                                label
-                                outlined
                                 v-for="(item, index) in ['Monitoring', 'Handling']"
                                 :key="index"
                                 class="mr-2"
-                            >{{ item }}</v-chip>
+                                label
+                                outlined
+                            >{{ item }}
+                            </v-chip>
                         </v-col>
                         <v-col cols="12">
                             <v-card
+                                v-for="(taskGroup, index) in taskGroups"
+                                :key="index"
                                 class="d-inline-flex flex-column mr-2 mb-2"
                                 max-width="170"
                                 min-width="170"
                                 outlined
-                                v-for="(taskGroup, index) in taskGroups"
-                                :key="index"
                             >
                                 <v-list-item three-line>
                                     <v-list-item-content>
                                         <div class="">
                                             <span class="float-left">{{ taskGroup.name }}</span>
-                                            <span class="float-right" v-if="taskGroup.total">{{ taskGroup.completed }}/{{ taskGroup.total }}</span>
+                                            <span v-if="taskGroup.total" class="float-right">{{
+                                                    taskGroup.completed
+                                                }}/{{ taskGroup.total }}</span>
                                         </div>
                                     </v-list-item-content>
                                 </v-list-item>
@@ -215,10 +228,11 @@
                                 <v-col cols="5">{{ task.name }}</v-col>
                                 <v-col cols="2">
                                     <v-chip
-                                        class="text-uppercase"
-                                        outlined small
                                         :color="task.color"
-                                    >{{ task.progress }}</v-chip>
+                                        class="text-uppercase" outlined
+                                        small
+                                    >{{ task.progress }}
+                                    </v-chip>
                                 </v-col>
                                 <v-col cols="2">{{ task.deadline }}</v-col>
                                 <v-col cols="2">{{ task.assignedTo }}</v-col>
@@ -230,7 +244,7 @@
                     </v-row>
                 </v-row>
             </v-col>
-            <v-col cols="12" md="6" lg="4">
+            <v-col cols="12" lg="4" md="6">
                 <v-row no-gutters>
                     <v-col cols="12">
                         <h4 class="heading headline float-left">Log of Actions</h4>
@@ -241,12 +255,12 @@
                         >
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn
+                                    :color="themeBgColor"
+                                    class="float-right"
                                     dark
                                     icon
                                     v-bind="attrs"
                                     v-on="on"
-                                    :color="themeBgColor"
-                                    class="float-right"
                                 >
                                     <v-icon>mdi-dots-vertical</v-icon>
                                 </v-btn>
@@ -264,8 +278,8 @@
                     </v-col>
                 </v-row>
                 <v-row v-for="(action, index) in actions" :key="index" style="border-bottom: 1px solid gray">
-                    <v-col cols="8" sm="12" md="12" lg="8">{{ action.name }}</v-col>
-                    <v-col cols="4" sm="12" md="12" lg="4">{{ action.date }}</v-col>
+                    <v-col cols="8" lg="8" md="12" sm="12">{{ action.name }}</v-col>
+                    <v-col cols="4" lg="4" md="12" sm="12">{{ action.date }}</v-col>
                 </v-row>
             </v-col>
         </v-row>
@@ -414,9 +428,11 @@ export default {
 >>> .v-btn__content {
     font-size: 12px;
 }
+
 .heading {
     font-size: 16px;
 }
+
 .clearfix {
     clear: both;
 }

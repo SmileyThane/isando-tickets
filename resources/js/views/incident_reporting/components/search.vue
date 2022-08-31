@@ -5,62 +5,65 @@
                 <v-col cols="4">
                     <v-text-field
                         v-model="search"
-                        hide-details append-icon="mdi-magnify"
-                        :label="langMap.main.search"
-                        :color="themeBgColor"
-                        v-on:keyup="openCategory($route.query.category)"
+                        :color="themeBgColor" :label="langMap.main.search"
+                        append-icon="mdi-magnify"
                         class="pb-0 mr-4"
+                        hide-details
                         style="height: 50px;"
+                        v-on:keyup="openCategory($route.query.category)"
                     />
                 </v-col>
                 <v-col cols="4">
                     <v-select
-                        multiple
                         v-model="searchWhere"
-                        hide-details :items="searchOptions"
-                        item-value="id" item-text="name"
-                        label="Search in" :color="themeBgColor"
-                        v-on:change="openCategory($route.query.category)"
-                        class="pb-0 mr-4"
+                        :color="themeBgColor"
+                        :items="searchOptions" class="pb-0 mr-4"
+                        hide-details item-text="name"
+                        item-value="id" label="Search in"
+                        multiple
                         style="height: 50px;"
+                        v-on:change="openCategory($route.query.category)"
                     />
                 </v-col>
                 <v-col cols="3">
                     <v-select
                         v-model="activeTags"
-                        :items="$store.getters['Tags/getTags']"
-                        item-value="id" item-text="name"
-                        :label="langMap.kb.tags"
-                        hide-selected multiple small-chips
-                        append-icon="mdi-tag-multiple-outline"
                         :color="themeBgColor"
-                        v-on:change="getArticles();"
-                        class="pb-0"
+                        :items="$store.getters['Tags/getTags']" :label="langMap.kb.tags"
+                        append-icon="mdi-tag-multiple-outline"
+                        class="pb-0" hide-selected item-text="name"
+                        item-value="id"
+                        multiple
+                        small-chips
                         style="height: 50px;"
+                        v-on:change="getArticles();"
                     >
                         <template v-slot:selection="{ attrs, item, parent, selected }">
-                            <v-chip small v-bind="attrs" :color="item.color" :text-color="$helpers.color.invertColor(item.color)" label class="ml-2" close @click:close="syncTags(item)">
+                            <v-chip :color="item.color" :text-color="$helpers.color.invertColor(item.color)" class="ml-2"
+                                    close label small v-bind="attrs"
+                                    @click:close="syncTags(item)">
                                 {{ item.name }}
                             </v-chip>
                         </template>
                         <template v-slot:item="{ attrs, item, parent, selected }">
-                            <v-chip v-bind="attrs" :color="item.color" :text-color="$helpers.color.invertColor(item.color)" label class="ml-2">
+                            <v-chip :color="item.color" :text-color="$helpers.color.invertColor(item.color)"
+                                    class="ml-2" label v-bind="attrs">
                                 {{ item.name }}
                             </v-chip>
                         </template>
                     </v-select>
                 </v-col>
-                <v-col cols="1" class="text-right">
+                <v-col class="text-right" cols="1">
                     <v-menu bottom>
                         <template v-slot:activator="{ on }">
-                            <v-btn v-on="on" icon>
+                            <v-btn icon v-on="on">
                                 <v-icon>mdi-dots-vertical</v-icon>
                             </v-btn>
                         </template>
 
                         <v-list>
                             <v-list-item link @click.prevent="createIR">
-                                <v-list-item-title >{{ langMap.main.create }}</v-list-item-title>
+                                <v-list-item-title>{{ langMap.main.create }}</v-list-item-title>
                                 <v-list-item-action>
                                     <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
                                 </v-list-item-action>
@@ -126,8 +129,7 @@ export default {
         }
     },
     methods: {
-        createIR()
-        {
+        createIR() {
             this.$store.dispatch('IncidentReporting/callSetIsEditable', true)
             this.$store.dispatch('IncidentReporting/callSetSelectedIR', null)
         }
