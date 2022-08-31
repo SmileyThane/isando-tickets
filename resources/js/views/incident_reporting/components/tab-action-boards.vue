@@ -8,10 +8,10 @@
 
             <v-col cols="12">
                 <v-card
-                    class="mx-auto mb-2"
-                    outlined
                     v-for="action in $store.getters['IncidentReporting/getSelectedIR'].actions"
                     :key="action.id"
+                    class="mx-auto mb-2"
+                    outlined
                 >
                     <v-list-item three-line>
                         <v-list-item-content>
@@ -27,7 +27,7 @@
                                 <v-col cols="2">
                                     {{ action.assignee ? action.assignee.email : 'not assinged' }}
                                 </v-col>
-                                <v-col cols="1" class="text-right">
+                                <v-col class="text-right" cols="1">
                                     <v-menu
                                         bottom
                                         left
