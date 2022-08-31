@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class IncidentReportingActionBoard extends Model
 {
@@ -56,7 +57,7 @@ class IncidentReportingActionBoard extends Model
         );
     }
 
-    public function priority()
+    public function priority(): HasOne
     {
         return $this->hasOne(
             IncidentReportingActionBoardPriority::class,
@@ -65,7 +66,7 @@ class IncidentReportingActionBoard extends Model
         );
     }
 
-    public function access()
+    public function access(): HasOne
     {
         return $this->hasOne(
             IncidentReportingActionBoardAccess::class,
@@ -74,7 +75,7 @@ class IncidentReportingActionBoard extends Model
         );
     }
 
-    public function state()
+    public function state(): HasOne
     {
         return $this->hasOne(
             IncidentReportingActionBoardState::class,
