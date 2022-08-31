@@ -27,6 +27,11 @@ class DatabaseSeeder extends Seeder
 //        $this->call(PhoneTypeSeeder::class);
 //        $this->call(SocialTypeSeeder::class);
 //        $this->call(TypesSeeder::class);
+        $this->call(IrAbAccessSeeder::class);
+        $this->call(IrAbCategorySeeder::class);
+        $this->call(IrAbPrioritySeeder::class);
+        $this->call(IrAbStageMonitoringSeeder::class);
+        $this->call(IrAbStateSeeder::class);
 
     }
 }
