@@ -1,16 +1,16 @@
 <template>
     <v-row>
         <v-col
-            cols="6" xl="4" lg="6" md="6" sm="12"
+            cols="6" lg="6" md="6" sm="12" xl="4"
         >
             <v-text-field
                 v-if="$store.getters['IncidentReporting/getIsEditable']"
+                v-model="$store.getters['IncidentReporting/getSelectedIR'].version"
                 :color="themeBgColor"
                 :label="langMap.main.version"
-                type="text"
-                v-model="$store.getters['IncidentReporting/getSelectedIR'].version"
                 prepend-icon="mdi-text"
                 required
+                type="text"
             ></v-text-field>
             <div v-else>
                 {{ $store.getters['IncidentReporting/getSelectedIR'].version }}
@@ -19,7 +19,7 @@
 
         <v-col
             v-if="$store.getters['IncidentReporting/getIsEditable']"
-            cols="6" xl="8" lg="6" md="6" sm="12">
+            cols="6" lg="6" md="6" sm="12" xl="8">
         </v-col>
     </v-row>
 </template>
