@@ -242,10 +242,11 @@ class IncidentReportingController extends Controller
                 'priority', 'access', 'state', 'childVersions'
             ])
             ->get();
+
         return self::showResponse(true, $actionBoards);
     }
 
-    public function options()
+    public function options(): JsonResponse
     {
         $options = [
             'categories' => IncidentReportingActionBoardCategory::all(),
