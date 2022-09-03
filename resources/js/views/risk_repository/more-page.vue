@@ -6,7 +6,7 @@
 
         <v-row>
             <v-col cols="12">
-                <riskSearch />
+                <riskSearch/>
             </v-col>
         </v-row>
 
@@ -15,12 +15,12 @@
                 <riskCategoryItem
                     v-for="article in $store.getters['RiskRepository/getArticles']"
                     :key="article.id"
+                    :extended="true"
                     :item="article"
                     :selected="$store.getters['RiskRepository/getSelectedArticle'] && $store.getters['RiskRepository/getSelectedArticle'].id === article.id"
-                    :extended="true"
                 />
             </v-col>
-            <v-col cols="8" v-if="$store.getters['RiskRepository/getSelectedArticle']">
+            <v-col v-if="$store.getters['RiskRepository/getSelectedArticle']" cols="8">
                 <div class="text-h6">Action board: {{ $store.getters['RiskRepository/getSelectedArticle'].name }}</div>
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>General</v-tab>
@@ -30,16 +30,16 @@
                 </v-tabs>
                 <v-tabs-items v-model="tab">
                     <v-tab-item>
-                        <riskTabGeneral />
+                        <riskTabGeneral/>
                     </v-tab-item>
                     <v-tab-item>
-                        <riskTabActionBoards />
+                        <riskTabActionBoards/>
                     </v-tab-item>
                     <v-tab-item>
-                        <riskTabAttachments />
+                        <riskTabAttachments/>
                     </v-tab-item>
                     <v-tab-item>
-                        <riskTabVersion />
+                        <riskTabVersion/>
                     </v-tab-item>
                 </v-tabs-items>
             </v-col>
@@ -119,9 +119,11 @@ export default {
 >>> .v-btn__content {
     font-size: 12px;
 }
+
 .heading {
     font-size: 16px;
 }
+
 .clearfix {
     clear: both;
 }
