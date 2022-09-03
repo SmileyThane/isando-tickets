@@ -6,7 +6,7 @@
 
         <v-row>
             <v-col cols="12">
-                <riskSearch />
+                <riskSearch/>
             </v-col>
         </v-row>
 
@@ -19,7 +19,7 @@
                     :selected="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedCategory'].id === category.id"
                 />
             </v-col>
-            <v-col cols="4" v-if="$store.getters['RiskRepository/getSelectedCategory']">
+            <v-col v-if="$store.getters['RiskRepository/getSelectedCategory']" cols="4">
                 <riskCategoryItem
                     v-for="article in $store.getters['RiskRepository/getArticles']"
                     :key="article.id"
@@ -27,8 +27,9 @@
                     :selected="$store.getters['RiskRepository/getSelectedArticle'] && $store.getters['RiskRepository/getSelectedArticle'].id === article.id"
                 />
             </v-col>
-            <v-col cols="4" v-if="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedArticle']">
-                <riskCategoryDescription />
+            <v-col v-if="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedArticle']"
+                   cols="4">
+                <riskCategoryDescription/>
             </v-col>
         </v-row>
     </v-container>
@@ -85,7 +86,7 @@ export default {
             })
         if (this.$route.params.categoryId) {
             this.$store.dispatch('RiskRepository/callGetCategories', this.$route.params.categoryId)
-            .then(() => this.$store.commit('RiskRepository/selectCategoryById', this.$route.params.categoryId))
+                .then(() => this.$store.commit('RiskRepository/selectCategoryById', this.$route.params.categoryId))
             this.$store.dispatch('RiskRepository/callGetArticles', this.$route.params.categoryId)
         }
     },
@@ -104,9 +105,11 @@ export default {
 >>> .v-btn__content {
     font-size: 12px;
 }
+
 .heading {
     font-size: 16px;
 }
+
 .clearfix {
     clear: both;
 }
