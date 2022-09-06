@@ -254,7 +254,11 @@ class IncidentReportingController extends Controller
             'priorities' => IncidentReportingActionBoardPriority::all(),
             'states' => IncidentReportingActionBoardState::all(),
             'accesses' => IncidentReportingActionBoardAccess::all(),
-            'stage_monitorings' => IncidentReportingActionBoardStageMonitoring::all()
+            'stage_monitorings' => IncidentReportingActionBoardStageMonitoring::all(),
+            'actions' => [
+                'deadline_time_parameters' => IncidentReportingAction::DEADLINE_TIME_PARAMETER,
+                'deadline_time_indicators' => IncidentReportingAction::DEADLINE_TIME_INDICATOR
+            ]
         ];
         return self::showResponse(true, $options);
     }
