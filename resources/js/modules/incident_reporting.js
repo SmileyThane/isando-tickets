@@ -14,14 +14,29 @@ export default {
             description: '',
             stage_monitoring: null
         },
+        selectedIRAction: {
+            id: null,
+            name: '',
+            description: '',
+            type_id: 0,
+            deadline_time_indicator: null,
+            deadline_time_value: null,
+            deadline_time_parameter: null,
+            user_id: null
+        },
         isEditable: false,
+        manageActionDlg: false,
         IR: [],
         options: {
             categories: [],
             priorities: [],
             states: [],
             accesses: [],
-            stage_monitorings: []
+            stage_monitorings: [],
+            actions: {
+                deadline_time_parameters: [],
+                deadline_time_indicators: []
+            }
         },
         search: '',
         searchWhere: [1, 2, 3],
@@ -114,12 +129,16 @@ export default {
         },
         callSetIsEditable({commit}, data) {
             commit('setIsEditable', data)
+        },
+        callSetManageActionDlg({commit}, data) {
+            commit('setManageActionDlg', data)
         }
     },
     mutations: {
         setIR: (state, data) => state.IR = data,
         setIROptions: (state, data) => state.options = data,
         setIsEditable: (state, data) => state.isEditable = data,
+        setManageActionDlg: (state, data) => state.manageActionDlg = data,
         setSelectedIR: (state, data) => {
             state.selectedIR = data
         },
@@ -131,7 +150,9 @@ export default {
         getIR: state => state.IR,
         getIROptions: state => state.options,
         getIsEditable: state => state.isEditable,
+        getManageActionDlg: state => state.manageActionDlg,
         getSelectedIR: state => state.selectedIR,
+        getSelectedIRAction: state => state.selectedIRAction,
         getSearch: state => state.search,
         getSearchWhere: state => state.searchWhere,
         getActiveTags: state => state.activeTags,
