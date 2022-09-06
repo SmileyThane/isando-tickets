@@ -366,6 +366,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('ir/{id}', [IncidentReportingController::class, 'update']);
     Route::delete('ir/{id}', [IncidentReportingController::class, 'delete']);
 
+    Route::post('ir/actions', [IncidentReportingController::class, 'store']);
+    Route::put('ir/actions/{id}', [IncidentReportingController::class, 'update']);
+    Route::delete('ir/actions/{id}', [IncidentReportingController::class, 'delete']);
+
     // files
     Route::get('file/{id}', 'API\FileController@find');
     Route::post('file', 'API\FileController@add');
