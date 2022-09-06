@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardAccess;
 use App\IncidentReportingActionBoardCategory;
@@ -265,6 +266,13 @@ class IncidentReportingController extends Controller
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
         return self::showResponse(true, $board);
+    }
+
+    public function storeAction(Request $request): JsonResponse
+    {
+        $action = IncidentReportingAction::query()->create($request->all());
+
+        return self::showResponse(true, $action);
     }
 
     public function clone(Request $request, $id): JsonResponse
