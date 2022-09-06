@@ -296,6 +296,16 @@ class IncidentReportingController extends Controller
         ])->first());
     }
 
+    public function updateAction(Request $request, $id): JsonResponse
+    {
+        $action = IncidentReportingAction::query()->where('id', '=', $id)->first();
+        if ($action) {
+            $action->update($request->all());
+        }
+
+        return self::showResponse(true, $action);
+    }
+
     public function delete(Request $request, $id): JsonResponse
     {
         $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
