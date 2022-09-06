@@ -110,6 +110,26 @@ export default {
                 });
 
         },
+        callStoreIRAction({commit, dispatch, state}) {
+            let method = 'post'
+            let url = `/api/ir/actions`
+            if (state.selectedIRAction.id) {
+                method = 'put'
+                url += `/${state.selectedIR.id}`
+            }
+
+            return axios({method, url, data: state.selectedIRAction})
+                .then(({status, data: {data, success}}) => {
+                    if (status === 200 && success) {
+                        dispatch('callSetManageActionDlg', false)
+                        return Promise.resolve(data)
+                    }
+                    dispatch('callSetManageActionDlg', true)
+
+                    return Promise.reject([])
+                });
+
+        },
         callSetSelectedIR({commit}, data) {
             if (data === null) {
                 data = {
