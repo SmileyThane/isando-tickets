@@ -165,7 +165,8 @@
                         x-small
                     >
                         {{
-                            $store.getters['IncidentReporting/getSelectedIR'].priority.name
+                            $store.getters['IncidentReporting/getSelectedIR'].priority ?
+                            $store.getters['IncidentReporting/getSelectedIR'].priority.name : ''
                         }}
                     </v-chip>
                 </div>
@@ -201,7 +202,8 @@
                         x-small
                     >
                         {{
-                            $store.getters['IncidentReporting/getSelectedIR'].access.name
+                            $store.getters['IncidentReporting/getSelectedIR'].access ?
+                            $store.getters['IncidentReporting/getSelectedIR'].access.name : ''
                         }}
                     </v-chip>
                 </div>
