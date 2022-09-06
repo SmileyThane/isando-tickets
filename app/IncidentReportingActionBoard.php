@@ -50,7 +50,7 @@ class IncidentReportingActionBoard extends Model
         );
     }
 
-    public function stageMonitoring()
+    public function stageMonitoring(): HasOne
     {
         return $this->hasOne(
             IncidentReportingActionBoardStageMonitoring::class,
