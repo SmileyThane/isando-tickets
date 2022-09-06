@@ -66,36 +66,6 @@ export default {
     name: 'incident-tab-action-boards',
     data() {
         return {
-            actions: [
-                {
-                    id: 1,
-                    name: 'Confirm activation of crisis management team',
-                    type: 'Action',
-                    deadline: '+4h',
-                    assignedTo: 'Crisis Leader'
-                },
-                {
-                    id: 2,
-                    name: 'Make contact with authorities',
-                    type: 'Action',
-                    deadline: '+4h',
-                    assignedTo: ''
-                },
-                {
-                    id: 3,
-                    name: 'Obtain latest available information and verify',
-                    type: 'Action',
-                    deadline: '+4h',
-                    assignedTo: ''
-                },
-                {
-                    id: 4,
-                    name: 'Publish first update report',
-                    type: 'Action',
-                    deadline: '',
-                    assignedTo: ''
-                }
-            ],
         }
     }
 }
