@@ -305,4 +305,9 @@ class IncidentReportingController extends Controller
 
         return self::showResponse(true);
     }
+
+    public function deleteAction(Request $request, $id): JsonResponse
+    {
+        return self::showResponse(true);
+    }
 }
