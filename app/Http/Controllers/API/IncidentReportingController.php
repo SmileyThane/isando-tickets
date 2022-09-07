@@ -247,6 +247,13 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $actionBoards);
     }
 
+    public function actions(): JsonResponse
+    {
+        $actions = IncidentReportingAction::query()->get();
+
+        return self::showResponse(true, $actions);
+    }
+
     public function options(): JsonResponse
     {
         $options = [
