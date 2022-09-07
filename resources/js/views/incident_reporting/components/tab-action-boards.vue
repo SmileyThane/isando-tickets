@@ -1,9 +1,26 @@
 <template>
     <div>
-        <v-row>
-            <v-col cols="7"></v-col>
-            <v-col cols="2">Deadline</v-col>
-            <v-col cols="2">Assigned to</v-col>
+        <v-row
+            v-if="$store.getters['IncidentReporting/getIsEditable']"
+        >
+            <v-select
+                v-model="$store.getters['IncidentReporting/getSelectedIR'].actions"
+                :items="$store.getters['IncidentReporting/getIRActions']"
+                class=""
+                dense
+                hide-details
+                item-text="name"
+                item-value="id"
+                multiple
+                outlined
+                :placeholder="langMap.main.actions"
+                required
+            ></v-select>
+        </v-row>
+        <v-row v-else>
+            <v-col cols="5">{{ langMap.main.name }}</v-col>
+            <v-col cols="3">Deadline</v-col>
+            <v-col cols="3">Assigned to</v-col>
             <v-col cols="1"></v-col>
 
             <v-col cols="12">
@@ -16,15 +33,15 @@
                     <v-list-item three-line>
                         <v-list-item-content>
                             <v-row>
-                                <v-col cols="7">
+                                <v-col cols="5">
                                     <span class="text-overline mb-4">{{ action.name }}</span>
                                     <br>
                                     <small>{{ action.description }}</small>
                                 </v-col>
-                                <v-col cols="2">
-                                    {{ action.expired_at }}
+                                <v-col cols="3">
+                                    {{ action.deadline_time_indicator }} {{ action.deadline_time_value }} {{ action.deadline_time_parameter }}
                                 </v-col>
-                                <v-col cols="2">
+                                <v-col cols="3">
                                     {{ action.assignee ? action.assignee.email : 'not assinged' }}
                                 </v-col>
                                 <v-col class="text-right" cols="1">
@@ -66,6 +83,7 @@ export default {
     name: 'incident-tab-action-boards',
     data() {
         return {
+            langMap: this.$store.state.lang.lang_map,
         }
     }
 }
