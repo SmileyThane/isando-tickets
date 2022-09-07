@@ -27,6 +27,7 @@ export default {
         isEditable: false,
         manageActionDlg: false,
         IR: [],
+        IRActions: [],
         options: {
             categories: [],
             priorities: [],
@@ -156,6 +157,7 @@ export default {
     },
     mutations: {
         setIR: (state, data) => state.IR = data,
+        setIRActions: (state, data) => state.IRActions = data,
         setIROptions: (state, data) => state.options = data,
         setIsEditable: (state, data) => state.isEditable = data,
         setManageActionDlg: (state, data) => state.manageActionDlg = data,
@@ -168,6 +170,7 @@ export default {
     },
     getters: {
         getIR: state => state.IR,
+        getIRActions: state => state.IRActions,
         getIROptions: state => state.options,
         getIsEditable: state => state.isEditable,
         getManageActionDlg: state => state.manageActionDlg,
