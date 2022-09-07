@@ -210,6 +210,7 @@ export default {
         });
         this.$store.dispatch('IncidentReporting/callGetIR');
         this.$store.dispatch('IncidentReporting/callGetIROptions');
+        this.$store.dispatch('IncidentReporting/callGetIRActions');
     },
     methods: {
         setIsEditable() {
