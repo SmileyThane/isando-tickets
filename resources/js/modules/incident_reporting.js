@@ -61,6 +61,19 @@ export default {
                 return Promise.reject([])
             });
         },
+        callGetIRActions({commit}) {
+            return axios.get(`/api/ir/actions`, {
+                params: {}
+            }).then(({status, data: {data, success}}) => {
+                if (status === 200 && success) {
+                    commit('setIRActions', data)
+                    return Promise.resolve(data)
+                }
+                commit('setIRActions', [])
+
+                return Promise.reject([])
+            });
+        },
         callGetIROptions({commit}) {
             return axios.get(`/api/ir/options`)
                 .then(({status, data: {data, success}}) => {
