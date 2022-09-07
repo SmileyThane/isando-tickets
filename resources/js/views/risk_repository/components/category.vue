@@ -1,16 +1,16 @@
 <template>
-    <v-card outlined style="cursor: pointer" class="mb-2"
-        :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`"
-        @click="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedCategory'].id === item.id ? openCategory(item.parent_id) : openCategory(item.id)"
+    <v-card :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`" class="mb-2" outlined
+            style="cursor: pointer"
+            @click="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedCategory'].id === item.id ? openCategory(item.parent_id) : openCategory(item.id)"
     >
         <v-card-title class="py-2">
             {{ item.name }}
             <v-spacer></v-spacer>
-            <v-menu bottom offset-y class="float-right">
+            <v-menu bottom class="float-right" offset-y>
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                        rounded
                         icon
+                        rounded
                         v-bind="attrs"
                         v-on="on"
                     >
