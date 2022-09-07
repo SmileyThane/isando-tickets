@@ -1,78 +1,78 @@
 <template>
     <v-card class="my-2">
         <v-row>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <v-select
-                    class="small"
-                    placeholder="Categories"
                     :items="$store.getters['RiskRepository/getCategories']"
-                    item-value="id"
+                    class="small"
+                    dense
+                    hide-details
                     item-text="name"
+                    item-value="id"
                     multiple
-                    dense
                     outlined
-                    hide-details
+                    placeholder="Categories"
                 ></v-select>
             </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+            <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <v-select
-                    class=""
-                    placeholder="Clients"
                     :items="$store.getters['RiskRepository/getClients']"
-                    item-value="id"
-                    item-text="name"
+                    class=""
                     dense
-                    outlined
                     hide-details
+                    item-text="name"
+                    item-value="id"
+                    outlined
+                    placeholder="Clients"
                 ></v-select>
             </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12" class="pb-0">
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="8">
                 <v-checkbox class="mt-0"
-                    label="Include child organizations"
+                            label="Include child organizations"
                 ></v-checkbox>
             </v-col>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <v-select
                     class=""
+                    dense
+                    hide-details
+                    outlined
                     placeholder="Valid from Stage Monitoring"
-                    dense
-                    outlined
-                    hide-details
                 ></v-select>
             </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+            <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <v-select
-                    class=""
-                    placeholder="Importance"
                     :items="$store.getters['RiskRepository/getImportance']"
+                    class=""
                     dense
-                    outlined
                     hide-details
+                    outlined
+                    placeholder="Importance"
                 ></v-select>
             </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+            <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <v-select
                     class=""
-                    placeholder="Access - all"
                     dense
-                    outlined
                     hide-details
+                    outlined
+                    placeholder="Access - all"
                 ></v-select>
             </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
-            <v-col cols="6" xl="4" lg="6" md="6" sm="12" class="pb-0">
+            <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <v-textarea
-                    name="input-7-1"
-                    label="Description"
-                    auto-grow
-                    outlined
                     :value="$store.getters['RiskRepository/getSelectedArticle'].content"
+                    auto-grow
+                    label="Description"
+                    name="input-7-1"
+                    outlined
                 ></v-textarea>
             </v-col>
-            <v-col cols="6" xl="8" lg="6" md="6" sm="12"></v-col>
+            <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
         </v-row>
     </v-card>
 </template>
@@ -81,17 +81,13 @@
 export default {
     name: 'risk-tab-general',
     data() {
-        return {
-
-        }
+        return {}
     },
     mounted() {
         this.$store.dispatch('RiskRepository/callGetClients');
         this.$store.dispatch('RiskRepository/callGetImportance');
     },
-    methods: {
-
-    }
+    methods: {}
 }
 </script>
 
