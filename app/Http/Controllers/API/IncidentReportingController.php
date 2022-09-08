@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardAccess;
 use App\IncidentReportingActionBoardCategory;
@@ -246,6 +247,13 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $actionBoards);
     }
 
+    public function actions(): JsonResponse
+    {
+        $actions = IncidentReportingAction::query()->get();
+
+        return self::showResponse(true, $actions);
+    }
+
     public function options(): JsonResponse
     {
         $options = [
@@ -253,7 +261,11 @@ class IncidentReportingController extends Controller
             'priorities' => IncidentReportingActionBoardPriority::all(),
             'states' => IncidentReportingActionBoardState::all(),
             'accesses' => IncidentReportingActionBoardAccess::all(),
-            'stage_monitorings' => IncidentReportingActionBoardStageMonitoring::all()
+            'stage_monitorings' => IncidentReportingActionBoardStageMonitoring::all(),
+            'actions' => [
+                'deadline_time_parameters' => IncidentReportingAction::DEADLINE_TIME_PARAMETER,
+                'deadline_time_indicators' => IncidentReportingAction::DEADLINE_TIME_INDICATOR
+            ]
         ];
         return self::showResponse(true, $options);
     }
@@ -265,6 +277,13 @@ class IncidentReportingController extends Controller
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
         return self::showResponse(true, $board);
+    }
+
+    public function storeAction(Request $request): JsonResponse
+    {
+        $action = IncidentReportingAction::query()->create($request->all());
+
+        return self::showResponse(true, $action);
     }
 
     public function clone(Request $request, $id): JsonResponse
@@ -288,6 +307,16 @@ class IncidentReportingController extends Controller
         ])->first());
     }
 
+    public function updateAction(Request $request, $id): JsonResponse
+    {
+        $action = IncidentReportingAction::query()->where('id', '=', $id)->first();
+        if ($action) {
+            $action->update($request->all());
+        }
+
+        return self::showResponse(true, $action);
+    }
+
     public function delete(Request $request, $id): JsonResponse
     {
         $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
@@ -295,6 +324,11 @@ class IncidentReportingController extends Controller
         $this->incidentRepo->syncActionBoardRelations($request, $board);
         $board->delete();
 
+        return self::showResponse(true);
+    }
+
+    public function deleteAction(Request $request, $id): JsonResponse
+    {
         return self::showResponse(true);
     }
 }

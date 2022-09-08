@@ -1,7 +1,7 @@
 <template>
-    <v-card outlined style="cursor: pointer" class="mb-2"
-        :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`"
-        @click="openArticle()"
+    <v-card :style="`${selected ? `border: 2px solid ${this.themeBgColor}`: ''}`" class="mb-2" outlined
+            style="cursor: pointer"
+            @click="openArticle()"
     >
         <v-list-item>
             <v-list-item-content>
@@ -9,11 +9,11 @@
                     <div class="float-left">{{ item.name }}</div>
                     <v-spacer v-if="extended"></v-spacer>
                     <v-chip v-if="extended"
-                        class="float-right text-uppercase"
-                        label
-                        :color="themeBgColor"
-                        :textColor="$helpers.color.invertColor(themeBgColor)"
-                        x-small
+                            :color="themeBgColor"
+                            :textColor="$helpers.color.invertColor(themeBgColor)"
+                            class="float-right text-uppercase"
+                            label
+                            x-small
                     >
                         approved
                     </v-chip>
@@ -28,11 +28,11 @@
                 <v-list-item-title v-if="extended">
                     <v-chip v-for="(tag, index) in item.tags"
                             :key="index"
+                            :color="themeBgColor"
                             class="text-uppercase"
                             label
-                            :color="themeBgColor"
-                            x-small
                             outlined
+                            x-small
                     >
                         {{ tag }}
                     </v-chip>

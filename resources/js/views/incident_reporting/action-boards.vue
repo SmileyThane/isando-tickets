@@ -44,6 +44,13 @@
                                     <v-icon :color="themeBgColor">mdi-delete</v-icon>
                                 </v-list-item-action>
                             </v-list-item>
+                            <v-list-item link @click.prevent="createIRAction">
+                                <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
+                                <v-list-item-action>
+                                    <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
+                                </v-list-item-action>
+                            </v-list-item>
+
                         </v-list>
                     </v-menu>
                     <div v-if="$store.getters['IncidentReporting/getIsEditable']">
@@ -88,6 +95,80 @@
                 </v-tabs-items>
             </v-col>
         </v-row>
+        <v-dialog v-model="$store.getters['IncidentReporting/getManageActionDlg']" max-width="480">
+            <v-card dense outlined>
+                <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                    Action
+                </v-card-title>
+                <v-card-text>
+                    <v-text-field
+                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].name"
+                        :color="themeBgColor"
+                        :label="langMap.main.name"
+                        prepend-icon="mdi-text"
+                        required
+                        type="text"
+                    ></v-text-field>
+                    <br/>
+                    <v-textarea
+                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].description"
+                        :color="themeBgColor"
+                        :label="langMap.main.description"
+                        prepend-icon="mdi-text"
+                        required
+                    ></v-textarea>
+                    <br/>
+                    <v-label>
+                        {{'deadline_time_indicator' }}:
+                    </v-label>
+                    <v-select
+                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_indicator"
+                        :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_indicators"
+                        class="small"
+                        prepend-icon="mdi-alert"
+                        dense
+                        hide-details
+                    ></v-select>
+                    <br/>
+                    <v-label>
+                        {{ 'deadline_time_value' }}:
+                    </v-label>
+                    <v-text-field
+                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_value"
+                        :color="themeBgColor"
+                        :label="'deadline_time_value'"
+                        prepend-icon="mdi-text"
+                        required
+                        type="text"
+                    ></v-text-field>
+                    <br/>
+                    <v-label>
+                        {{'deadline_time_parameter' }}:
+                    </v-label>
+                    <v-select
+                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_parameter"
+                        :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_parameters"
+                        class="small"
+                        prepend-icon="mdi-clock"
+                        dense
+                        hide-details
+                    ></v-select>
+                    <br/>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey darken-1" text @click="cancelActionEditing">{{ langMap.main.cancel }}
+                    </v-btn>
+                    <v-btn
+                        :color="themeBgColor"
+                        text
+                        @click="saveIRAction()"
+                    >
+                        {{ langMap.main.save }}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -129,6 +210,7 @@ export default {
         });
         this.$store.dispatch('IncidentReporting/callGetIR');
         this.$store.dispatch('IncidentReporting/callGetIROptions');
+        this.$store.dispatch('IncidentReporting/callGetIRActions');
     },
     methods: {
         setIsEditable() {
@@ -144,7 +226,18 @@ export default {
                 this.$store.dispatch('IncidentReporting/callGetIR')
             })
 
-        }
+        },
+        createIRAction() {
+            this.$store.dispatch('IncidentReporting/callSetManageActionDlg', true)
+        },
+        saveIRAction() {
+            this.$store.dispatch('IncidentReporting/callStoreIRAction')
+        },
+        cancelActionEditing() {
+            this.$store.dispatch('IncidentReporting/callSetManageActionDlg', false)
+        },
+
+
     }
 }
 </script>

@@ -18,7 +18,7 @@
                             label
                             x-small
                     >
-                        {{ item.state.name }}
+                        {{ item.state ? item.state.name : '' }}
                     </v-chip>
                 </v-list-item-title>
                 <v-list-item-title v-if="extended">

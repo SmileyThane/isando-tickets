@@ -14,14 +14,30 @@ export default {
             description: '',
             stage_monitoring: null
         },
+        selectedIRAction: {
+            id: null,
+            name: '',
+            description: '',
+            type_id: 0,
+            deadline_time_indicator: null,
+            deadline_time_value: null,
+            deadline_time_parameter: null,
+            user_id: null
+        },
         isEditable: false,
+        manageActionDlg: false,
         IR: [],
+        IRActions: [],
         options: {
             categories: [],
             priorities: [],
             states: [],
             accesses: [],
-            stage_monitorings: []
+            stage_monitorings: [],
+            actions: {
+                deadline_time_parameters: [],
+                deadline_time_indicators: []
+            }
         },
         search: '',
         searchWhere: [1, 2, 3],
@@ -41,6 +57,19 @@ export default {
                     return Promise.resolve(data)
                 }
                 commit('setIR', [])
+
+                return Promise.reject([])
+            });
+        },
+        callGetIRActions({commit}) {
+            return axios.get(`/api/ir/actions`, {
+                params: {}
+            }).then(({status, data: {data, success}}) => {
+                if (status === 200 && success) {
+                    commit('setIRActions', data)
+                    return Promise.resolve(data)
+                }
+                commit('setIRActions', [])
 
                 return Promise.reject([])
             });
@@ -95,6 +124,26 @@ export default {
                 });
 
         },
+        callStoreIRAction({commit, dispatch, state}) {
+            let method = 'post'
+            let url = `/api/ir/actions`
+            if (state.selectedIRAction.id) {
+                method = 'put'
+                url += `/${state.selectedIR.id}`
+            }
+
+            return axios({method, url, data: state.selectedIRAction})
+                .then(({status, data: {data, success}}) => {
+                    if (status === 200 && success) {
+                        dispatch('callSetManageActionDlg', false)
+                        return Promise.resolve(data)
+                    }
+                    dispatch('callSetManageActionDlg', true)
+
+                    return Promise.reject([])
+                });
+
+        },
         callSetSelectedIR({commit}, data) {
             if (data === null) {
                 data = {
@@ -114,12 +163,17 @@ export default {
         },
         callSetIsEditable({commit}, data) {
             commit('setIsEditable', data)
+        },
+        callSetManageActionDlg({commit}, data) {
+            commit('setManageActionDlg', data)
         }
     },
     mutations: {
         setIR: (state, data) => state.IR = data,
+        setIRActions: (state, data) => state.IRActions = data,
         setIROptions: (state, data) => state.options = data,
         setIsEditable: (state, data) => state.isEditable = data,
+        setManageActionDlg: (state, data) => state.manageActionDlg = data,
         setSelectedIR: (state, data) => {
             state.selectedIR = data
         },
@@ -129,9 +183,12 @@ export default {
     },
     getters: {
         getIR: state => state.IR,
+        getIRActions: state => state.IRActions,
         getIROptions: state => state.options,
         getIsEditable: state => state.isEditable,
+        getManageActionDlg: state => state.manageActionDlg,
         getSelectedIR: state => state.selectedIR,
+        getSelectedIRAction: state => state.selectedIRAction,
         getSearch: state => state.search,
         getSearchWhere: state => state.searchWhere,
         getActiveTags: state => state.activeTags,

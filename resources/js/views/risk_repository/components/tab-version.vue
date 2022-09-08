@@ -8,9 +8,7 @@
 export default {
     name: 'risk-tab-version',
     data() {
-        return {
-
-        }
+        return {}
     }
 }
 </script>
