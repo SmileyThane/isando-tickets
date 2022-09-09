@@ -72,7 +72,7 @@
                             text
                             @click="saveIR(true)"
                         >
-                            {{ langMap.main.clone }}
+                            Save as new version
                         </v-btn>
                     </div>
                 </div>
