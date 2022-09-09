@@ -288,9 +288,14 @@ class IncidentReportingController extends Controller
 
     public function clone(Request $request, $id): JsonResponse
     {
-        $request['parent_id'] = $id;
         $request['with_child_organizations'] = false;
         $board = IncidentReportingActionBoard::create($request->all());
+
+        IncidentReportingActionBoard::query()
+            ->where('id','=', $id)
+            ->orWhere('parent_id', '=', $id)
+            ->update(['parent_id' => $board->id]);
+
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
         return self::showResponse(true, $board);
