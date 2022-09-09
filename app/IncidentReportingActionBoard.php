@@ -88,6 +88,6 @@ class IncidentReportingActionBoard extends Model
 
     public function childVersions(): HasMany
     {
-        return $this->hasMany(self::class, 'parent_id', 'id');
+        return $this->hasMany(self::class, 'parent_id', 'id')->orderByDesc('id');
     }
 }
