@@ -1,8 +1,14 @@
 <template>
     <div>
-        <v-row
+        <div
+            class="mx-auto mt-2"
             v-if="$store.getters['IncidentReporting/getIsEditable']"
         >
+            <br/>
+            <h2>
+                Select actions:
+            </h2>
+            <br/>
             <v-select
                 v-model="$store.getters['IncidentReporting/getSelectedIR'].actions"
                 :items="$store.getters['IncidentReporting/getIRActions']"
@@ -16,7 +22,7 @@
                 :placeholder="langMap.main.actions"
                 required
             ></v-select>
-        </v-row>
+        </div>
         <v-row v-else>
             <v-col cols="5">{{ langMap.main.name }}</v-col>
             <v-col cols="3">Deadline</v-col>
