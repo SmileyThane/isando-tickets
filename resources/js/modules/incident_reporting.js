@@ -8,6 +8,7 @@ export default {
             categories: [],
             clients: [],
             actions: [],
+            child_versions: [],
             priority_id: null,
             stage_monitoring_id: null,
             access_id: null,

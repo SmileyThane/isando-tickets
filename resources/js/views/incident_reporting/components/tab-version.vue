@@ -21,12 +21,26 @@
             v-if="$store.getters['IncidentReporting/getIsEditable']"
             cols="6" lg="6" md="6" sm="12" xl="8">
         </v-col>
+        <v-col cols="12">
+            <IncidentCategoryItem
+                v-for="item in $store.getters['IncidentReporting/getSelectedIR'].child_versions"
+                :key="item.id"
+                :extended="true"
+                :item="item"
+                :with-version="true"
+            />
+        </v-col>
     </v-row>
 </template>
 
 <script>
+import IncidentCategoryItem from "./category-item";
+
 export default {
     name: 'incident-tab-version',
+    components: {
+        IncidentCategoryItem,
+    },
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,

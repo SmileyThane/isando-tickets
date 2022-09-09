@@ -36,6 +36,9 @@
                         {{ tag.name }}
                     </v-chip>
                 </v-list-item-title>
+                <v-list-item-title v-if="withVersion">
+                    {{ item.version }}
+                </v-list-item-title>
             </v-list-item-content>
         </v-list-item>
     </v-card>
@@ -58,6 +61,10 @@ export default {
         item: {
             type: Object,
             required: true,
+        },
+        withVersion: {
+            type: Boolean,
+            default: false,
         }
     },
     data() {
