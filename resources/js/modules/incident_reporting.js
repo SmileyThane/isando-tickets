@@ -137,6 +137,8 @@ export default {
                 .then(({status, data: {data, success}}) => {
                     if (status === 200 && success) {
                         dispatch('callSetManageActionDlg', false)
+                        dispatch('callGetIRActions')
+
                         return Promise.resolve(data)
                     }
                     dispatch('callSetManageActionDlg', true)

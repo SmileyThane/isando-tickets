@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\IncidentReporting\ActionType;
 use Illuminate\Database\Eloquent\Model;
 
 class IncidentReportingAction extends Model
@@ -20,5 +21,10 @@ class IncidentReportingAction extends Model
     public function assignee()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function type()
+    {
+        return $this->hasOne(ActionType::class, 'id', 'type_id');
     }
 }

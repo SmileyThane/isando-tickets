@@ -25,8 +25,9 @@
         </div>
         <v-row v-else>
             <v-col cols="5">{{ langMap.main.name }}</v-col>
-            <v-col cols="3">Deadline</v-col>
-            <v-col cols="3">Assigned to</v-col>
+            <v-col cols="2">Type</v-col>
+            <v-col cols="2">Deadline</v-col>
+            <v-col cols="2">Assigned to</v-col>
             <v-col cols="1"></v-col>
 
             <v-col cols="12">
@@ -44,10 +45,13 @@
                                     <br>
                                     <small>{{ action.description }}</small>
                                 </v-col>
-                                <v-col cols="3">
+                                <v-col cols="2">
+                                    {{ action.type ? action.type.name : '' }}
+                                </v-col>
+                                <v-col cols="2">
                                     {{ action.deadline_time_indicator }} {{ action.deadline_time_value }} {{ action.deadline_time_parameter }}
                                 </v-col>
-                                <v-col cols="3">
+                                <v-col cols="2">
                                     {{ action.assignee ? action.assignee.email : 'not assinged' }}
                                 </v-col>
                                 <v-col class="text-right" cols="1">
