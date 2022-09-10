@@ -239,7 +239,7 @@ class IncidentReportingController extends Controller
         $actionBoards = IncidentReportingActionBoard::query()
             ->where('parent_id', '=', null)
             ->with([
-                'actions.assignee', 'categories', 'clients', 'stageMonitoring',
+                'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
                 'priority', 'access', 'state', 'childVersions'
             ])
             ->get();
@@ -263,6 +263,7 @@ class IncidentReportingController extends Controller
             'accesses' => IncidentReportingActionBoardAccess::all(),
             'stage_monitorings' => IncidentReportingActionBoardStageMonitoring::all(),
             'actions' => [
+                'types' => $this->incidentRepo->getActionTypesInCompanyContext(),
                 'deadline_time_parameters' => IncidentReportingAction::DEADLINE_TIME_PARAMETER,
                 'deadline_time_indicators' => IncidentReportingAction::DEADLINE_TIME_INDICATOR
             ]
