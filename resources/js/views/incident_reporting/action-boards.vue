@@ -154,6 +154,20 @@
                         hide-details
                     ></v-select>
                     <br/>
+                    <v-label>
+                        {{'Action type' }}:
+                    </v-label>
+                    <v-select
+                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].type_id"
+                        :items="$store.getters['IncidentReporting/getIROptions'].actions.types"
+                        item-text="name"
+                        item-value="id"
+                        class="small"
+                        prepend-icon="mdi-clock"
+                        dense
+                        hide-details
+                    ></v-select>
+                    <br/>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
