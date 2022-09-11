@@ -336,7 +336,7 @@ class IncidentReportingController extends Controller
         return self::showResponse(true);
     }
 
-    public function deleteAction(Request $request, $id): JsonResponse
+    public function deleteAction($id): JsonResponse
     {
         IncidentReportingActionBoardHasAction::query()->where('action_id', '=', $id)->delete();
         IncidentReportingAction::query()->where('id', '=', $id)->delete();
