@@ -7,6 +7,7 @@ use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardAccess;
 use App\IncidentReportingActionBoardCategory;
+use App\IncidentReportingActionBoardHasAction;
 use App\IncidentReportingActionBoardPriority;
 use App\IncidentReportingActionBoardStageMonitoring;
 use App\IncidentReportingActionBoardState;
@@ -268,6 +269,7 @@ class IncidentReportingController extends Controller
                 'deadline_time_indicators' => IncidentReportingAction::DEADLINE_TIME_INDICATOR
             ]
         ];
+
         return self::showResponse(true, $options);
     }
 
