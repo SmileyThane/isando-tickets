@@ -4,6 +4,7 @@ namespace App;
 
 use App\IncidentReporting\ActionType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class IncidentReportingAction extends Model
 {
@@ -18,12 +19,12 @@ class IncidentReportingAction extends Model
         'user_id', 'type_id'
     ];
 
-    public function assignee(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function assignee(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function type(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function type(): HasOne
     {
         return $this->hasOne(ActionType::class, 'id', 'type_id');
     }
