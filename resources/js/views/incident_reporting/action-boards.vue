@@ -148,7 +148,7 @@
                     </div>
                     <br/>
                     <v-label>
-                        {{'Action type' }}:
+                        {{ 'Action type' }}:
                     </v-label>
                     <v-select
                         v-model="$store.getters['IncidentReporting/getSelectedIRAction'].type_id"
