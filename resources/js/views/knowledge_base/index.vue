@@ -499,6 +499,7 @@ export default {
                 name_de: category.name_de,
                 description: category.description,
                 description_de: category.description_de,
+                icon_color: category.icon_color,
                 icon: category.icon,
                 _active: [category.parent_id]
             };
