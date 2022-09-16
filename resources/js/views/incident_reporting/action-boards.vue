@@ -119,40 +119,33 @@
                     ></v-textarea>
                     <br/>
                     <v-label>
-                        {{'deadline_time_indicator' }}:
-                    </v-label>
-                    <v-select
-                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_indicator"
-                        :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_indicators"
-                        class="small"
-                        prepend-icon="mdi-alert"
-                        dense
-                        hide-details
-                    ></v-select>
-                    <br/>
-                    <v-label>
                         {{ 'deadline_time_value' }}:
                     </v-label>
-                    <v-text-field
-                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_value"
-                        :color="themeBgColor"
-                        :label="'deadline_time_value'"
-                        prepend-icon="mdi-text"
-                        required
-                        type="text"
-                    ></v-text-field>
                     <br/>
-                    <v-label>
-                        {{'deadline_time_parameter' }}:
-                    </v-label>
-                    <v-select
-                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_parameter"
-                        :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_parameters"
-                        class="small"
-                        prepend-icon="mdi-clock"
-                        dense
-                        hide-details
-                    ></v-select>
+                    <div class="row">
+                        <v-select
+                            v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_indicator"
+                            :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_indicators"
+                            class="small col-4"
+                            prepend-icon="mdi-clock"
+                            dense
+                            hide-details
+                        ></v-select>
+                        <v-text-field
+                            v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_value"
+                            :color="themeBgColor"
+                            class="col-4 pt-0"
+                            required
+                            type="text"
+                        ></v-text-field>
+                        <v-select
+                            v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_parameter"
+                            :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_parameters"
+                            class="small col-4"
+                            dense
+                            hide-details
+                        ></v-select>
+                    </div>
                     <br/>
                     <v-label>
                         {{'Action type' }}:
@@ -163,7 +156,7 @@
                         item-text="name"
                         item-value="id"
                         class="small"
-                        prepend-icon="mdi-clock"
+                        prepend-icon="mdi-list"
                         dense
                         hide-details
                     ></v-select>
