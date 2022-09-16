@@ -264,4 +264,9 @@ export default {
 .clearfix {
     clear: both;
 }
+
+>>> .v-text-field,
+>>> input {
+    padding: 0 5px 10px 5px !important;
+}
 </style>
