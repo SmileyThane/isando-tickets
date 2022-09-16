@@ -249,9 +249,9 @@
                                     <v-expansion-panel>
                                         <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
                                         <v-expansion-panel-content>
-                                            <v-text-field v-model="categoryForm.name_en" :label="langMap.main.name"
+                                            <v-text-field v-model="categoryForm.name_de" :label="langMap.main.name"
                                                           hide-details single-line :color="themeBgColor"/>
-                                            <v-text-field v-model="categoryForm.description_en"
+                                            <v-text-field v-model="categoryForm.description_de"
                                                           :label="langMap.main.description" hide-details single-line
                                                           :color="themeBgColor"/>
                                         </v-expansion-panel-content>
