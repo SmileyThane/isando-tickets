@@ -249,9 +249,9 @@
                                     <v-expansion-panel>
                                         <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
                                         <v-expansion-panel-content>
-                                            <v-text-field v-model="categoryForm.name_en" :label="langMap.main.name"
+                                            <v-text-field v-model="categoryForm.name_de" :label="langMap.main.name"
                                                           hide-details single-line :color="themeBgColor"/>
-                                            <v-text-field v-model="categoryForm.description_en"
+                                            <v-text-field v-model="categoryForm.description_de"
                                                           :label="langMap.main.description" hide-details single-line
                                                           :color="themeBgColor"/>
                                         </v-expansion-panel-content>
@@ -499,6 +499,7 @@ export default {
                 name_de: category.name_de,
                 description: category.description,
                 description_de: category.description_de,
+                icon_color: category.icon_color,
                 icon: category.icon,
                 _active: [category.parent_id]
             };

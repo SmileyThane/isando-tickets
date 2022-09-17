@@ -476,6 +476,14 @@ export default [
         component: RoleManagement
     },
     {
+        path: '/admin/roles',
+        name: 'admin_roles',
+        meta: {
+            requiresAuth: true,
+        },
+        component: RoleManagement
+    },
+    {
         path: '/:alias/:id/edit',
         name: 'knowledge_base_update',
         meta: {
