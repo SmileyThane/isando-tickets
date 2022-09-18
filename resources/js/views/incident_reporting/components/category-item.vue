@@ -5,11 +5,11 @@
     >
         <v-list-item>
             <v-list-item-content>
-                <v-list-item-title class="text-h6 mb-1">
-                    <div class="float-left"
+                <v-list-item-title class="subtitle-1 mb-1">
+                    <strong class="float-left"
                          style="text-overflow: ellipsis; overflow: hidden; max-width: 35vh;"
                     >{{ item.name }}
-                    </div>
+                    </strong>
                     <v-spacer v-if="extended"></v-spacer>
                     <v-chip v-if="extended"
                             :color="themeBgColor"
