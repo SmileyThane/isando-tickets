@@ -20,7 +20,7 @@
             </v-col>
             <v-col
                 class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>Categories:</label>
+                <label>{{langMap.ir.ab.categories}}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].categories"
@@ -42,7 +42,7 @@
                     <v-chip
                         :color="themeBgColor"
                         :textColor="themeBgColor"
-                        class="float-right text-uppercase"
+                        class="text-uppercase"
                         label
                         outlined
                         style="margin: 5px;"
@@ -57,7 +57,7 @@
             </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
                    class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>Clients:</label>
+                <label>{{langMap.ir.ab.clients}}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].clients"
@@ -79,7 +79,7 @@
                     <v-chip
                         :color="themeBgColor"
                         :textColor="themeBgColor"
-                        class="float-right text-uppercase"
+                        class="text-uppercase"
                         label
                         outlined
                         style="margin: 5px;"
@@ -100,7 +100,7 @@
             </v-col>
             <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <label>
-                    Valid from Stage Monitoring:
+                    {{langMap.ir.ab.stage_monitoring}}:
                 </label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -121,7 +121,7 @@
                     <v-chip
                         :color="themeBgColor"
                         :textColor="themeBgColor"
-                        class="float-right text-uppercase"
+                        class="text-uppercase"
                         label
                         outlined
                         style="margin: 5px;"
@@ -138,7 +138,7 @@
             <v-col cols="6" lg="6" md="6" sm="12" xl="8">
             </v-col>
             <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>Importance:</label>
+                <label>{{langMap.ir.ab.importance}}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].priority_id"
@@ -158,7 +158,7 @@
                     <v-chip
                         :color="themeBgColor"
                         :textColor="themeBgColor"
-                        class="float-right text-uppercase"
+                        class="text-uppercase"
                         label
                         outlined
                         style="margin: 5px;"
@@ -175,7 +175,7 @@
             </v-col>
             <v-col
                 class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>Access:</label>
+                <label>{{langMap.ir.ab.access}}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].access_id"
@@ -195,7 +195,7 @@
                     <v-chip
                         :color="themeBgColor"
                         :textColor="themeBgColor"
-                        class="float-right text-uppercase"
+                        class="text-uppercase"
                         label
                         outlined
                         style="margin: 5px;"
