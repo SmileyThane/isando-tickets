@@ -108,7 +108,7 @@
                         v-slot:activator
                     >
                         <v-list-item-content>
-                            <v-list-item-title>Incident reporting</v-list-item-title>
+                            <v-list-item-title>{{langMap.sidebar.incident_reporting}}</v-list-item-title>
                         </v-list-item-content>
                     </template>
                     <v-list-item
@@ -134,7 +134,7 @@
                             <v-icon>mdi-shape-rectangle-plus</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
-                            <v-list-item-title>Scenarios
+                            <v-list-item-title>{{langMap.sidebar.incident_reporting_scenarios}}
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -147,7 +147,7 @@
                             <v-icon>mdi-gesture-double-tap</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
-                            <v-list-item-title>Action Boards
+                            <v-list-item-title>{{langMap.sidebar.incident_reporting_action_boards}}
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
