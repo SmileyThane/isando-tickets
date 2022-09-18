@@ -11,7 +11,7 @@
         </v-row>
 
         <v-row v-if="$store.getters['IncidentReporting/getSelectedIR']">
-            <v-col cols="2">
+            <v-col cols="4">
                 <IncidentCategoryItem
                     v-for="item in $store.getters['IncidentReporting/getIR']"
                     :key="item.id"
@@ -20,7 +20,7 @@
                     :selected="item.id === $store.getters['IncidentReporting/getSelectedIR'].id"
                 />
             </v-col>
-            <v-col cols="10">
+            <v-col cols="8">
                 <div class="text-h6">
                     {{ $store.getters['IncidentReporting/getSelectedIR'].name }}
                     <v-menu v-if="!$store.getters['IncidentReporting/getIsEditable']" bottom>
@@ -72,15 +72,15 @@
                             text
                             @click="saveIR(true)"
                         >
-                            Save as new version
+                            {{langMap.ir.ab.clone}}
                         </v-btn>
                     </div>
                 </div>
 
                 <v-tabs v-model="tab" :color="themeBgColor">
-                    <v-tab>General</v-tab>
-                    <v-tab>Actions</v-tab>
-                    <v-tab>Version</v-tab>
+                    <v-tab>{{langMap.ir.ab.general}}</v-tab>
+                    <v-tab>{{langMap.ir.ab.actions}}</v-tab>
+                    <v-tab>{{langMap.ir.ab.version}}</v-tab>
                 </v-tabs>
                 <v-tabs-items v-model="tab">
                     <v-tab-item>
@@ -98,7 +98,7 @@
         <v-dialog v-model="$store.getters['IncidentReporting/getManageActionDlg']" max-width="480">
             <v-card dense outlined>
                 <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                    Action
+                    {{langMap.ir.ab.action}}
                 </v-card-title>
                 <v-card-text>
                     <v-text-field
@@ -119,7 +119,7 @@
                     ></v-textarea>
                     <br/>
                     <v-label>
-                        {{ 'deadline_time_value' }}:
+                        {{langMap.ir.ab.deadline_time_value}}:
                     </v-label>
                     <br/>
                     <div class="row">
@@ -148,7 +148,7 @@
                     </div>
                     <br/>
                     <v-label>
-                        {{ 'Action type' }}:
+                        {{langMap.ir.ab.action_type}}:
                     </v-label>
                     <v-select
                         v-model="$store.getters['IncidentReporting/getSelectedIRAction'].type_id"
