@@ -6,7 +6,7 @@
         >
             <br/>
             <h2>
-                Select actions:
+                {{langMap.ir.ab.select_actions}}:
             </h2>
             <br/>
             <v-select
@@ -41,7 +41,7 @@
                         <v-list-item-content>
                             <v-row>
                                 <v-col cols="5">
-                                    <span class="text-overline mb-4">{{ action.name }}</span>
+                                    <span class="subtitle-1 mb-4">{{ action.name }}</span>
                                     <br>
                                     <small>{{ action.description }}</small>
                                 </v-col>

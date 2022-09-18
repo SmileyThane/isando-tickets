@@ -63,7 +63,9 @@ class LanguageSeeder extends Seeder
                             'custom_license' => 'License',
                             'custom_license_unassigned' => 'Unmapped',
                             'tracking_timesheet' => 'Timesheet',
-                            'incident_reporting' => 'Incident reporting'
+                            'incident_reporting' => 'Incident reporting',
+                            'incident_reporting_scenarios' => 'Scenarios',
+                            'incident_reporting_action_boards' => 'Action boards',
                         ],
                     'tracking' =>
                         [
@@ -951,6 +953,23 @@ class LanguageSeeder extends Seeder
                         'next_step' => 'Next step',
                         'new_knowledge_name' => 'New post',
                     ],
+                    'ir' => [
+                        'ab' => [
+                            'title' => 'Action boards',
+                            'clone' => 'Save as new version',
+                            'general' => 'General',
+                            'actions' => 'Actions',
+                            'action' => 'Action',
+                            'version' => 'Version',
+                            'deadline_time_value' => 'Deadline',
+                            'select_actions' => 'Select actions',
+                            'importance' => 'Importance',
+                            'access' => 'Access',
+                            'stage_monitoring' => 'Valid from Stage Monitoring',
+                            'clients' => 'Clients',
+                            'categories' => 'Categories'
+                        ]
+                    ],
                     'exceptions' => [
                         'field_is_required' => '%{field} is required',
                     ],
@@ -1007,7 +1026,9 @@ class LanguageSeeder extends Seeder
                             'custom_license' => 'Lizenz',
                             'custom_license_unassigned' => 'Unzugeordnet',
                             'tracking_timesheet' => 'Arbeitszeittabelle',
-                            'incident_reporting' => 'Incident reporting'
+                            'incident_reporting' => 'Incident reporting',
+                            'incident_reporting_scenarios' => 'Scenarios',
+                            'incident_reporting_action_boards' => 'Action boards',
                         ],
                         'tracking' => [
                             'name' => 'Name',
@@ -1865,6 +1886,23 @@ class LanguageSeeder extends Seeder
                             'unlink_step' => 'Schritt Post aufheben',
                             'next_step' => 'Nächster Schritt',
                             'new_knowledge_name' => 'Neues Post',
+                        ],
+                        'ir' => [
+                            'ab' => [
+                                'title' => 'Action boards',
+                                'clone' => 'Save as new version',
+                                'general' => 'General',
+                                'actions' => 'Actions',
+                                'action' => 'Action',
+                                'version' => 'Version',
+                                'deadline_time_value' => 'Deadline',
+                                'select_actions' => 'Select actions',
+                                'importance' => 'Importance',
+                                'access' => 'Access',
+                                'stage_monitoring' => 'Valid from Stage Monitoring',
+                                'clients' => 'Clients',
+                                'categories' => 'Categories'
+                            ]
                         ],
                         'exceptions' => [
                             'field_is_required' => '%{field} ist erforderlich',
