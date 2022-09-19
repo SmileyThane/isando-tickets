@@ -94,4 +94,13 @@ class IncidentReportingActionBoard extends Model
     {
         return $this->hasMany(self::class, 'parent_id', 'id')->orderByDesc('id');
     }
+
+    public function impactPotentials(): HasOne
+    {
+        return $this->hasOne(
+            ImpactPotential::class,
+            'id',
+            'impact_potential_id'
+        );
+    }
 }
