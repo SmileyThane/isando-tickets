@@ -20,7 +20,7 @@
             </v-col>
             <v-col
                 class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>{{langMap.ir.ab.categories}}:</label>
+                <label>{{ langMap.ir.ab.categories }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].categories"
@@ -57,7 +57,7 @@
             </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
                    class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>{{langMap.ir.ab.clients}}:</label>
+                <label>{{ langMap.ir.ab.clients }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].clients"
@@ -93,14 +93,15 @@
                 class="pb-0" cols="6" lg="6" md="6" sm="12" xl="8">
                 <v-checkbox
                     v-if="$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0"
-                    v-model="$store.getters['IncidentReporting/getSelectedIR'].with_child_clients" :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].with_child_clients"
+                    :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                     class="mt-0"
                     label="Include child organizations"
                 ></v-checkbox>
             </v-col>
             <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <label>
-                    {{langMap.ir.ab.stage_monitoring}}:
+                    {{ langMap.ir.ab.stage_monitoring }}:
                 </label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -138,7 +139,7 @@
             <v-col cols="6" lg="6" md="6" sm="12" xl="8">
             </v-col>
             <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>{{langMap.ir.ab.importance}}:</label>
+                <label>{{ langMap.ir.ab.importance }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].priority_id"
@@ -166,7 +167,7 @@
                     >
                         {{
                             $store.getters['IncidentReporting/getSelectedIR'].priority ?
-                            $store.getters['IncidentReporting/getSelectedIR'].priority.name : ''
+                                $store.getters['IncidentReporting/getSelectedIR'].priority.name : ''
                         }}
                     </v-chip>
                 </div>
@@ -175,7 +176,7 @@
             </v-col>
             <v-col
                 class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>{{langMap.ir.ab.access}}:</label>
+                <label>{{ langMap.ir.ab.access }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].access_id"
@@ -203,7 +204,7 @@
                     >
                         {{
                             $store.getters['IncidentReporting/getSelectedIR'].access ?
-                            $store.getters['IncidentReporting/getSelectedIR'].access.name : ''
+                                $store.getters['IncidentReporting/getSelectedIR'].access.name : ''
                         }}
                     </v-chip>
                 </div>
