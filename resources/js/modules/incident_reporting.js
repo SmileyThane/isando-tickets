@@ -5,6 +5,11 @@ export default {
             id: 0,
             with_child_clients: false,
             version: '',
+            valid_till: '',
+            updated_by: {
+                name: '',
+                surname: ''
+            },
             categories: [],
             clients: [],
             actions: [],
@@ -154,13 +159,19 @@ export default {
                 data = {
                     with_child_clients: false,
                     version: '',
+                    valid_till: '',
+                    updated_by: {
+                        name: '',
+                        surname: ''
+                    },
                     categories: [],
                     clients: [],
                     actions: [],
+                    child_versions: [],
                     priority_id: null,
-                    access_id: null,
                     impact_potential_id: null,
                     stage_monitoring_id: null,
+                    access_id: null,
                     description: '',
                     stage_monitoring: null
                 }
