@@ -149,6 +149,7 @@ export default {
                     if (status === 200 && success) {
                         dispatch('callSetManageActionDlg', false)
                         dispatch('callGetIRActions')
+                        dispatch('callGetIR')
 
                         return Promise.resolve(data)
                     }
