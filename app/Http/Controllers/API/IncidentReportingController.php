@@ -292,6 +292,16 @@ class IncidentReportingController extends Controller
     {
         $action = IncidentReportingAction::query()->create($request->all());
 
+        if ($request['action_board_id']) {
+            $actionBoard = IncidentReportingActionBoard::where('id', '=',$request['action_board_id'])->first();
+            $request['actions'] = $actionBoard->actions;
+            $request['actions'][] = $action;
+            $request['categories'] = $actionBoard->categories;
+            $request['clients'] = $actionBoard->clients;
+
+            $this->incidentRepo->syncActionBoardRelations($request, $actionBoard);
+        }
+
         return self::showResponse(true, $action);
     }
 
