@@ -3,6 +3,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\IncidentReporting\EventType;
+use App\IncidentReporting\FocusPriority;
+use App\IncidentReporting\ProcessState;
 use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardAccess;
@@ -258,11 +261,12 @@ class IncidentReportingController extends Controller
     public function options(): JsonResponse
     {
         $options = [
-            'categories' => IncidentReportingActionBoardCategory::all(),
-            'priorities' => IncidentReportingActionBoardPriority::all(),
-            'states' => IncidentReportingActionBoardState::all(),
+            'categories' => $this->incidentRepo->getEventTypesInCompanyContext(),
+            'priorities' => $this->incidentRepo->getFocusPrioritiesInCompanyContext(),
+            'states' => $this->incidentRepo->getProcessStatesInCompanyContext(),
             'accesses' => IncidentReportingActionBoardAccess::all(),
             'stage_monitorings' => IncidentReportingActionBoardStageMonitoring::all(),
+            'impact_potentials' => $this->incidentRepo->getImpactPotentialsInCompanyContext(),
             'actions' => [
                 'types' => $this->incidentRepo->getActionTypesInCompanyContext(),
                 'deadline_time_parameters' => IncidentReportingAction::DEADLINE_TIME_PARAMETER,
