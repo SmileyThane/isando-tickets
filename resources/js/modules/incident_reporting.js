@@ -138,6 +138,10 @@ export default {
             if (state.selectedIRAction.id) {
                 method = 'put'
                 url += `/${state.selectedIR.id}`
+            } else {
+                if (state.selectedIR.id) {
+                    state.selectedIRAction.action_board_id = state.selectedIR.id
+                }
             }
 
             return axios({method, url, data: state.selectedIRAction})
