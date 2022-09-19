@@ -104,4 +104,9 @@ class IncidentReportingActionBoard extends Model
             'impact_potential_id'
         );
     }
+
+    public function updatedBy(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'updated_by');
+    }
 }
