@@ -961,7 +961,7 @@ class LanguageSeeder extends Seeder
                             'actions' => 'Actions',
                             'action' => 'Action',
                             'version' => 'Version',
-                            'deadline_time_value' => 'Deadline',
+                            'deadline_time_value' => 'Timing',
                             'select_actions' => 'Select actions',
                             'importance' => 'Importance',
                             'access' => 'Access',
@@ -969,7 +969,12 @@ class LanguageSeeder extends Seeder
                             'clients' => 'Clients',
                             'categories' => 'Risk categories',
                             'impact_potentials' => 'Impact potentials',
+                            'action_type' => 'Action type',
                             'create_risk' => 'Add risk',
+                            'valid_till' => 'Valid till',
+                            'updated_by' => 'Updated by',
+                            'select' => 'Select',
+                            'unit' => 'Unit',
                         ]
                     ],
                     'exceptions' => [
@@ -1897,7 +1902,7 @@ class LanguageSeeder extends Seeder
                                 'actions' => 'Actions',
                                 'action' => 'Action',
                                 'version' => 'Version',
-                                'deadline_time_value' => 'Deadline',
+                                'deadline_time_value' => 'Timing',
                                 'select_actions' => 'Select actions',
                                 'importance' => 'Importance',
                                 'access' => 'Access',
@@ -1905,7 +1910,12 @@ class LanguageSeeder extends Seeder
                                 'clients' => 'Clients',
                                 'categories' => 'Risk categories',
                                 'impact_potentials' => 'Impact potentials',
+                                'action_type' => 'Action type',
                                 'create_risk' => 'Add risk',
+                                'valid_till' => 'Valid till',
+                                'updated_by' => 'Updated by',
+                                'select' => 'Select',
+                                'unit' => 'Unit',
                             ]
                         ],
                         'exceptions' => [

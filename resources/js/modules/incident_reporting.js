@@ -5,6 +5,11 @@ export default {
             id: 0,
             with_child_clients: false,
             version: '',
+            valid_till: '',
+            updated_by: {
+                name: '',
+                surname: ''
+            },
             categories: [],
             clients: [],
             actions: [],
@@ -133,6 +138,10 @@ export default {
             if (state.selectedIRAction.id) {
                 method = 'put'
                 url += `/${state.selectedIR.id}`
+            } else {
+                if (state.selectedIR.id) {
+                    state.selectedIRAction.action_board_id = state.selectedIR.id
+                }
             }
 
             return axios({method, url, data: state.selectedIRAction})
@@ -140,6 +149,7 @@ export default {
                     if (status === 200 && success) {
                         dispatch('callSetManageActionDlg', false)
                         dispatch('callGetIRActions')
+                        dispatch('callGetIR')
 
                         return Promise.resolve(data)
                     }
@@ -154,13 +164,19 @@ export default {
                 data = {
                     with_child_clients: false,
                     version: '',
+                    valid_till: '',
+                    updated_by: {
+                        name: '',
+                        surname: ''
+                    },
                     categories: [],
                     clients: [],
                     actions: [],
+                    child_versions: [],
                     priority_id: null,
-                    access_id: null,
                     impact_potential_id: null,
                     stage_monitoring_id: null,
+                    access_id: null,
                     description: '',
                     stage_monitoring: null
                 }

@@ -17,6 +17,7 @@
                     <v-select
                         v-model="searchWhere"
                         :color="themeBgColor"
+                        :item-color="themeBgColor"
                         :items="searchOptions" class="pb-0 mr-4"
                         hide-details item-text="name"
                         item-value="id" label="Search in"
@@ -29,6 +30,7 @@
                     <v-select
                         v-model="activeTags"
                         :color="themeBgColor"
+                        :item-color="themeBgColor"
                         :items="$store.getters['Tags/getTags']" :label="langMap.kb.tags"
                         append-icon="mdi-tag-multiple-outline"
                         class="pb-0" hide-selected item-text="name"

@@ -21,7 +21,8 @@ class IncidentReportingActionBoard extends Model
     protected $fillable = [
         'name', 'description', 'stage_monitoring_id',
         'priority_id', 'access_id', 'version',
-        'parent_id', 'with_child_clients', 'state_id'
+        'parent_id', 'with_child_clients', 'state_id',
+        'impact_potential_id', 'valid_till', 'updated_by'
     ];
 
     public function actions(): BelongsToMany
@@ -102,5 +103,10 @@ class IncidentReportingActionBoard extends Model
             'id',
             'impact_potential_id'
         );
+    }
+
+    public function updatedBy(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'updated_by');
     }
 }

@@ -20,6 +20,7 @@ use App\Repositories\IxarmaRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IncidentReportingController extends Controller
 {
@@ -244,7 +245,7 @@ class IncidentReportingController extends Controller
             ->where('parent_id', '=', null)
             ->with([
                 'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
-                'priority', 'access', 'state', 'childVersions', 'impactPotentials'
+                'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy'
             ])
             ->get();
 
@@ -280,6 +281,7 @@ class IncidentReportingController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request['state_id'] = $this->incidentRepo->getProcessStatesInCompanyContext()[0];
+        $request['updated_by'] = Auth::id();
         $board = IncidentReportingActionBoard::create($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
@@ -289,6 +291,16 @@ class IncidentReportingController extends Controller
     public function storeAction(Request $request): JsonResponse
     {
         $action = IncidentReportingAction::query()->create($request->all());
+
+        if ($request['action_board_id']) {
+            $actionBoard = IncidentReportingActionBoard::where('id', '=',$request['action_board_id'])->first();
+            $request['actions'] = $actionBoard->actions;
+            $request['actions'][] = $action;
+            $request['categories'] = $actionBoard->categories;
+            $request['clients'] = $actionBoard->clients;
+
+            $this->incidentRepo->syncActionBoardRelations($request, $actionBoard);
+        }
 
         return self::showResponse(true, $action);
     }
@@ -311,6 +323,7 @@ class IncidentReportingController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
+        $request['updated_by'] = Auth::id();
         $board->update($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 

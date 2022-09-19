@@ -3,20 +3,41 @@
         <v-col
             cols="6" lg="6" md="6" sm="12" xl="4"
         >
-            <v-text-field
-                v-if="$store.getters['IncidentReporting/getIsEditable']"
-                v-model="$store.getters['IncidentReporting/getSelectedIR'].version"
-                :color="themeBgColor"
-                :label="langMap.main.version"
-                prepend-icon="mdi-text"
-                required
-                type="text"
-            ></v-text-field>
+            <div v-if="$store.getters['IncidentReporting/getIsEditable']" class="pt-4">
+
+                <v-text-field
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].version"
+                    :color="themeBgColor"
+                    :item-color="themeBgColor"
+                    :label="langMap.main.version"
+                    prepend-icon="mdi-text"
+                    required
+                    type="text"
+                ></v-text-field>
+                <br>
+                <v-label>
+                    {{ langMap.ir.ab.valid_till }}:
+                </v-label>
+                <v-date-picker
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
+                    :color="themeBgColor"
+                    :first-day-of-week="1"
+                ></v-date-picker>
+
+            </div>
             <div v-else>
-                {{ $store.getters['IncidentReporting/getSelectedIR'].version }}
+                <p> {{ langMap.main.version }}: {{ $store.getters['IncidentReporting/getSelectedIR'].version }}</p>
+                <p> {{ langMap.ir.ab.valid_till }}: {{
+                        $store.getters['IncidentReporting/getSelectedIR'].valid_till
+                    }}</p>
+                <p> {{ langMap.ir.ab.updated_by }}:
+                    <span v-if="$store.getters['IncidentReporting/getSelectedIR'].updated_by">
+                        {{ $store.getters['IncidentReporting/getSelectedIR'].updated_by.name }}
+                        {{ $store.getters['IncidentReporting/getSelectedIR'].updated_by.surname }}
+                    </span>
+                </p>
             </div>
         </v-col>
-
         <v-col
             v-if="$store.getters['IncidentReporting/getIsEditable']"
             cols="6" lg="6" md="6" sm="12" xl="8">
@@ -44,6 +65,9 @@ export default {
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+
         }
     }
 }
