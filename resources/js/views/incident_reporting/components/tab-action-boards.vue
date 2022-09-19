@@ -19,15 +19,16 @@
                 item-value="id"
                 multiple
                 outlined
+                :color="themeBgColor"
+                :item-color="themeBgColor"
                 :placeholder="langMap.main.actions"
                 required
             ></v-select>
         </div>
         <v-row v-else>
             <v-col cols="5">{{ langMap.main.name }}</v-col>
-            <v-col cols="2">Type</v-col>
-            <v-col cols="2">Deadline</v-col>
-            <v-col cols="2">Assigned to</v-col>
+            <v-col cols="2">{{ langMap.ir.ab.deadline_time_value}}</v-col>
+            <v-col cols="4">{{ langMap.main.customer }}</v-col>
             <v-col cols="1"></v-col>
 
             <v-col cols="12">
@@ -41,17 +42,18 @@
                         <v-list-item-content>
                             <v-row>
                                 <v-col cols="5">
-                                    <span class="subtitle-1 mb-4">{{ action.name }}</span>
+                                    <span class="subtitle-1 mb-4 pl-3">{{ action.name }}</span>
                                     <br>
-                                    <small>{{ action.description }}</small>
+                                    <v-list-item-title class="pl-3">{{ action.description }}</v-list-item-title>
+                                    <br>
+                                    <v-btn small text href="/settings/incident">
+                                        {{ action.type ? action.type.name : '' }}
+                                    </v-btn>
                                 </v-col>
-                                <v-col cols="2">
-                                    {{ action.type ? action.type.name : '' }}
-                                </v-col>
-                                <v-col cols="2">
+                                <v-col cols=2>
                                     {{ action.deadline_time_indicator }} {{ action.deadline_time_value }} {{ action.deadline_time_parameter }}
                                 </v-col>
-                                <v-col cols="2">
+                                <v-col cols="4">
                                     {{ action.assignee ? action.assignee.email : 'not assinged' }}
                                 </v-col>
                                 <v-col class="text-right" cols="1">
@@ -68,13 +70,9 @@
                                                 <v-icon>mdi-dots-vertical</v-icon>
                                             </v-btn>
                                         </template>
-
                                         <v-list>
                                             <v-list-item>
-                                                <v-list-item-title>item 1</v-list-item-title>
-                                            </v-list-item>
-                                            <v-list-item>
-                                                <v-list-item-title>item 2</v-list-item-title>
+                                                <v-list-item-title>{{langMap.main.delete}}</v-list-item-title>
                                             </v-list-item>
                                         </v-list>
                                     </v-menu>
@@ -94,6 +92,9 @@ export default {
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+
         }
     }
 }
