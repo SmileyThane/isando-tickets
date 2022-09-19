@@ -122,12 +122,14 @@
                         {{langMap.ir.ab.deadline_time_value}}:
                     </v-label>
                     <br/>
-                    <div class="row">
+                    <div class="row mt-3">
                         <v-select
                             v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_indicator"
                             :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_indicators"
                             class="small col-4"
                             prepend-icon="mdi-clock"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
                             dense
                             hide-details
                         ></v-select>
@@ -136,12 +138,16 @@
                             :color="themeBgColor"
                             class="col-4 pt-0"
                             required
+                            :label="langMap.ir.ab.select"
                             type="text"
                         ></v-text-field>
                         <v-select
                             v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_parameter"
                             :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_parameters"
                             class="small col-4"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
+                            :label="langMap.ir.ab.unit"
                             dense
                             hide-details
                         ></v-select>
@@ -156,7 +162,9 @@
                         item-text="name"
                         item-value="id"
                         class="small"
-                        prepend-icon="mdi-list"
+                        prepend-icon="mdi-list-status"
+                        :color="themeBgColor"
+                        :item-color="themeBgColor"
                         dense
                         hide-details
                     ></v-select>
