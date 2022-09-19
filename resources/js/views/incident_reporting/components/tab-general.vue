@@ -139,6 +139,44 @@
             <v-col cols="6" lg="6" md="6" sm="12" xl="8">
             </v-col>
             <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
+                <label>
+                    {{ langMap.ir.ab.impact_potentials }}:
+                </label>
+                <v-select
+                    v-if="$store.getters['IncidentReporting/getIsEditable']"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].impact_potential_id"
+                    :items="$store.getters['IncidentReporting/getIROptions'].impact_potentials"
+                    class=""
+                    dense
+                    hide-details
+                    item-text="name"
+                    item-value="id"
+                    outlined
+                    required
+                ></v-select>
+                <div
+                    v-else
+                >
+                    <v-chip
+                        :color="themeBgColor"
+                        :textColor="themeBgColor"
+                        class="text-uppercase"
+                        label
+                        outlined
+                        style="margin: 5px;"
+                        x-small
+                    >
+                        {{
+                            $store.getters['IncidentReporting/getSelectedIR'].impact_potentials ?
+                                $store.getters['IncidentReporting/getSelectedIR'].impact_potentials.name :
+                                ''
+                        }}
+                    </v-chip>
+                </div>
+            </v-col>
+            <v-col cols="6" lg="6" md="6" sm="12" xl="8">
+            </v-col>
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <label>{{ langMap.ir.ab.importance }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
