@@ -244,7 +244,7 @@ class IncidentReportingController extends Controller
             ->where('parent_id', '=', null)
             ->with([
                 'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
-                'priority', 'access', 'state', 'childVersions'
+                'priority', 'access', 'state', 'childVersions', 'impactPotentials'
             ])
             ->get();
 
