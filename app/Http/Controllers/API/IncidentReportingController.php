@@ -275,7 +275,7 @@ class IncidentReportingController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $request['state_id'] = 1;
+        $request['state_id'] = $this->incidentRepo->getProcessStatesInCompanyContext()[0];
         $board = IncidentReportingActionBoard::create($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
