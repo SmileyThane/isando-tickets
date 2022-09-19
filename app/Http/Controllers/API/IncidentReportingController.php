@@ -3,6 +3,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\IncidentReporting\EventType;
+use App\IncidentReporting\FocusPriority;
+use App\IncidentReporting\ProcessState;
 use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardAccess;
@@ -241,7 +244,7 @@ class IncidentReportingController extends Controller
             ->where('parent_id', '=', null)
             ->with([
                 'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
-                'priority', 'access', 'state', 'childVersions'
+                'priority', 'access', 'state', 'childVersions', 'impactPotentials'
             ])
             ->get();
 
@@ -258,11 +261,12 @@ class IncidentReportingController extends Controller
     public function options(): JsonResponse
     {
         $options = [
-            'categories' => IncidentReportingActionBoardCategory::all(),
-            'priorities' => IncidentReportingActionBoardPriority::all(),
-            'states' => IncidentReportingActionBoardState::all(),
+            'categories' => $this->incidentRepo->getEventTypesInCompanyContext(),
+            'priorities' => $this->incidentRepo->getFocusPrioritiesInCompanyContext(),
+            'states' => $this->incidentRepo->getProcessStatesInCompanyContext(),
             'accesses' => IncidentReportingActionBoardAccess::all(),
             'stage_monitorings' => IncidentReportingActionBoardStageMonitoring::all(),
+            'impact_potentials' => $this->incidentRepo->getImpactPotentialsInCompanyContext(),
             'actions' => [
                 'types' => $this->incidentRepo->getActionTypesInCompanyContext(),
                 'deadline_time_parameters' => IncidentReportingAction::DEADLINE_TIME_PARAMETER,
@@ -275,7 +279,7 @@ class IncidentReportingController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $request['state_id'] = 1;
+        $request['state_id'] = $this->incidentRepo->getProcessStatesInCompanyContext()[0];
         $board = IncidentReportingActionBoard::create($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 

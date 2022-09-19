@@ -967,7 +967,9 @@ class LanguageSeeder extends Seeder
                             'access' => 'Access',
                             'stage_monitoring' => 'Valid from Stage Monitoring',
                             'clients' => 'Clients',
-                            'categories' => 'Categories'
+                            'categories' => 'Risk categories',
+                            'impact_potentials' => 'Impact potentials',
+                            'create_risk' => 'Add risk',
                         ]
                     ],
                     'exceptions' => [
@@ -1901,7 +1903,9 @@ class LanguageSeeder extends Seeder
                                 'access' => 'Access',
                                 'stage_monitoring' => 'Valid from Stage Monitoring',
                                 'clients' => 'Clients',
-                                'categories' => 'Categories'
+                                'categories' => 'Risk categories',
+                                'impact_potentials' => 'Impact potentials',
+                                'create_risk' => 'Add risk',
                             ]
                         ],
                         'exceptions' => [
