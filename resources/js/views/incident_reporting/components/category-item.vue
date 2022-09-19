@@ -36,6 +36,31 @@
                         {{ tag.name }}
                     </v-chip>
                 </v-list-item-title>
+                <v-list-item-title v-if="extended">
+                    <v-chip v-for="(tag, index) in item.clients"
+                            :key="index"
+                            :color="themeBgColor"
+                            class="text-uppercase ml-2 mt-2"
+                            label
+                            outlined
+                            x-small
+                    >
+                        {{ tag.name }}
+                    </v-chip>
+                </v-list-item-title>
+                <v-spacer v-if="extended"></v-spacer>
+                <v-list-item-title v-if="extended">
+                    <v-chip v-if="extended"
+                            :color="themeBgColor"
+                            :textColor="$helpers.color.invertColor(themeBgColor)"
+                            class="text-uppercase ml-2 mt-2"
+                            label
+                            x-small
+                    >
+                        {{ item.impact_potentials ? item.impact_potentials.name : '' }}
+                    </v-chip>
+                </v-list-item-title>
+                <v-spacer v-if="extended"></v-spacer>
                 <v-list-item-title v-if="withVersion">
                     {{ item.version }}
                 </v-list-item-title>
