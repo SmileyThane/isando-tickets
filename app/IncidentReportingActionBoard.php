@@ -2,6 +2,10 @@
 
 namespace App;
 
+use App\IncidentReporting\EventType;
+use App\IncidentReporting\FocusPriority;
+use App\IncidentReporting\ImpactPotential;
+use App\IncidentReporting\ProcessState;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,7 +37,7 @@ class IncidentReportingActionBoard extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(
-            IncidentReportingActionBoardCategory::class,
+            EventType::class,
             'incident_reporting_action_board_has_categories',
             'action_board_id',
             'category_id'
@@ -62,7 +66,7 @@ class IncidentReportingActionBoard extends Model
     public function priority(): HasOne
     {
         return $this->hasOne(
-            IncidentReportingActionBoardPriority::class,
+            FocusPriority::class,
             'id',
             'priority_id'
         );
@@ -80,7 +84,7 @@ class IncidentReportingActionBoard extends Model
     public function state(): HasOne
     {
         return $this->hasOne(
-            IncidentReportingActionBoardState::class,
+            ProcessState::class,
             'id',
             'state_id'
         );
