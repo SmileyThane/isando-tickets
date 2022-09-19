@@ -21,7 +21,7 @@ export default {
             name: '',
             description: '',
             type_id: 0,
-            deadline_time_indicator: null,
+            deadline_time_indicator: 'after',
             deadline_time_value: null,
             deadline_time_parameter: null,
             user_id: null
