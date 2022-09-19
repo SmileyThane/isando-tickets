@@ -10,6 +10,7 @@ export default {
             actions: [],
             child_versions: [],
             priority_id: null,
+            impact_potential_id: null,
             stage_monitoring_id: null,
             access_id: null,
             description: '',
@@ -34,6 +35,7 @@ export default {
             priorities: [],
             states: [],
             accesses: [],
+            impact_potentials: [],
             stage_monitorings: [],
             actions: {
                 deadline_time_parameters: [],
@@ -157,6 +159,7 @@ export default {
                     actions: [],
                     priority_id: null,
                     access_id: null,
+                    impact_potential_id: null,
                     stage_monitoring_id: null,
                     description: '',
                     stage_monitoring: null
