@@ -271,7 +271,45 @@
                     outlined
                 ></v-textarea>
             </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
+            <v-col
+                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
+                <label>{{ langMap.ir.ab.access }}:</label>
+                <v-select
+                    v-if="$store.getters['IncidentReporting/getIsEditable']"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].access_id"
+                    :items="$store.getters['IncidentReporting/getIROptions'].accesses"
+                    :color="themeBgColor"
+                    :item-color="themeBgColor"
+                    class=""
+                    dense
+                    hide-details
+                    item-text="name"
+                    item-value="id"
+                    outlined
+                    placeholder="Access"
+                    required
+                ></v-select>
+                <div
+                    v-else
+                >
+                    <v-chip
+                        :color="themeBgColor"
+                        :textColor="themeBgColor"
+                        class="text-uppercase"
+                        label
+                        outlined
+                        style="margin: 5px;"
+                        x-small
+                    >
+                        {{
+                            $store.getters['IncidentReporting/getSelectedIR'].access ?
+                                $store.getters['IncidentReporting/getSelectedIR'].access.name : ''
+                        }}
+                    </v-chip>
+                </div>
+            </v-col>
+            <v-col
+                cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
         </v-row>
         <div v-else>
             <h3>No data</h3>
