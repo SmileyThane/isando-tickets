@@ -237,9 +237,7 @@ export default {
             })
         },
         saveIR(incrementVersion) {
-            this.$store.dispatch('IncidentReporting/callStoreIR', incrementVersion).then(() => {
-                this.$store.dispatch('IncidentReporting/callGetIR')
-            })
+            this.$store.dispatch('IncidentReporting/callStoreIR', incrementVersion)
 
         },
         createIRAction() {
