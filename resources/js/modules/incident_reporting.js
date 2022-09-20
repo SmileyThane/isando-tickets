@@ -52,14 +52,18 @@ export default {
         activeTags: [],
     },
     actions: {
-        callGetIR({commit}) {
+        callGetIR({commit, dispatch, state}) {
             return axios.get(`/api/ir`, {
                 params: {}
             }).then(({status, data: {data, success}}) => {
                 if (status === 200 && success) {
                     commit('setIR', data)
                     if (data.length > 0) {
-                        commit('setSelectedIR', data[0])
+                        const item = state.selectedIR.id ?
+                            data.find(element => element.id = state.selectedIR.id) :
+                            data[0]
+                        console.log(item)
+                            commit('setSelectedIR', item)
                     }
 
                     return Promise.resolve(data)
@@ -122,7 +126,6 @@ export default {
             return axios({method, url, data: state.selectedIR})
                 .then(({status, data: {data, success}}) => {
                     if (status === 200 && success) {
-                        commit('setSelectedIR', data)
                         dispatch('callSetIsEditable', false)
                         return Promise.resolve(data)
                     }
