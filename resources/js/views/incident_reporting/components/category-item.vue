@@ -22,9 +22,6 @@
                     </v-chip>
                 </v-list-item-title>
                 <v-list-item-title v-if="extended">
-                    {{ item.description }}
-                </v-list-item-title>
-                <v-list-item-title v-if="extended">
                     <v-chip v-for="(tag, index) in item.categories"
                             :key="index"
                             :color="themeBgColor"

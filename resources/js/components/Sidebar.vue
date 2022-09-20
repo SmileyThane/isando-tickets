@@ -565,6 +565,20 @@
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
+                    <v-list-item
+                        v-if="$helpers.auth.checkPermissionByIds([28])"
+                        link
+                        style="background-color:white;"
+                        to="/admin/roles"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi-alpha-r-box</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ langMap.main.roles }}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                 </v-list-group>
             </v-list>
         </perfect-scrollbar>

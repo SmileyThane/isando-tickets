@@ -247,6 +247,7 @@ class IncidentReportingController extends Controller
                 'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
                 'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy'
             ])
+            ->orderBy('name')
             ->get();
 
         return self::showResponse(true, $actionBoards);
@@ -280,7 +281,7 @@ class IncidentReportingController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $request['state_id'] = $this->incidentRepo->getProcessStatesInCompanyContext()[0];
+        $request['state_id'] = $this->incidentRepo->getProcessStatesInCompanyContext()[0]->id;
         $request['updated_by'] = Auth::id();
         $board = IncidentReportingActionBoard::create($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
@@ -308,6 +309,7 @@ class IncidentReportingController extends Controller
     public function clone(Request $request, $id): JsonResponse
     {
         $request['with_child_organizations'] = false;
+        $request['updated_by'] = Auth::id();
         $board = IncidentReportingActionBoard::create($request->all());
 
         IncidentReportingActionBoard::query()

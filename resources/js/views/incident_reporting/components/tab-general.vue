@@ -19,7 +19,7 @@
                 cols="6" lg="6" md="6" sm="12" xl="8">
             </v-col>
             <v-col
-                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
+                class="pb-0" cols="12" lg="12" md="12" sm="12" xl="12">
                 <label>{{ langMap.ir.ab.categories }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -54,12 +54,19 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col
-                cols="6" lg="6" md="6" sm="12" xl="8">
-            </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                   class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>{{ langMap.ir.ab.clients }}:</label>
+                   class="pb-0" cols="12" lg="12" md="12" sm="12" xl="12">
+                <label>
+                    {{ langMap.ir.ab.clients }}:
+                </label>
+                <v-checkbox
+                    v-if="$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].with_child_clients"
+                    :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                    class="mt-0"
+                    label="Include child organizations"
+                >
+                </v-checkbox>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].clients"
@@ -76,7 +83,7 @@
                     placeholder="Clients"
                     required
                 ></v-select>
-                <div
+                <span
                     v-for="client in $store.getters['IncidentReporting/getSelectedIR'].clients"
                     v-else
                 >
@@ -91,17 +98,7 @@
                     >
                         {{ client.name }}
                     </v-chip>
-                </div>
-            </v-col>
-            <v-col
-                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="8">
-                <v-checkbox
-                    v-if="$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0"
-                    v-model="$store.getters['IncidentReporting/getSelectedIR'].with_child_clients"
-                    :disabled="!$store.getters['IncidentReporting/getIsEditable']"
-                    class="mt-0"
-                    label="Include child organizations"
-                ></v-checkbox>
+                </span>
             </v-col>
             <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <label>
@@ -222,6 +219,17 @@
             </v-col>
             <v-col cols="6" lg="6" md="6" sm="12" xl="8">
             </v-col>
+            <v-col class="pb-0" cols="8" lg="8" md="8" sm="12" xl="8">
+                <v-textarea
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
+                    :readonly="!$store.getters['IncidentReporting/getIsEditable']"
+                    auto-grow
+                    label="Description"
+                    name="input-7-1"
+                    :color="themeBgColor"
+                    outlined
+                ></v-textarea>
+            </v-col>
             <v-col
                 class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <label>{{ langMap.ir.ab.access }}:</label>
@@ -261,17 +269,6 @@
             </v-col>
             <v-col
                 cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <v-textarea
-                    v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
-                    :readonly="!$store.getters['IncidentReporting/getIsEditable']"
-                    auto-grow
-                    label="Description"
-                    name="input-7-1"
-                    outlined
-                ></v-textarea>
-            </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
         </v-row>
         <div v-else>
             <h3>No data</h3>
