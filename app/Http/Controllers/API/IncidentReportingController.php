@@ -247,6 +247,7 @@ class IncidentReportingController extends Controller
                 'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
                 'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy'
             ])
+            ->orderBy('name')
             ->get();
 
         return self::showResponse(true, $actionBoards);
