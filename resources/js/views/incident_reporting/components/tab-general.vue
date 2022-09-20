@@ -55,8 +55,18 @@
                 </div>
             </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                   class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
-                <label>{{ langMap.ir.ab.clients }}:</label>
+                   class="pb-0" cols="12" lg="12" md="12" sm="12" xl="12">
+                <label>
+                    {{ langMap.ir.ab.clients }}:
+                </label>
+                <v-checkbox
+                    v-if="$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].with_child_clients"
+                    :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                    class="mt-0"
+                    label="Include child organizations"
+                >
+                </v-checkbox>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].clients"
