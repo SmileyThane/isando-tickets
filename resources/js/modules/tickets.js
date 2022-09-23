@@ -5,21 +5,21 @@ export default {
         treeTickets: []
     },
     actions: {
-        getTicketList({commit, state}, { search }) {
+        getTicketList({commit, state}, {search}) {
             if (state.tickets.length && !search) {
                 return state.tickets;
             } else {
                 const queryParams = new URLSearchParams({
                     search: search ?? '',
                     minified: false,
-                    sort_by:'id',
-                    sort_val:true,
-                    with_spam:false,
-                    per_page:30,
-                    page:1
+                    sort_by: 'id',
+                    sort_val: true,
+                    with_spam: false,
+                    per_page: 30,
+                    page: 1
                 });
-                axios.get(`/api/tracking/tickets?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
-                    .then(({ data: { success, data: { data }, error } }) => {
+                axios.get(`/api/tracking/tickets?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
+                    .then(({data: {success, data: {data}, error}}) => {
                         if (success) {
                             commit('GET_TICKETS', data)
                             commit('GET_TREE_TICKETS', data)
@@ -37,7 +37,7 @@ export default {
             tickets = tickets.filter(i => i.from);
             tickets.forEach(i => {
                 if (!companies.find(x => x.id === i.from.id)) {
-                    companies.push({ ...i.from, tickets: [] })
+                    companies.push({...i.from, tickets: []})
                 }
             })
             companies = companies.map(company => {
