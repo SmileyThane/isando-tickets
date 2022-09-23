@@ -72,7 +72,7 @@
                             text
                             @click="saveIR(true)"
                         >
-                            {{langMap.ir.ab.clone}}
+                            {{ langMap.ir.ab.clone }}
                         </v-btn>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
         <v-dialog v-model="$store.getters['IncidentReporting/getManageActionDlg']" max-width="480">
             <v-card dense outlined>
                 <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                    {{langMap.ir.ab.action}}
+                    {{ langMap.ir.ab.action }}
                 </v-card-title>
                 <v-card-text>
                     <v-text-field

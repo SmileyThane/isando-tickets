@@ -6,7 +6,7 @@
         >
             <br/>
             <h2>
-                {{langMap.ir.ab.select_actions}}:
+                {{ langMap.ir.ab.select_actions }}:
             </h2>
             <br/>
             <v-select
@@ -27,7 +27,7 @@
         </div>
         <v-row v-else>
             <v-col cols="5">{{ langMap.main.name }}</v-col>
-            <v-col cols="2">{{ langMap.ir.ab.deadline_time_value}}</v-col>
+            <v-col cols="2">{{ langMap.ir.ab.deadline_time_value }}</v-col>
             <v-col cols="4">{{ langMap.main.customer }}</v-col>
             <v-col cols="1"></v-col>
 
@@ -46,12 +46,13 @@
                                     <br>
                                     <v-list-item-title class="pl-3">{{ action.description }}</v-list-item-title>
                                     <br>
-                                    <v-btn small text href="/settings/incident">
+                                    <v-btn href="/settings/incident" small text>
                                         {{ action.type ? action.type.name : '' }}
                                     </v-btn>
                                 </v-col>
                                 <v-col cols=2>
-                                    {{ action.deadline_time_indicator }} {{ action.deadline_time_value }} {{ action.deadline_time_parameter }}
+                                    {{ action.deadline_time_indicator }} {{ action.deadline_time_value }}
+                                    {{ action.deadline_time_parameter }}
                                 </v-col>
                                 <v-col cols="4">
                                     {{ action.assignee ? action.assignee.email : 'not assinged' }}

@@ -41,7 +41,8 @@
                         v-on:change="getArticles();"
                     >
                         <template v-slot:selection="{ attrs, item, parent, selected }">
-                            <v-chip :color="item.color" :text-color="$helpers.color.invertColor(item.color)" class="ml-2"
+                            <v-chip :color="item.color" :text-color="$helpers.color.invertColor(item.color)"
+                                    class="ml-2"
                                     close label small v-bind="attrs"
                                     @click:close="syncTags(item)">
                                 {{ item.name }}
