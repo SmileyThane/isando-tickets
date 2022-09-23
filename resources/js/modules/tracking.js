@@ -19,12 +19,12 @@ export default {
         trackers: [],
     },
     actions: {
-        getSettings({ commit, state }) {
+        getSettings({commit, state}) {
             if (state.settings.length) {
                 return state.settings;
             } else {
-                return axios.get('/api/tracking/settings', { retry: 5, retryDelay: 1000 })
-                    .then(({ data: { data, success }}) => {
+                return axios.get('/api/tracking/settings', {retry: 5, retryDelay: 1000})
+                    .then(({data: {data, success}}) => {
                         if (success) {
                             if (
                                 !data.settings?.timesheetWeek
@@ -43,12 +43,12 @@ export default {
                                     data.settings.timesheetWeek.push({
                                         dayOfWeek: i,
                                         workTime: {
-                                            start: moment().startOf('days').set({ hours: 8 }).format(),
-                                            end: moment().startOf('days').set({ hours: 18 }).format(),
+                                            start: moment().startOf('days').set({hours: 8}).format(),
+                                            end: moment().startOf('days').set({hours: 18}).format(),
                                         },
                                         lunchTime: {
-                                            start: moment().startOf('days').set({ hours: 12 }).format(),
-                                            end: moment().startOf('days').set({ hours: 13 }).format(),
+                                            start: moment().startOf('days').set({hours: 12}).format(),
+                                            end: moment().startOf('days').set({hours: 13}).format(),
                                         }
                                     });
                                 }
@@ -59,47 +59,58 @@ export default {
                     });
             }
         },
-        updateSettings({ commit, dispatch }, { currency, settings }) {
-            return axios.patch('/api/tracking/settings', {currency, settings}, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success }}) => {
+        updateSettings({commit, dispatch}, {currency, settings}) {
+            return axios.patch('/api/tracking/settings', {currency, settings}, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     if (success) {
                         dispatch('getSettings');
                     }
                 });
         },
-        saveSettings({ commit, dispatch, state }) {
-            return axios.patch('/api/tracking/settings', state.settings, { retry: 5, retryDelay: 1000 })
-              .then(({ data: { data, success }}) => {
-                  if (success) {
-                      dispatch('getSettings');
-                  }
-              });
+        saveSettings({commit, dispatch, state}) {
+            return axios.patch('/api/tracking/settings', state.settings, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
+                    if (success) {
+                        dispatch('getSettings');
+                    }
+                });
         },
-        updateTrack({commit}, { id, date_from, date_to, billable, tags, entity, entity_id, entity_type, service, status }) {
+        updateTrack({commit}, {
+            id,
+            date_from,
+            date_to,
+            billable,
+            tags,
+            entity,
+            entity_id,
+            entity_type,
+            service,
+            status
+        }) {
             return axios.patch(
                 `/api/tracking/tracker/${id}`
                 , {date_from, date_to, billable, tags, entity, service, entity_id, entity_type, status}
-                , { retry: 5, retryDelay: 1000 }
-                )
-                .then(({ data: { data, success } }) => {
+                , {retry: 5, retryDelay: 1000}
+            )
+                .then(({data: {data, success}}) => {
                     return success;
                 });
         },
         deleteTrack({commit}, {id}) {
-            return axios.delete(`/api/tracking/tracker/${id}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success } }) => {
+            return axios.delete(`/api/tracking/tracker/${id}`, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     return success;
                 })
         },
         createReport({commit, dispatch}, {name, configuration}) {
-            return axios.post('/api/tracking/reports', {name, configuration}, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success } }) => {
+            return axios.post('/api/tracking/reports', {name, configuration}, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     dispatch('getReports');
                 });
         },
         deleteReport({commit, dispatch}, {id}) {
-            return axios.delete(`/api/tracking/reports/${id}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success } }) => {
+            return axios.delete(`/api/tracking/reports/${id}`, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     if (success) {
                         dispatch('getReports');
                         return null;
@@ -107,8 +118,8 @@ export default {
                 });
         },
         getReports({commit}) {
-            return axios.get(`/api/tracking/reports`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success } }) => {
+            return axios.get(`/api/tracking/reports`, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     if (success) {
                         commit('SET_REPORTS', data);
                         return data;
@@ -116,8 +127,8 @@ export default {
                 });
         },
         getReport({commit, dispatch}, {id}) {
-            return axios.get(`/api/tracking/reports/${id}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success } }) => {
+            return axios.get(`/api/tracking/reports/${id}`, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     if (success) {
                         return data;
                     }
@@ -140,14 +151,14 @@ export default {
             commit('DELETE_CUSTOM_ROUNDING', data);
             dispatch('saveSettings');
         },
-        getTrackers({ commit }, { offset = 0, filters = {} }) {
+        getTrackers({commit}, {offset = 0, filters = {}}) {
             const query = new URLSearchParams();
             Object.keys(filters).map(field => {
                 query.append(field, filters[field]);
             });
             query.append('offset', offset.toString());
-            return axios.get(`/api/tracking/tracker?${query.toString()}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success } }) => {
+            return axios.get(`/api/tracking/tracker?${query.toString()}`, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     if (offset > 0) {
                         commit('ADD_TRACKERS', data);
                     } else {
@@ -158,7 +169,7 @@ export default {
         },
         createTrack({commit}, data) {
             return axios.post('/api/tracking/tracker', data)
-                .then(({ data: { data }, success }) => {
+                .then(({data: {data}, success}) => {
                     if (success) {
                         commit('ADD_TRACKERS', data);
                     }
@@ -167,20 +178,20 @@ export default {
         },
         duplicateTrack({commit}, id) {
             return axios.post(`/api/tracking/tracker/${id}/duplicate`)
-                .then(({ data }) => {
+                .then(({data}) => {
                     commit('ADD_TRACKERS', data.data);
                     return data;
                 });
         }
     },
     mutations: {
-        SET_TOGGLE_TIMESHEET (state, timesheet) {
+        SET_TOGGLE_TIMESHEET(state, timesheet) {
             state.settings.settings.enableTimesheet = timesheet;
         },
-        SET_PROJECT_TYPE (state, type) {
+        SET_PROJECT_TYPE(state, type) {
             state.settings.settings.projectType = type;
         },
-        SET_TIMESHEET_WEEK (state, timesheet) {
+        SET_TIMESHEET_WEEK(state, timesheet) {
             state.settings.settings.timesheetWeek = timesheet;
         },
         SET_SETTINGS(state, settings) {
@@ -197,7 +208,7 @@ export default {
         },
         UPDATE_CUSTOM_ROUNDING(state, rounding) {
             const index = state.settings.settings.customRounding.findIndex(i => i.key === rounding.key);
-            rounding = { ...rounding, key: `custom_${rounding.seconds}_${rounding.direction}_${Date.now()}` };
+            rounding = {...rounding, key: `custom_${rounding.seconds}_${rounding.direction}_${Date.now()}`};
             state.settings.settings.customRounding[index] = rounding;
         },
         DELETE_CUSTOM_ROUNDING(state, rounding) {
@@ -228,7 +239,7 @@ export default {
             return state.reports;
         },
         getTrackers(state) {
-            return state.trackers.sort((a,b) => (moment(a.date_from).isAfter(b.date_from)));
+            return state.trackers.sort((a, b) => (moment(a.date_from).isAfter(b.date_from)));
         }
     }
 }
