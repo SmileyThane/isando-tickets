@@ -10,42 +10,42 @@
                     <v-card-text style="padding: 5px 15px;">
                         <v-row>
                             <v-col cols="4">
-                                <v-text-field v-model="search" hide-details append-icon="mdi-magnify"
-                                              :label="langMap.main.search" :color="themeBgColor"
+                                <v-text-field v-model="search" :color="themeBgColor" :label="langMap.main.search"
+                                              append-icon="mdi-magnify" hide-details
                                               v-on:keyup="openCategory($route.query.category)"/>
                             </v-col>
                             <v-col cols="4">
-                                <v-select multiple v-model="searchWhere" hide-details :items="searchOptions"
-                                          item-value="id" item-text="name" label="Search in" :color="themeBgColor"
+                                <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions" hide-details
+                                          item-text="name" item-value="id" label="Search in" multiple
                                           v-on:change="openCategory($route.query.category)"/>
                             </v-col>
                             <v-col cols="3">
-                                <v-select v-model="activeTags" :items="$store.getters['Tags/getTags']" item-value="id"
-                                          item-text="name" :label="langMap.kb.tags" hide-selected multiple small-chips
-                                          append-icon="mdi-tag-multiple-outline" :color="themeBgColor"
+                                <v-select v-model="activeTags" :color="themeBgColor" :items="$store.getters['Tags/getTags']"
+                                          :label="langMap.kb.tags" append-icon="mdi-tag-multiple-outline" hide-selected item-text="name" item-value="id"
+                                          multiple small-chips
                                           v-on:change="getArticles();">
                                     <template v-slot:selection="{ attrs, item, parent, selected }">
-                                        <v-chip small v-bind="attrs" :color="item.color"
-                                                :text-color="invertColor(item.color)" label class="ml-2" close
+                                        <v-chip :color="item.color" :text-color="invertColor(item.color)" class="ml-2"
+                                                close label small v-bind="attrs"
                                                 @click:close="syncTags(item)">
                                             {{ item.name }}
                                         </v-chip>
                                     </template>
                                     <template v-slot:item="{ attrs, item, parent, selected }">
-                                        <v-chip v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)"
-                                                label class="ml-2">
+                                        <v-chip :color="item.color" :text-color="invertColor(item.color)" class="ml-2"
+                                                label v-bind="attrs">
                                             {{ item.name }}
                                         </v-chip>
                                     </template>
                                 </v-select>
                             </v-col>
-                            <v-col cols="1" class="text-right">
+                            <v-col class="text-right" cols="1">
                                 <v-menu
                                     v-if="$helpers.auth.checkPermissionByIds([103])"
                                     bottom
                                 >
                                     <template v-slot:activator="{ on }">
-                                        <v-btn v-on="on" icon>
+                                        <v-btn icon v-on="on">
                                             <v-icon>mdi-dots-vertical</v-icon>
                                         </v-btn>
                                     </template>
@@ -76,9 +76,9 @@
             <v-col cols="4">
                 <v-row>
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12">
-                        <v-card outlined :class="category.id == $route.query.category ? 'parent' : ''">
+                        <v-card :class="category.id == $route.query.category ? 'parent' : ''" outlined>
                             <v-card-title>
-                                <v-icon large left :color="category.icon_color"
+                                <v-icon :color="category.icon_color" large left
                                         v-text="category.icon ? category.icon : 'mdi-help'"/>
                                 {{ $helpers.i18n.localized(category) }}
                                 <v-spacer></v-spacer>
@@ -87,7 +87,7 @@
                                     bottom
                                 >
                                     <template v-slot:activator="{ on }">
-                                        <v-btn v-on="on" icon>
+                                        <v-btn icon v-on="on">
                                             <v-icon>mdi-dots-vertical</v-icon>
                                         </v-btn>
                                     </template>
@@ -130,10 +130,10 @@
 
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn v-if="category.id == $route.query.category" text :color="themeBgColor"
-                                       v-text="langMap.kb.return_to_parent" @click="openCategory(category.parent_id)"/>
-                                <v-btn v-else text :color="themeBgColor" v-text="langMap.kb.open_category"
-                                       @click="openCategory(category.id)"/>
+                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text
+                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>
+                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"
+                                       v-text="langMap.kb.open_category"/>
                             </v-card-actions>
                         </v-card>
                     </v-col>
@@ -142,7 +142,7 @@
             <v-col cols="8">
                 <v-row>
                     <v-col v-for="article in articles" :key="'a'+article.id" cols="6">
-                        <v-card outlined :style="`background-color: ${article.featured_color};`">
+                        <v-card :style="`background-color: ${article.featured_color};`" outlined>
                             <v-card-title style="cursor: pointer" @click="readArticle(article.id)">
                                 {{ $helpers.i18n.localized(article) }}
                                 <v-spacer></v-spacer>
@@ -151,7 +151,7 @@
                                     bottom
                                 >
                                     <template v-slot:activator="{ on }">
-                                        <v-btn v-on="on" icon>
+                                        <v-btn icon v-on="on">
                                             <v-icon>mdi-dots-vertical</v-icon>
                                         </v-btn>
                                     </template>
@@ -209,8 +209,8 @@
                             <v-col cols="6">
                                 <label>{{ langMap.kb.parent_category }}</label>
                                 <perfect-scrollbar>
-                                    <v-treeview activatable open-all :active="categoryForm._active"
-                                                :items="categoriesTree" item-key="id" :color="themeBgColor"
+                                    <v-treeview :active="categoryForm._active" :color="themeBgColor" :items="categoriesTree"
+                                                activatable item-key="id" open-all
                                                 @update:active="refreshCategoryForm">
                                         <template v-slot:prepend="{ item }">
                                             <v-icon>mdi-folder</v-icon>
@@ -232,28 +232,28 @@
                                 </v-radio-group>
 
                                 <label>{{ langMap.kb.icon_color }}</label>
-                                <v-color-picker dot-size="25" mode="hexa" :model="categoryForm.icon_color"
+                                <v-color-picker :model="categoryForm.icon_color" dot-size="25" mode="hexa"
                                                 @update:color="updateCategoryColor"/>
 
                                 <v-expansion-panels>
                                     <v-expansion-panel>
                                         <v-expansion-panel-header>English</v-expansion-panel-header>
                                         <v-expansion-panel-content>
-                                            <v-text-field v-model="categoryForm.name" :label="langMap.main.name"
-                                                          hide-details single-line :color="themeBgColor"/>
+                                            <v-text-field v-model="categoryForm.name" :color="themeBgColor"
+                                                          :label="langMap.main.name" hide-details single-line/>
                                             <v-text-field v-model="categoryForm.description"
-                                                          :label="langMap.main.description" hide-details single-line
-                                                          :color="themeBgColor"/>
+                                                          :color="themeBgColor" :label="langMap.main.description" hide-details
+                                                          single-line/>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
                                     <v-expansion-panel>
                                         <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
                                         <v-expansion-panel-content>
-                                            <v-text-field v-model="categoryForm.name_de" :label="langMap.main.name"
-                                                          hide-details single-line :color="themeBgColor"/>
+                                            <v-text-field v-model="categoryForm.name_de" :color="themeBgColor"
+                                                          :label="langMap.main.name" hide-details single-line/>
                                             <v-text-field v-model="categoryForm.description_de"
-                                                          :label="langMap.main.description" hide-details single-line
-                                                          :color="themeBgColor"/>
+                                                          :color="themeBgColor" :label="langMap.main.description" hide-details
+                                                          single-line/>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
                                 </v-expansion-panels>
@@ -261,10 +261,10 @@
                         </v-row>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn text left v-text="langMap.main.cancel"
-                               @click="updateCategoryDlg=false; clearCategoryForm();"/>
-                        <v-btn text v-text="categoryForm.id ? langMap.main.update : langMap.main.create"
-                               @click="updateCategory" :color="themeBgColor"/>
+                        <v-btn left text @click="updateCategoryDlg=false; clearCategoryForm();"
+                               v-text="langMap.main.cancel"/>
+                        <v-btn :color="themeBgColor" text
+                               @click="updateCategory" v-text="categoryForm.id ? langMap.main.update : langMap.main.create"/>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -278,9 +278,9 @@
                         </p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn text left v-text="langMap.main.cancel"
-                               @click="deleteCategoryDlg=false; clearCategoryForm();"/>
-                        <v-btn text v-text="langMap.main.delete" @click="removeCategory" :color="themeBgColor"/>
+                        <v-btn left text @click="deleteCategoryDlg=false; clearCategoryForm();"
+                               v-text="langMap.main.cancel"/>
+                        <v-btn :color="themeBgColor" text @click="removeCategory" v-text="langMap.main.delete"/>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -294,9 +294,9 @@
                         </p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn text left v-text="langMap.main.cancel"
-                               @click="deleteArticleDlg=false; clearSelectedArticle();"/>
-                        <v-btn text v-text="langMap.main.delete" @click="removeArticle" :color="themeBgColor"/>
+                        <v-btn left text @click="deleteArticleDlg=false; clearSelectedArticle();"
+                               v-text="langMap.main.cancel"/>
+                        <v-btn :color="themeBgColor" text @click="removeArticle" v-text="langMap.main.delete"/>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
