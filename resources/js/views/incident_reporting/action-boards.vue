@@ -72,15 +72,15 @@
                             text
                             @click="saveIR(true)"
                         >
-                            {{langMap.ir.ab.clone}}
+                            {{ langMap.ir.ab.clone }}
                         </v-btn>
                     </div>
                 </div>
 
                 <v-tabs v-model="tab" :color="themeBgColor">
-                    <v-tab>{{langMap.ir.ab.general}}</v-tab>
-                    <v-tab>{{langMap.ir.ab.actions}}</v-tab>
-                    <v-tab>{{langMap.ir.ab.version}}</v-tab>
+                    <v-tab>{{ langMap.ir.ab.general }}</v-tab>
+                    <v-tab>{{ langMap.ir.ab.actions }}</v-tab>
+                    <v-tab>{{ langMap.ir.ab.version }}</v-tab>
                 </v-tabs>
                 <v-tabs-items v-model="tab">
                     <v-tab-item>
@@ -98,7 +98,7 @@
         <v-dialog v-model="$store.getters['IncidentReporting/getManageActionDlg']" max-width="480">
             <v-card dense outlined>
                 <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                    {{langMap.ir.ab.action}}
+                    {{ langMap.ir.ab.action }}
                 </v-card-title>
                 <v-card-text>
                     <v-text-field
@@ -119,54 +119,54 @@
                     ></v-textarea>
                     <br/>
                     <v-label>
-                        {{langMap.ir.ab.deadline_time_value}}:
+                        {{ langMap.ir.ab.deadline_time_value }}:
                     </v-label>
                     <br/>
                     <div class="row mt-3">
                         <v-select
                             v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_indicator"
-                            :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_indicators"
-                            class="small col-4"
-                            prepend-icon="mdi-clock"
                             :color="themeBgColor"
                             :item-color="themeBgColor"
+                            :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_indicators"
+                            class="small col-4"
                             dense
                             hide-details
+                            prepend-icon="mdi-clock"
                         ></v-select>
                         <v-text-field
                             v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_value"
                             :color="themeBgColor"
+                            :label="langMap.ir.ab.select"
                             class="col-4 pt-0"
                             required
-                            :label="langMap.ir.ab.select"
                             type="text"
                         ></v-text-field>
                         <v-select
                             v-model="$store.getters['IncidentReporting/getSelectedIRAction'].deadline_time_parameter"
-                            :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_parameters"
-                            class="small col-4"
                             :color="themeBgColor"
                             :item-color="themeBgColor"
+                            :items="$store.getters['IncidentReporting/getIROptions'].actions.deadline_time_parameters"
                             :label="langMap.ir.ab.unit"
+                            class="small col-4"
                             dense
                             hide-details
                         ></v-select>
                     </div>
                     <br/>
                     <v-label>
-                        {{langMap.ir.ab.action_type}}:
+                        {{ langMap.ir.ab.action_type }}:
                     </v-label>
                     <v-select
                         v-model="$store.getters['IncidentReporting/getSelectedIRAction'].type_id"
-                        :items="$store.getters['IncidentReporting/getIROptions'].actions.types"
-                        item-text="name"
-                        item-value="id"
-                        class="small"
-                        prepend-icon="mdi-list-status"
                         :color="themeBgColor"
                         :item-color="themeBgColor"
+                        :items="$store.getters['IncidentReporting/getIROptions'].actions.types"
+                        class="small"
                         dense
                         hide-details
+                        item-text="name"
+                        item-value="id"
+                        prepend-icon="mdi-list-status"
                     ></v-select>
                     <br/>
                 </v-card-text>

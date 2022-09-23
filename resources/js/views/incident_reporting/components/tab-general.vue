@@ -24,9 +24,9 @@
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].categories"
-                    :items="$store.getters['IncidentReporting/getIROptions'].categories"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
+                    :items="$store.getters['IncidentReporting/getIROptions'].categories"
                     class="small"
                     dense
                     hide-details
@@ -70,9 +70,9 @@
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                    :items="$store.getters['RiskRepository/getClients']"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
+                    :items="$store.getters['RiskRepository/getClients']"
                     class=""
                     dense
                     hide-details
@@ -107,9 +107,9 @@
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].stage_monitoring_id"
-                    :items="$store.getters['IncidentReporting/getIROptions'].stage_monitorings"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
+                    :items="$store.getters['IncidentReporting/getIROptions'].stage_monitorings"
                     class=""
                     dense
                     hide-details
@@ -148,9 +148,9 @@
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].impact_potential_id"
-                    :items="$store.getters['IncidentReporting/getIROptions'].impact_potentials"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
+                    :items="$store.getters['IncidentReporting/getIROptions'].impact_potentials"
                     class=""
                     dense
                     hide-details
@@ -186,9 +186,9 @@
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].priority_id"
-                    :items="$store.getters['IncidentReporting/getIROptions'].priorities"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
+                    :items="$store.getters['IncidentReporting/getIROptions'].priorities"
                     class=""
                     dense
                     hide-details
@@ -222,11 +222,11 @@
             <v-col class="pb-0" cols="8" lg="8" md="8" sm="12" xl="8">
                 <v-textarea
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
+                    :color="themeBgColor"
                     :readonly="!$store.getters['IncidentReporting/getIsEditable']"
                     auto-grow
                     label="Description"
                     name="input-7-1"
-                    :color="themeBgColor"
                     outlined
                 ></v-textarea>
             </v-col>
@@ -236,9 +236,9 @@
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].access_id"
-                    :items="$store.getters['IncidentReporting/getIROptions'].accesses"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
+                    :items="$store.getters['IncidentReporting/getIROptions'].accesses"
                     class=""
                     dense
                     hide-details

@@ -10,16 +10,16 @@ export default {
         teamManagers: [],
     },
     actions: {
-        getTeams({ commit }, { search, sort_by, sort_val, per_page, page }) {
+        getTeams({commit}, {search, sort_by, sort_val, per_page, page}) {
             let params = {};
-            if (search) params = { ...params, search };
-            if (sort_by) params = { ...params, sort_by };
-            if (sort_val) params = { ...params, sort_val };
-            if (per_page) params = { ...params, per_page };
-            if (page) params = { ...params, page };
+            if (search) params = {...params, search};
+            if (sort_by) params = {...params, sort_by};
+            if (sort_val) params = {...params, sort_val};
+            if (per_page) params = {...params, per_page};
+            if (page) params = {...params, page};
             const queryParams = new URLSearchParams(params);
-            return axios.get('/api/team?' + queryParams.toString(), { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data } }) => {
+            return axios.get('/api/team?' + queryParams.toString(), {retry: 5, retryDelay: 1000})
+                .then(({data: {success, data}}) => {
                     if (success) {
                         commit('SET_PARAMS', params);
                         commit('SET_TEAMS', data);
@@ -27,8 +27,10 @@ export default {
                     return success;
                 })
         },
-        getCoworkers({commit, state}, { search, force = false,
-            billable = null, clients = null, projects = null, services = null, tag = null }) {
+        getCoworkers({commit, state}, {
+            search, force = false,
+            billable = null, clients = null, projects = null, services = null, tag = null
+        }) {
             if (state.coworkers.length && !search && !force) {
                 return state.coworkers;
             } else {
@@ -36,21 +38,21 @@ export default {
                     search: search ?? '',
                     clients, projects, services, tag, billable
                 });
-                axios.get(`/api/tracking/coworkers?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
-                    .then(({ data: { success, data: coworkers } }) => {
+                axios.get(`/api/tracking/coworkers?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
+                    .then(({data: {success, data: coworkers}}) => {
                         if (success) {
                             commit('GET_COWORKERS', coworkers)
                         }
                     })
             }
         },
-        getManagedTeams({ commit, state }, { withEmployee = false }) {
+        getManagedTeams({commit, state}, {withEmployee = false}) {
             if (!withEmployee) withEmployee = false;
             if (state.managedTeams.length) {
                 return state.managedTeams;
             } else {
                 return axios.get(`/api/tracking/managed_teams?withEmployee=${withEmployee}`)
-                    .then(({ data: { success, data } }) => {
+                    .then(({data: {success, data}}) => {
                         if (success) {
                             commit('SET_MANAGED_TEAMS', data);
                         }
@@ -58,12 +60,12 @@ export default {
                     });
             }
         },
-        getTeamManagers({ commit, state }) {
+        getTeamManagers({commit, state}) {
             if (state.teamManagers.length) {
                 return state.teamManagers;
             } else {
                 return axios.get(`/api/tracking/team_managers`)
-                    .then(({ data: { success, data } }) => {
+                    .then(({data: {success, data}}) => {
                         if (success) {
                             commit('SET_TEAM_MANAGERS', data);
                         }

@@ -11,11 +11,11 @@ class Tracking extends Model
 {
     static $DATETIME_FORMAT = 'Y-m-d\TH:i:s';
     static $DATE_FORMAT = 'Y-m-d';
-static $STATUS_STARTED = 0;
-static $STATUS_STOPPED = 1;//'started';
+    static $STATUS_STARTED = 0;
+    static $STATUS_STOPPED = 1;//'started';
     static $STATUS_PAUSED = 2;//'stopped';
     static $STATUS_ARCHIVED = 3;//'paused';
-        protected $table = 'tracking';//'archived';
+    protected $table = 'tracking';//'archived';
     protected $fillable = [
         'entity_id',
         'entity_type'

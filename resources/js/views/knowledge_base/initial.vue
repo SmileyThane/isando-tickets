@@ -1,5 +1,5 @@
 <template>
-    <component :is="component" />
+    <component :is="component"/>
 </template>
 
 <script>
@@ -16,8 +16,11 @@ export default {
     }),
     created() {
         switch (this.$route.params.alias) {
-            case 'risk_repository': this.component = risk_repository; break;
-            default: this.component = knowledge_base
+            case 'risk_repository':
+                this.component = risk_repository;
+                break;
+            default:
+                this.component = knowledge_base
         }
     },
 }

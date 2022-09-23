@@ -11,32 +11,43 @@ export default {
         timesheet_templates: [],
     },
     actions: {
-        getTimesheet({ commit }, { start, end }) {
+        getTimesheet({commit}, {start, end}) {
             const queryParams = new URLSearchParams({
                 start, end
             });
             commit('SET_TIMESHEET', []);
-            return axios.get(`/api/tracking/timesheet?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success }}) => {
+            return axios.get(`/api/tracking/timesheet?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     if (success) {
                         commit('SET_TIMESHEET', data);
-                        commit('SET_PARAMS', { start, end });
+                        commit('SET_PARAMS', {start, end});
                     }
                     return success;
                 });
         },
-        createTimesheet({ dispatch, state }, { entity_id, entity_type, service, mon, tue, wed, thu, fri, sat, sun }) {
-            return axios.post('/api/tracking/timesheet', { entity_id, entity_type, service, mon, tue, wed, thu, fri, sat, sun }, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success }}) => {
+        createTimesheet({dispatch, state}, {entity_id, entity_type, service, mon, tue, wed, thu, fri, sat, sun}) {
+            return axios.post('/api/tracking/timesheet', {
+                entity_id,
+                entity_type,
+                service,
+                mon,
+                tue,
+                wed,
+                thu,
+                fri,
+                sat,
+                sun
+            }, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);
                     }
                     return success;
                 });
         },
-        removeTimesheet ({ dispatch, state }, id) {
-            return axios.delete(`/api/tracking/timesheet/${id}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success } }) => {
+        removeTimesheet({dispatch, state}, id) {
+            return axios.delete(`/api/tracking/timesheet/${id}`, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     if (success) {
                         const index = state.timesheet.findIndex(i => i.id === id);
                         state.timesheet.splice(index, 1);
@@ -45,18 +56,32 @@ export default {
                     return success;
                 })
         },
-        updateTimesheet({ state, commit, dispatch }, { id, timesheet: { entity_id, entity_type, billable, status, times, service } }) {
-            return axios.patch(`/api/tracking/timesheet/${id}`, { id, entity_id, entity_type, billable, status, times, service: service ? service.id : null }, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success }}) => {
+        updateTimesheet({state, commit, dispatch}, {
+            id,
+            timesheet: {entity_id, entity_type, billable, status, times, service}
+        }) {
+            return axios.patch(`/api/tracking/timesheet/${id}`, {
+                id,
+                entity_id,
+                entity_type,
+                billable,
+                status,
+                times,
+                service: service ? service.id : null
+            }, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     if (success) {
                         commit('UPDATE_ITEM', data);
                     }
                     return success;
                 })
         },
-        submitTimesheetByIds({ commit }, { ids, status, approver_id, note }) {
-            return axios.patch('/api/tracking/timesheet/submit', { ids, status, approver_id, note }, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data } }) => {
+        submitTimesheetByIds({commit}, {ids, status, approver_id, note}) {
+            return axios.patch('/api/tracking/timesheet/submit', {ids, status, approver_id, note}, {
+                retry: 5,
+                retryDelay: 1000
+            })
+                .then(({data: {success, data}}) => {
                     if (success) {
                         data.map(i => {
                             commit('UPDATE_ITEM', i);
@@ -65,37 +90,37 @@ export default {
                     return success;
                 })
         },
-        remindTimesheet ({ commit }, { ids }) {
-            return axios.post('/api/tracking/timesheet/remind', { ids })
-                .then(({ data: { success, data } }) => {
+        remindTimesheet({commit}, {ids}) {
+            return axios.post('/api/tracking/timesheet/remind', {ids})
+                .then(({data: {success, data}}) => {
                     if (success) {
                         return data;
                     }
                     return success;
                 })
         },
-        getCountTimesheetForApproval({ commit }) {
+        getCountTimesheetForApproval({commit}) {
             axios.get('/api/tracking/timesheet/approval')
-                .then(({ data: { success, data } }) => {
+                .then(({data: {success, data}}) => {
                     if (success) {
                         commit('SET_COUNT_FOR_APPROVAL', data.count);
                     }
                 });
         },
-        getAllGroupedByStatus({ commit }, { userId }) {
+        getAllGroupedByStatus({commit}, {userId}) {
             axios.get('/api/tracking/timesheet/status')
-                .then(({ data: { success, data } }) => {
+                .then(({data: {success, data}}) => {
                     if (success) {
-                        commit('SET_GROUPED_TIMESHEET', { data, userId });
+                        commit('SET_GROUPED_TIMESHEET', {data, userId});
                     }
                 });
         },
-        copyLastWeek({ state, dispatch }, {from, to}) {
+        copyLastWeek({state, dispatch}, {from, to}) {
             const query = new URLSearchParams({
                 from, to
             });
             axios.post('/api/tracking/timesheet/copy_last_week?' + query.toString())
-                .then(({ data: { success, data } }) => {
+                .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);
                     }
@@ -103,41 +128,41 @@ export default {
         },
         getTimesheetTemplates({commit}) {
             axios.get('/api/tracking/timesheet/templates')
-                .then(({ data: { success, data } }) => {
+                .then(({data: {success, data}}) => {
                     if (success) {
                         commit('SET_TIMESHEET_TEMPLATES', data);
                     }
                 });
         },
-        saveAsTemplate({ state, dispatch }, { items, data }) {
-            axios.post('/api/tracking/timesheet/templates', { items, data })
-                .then(({ data: { success, data } }) => {
+        saveAsTemplate({state, dispatch}, {items, data}) {
+            axios.post('/api/tracking/timesheet/templates', {items, data})
+                .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getTimesheetTemplates');
                     }
                 });
         },
-        loadTemplate({ state, dispatch }, { id, start, end }) {
-            axios.post(`/api/tracking/timesheet/templates/${id}`, { start, end })
-                .then(({ data: { success, data } }) => {
+        loadTemplate({state, dispatch}, {id, start, end}) {
+            axios.post(`/api/tracking/timesheet/templates/${id}`, {start, end})
+                .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);
                     }
                 });
         },
-        removeTemplate({ state, dispatch }, id) {
+        removeTemplate({state, dispatch}, id) {
             axios.delete(`/api/tracking/timesheet/templates/${id}`)
-                .then(({ data: { success, data } }) => {
+                .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getTimesheetTemplates', state.params);
                     }
                 });
         },
-        saveOrdering({ state }) {
+        saveOrdering({state}) {
             return axios.patch(`/api/tracking/timesheet/ordering`, {
-                ids: state.timesheet.sort((a,b) => a.ordering - b.ordering).map(i => i.id),
-            }, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success }}) => {
+                ids: state.timesheet.sort((a, b) => a.ordering - b.ordering).map(i => i.id),
+            }, {retry: 5, retryDelay: 1000})
+                .then(({data: {data, success}}) => {
                     return success;
                 });
         }
@@ -156,7 +181,7 @@ export default {
         SET_COUNT_FOR_APPROVAL(state, params) {
             state.countForApproval = params;
         },
-        SET_GROUPED_TIMESHEET(state, { data, userId }) {
+        SET_GROUPED_TIMESHEET(state, {data, userId}) {
             state.timesheetArchived = data.filter(i => i.user_id === userId && i.status === 3);
             state.timesheetPending = data.filter(i => i.user_id === userId && i.status === 1);
             state.timesheetRejected = data.filter(i => i.user_id === userId && i.status === 2);
@@ -172,10 +197,10 @@ export default {
             state.timesheetArchived.filter(i => ids.includes(i)).map(i => i.status = status);
             state.timesheetRequest.filter(i => ids.includes(i)).map(i => i.status = status);
         },
-        SET_ORDERING(state, { oldIndex, newIndex }) {
+        SET_ORDERING(state, {oldIndex, newIndex}) {
             try {
-                state.timesheet[oldIndex-1].ordering = newIndex;
-                state.timesheet.splice(newIndex-1, 0, state.timesheet.splice(oldIndex-1, 1)[0]);
+                state.timesheet[oldIndex - 1].ordering = newIndex;
+                state.timesheet.splice(newIndex - 1, 0, state.timesheet.splice(oldIndex - 1, 1)[0]);
             } catch (e) {
                 console.log('Ordering error');
             }
@@ -184,9 +209,9 @@ export default {
     getters: {
         getTimesheet(state, commit) {
             return state.timesheet
-                .sort((a,b) => a.ordering - b.ordering)
+                .sort((a, b) => a.ordering - b.ordering)
                 .map((item, index) => {
-                    state.timesheet[index].ordering = index+1;
+                    state.timesheet[index].ordering = index + 1;
                     return item;
                 });
         },
@@ -205,7 +230,7 @@ export default {
         getArchivedTimesheet(state) {
             return state.timesheetArchived;
         },
-        getTimesheetTemplates (state) {
+        getTimesheetTemplates(state) {
             return state.timesheet_templates;
         }
     }

@@ -6,8 +6,10 @@ export default {
         clients: []
     },
     actions: {
-        getClientList({commit, state}, { search, force = false,
-            coworkers = null, projects = null, services = null, tag = null, billable = null }) {
+        getClientList({commit, state}, {
+            search, force = false,
+            coworkers = null, projects = null, services = null, tag = null, billable = null
+        }) {
             if (state.clients.length && !search && !force) {
                 console.log(state.clients.length, search, !search, search, !search);
                 return state.clients;
@@ -16,8 +18,8 @@ export default {
                     search: search ?? '',
                     coworkers, projects, services, tag, billable
                 });
-                axios.get(`/api/tracking/clients?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
-                    .then(({ data: { success, data: { data: clients } } }) => {
+                axios.get(`/api/tracking/clients?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
+                    .then(({data: {success, data: {data: clients}}}) => {
                         if (success) {
                             commit('GET_CLIENTS', clients)
                         }
@@ -33,7 +35,7 @@ export default {
     getters: {
         getClients(state) {
             return _.sortBy(state.clients, item => {
-               return item.name.toLowerCase();
+                return item.name.toLowerCase();
             });
         }
     }

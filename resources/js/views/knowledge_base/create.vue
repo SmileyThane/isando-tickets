@@ -12,19 +12,21 @@
                     <v-row>
                         <v-col cols="6">
                             <label>{{ langMap.kb.featured_image }}</label>
-                            <v-file-input v-model="newFeatured" :color="themeBgColor" accept="image/*" dense prepend-icon="mdi-camera" class="mb-2"/>
-                            <div class="pa-2" :style="`background-color: ${article.featured_color};`">
-                                <v-img :src="featured" contain max-height="300" />
+                            <v-file-input v-model="newFeatured" :color="themeBgColor" accept="image/*" class="mb-2"
+                                          dense prepend-icon="mdi-camera"/>
+                            <div :style="`background-color: ${article.featured_color};`" class="pa-2">
+                                <v-img :src="featured" contain max-height="300"/>
                             </div>
                         </v-col>
                         <v-col cols="6">
-                              <label>{{ langMap.kb.featured_color }}</label>
-                              <v-color-picker dot-size="25" mode="hexa" v-model="article.featured_color" />
+                            <label>{{ langMap.kb.featured_color }}</label>
+                            <v-color-picker v-model="article.featured_color" dot-size="25" mode="hexa"/>
                         </v-col>
                         <v-col cols="6">
                             <label>{{ langMap.kb.article_category }}</label>
                             <perfect-scrollbar>
-                                <v-treeview open-all v-model="categories" selectable :items="categoriesTree" item-key="id" :color="themeBgColor" :selected-color="themeBgColor">
+                                <v-treeview v-model="categories" :color="themeBgColor" :items="categoriesTree" :selected-color="themeBgColor"
+                                            item-key="id" open-all selectable>
                                     <template v-slot:prepend="{ item }">
                                         <v-icon>mdi-folder</v-icon>
                                     </template>
@@ -36,133 +38,157 @@
                         </v-col>
                         <v-col cols="6">
                             <label>{{ langMap.kb.tags }}</label>
-                            <v-combobox v-model="article.tags" :items="$store.getters['Tags/getTags']" item-value="id" item-text="name" hide-selected multiple chips :label="langMap.tracking.tag_btn.choose_tags" :color="themeBgColor">
+                            <v-combobox v-model="article.tags" :color="themeBgColor" :items="$store.getters['Tags/getTags']"
+                                        :label="langMap.tracking.tag_btn.choose_tags" chips hide-selected item-text="name"
+                                        item-value="id" multiple>
                                 <template v-slot:selection="{ attrs, item, parent, selected }">
-                                    <v-chip v-if="item.id" v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2" close @click:close="removeTag(item)">
+                                    <v-chip v-if="item.id" :color="item.color" :text-color="invertColor(item.color)"
+                                            class="ml-2" close label v-bind="attrs"
+                                            @click:close="removeTag(item)">
                                         {{ item.name }}
                                     </v-chip>
-                                    <v-chip v-else label class="ml-2" close @click:close="removeTag(item)">
+                                    <v-chip v-else class="ml-2" close label @click:close="removeTag(item)">
                                         {{ item }}
                                     </v-chip>
                                 </template>
                             </v-combobox>
 
                             <v-spacer>&nbsp;</v-spacer>
-                            <v-switch v-model="article.is_internal" :label="langMap.kb.is_internal" :color="themeBgColor" :value="1" />
+                            <v-switch v-model="article.is_internal" :color="themeBgColor"
+                                      :label="langMap.kb.is_internal" :value="1"/>
 
                         </v-col>
-                            <v-col cols="12">
-                                <v-expansion-panels>
-                                    <v-expansion-panel>
-                                        <v-expansion-panel-header>English</v-expansion-panel-header>
-                                        <v-expansion-panel-content>
-                                            <v-text-field v-model="article.name" :label="langMap.main.name" :placeholder="langMap.main.name" hide-details single-line :color="themeBgColor"/>
-                                            <v-textarea v-model="article.summary" rows="4" :label="langMap.kb.summary" hide-details single-line :color="themeBgColor"/>
-                                            <v-spacer>&nbsp;</v-spacer>
-                                            <tinymce ref="content" aria-rowcount="40" v-model="article.content" :placeholder="langMap.kb.article_content" />
-                                            <v-spacer>&nbsp;</v-spacer>
-                                            <hr/>
+                        <v-col cols="12">
+                            <v-expansion-panels>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>English</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-text-field v-model="article.name" :color="themeBgColor"
+                                                      :label="langMap.main.name" :placeholder="langMap.main.name" hide-details
+                                                      single-line/>
+                                        <v-textarea v-model="article.summary" :color="themeBgColor" :label="langMap.kb.summary"
+                                                    hide-details rows="4" single-line/>
+                                        <v-spacer>&nbsp;</v-spacer>
+                                        <tinymce ref="content" v-model="article.content" :placeholder="langMap.kb.article_content"
+                                                 aria-rowcount="40"/>
+                                        <v-spacer>&nbsp;</v-spacer>
+                                        <hr/>
 
-                                            <v-row>
-                                                <v-col cols="6">
-                                                    <v-textarea rows="4" v-model="article.keywords" :placeholder="langMap.kb.keywords" :color="themeBgColor"/>
-                                                </v-col>
-                                                <v-col cols="6">
-                                                    <v-spacer>&nbsp;</v-spacer>
-                                                    <label>{{ langMap.kb.attachments }}</label>
+                                        <v-row>
+                                            <v-col cols="6">
+                                                <v-textarea v-model="article.keywords" :color="themeBgColor"
+                                                            :placeholder="langMap.kb.keywords" rows="4"/>
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <v-spacer>&nbsp;</v-spacer>
+                                                <label>{{ langMap.kb.attachments }}</label>
 
-                                                    <v-chip-group column>
-                                                        <v-chip v-for="attachment in article.attachments" v-if="attachment.service_info && attachment.service_info.lang == 'en'" :key="attachment.id" label outlined :color="themeBgColor" class="mr-2" close @click:close="deleteAttachment(attachment)">
+                                                <v-chip-group column>
+                                                    <v-chip v-for="attachment in article.attachments"
+                                                            v-if="attachment.service_info && attachment.service_info.lang == 'en'"
+                                                            :key="attachment.id" :color="themeBgColor" class="mr-2" close
+                                                            label outlined
+                                                            @click:close="deleteAttachment(attachment)">
                                         <span @click="download(attachment.link)">
-                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)" />
-                                            {{ attachment.name}}
+                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
+                                            {{ attachment.name }}
                                         </span>
+                                                    </v-chip>
+                                                </v-chip-group>
+
+                                                <v-spacer>&nbsp;</v-spacer>
+                                                <v-file-input
+                                                    ref="fileupload"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :label="langMap.kb.create_attachment"
+                                                    :show-size="1024"
+                                                    chips
+                                                    counter
+                                                    multiple
+                                                    prepend-icon="mdi-paperclip"
+                                                    v-on:change="onFileChange"
+                                                >
+                                                    <template v-slot:selection="{ file, index, text }">
+                                                        <v-chip :color="themeBgColor" label outlined>
+                                                            <v-icon :color="themeBgColor" left
+                                                                    v-text="fileIcon(file.name)"/>
+                                                            {{ text }}
                                                         </v-chip>
-                                                    </v-chip-group>
+                                                    </template>
+                                                </v-file-input>
+                                            </v-col>
+                                        </v-row>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-text-field v-model="article.name_de" :color="themeBgColor" :label="langMap.main.name"
+                                                      hide-details single-line/>
+                                        <v-textarea v-model="article.summary_de" :color="themeBgColor" :label="langMap.kb.summary"
+                                                    hide-details rows="4" single-line/>
+                                        <v-spacer>&nbsp;</v-spacer>
+                                        <tinymce ref="content_de" v-model="article.content_de" :placeholder="langMap.kb.article_content"
+                                                 aria-rowcount="40"/>
+                                        <v-spacer>&nbsp;</v-spacer>
+                                        <hr/>
 
-                                                    <v-spacer>&nbsp;</v-spacer>
-                                                    <v-file-input
-                                                        ref="fileupload"
-                                                        chips
-                                                        multiple
-                                                        :label="langMap.kb.create_attachment"
-                                                        :color="themeBgColor"
-                                                        :item-color="themeBgColor"
-                                                        prepend-icon="mdi-paperclip"
-                                                        :show-size="1024"
-                                                        counter
-                                                        v-on:change="onFileChange"
-                                                    >
-                                                        <template v-slot:selection="{ file, index, text }">
-                                                            <v-chip :color="themeBgColor" label outlined>
-                                                                <v-icon :color="themeBgColor" left v-text="fileIcon(file.name)" />
-                                                                {{ text }}
-                                                            </v-chip>
-                                                        </template>
-                                                    </v-file-input>
-                                                </v-col>
-                                            </v-row>
-                                        </v-expansion-panel-content>
-                                    </v-expansion-panel>
-                                    <v-expansion-panel>
-                                        <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
-                                        <v-expansion-panel-content>
-                                            <v-text-field v-model="article.name_de" :label="langMap.main.name" hide-details single-line :color="themeBgColor"/>
-                                            <v-textarea v-model="article.summary_de" rows="4" :label="langMap.kb.summary" hide-details single-line :color="themeBgColor"/>
-                                            <v-spacer>&nbsp;</v-spacer>
-                                            <tinymce ref="content_de" aria-rowcount="40" v-model="article.content_de" :placeholder="langMap.kb.article_content" />
-                                            <v-spacer>&nbsp;</v-spacer>
-                                            <hr/>
+                                        <v-row>
+                                            <v-col cols="6">
+                                                <v-textarea v-model="article.keywords_de" :color="themeBgColor"
+                                                            :placeholder="langMap.kb.keywords" rows="4"/>
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <v-spacer>&nbsp;</v-spacer>
+                                                <label>{{ langMap.kb.attachments }}</label>
 
-                                            <v-row>
-                                                <v-col cols="6">
-                                                    <v-textarea rows="4" v-model="article.keywords_de" :placeholder="langMap.kb.keywords" :color="themeBgColor"/>
-                                                </v-col>
-                                                <v-col cols="6">
-                                                    <v-spacer>&nbsp;</v-spacer>
-                                                    <label>{{ langMap.kb.attachments }}</label>
-
-                                                    <v-chip-group column>
-                                                        <v-chip v-for="attachment in article.attachments" v-if="attachment.service_info && attachment.service_info.lang == 'de'" :key="attachment.id" label outlined :color="themeBgColor" class="mr-2" close @click:close="deleteAttachment(attachment)">
+                                                <v-chip-group column>
+                                                    <v-chip v-for="attachment in article.attachments"
+                                                            v-if="attachment.service_info && attachment.service_info.lang == 'de'"
+                                                            :key="attachment.id" :color="themeBgColor" class="mr-2" close
+                                                            label outlined
+                                                            @click:close="deleteAttachment(attachment)">
                                         <span @click="download(attachment.link)">
-                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)" />
-                                            {{ attachment.name}}
+                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
+                                            {{ attachment.name }}
                                         </span>
-                                                        </v-chip>
-                                                    </v-chip-group>
+                                                    </v-chip>
+                                                </v-chip-group>
 
-                                                    <v-spacer>&nbsp;</v-spacer>
-                                                    <v-file-input
-                                                        ref="fileupload_de"
-                                                        chips
-                                                        multiple
-                                                        :label="langMap.kb.create_attachment"
-                                                        :color="themeBgColor"
-                                                        :item-color="themeBgColor"
-                                                        prepend-icon="mdi-paperclip"
-                                                        :show-size="1024"
-                                                        counter
-                                                        v-on:change="onFileChangeDe"
-                                                    >
-                                                        <template v-slot:selection="{ file, index, text }">
-                                                            <v-chip :color="themeBgColor" label outlined>
-                                                                <v-icon :color="themeBgColor" left v-text="fileIcon(file.name)" />
-                                                                {{ text }}
-                                                            </v-chip>
-                                                        </template>
-                                                    </v-file-input>
-                                                </v-col>
-                                            </v-row>
-                                        </v-expansion-panel-content>
-                                    </v-expansion-panel>
-                                </v-expansion-panels>
-                            </v-col>
-                        </v-row>
+                                                <v-spacer>&nbsp;</v-spacer>
+                                                <v-file-input
+                                                    ref="fileupload_de"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :label="langMap.kb.create_attachment"
+                                                    :show-size="1024"
+                                                    chips
+                                                    counter
+                                                    multiple
+                                                    prepend-icon="mdi-paperclip"
+                                                    v-on:change="onFileChangeDe"
+                                                >
+                                                    <template v-slot:selection="{ file, index, text }">
+                                                        <v-chip :color="themeBgColor" label outlined>
+                                                            <v-icon :color="themeBgColor" left
+                                                                    v-text="fileIcon(file.name)"/>
+                                                            {{ text }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-file-input>
+                                            </v-col>
+                                        </v-row>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn text v-text="langMap.main.cancel" @click="openCategory" />
-                    <v-btn text :color="themeBgColor" v-text="langMap.main.save" @click="saveArticle(false)" />
-                    <v-btn text :color="themeBgColor" v-text="langMap.kb.save_and_close" @click="saveArticle(true)" />
+                    <v-btn text @click="openCategory" v-text="langMap.main.cancel"/>
+                    <v-btn :color="themeBgColor" text @click="saveArticle(false)" v-text="langMap.main.save"/>
+                    <v-btn :color="themeBgColor" text @click="saveArticle(true)" v-text="langMap.kb.save_and_close"/>
                 </v-card-actions>
             </v-card>
 
@@ -176,36 +202,49 @@
                     <v-row>
                         <v-col cols="6">
                             <v-radio-group v-model="stepType" dense>
-                                <v-radio v-for="type in stepTypes" v-bind:key="type.id" :value="type.id" :label="type.name" :color="themeBgColor" />
+                                <v-radio v-for="type in stepTypes" v-bind:key="type.id" :color="themeBgColor"
+                                         :label="type.name" :value="type.id"/>
                             </v-radio-group>
                         </v-col>
                         <v-col cols="6">
-                        <v-list dense outlined>
-                            <v-list-item v-for="(step, index) in article.next" v-bind:key="step.id" dense>
-                                <v-list-item-content>
-                                    <v-select :items="articles" v-model="article.next[index]" item-value="id" :color="themeBgColor" :label="langMap.kb.next_step" dense :item-color="themeBgColor">
-                                        <template v-slot:item="{ item }">{{ $helpers.i18n.localized(item) }}</template>
-                                        <template v-slot:selection="{ item }">{{ $helpers.i18n.localized(item) }}</template>
-                                    </v-select>
-                                </v-list-item-content>
-                                <v-list-item-action>
-                                    <v-btn icon @click="unlinkStep(step)" class="mr-2" :color="themeBgColor"><v-icon>mdi-link-off</v-icon></v-btn>
-                                </v-list-item-action>
-                            </v-list-item>
-                            <v-list-item>
-                                <v-list-item-content v-text="langMap.kb.add_step" />
-                                <v-list-item-action>
-                                    <v-btn icon @click="addStep" :color="themeBgColor"><v-icon>mdi-plus</v-icon></v-btn>
-                                </v-list-item-action>
-                            </v-list-item>
-                        </v-list>
+                            <v-list dense outlined>
+                                <v-list-item v-for="(step, index) in article.next" v-bind:key="step.id" dense>
+                                    <v-list-item-content>
+                                        <v-select v-model="article.next[index]" :color="themeBgColor" :item-color="themeBgColor"
+                                                  :items="articles" :label="langMap.kb.next_step" dense
+                                                  item-value="id">
+                                            <template v-slot:item="{ item }">{{
+                                                    $helpers.i18n.localized(item)
+                                                }}
+                                            </template>
+                                            <template v-slot:selection="{ item }">{{
+                                                    $helpers.i18n.localized(item)
+                                                }}
+                                            </template>
+                                        </v-select>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-btn :color="themeBgColor" class="mr-2" icon @click="unlinkStep(step)">
+                                            <v-icon>mdi-link-off</v-icon>
+                                        </v-btn>
+                                    </v-list-item-action>
+                                </v-list-item>
+                                <v-list-item>
+                                    <v-list-item-content v-text="langMap.kb.add_step"/>
+                                    <v-list-item-action>
+                                        <v-btn :color="themeBgColor" icon @click="addStep">
+                                            <v-icon>mdi-plus</v-icon>
+                                        </v-btn>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-list>
                         </v-col>
                     </v-row>
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn text v-text="langMap.main.cancel" @click="openCategory" />
-                    <v-btn text :color="themeBgColor" v-text="langMap.main.save" @click="saveArticle(false)" />
-                    <v-btn text :color="themeBgColor" v-text="langMap.kb.save_and_close" @click="saveArticle(true)" />
+                    <v-btn text @click="openCategory" v-text="langMap.main.cancel"/>
+                    <v-btn :color="themeBgColor" text @click="saveArticle(false)" v-text="langMap.main.save"/>
+                    <v-btn :color="themeBgColor" text @click="saveArticle(true)" v-text="langMap.kb.save_and_close"/>
                 </v-card-actions>
             </v-card>
         </v-form>
@@ -213,7 +252,7 @@
 </template>
 
 <style scoped>
->>>.ps {
+>>> .ps {
     max-height: 20em;
 }
 
@@ -322,7 +361,7 @@ export default {
                     if (response.success === true) {
                         let that = this;
                         this.article = response.data;
-                        Array.from(this.article.categories).forEach(function(category) {
+                        Array.from(this.article.categories).forEach(function (category) {
                             that.categories.push(category.id);
                         });
                         this.featured = this.article.featured_image ? this.article.featured_image.link : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
@@ -388,14 +427,14 @@ export default {
                 formData.append('file_infos[]', JSON.stringify({type: 'kb_featured', order: 0}));
             }
             if (this.files && this.files.length > 0) {
-                Array.from(this.files).forEach(function(file) {
+                Array.from(this.files).forEach(function (file) {
                     formData.append('files[]', file);
                     formData.append('file_infos[]', JSON.stringify({type: 'kb_document', lang: 'en'}));
                 });
             }
 
             if (this.files_de && this.files_de.length > 0) {
-                Array.from(this.files_de).forEach(function(file) {
+                Array.from(this.files_de).forEach(function (file) {
                     formData.append('files[]', file);
                     formData.append('file_infos[]', JSON.stringify({type: 'kb_document', lang: 'de'}));
                 });
@@ -470,7 +509,7 @@ export default {
         },
         openCategory() {
             if (parseInt(localStorage.getItem('kb_category'))) {
-                this.$router.push(`/${this.$route.params.alias}?category=`+localStorage.getItem('kb_category'));
+                this.$router.push(`/${this.$route.params.alias}?category=` + localStorage.getItem('kb_category'));
             } else {
                 this.$router.push(`/${this.$route.params.alias}`);
             }
@@ -498,7 +537,11 @@ export default {
                     response = response.data;
                     if (response.success === true) {
                         this.articles = Array.from(response.data);
-                        this.articles.unshift({id: '--', name: this.langMap.kb.link_existing_articles, header: this.langMap.kb.link_existing_articles});
+                        this.articles.unshift({
+                            id: '--',
+                            name: this.langMap.kb.link_existing_articles,
+                            header: this.langMap.kb.link_existing_articles
+                        });
                         this.articles.unshift({id: 0, name: this.langMap.kb.create_new_step});
                         this.$forceUpdate();
                     } else {
