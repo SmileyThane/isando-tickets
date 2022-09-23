@@ -6,7 +6,7 @@ export default {
         articles: [],
         selectedArticle: null,
         search: '',
-        searchWhere: [1,2,3],
+        searchWhere: [1, 2, 3],
         activeTags: [],
         clients: {
             current_page: 1,
@@ -25,13 +25,13 @@ export default {
         importance: [],
     },
     actions: {
-        callGetCategories({ state, commit }, categoryId = undefined) {
+        callGetCategories({state, commit}, categoryId = undefined) {
             return axios.get(`/api/kb/categories?type=risk_repository`, {
                 params: {
                     search: state.searchWhere.includes(1) ? state.search : '',
                     category_id: categoryId ? categoryId : state.selectedCategory?.id ?? null
                 }
-            }).then(({ status, data: { data, success } }) => {
+            }).then(({status, data: {data, success}}) => {
                 if (status === 200 && success) {
                     commit('setCategories', data)
                     return Promise.resolve(data)
@@ -40,7 +40,7 @@ export default {
                 return Promise.reject([])
             });
         },
-        callGetArticles({ state, commit }, categoryId = undefined) {
+        callGetArticles({state, commit}, categoryId = undefined) {
             return axios.get(`/api/kb/articles?type=risk_repository`, {
                 params: {
                     search: state.searchWhere.includes(2) || state.searchWhere.includes(3) ? state.search : '',
@@ -48,7 +48,7 @@ export default {
                     category_id: categoryId ? categoryId : state.selectedCategory?.id ?? null,
                     tags: state.activeTags
                 }
-            }).then(({ data: { data, success }, status }) => {
+            }).then(({data: {data, success}, status}) => {
                 if (status === 200 && success) {
                     commit('setArticles', data)
                     return Promise.resolve(data)
@@ -57,9 +57,9 @@ export default {
                 return Promise.reject([])
             });
         },
-        callGetClients({ state, commit }) {
+        callGetClients({state, commit}) {
             return axios.get(`/api/client`)
-                .then(({ data: { data, success }, status }) => {
+                .then(({data: {data, success}, status}) => {
                     if (status === 200 && success) {
                         commit('setClients', data)
                         return Promise.resolve(data)
@@ -81,9 +81,9 @@ export default {
                     return Promise.reject([])
                 });
         },
-        callGetImportance({ state, commit }) {
+        callGetImportance({state, commit}) {
             return axios.get(`/api/kb/importance`)
-                .then(({ data: { data, success }, status }) => {
+                .then(({data: {data, success}, status}) => {
                     if (status === 200 && success) {
                         commit('setImportance', data)
                         return Promise.resolve(data)
