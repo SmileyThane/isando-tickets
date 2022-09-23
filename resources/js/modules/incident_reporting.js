@@ -63,7 +63,7 @@ export default {
                             data.find(element => element.id = state.selectedIR.id) :
                             data[0]
                         console.log(item)
-                            commit('setSelectedIR', item)
+                        commit('setSelectedIR', item)
                     }
 
                     return Promise.resolve(data)

@@ -8,9 +8,9 @@ export default {
         },
     },
     actions: {
-        callList({ commit }) {
-            return axios.get(`/api/ir/focus_priorities`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data } }) => {
+        callList({commit}) {
+            return axios.get(`/api/ir/focus_priorities`, {retry: 5, retryDelay: 1000})
+                .then(({data: {success, data}}) => {
                     if (success) {
                         commit('setActionTypes', data)
                         return data;
@@ -18,9 +18,9 @@ export default {
                     return []
                 })
         },
-        callAdd({ commit }, data) {
-            return axios.post(`/api/ir/focus_priority`, data,{ retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data } }) => {
+        callAdd({commit}, data) {
+            return axios.post(`/api/ir/focus_priority`, data, {retry: 5, retryDelay: 1000})
+                .then(({data: {success, data}}) => {
                     if (success) {
                         commit('addActionType', data)
                         return data;
@@ -28,9 +28,12 @@ export default {
                     return []
                 })
         },
-        callEdit({ commit, state }) {
-            return axios.put(`/api/ir/focus_priority/${state.focus_priority.id}`, state.focus_priority,{ retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data } }) => {
+        callEdit({commit, state}) {
+            return axios.put(`/api/ir/focus_priority/${state.focus_priority.id}`, state.focus_priority, {
+                retry: 5,
+                retryDelay: 1000
+            })
+                .then(({data: {success, data}}) => {
                     if (success) {
                         commit('editActionType', data)
                         return data;
@@ -38,9 +41,9 @@ export default {
                     return []
                 })
         },
-        callDelete({ commit }, id) {
-            return axios.delete(`/api/ir/focus_priority/${id}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data } }) => {
+        callDelete({commit}, id) {
+            return axios.delete(`/api/ir/focus_priority/${id}`, {retry: 5, retryDelay: 1000})
+                .then(({data: {success, data}}) => {
                     if (success) {
                         commit('deleteActionType', id)
                         return data;
@@ -52,8 +55,8 @@ export default {
     mutations: {
         setActionTypes: (state, data) => state.focus_priorities = data,
         addActionType: (state, data) => state.focus_priorities.push(data),
-        editActionType: (state, data) => state.focus_priorities.splice(state.focus_priorities.findIndex(i=>i.id === data.id), 1, data),
-        deleteActionType: (state, id) => state.focus_priorities.splice(state.focus_priorities.findIndex(i=>i.id === id), 1),
+        editActionType: (state, data) => state.focus_priorities.splice(state.focus_priorities.findIndex(i => i.id === data.id), 1, data),
+        deleteActionType: (state, id) => state.focus_priorities.splice(state.focus_priorities.findIndex(i => i.id === id), 1),
         selectItem: (state, id) => state.focus_priority = state.focus_priorities.find(i => i.id === id),
         unSelectItem: (state) => state.focus_priority = {
             id: null,
