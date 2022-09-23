@@ -1,8 +1,8 @@
 <template>
     <div>
         <div
-            class="mx-auto mt-2"
             v-if="$store.getters['IncidentReporting/getIsEditable']"
+            class="mx-auto mt-2"
         >
             <br/>
             <h2>
@@ -11,7 +11,10 @@
             <br/>
             <v-select
                 v-model="$store.getters['IncidentReporting/getSelectedIR'].actions"
+                :color="themeBgColor"
+                :item-color="themeBgColor"
                 :items="$store.getters['IncidentReporting/getIRActions']"
+                :placeholder="langMap.main.actions"
                 class=""
                 dense
                 hide-details
@@ -19,9 +22,6 @@
                 item-value="id"
                 multiple
                 outlined
-                :color="themeBgColor"
-                :item-color="themeBgColor"
-                :placeholder="langMap.main.actions"
                 required
             ></v-select>
         </div>
@@ -73,7 +73,7 @@
                                         </template>
                                         <v-list>
                                             <v-list-item>
-                                                <v-list-item-title>{{langMap.main.delete}}</v-list-item-title>
+                                                <v-list-item-title>{{ langMap.main.delete }}</v-list-item-title>
                                             </v-list-item>
                                         </v-list>
                                     </v-menu>
