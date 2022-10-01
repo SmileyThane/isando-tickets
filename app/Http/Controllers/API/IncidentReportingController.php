@@ -244,7 +244,7 @@ class IncidentReportingController extends Controller
         $actionBoards = IncidentReportingActionBoard::query()
             ->where('parent_id', '=', null)
             ->with([
-                'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+                'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
                 'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy'
             ])
             ->orderBy('name')
