@@ -21,7 +21,7 @@ class IncidentReportingAction extends Model
 
     public function assignee(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(CompanyUser::class, 'id', 'user_id');
     }
 
     public function type(): HasOne
