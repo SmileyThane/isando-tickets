@@ -169,6 +169,22 @@
                         prepend-icon="mdi-list-status"
                     ></v-select>
                     <br/>
+                    <v-label>
+                        {{ langMap.main.clients }}:
+                    </v-label>
+                    <v-select
+                        v-model="$store.getters['IncidentReporting/getSelectedIRAction'].user_id"
+                        :color="themeBgColor"
+                        :item-color="themeBgColor"
+                        :items="$store.getters['IncidentReporting/getEmployees']"
+                        class="small"
+                        dense
+                        hide-details
+                        item-text="user_data.email"
+                        item-value="id"
+                        prepend-icon="mdi-list-status"
+                    ></v-select>
+                    <br/>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -224,6 +240,7 @@ export default {
             that.themeBgColor = color;
         });
         this.$store.dispatch('IncidentReporting/callGetIR');
+        this.$store.dispatch('IncidentReporting/callGetEmployees');
         this.$store.dispatch('IncidentReporting/callGetIROptions');
         this.$store.dispatch('IncidentReporting/callGetIRActions');
     },
