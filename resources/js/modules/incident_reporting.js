@@ -34,6 +34,7 @@ export default {
         isEditable: false,
         manageActionDlg: false,
         IR: [],
+        employees: [],
         IRActions: [],
         options: {
             categories: [],
@@ -69,6 +70,19 @@ export default {
                     return Promise.resolve(data)
                 }
                 commit('setIR', [])
+
+                return Promise.reject([])
+            });
+        },
+        callGetEmployees({commit, dispatch, state}) {
+            return axios.get(`/api/employee`, {
+                params: {}
+            }).then(({status, data: {data, success}}) => {
+                if (status === 200 && success) {
+                    commit('setEmployees', data.data)
+                    return Promise.resolve(data)
+                }
+                commit('setEmployees', [])
 
                 return Promise.reject([])
             });
@@ -195,6 +209,7 @@ export default {
     },
     mutations: {
         setIR: (state, data) => state.IR = data,
+        setEmployees: (state, data) => state.employees = data,
         setIRActions: (state, data) => state.IRActions = data,
         setIROptions: (state, data) => state.options = data,
         setIsEditable: (state, data) => state.isEditable = data,
@@ -208,6 +223,7 @@ export default {
     },
     getters: {
         getIR: state => state.IR,
+        getEmployees: state => state.employees,
         getIRActions: state => state.IRActions,
         getIROptions: state => state.options,
         getIsEditable: state => state.isEditable,

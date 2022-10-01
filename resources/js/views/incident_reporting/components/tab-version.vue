@@ -27,6 +27,10 @@
             </div>
             <div v-else>
                 <p> {{ langMap.main.version }}: {{ $store.getters['IncidentReporting/getSelectedIR'].version }}</p>
+                <p> {{ 'Updated at' }}: {{
+                        moment($store.getters['IncidentReporting/getSelectedIR'].updated_at).format('D/M/Y')
+
+                    }}</p>
                 <p> {{ langMap.ir.ab.valid_till }}: {{
                         $store.getters['IncidentReporting/getSelectedIR'].valid_till
                     }}</p>
