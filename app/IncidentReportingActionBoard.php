@@ -15,7 +15,7 @@ class IncidentReportingActionBoard extends Model
 {
     protected $hidden = [
 //        'priority_id', 'access_id', 'state_id', 'stage_monitoring_id',
-        'created_at', 'updated_at', 'deleted_at'
+        'created_at', 'deleted_at'
     ];
 
     protected $fillable = [
