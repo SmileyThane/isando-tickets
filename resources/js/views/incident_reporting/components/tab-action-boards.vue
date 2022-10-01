@@ -55,7 +55,7 @@
                                     {{ action.deadline_time_parameter }}
                                 </v-col>
                                 <v-col cols="4">
-                                    {{ action.assignee ? action.assignee.email : 'not assinged' }}
+                                    {{ action.assignee && action.assignee.user_data ? action.assignee.user_data.email : 'not assinged' }}
                                 </v-col>
                                 <v-col class="text-right" cols="1">
                                     <v-menu
