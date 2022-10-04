@@ -12,7 +12,7 @@ export default {
             commit('SET_FILTER', params);
             if (params && !params.search) params.search = '';
             const queryParams = new URLSearchParams(params);
-            return axios.get(`/api/tracking/projects?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
+            return axios.get(`/api/ttmanaging/projects?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
                 .then(({data: {success, data}}) => {
                     if (success) {
                         commit('GET_PROJECTS', data.data)
@@ -22,7 +22,7 @@ export default {
                 })
         },
         createProject({commit, dispatch}, project) {
-            return axios.post('/api/tracking/projects', project, {retry: 5, retryDelay: 1000})
+            return axios.post('/api/ttmanaging/projects', project, {retry: 5, retryDelay: 1000})
                 .then(({data: {success, data: project}}) => {
                     if (success) {
                         dispatch('getProjectList');
@@ -31,7 +31,7 @@ export default {
                 })
         },
         toggleFavorite({commit, dispatch, state}, project) {
-            return axios.patch(`/api/tracking/projects/${project.id}/favorite`, null, {retry: 5, retryDelay: 1000})
+            return axios.patch(`/api/ttmanaging/projects/${project.id}/favorite`, null, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (success) {
                         dispatch('getProjectList', state.filter);
@@ -39,7 +39,7 @@ export default {
                 });
         },
         toggleArchive({commit, dispatch, state}, project) {
-            return axios.patch(`/api/tracking/projects/${project.id}/archive`, null, {retry: 5, retryDelay: 1000})
+            return axios.patch(`/api/ttmanaging/projects/${project.id}/archive`, null, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (success) {
                         dispatch('getProjectList', state.filter);
@@ -47,7 +47,7 @@ export default {
                 });
         },
         removeArchive({commit, dispatch, state}, project) {
-            return axios.delete(`/api/tracking/projects/${project.id}`)
+            return axios.delete(`/api/ttmanaging/projects/${project.id}`)
                 .then(({data: {data, success}}) => {
                     if (success) {
                         dispatch('getProjectList', state.filter);
