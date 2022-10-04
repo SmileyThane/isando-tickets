@@ -16,7 +16,7 @@ export default {
                 start, end
             });
             commit('SET_TIMESHEET', []);
-            return axios.get(`/api/tracking/timesheet?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
+            return axios.get(`/api/ttmanaging/timesheet?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (success) {
                         commit('SET_TIMESHEET', data);
@@ -26,7 +26,7 @@ export default {
                 });
         },
         createTimesheet({dispatch, state}, {entity_id, entity_type, service, mon, tue, wed, thu, fri, sat, sun}) {
-            return axios.post('/api/tracking/timesheet', {
+            return axios.post('/api/ttmanaging/timesheet', {
                 entity_id,
                 entity_type,
                 service,
@@ -46,7 +46,7 @@ export default {
                 });
         },
         removeTimesheet({dispatch, state}, id) {
-            return axios.delete(`/api/tracking/timesheet/${id}`, {retry: 5, retryDelay: 1000})
+            return axios.delete(`/api/ttmanaging/timesheet/${id}`, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (success) {
                         const index = state.timesheet.findIndex(i => i.id === id);
@@ -60,7 +60,7 @@ export default {
             id,
             timesheet: {entity_id, entity_type, billable, status, times, service}
         }) {
-            return axios.patch(`/api/tracking/timesheet/${id}`, {
+            return axios.patch(`/api/ttmanaging/timesheet/${id}`, {
                 id,
                 entity_id,
                 entity_type,
@@ -77,7 +77,7 @@ export default {
                 })
         },
         submitTimesheetByIds({commit}, {ids, status, approver_id, note}) {
-            return axios.patch('/api/tracking/timesheet/submit', {ids, status, approver_id, note}, {
+            return axios.patch('/api/ttmanaging/timesheet/submit', {ids, status, approver_id, note}, {
                 retry: 5,
                 retryDelay: 1000
             })
@@ -91,7 +91,7 @@ export default {
                 })
         },
         remindTimesheet({commit}, {ids}) {
-            return axios.post('/api/tracking/timesheet/remind', {ids})
+            return axios.post('/api/ttmanaging/timesheet/remind', {ids})
                 .then(({data: {success, data}}) => {
                     if (success) {
                         return data;
@@ -100,7 +100,7 @@ export default {
                 })
         },
         getCountTimesheetForApproval({commit}) {
-            axios.get('/api/tracking/timesheet/approval')
+            axios.get('/api/ttmanaging/timesheet/approval')
                 .then(({data: {success, data}}) => {
                     if (success) {
                         commit('SET_COUNT_FOR_APPROVAL', data.count);
@@ -108,7 +108,7 @@ export default {
                 });
         },
         getAllGroupedByStatus({commit}, {userId}) {
-            axios.get('/api/tracking/timesheet/status')
+            axios.get('/api/ttmanaging/timesheet/status')
                 .then(({data: {success, data}}) => {
                     if (success) {
                         commit('SET_GROUPED_TIMESHEET', {data, userId});
@@ -119,7 +119,7 @@ export default {
             const query = new URLSearchParams({
                 from, to
             });
-            axios.post('/api/tracking/timesheet/copy_last_week?' + query.toString())
+            axios.post('/api/ttmanaging/timesheet/copy_last_week?' + query.toString())
                 .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);
@@ -127,7 +127,7 @@ export default {
                 });
         },
         getTimesheetTemplates({commit}) {
-            axios.get('/api/tracking/timesheet/templates')
+            axios.get('/api/ttmanaging/timesheet/templates')
                 .then(({data: {success, data}}) => {
                     if (success) {
                         commit('SET_TIMESHEET_TEMPLATES', data);
@@ -135,7 +135,7 @@ export default {
                 });
         },
         saveAsTemplate({state, dispatch}, {items, data}) {
-            axios.post('/api/tracking/timesheet/templates', {items, data})
+            axios.post('/api/ttmanaging/timesheet/templates', {items, data})
                 .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getTimesheetTemplates');
@@ -143,7 +143,7 @@ export default {
                 });
         },
         loadTemplate({state, dispatch}, {id, start, end}) {
-            axios.post(`/api/tracking/timesheet/templates/${id}`, {start, end})
+            axios.post(`/api/ttmanaging/timesheet/templates/${id}`, {start, end})
                 .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);
@@ -151,7 +151,7 @@ export default {
                 });
         },
         removeTemplate({state, dispatch}, id) {
-            axios.delete(`/api/tracking/timesheet/templates/${id}`)
+            axios.delete(`/api/ttmanaging/timesheet/templates/${id}`)
                 .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getTimesheetTemplates', state.params);
@@ -159,7 +159,7 @@ export default {
                 });
         },
         saveOrdering({state}) {
-            return axios.patch(`/api/tracking/timesheet/ordering`, {
+            return axios.patch(`/api/ttmanaging/timesheet/ordering`, {
                 ids: state.timesheet.sort((a, b) => a.ordering - b.ordering).map(i => i.id),
             }, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
