@@ -18,7 +18,7 @@ export default {
                     search: search ?? '',
                     coworkers, projects, services, tag, billable
                 });
-                axios.get(`/api/tracking/clients?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
+                axios.get(`/api/ttmanaging/clients?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
                     .then(({data: {success, data: {data: clients}}}) => {
                         if (success) {
                             commit('GET_CLIENTS', clients)
