@@ -2229,7 +2229,7 @@ export default {
         exportTimesheet() {
             const selected = (this.selected.length ? this.selected : this.expandedManagerData).map(i => i.id);
             if (selected.length) {
-                axios.post(`/api/tracking/timesheet/export?format=pdf`, {
+                axios.post(`/api/ttmanaging/timesheet/export?format=pdf`, {
                     selected,
                     status: this.typeOfItems,
                 }, {

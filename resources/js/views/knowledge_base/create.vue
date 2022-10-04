@@ -323,6 +323,7 @@ export default {
         this.getCategoriesTree();
         this.getArticle();
         this.getArticles();
+        this.dGetTags = _.debounce(this.getTags, 1000);
 
     },
     watch: {
@@ -333,7 +334,7 @@ export default {
         }
     },
     created() {
-        this.dGetTags = _.debounce(this.getTags, 1000);
+
     },
     methods: {
         invertColor(hex) {

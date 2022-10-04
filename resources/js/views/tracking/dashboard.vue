@@ -471,7 +471,7 @@ export default {
                 periodEnd: moment(this.periodDate.end).format('YYYY-MM-DD'),
                 team: this.selectedTeam,
             });
-            axios.get(`/api/tracking/dashboard?${query.toString()}`)
+            axios.get(`/api/ttmanaging/dashboard?${query.toString()}`)
             .then(({ data }) => {
                 if (data) {
                     this.data = data;

@@ -38,7 +38,7 @@ export default {
                     search: search ?? '',
                     clients, projects, services, tag, billable
                 });
-                axios.get(`/api/tracking/coworkers?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
+                axios.get(`/api/ttmanaging/coworkers?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
                     .then(({data: {success, data: coworkers}}) => {
                         if (success) {
                             commit('GET_COWORKERS', coworkers)
@@ -51,7 +51,7 @@ export default {
             if (state.managedTeams.length) {
                 return state.managedTeams;
             } else {
-                return axios.get(`/api/tracking/managed_teams?withEmployee=${withEmployee}`)
+                return axios.get(`/api/ttmanaging/managed_teams?withEmployee=${withEmployee}`)
                     .then(({data: {success, data}}) => {
                         if (success) {
                             commit('SET_MANAGED_TEAMS', data);
@@ -64,7 +64,7 @@ export default {
             if (state.teamManagers.length) {
                 return state.teamManagers;
             } else {
-                return axios.get(`/api/tracking/team_managers`)
+                return axios.get(`/api/ttmanaging/team_managers`)
                     .then(({data: {success, data}}) => {
                         if (success) {
                             commit('SET_TEAM_MANAGERS', data);
