@@ -473,7 +473,7 @@ export default {
     },
     methods: {
         __getProject(projectId) {
-            axios.get(`/api/tracking/projects/${projectId}`)
+            axios.get(`/api/ttmanaging/projects/${projectId}`)
             .then(({data}) => {
                 if (data.success) {
                     if (!data.data.rate_from_date) data.data.rate_from_date = moment().add(1, 'days').format('YYYY-MM-DD');
@@ -499,7 +499,7 @@ export default {
             const queryParams = new URLSearchParams({
                 search: this.searchClient ?? ''
             });
-            axios.get(`/api/tracking/clients?${queryParams.toString()}`)
+            axios.get(`/api/ttmanaging/clients?${queryParams.toString()}`)
                 .then(({data}) => {
                     this.clients = data.data.data;
                 })
@@ -517,7 +517,7 @@ export default {
             });
         },
         __updateProjectById(projectId, data) {
-            axios.patch(`/api/tracking/projects/${projectId}`, data)
+            axios.patch(`/api/ttmanaging/projects/${projectId}`, data)
                 .then(({ data }) => {
                     if (data.success) {
                         this.__getProject(projectId);
