@@ -23,7 +23,7 @@ export default {
             if (state.settings.length) {
                 return state.settings;
             } else {
-                return axios.get('/api/tracking/settings', {retry: 5, retryDelay: 1000})
+                return axios.get('/api/ttmanaging/settings', {retry: 5, retryDelay: 1000})
                     .then(({data: {data, success}}) => {
                         if (success) {
                             if (
@@ -60,7 +60,7 @@ export default {
             }
         },
         updateSettings({commit, dispatch}, {currency, settings}) {
-            return axios.patch('/api/tracking/settings', {currency, settings}, {retry: 5, retryDelay: 1000})
+            return axios.patch('/api/ttmanaging/settings', {currency, settings}, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (success) {
                         dispatch('getSettings');
@@ -68,7 +68,7 @@ export default {
                 });
         },
         saveSettings({commit, dispatch, state}) {
-            return axios.patch('/api/tracking/settings', state.settings, {retry: 5, retryDelay: 1000})
+            return axios.patch('/api/ttmanaging/settings', state.settings, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (success) {
                         dispatch('getSettings');
@@ -88,7 +88,7 @@ export default {
             status
         }) {
             return axios.patch(
-                `/api/tracking/tracker/${id}`
+                `/api/ttmanaging/ttmanager/${id}`
                 , {date_from, date_to, billable, tags, entity, service, entity_id, entity_type, status}
                 , {retry: 5, retryDelay: 1000}
             )
@@ -97,19 +97,19 @@ export default {
                 });
         },
         deleteTrack({commit}, {id}) {
-            return axios.delete(`/api/tracking/tracker/${id}`, {retry: 5, retryDelay: 1000})
+            return axios.delete(`/api/ttmanaging/ttmanager/${id}`, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     return success;
                 })
         },
         createReport({commit, dispatch}, {name, configuration}) {
-            return axios.post('/api/tracking/reports', {name, configuration}, {retry: 5, retryDelay: 1000})
+            return axios.post('/api/ttmanaging/reports', {name, configuration}, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     dispatch('getReports');
                 });
         },
         deleteReport({commit, dispatch}, {id}) {
-            return axios.delete(`/api/tracking/reports/${id}`, {retry: 5, retryDelay: 1000})
+            return axios.delete(`/api/ttmanaging/reports/${id}`, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (success) {
                         dispatch('getReports');
@@ -118,7 +118,7 @@ export default {
                 });
         },
         getReports({commit}) {
-            return axios.get(`/api/tracking/reports`, {retry: 5, retryDelay: 1000})
+            return axios.get(`/api/ttmanaging/reports`, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (success) {
                         commit('SET_REPORTS', data);
@@ -127,7 +127,7 @@ export default {
                 });
         },
         getReport({commit, dispatch}, {id}) {
-            return axios.get(`/api/tracking/reports/${id}`, {retry: 5, retryDelay: 1000})
+            return axios.get(`/api/ttmanaging/reports/${id}`, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (success) {
                         return data;
@@ -157,7 +157,7 @@ export default {
                 query.append(field, filters[field]);
             });
             query.append('offset', offset.toString());
-            return axios.get(`/api/tracking/tracker?${query.toString()}`, {retry: 5, retryDelay: 1000})
+            return axios.get(`/api/ttmanaging/ttmanager?${query.toString()}`, {retry: 5, retryDelay: 1000})
                 .then(({data: {data, success}}) => {
                     if (offset > 0) {
                         commit('ADD_TRACKERS', data);
@@ -168,7 +168,7 @@ export default {
                 })
         },
         createTrack({commit}, data) {
-            return axios.post('/api/tracking/tracker', data)
+            return axios.post('/api/ttmanaging/ttmanager', data)
                 .then(({data: {data}, success}) => {
                     if (success) {
                         commit('ADD_TRACKERS', data);
@@ -177,7 +177,7 @@ export default {
                 });
         },
         duplicateTrack({commit}, id) {
-            return axios.post(`/api/tracking/tracker/${id}/duplicate`)
+            return axios.post(`/api/ttmanaging/ttmanager/${id}/duplicate`)
                 .then(({data}) => {
                     commit('ADD_TRACKERS', data.data);
                     return data;

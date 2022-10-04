@@ -1023,7 +1023,7 @@ export default {
                 users: this.teamFilter.join(','),
                 offset: this.offset,
             });
-            return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
+            return axios.get(`/api/ttmanaging/ttmanager?${queryParams.toString()}`)
                 .then(({ data }) => {
                     if (this.offset === 0) {
                         this.tracking = [];
@@ -1048,7 +1048,7 @@ export default {
         },
         __createTracking(data) {
             this.loadingCreateTrack = true;
-            return axios.post('/api/tracking/tracker', data)
+            return axios.post('/api/ttmanaging/ttmanager', data)
                 .then(({ data }) => {
                     // if (data.success) {
                     //     this.tracking.splice(0, 0, data.data);
@@ -1075,7 +1075,7 @@ export default {
         },
         __updateTrackingById(id, data) {
             this.loadingUpdateTrack = true;
-            return axios.patch(`/api/tracking/tracker/${id}`, data)
+            return axios.patch(`/api/ttmanaging/ttmanager/${id}`, data)
                 .then(({ data }) => {
                     if (data.success) {
                         this.tracking.splice(this.tracking.findIndex(i => i.id === id), 1, data.data);
@@ -1099,7 +1099,7 @@ export default {
         },
         __deleteTrackingById(id) {
             this.loadingDeleteTrack = true;
-            return axios.delete(`/api/tracking/tracker/${id}`)
+            return axios.delete(`/api/ttmanaging/ttmanager/${id}`)
                 .then(() => {
                     const indexes = this.tracking.filter(i => i.id === id);
                     indexes.map(i => {
@@ -1113,7 +1113,7 @@ export default {
                 });
         },
         __duplicateTracking(id) {
-            return axios.post(`/api/tracking/tracker/${id}/duplicate`)
+            return axios.post(`/api/ttmanaging/ttmanager/${id}/duplicate`)
                 .then(({ data }) => {
                     // this.debounceGetTracking();
                     this.tracking.splice(0, 0, data.data);

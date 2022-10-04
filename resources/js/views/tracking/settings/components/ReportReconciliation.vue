@@ -240,7 +240,7 @@ export default {
         },
         genReport () {
             this.loadingBtn = true;
-            axios.post(`/api/tracking/settings/report/reconciliation`, {
+            axios.post(`/api/ttmanaging/settings/report/reconciliation`, {
                 start: this.period.start,
                 end: this.period.end,
                 group: this.grouping,

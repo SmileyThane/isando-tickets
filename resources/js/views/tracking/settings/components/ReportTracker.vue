@@ -242,7 +242,7 @@ export default {
         },
         genReport () {
             this.loadingBtn = true;
-            axios.post(`/api/tracking/settings/report/${this.source}`, {
+            axios.post(`/api/ttmanaging/settings/report/${this.source}`, {
                 start: this.period.start,
                 end: this.period.end,
                 clients: this.clients,
