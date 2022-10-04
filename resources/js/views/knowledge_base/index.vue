@@ -388,9 +388,10 @@ export default {
 
         this.openCategory(this.$route.query.category);
         this.getCategoriesTree();
+        this.dGetTags = _.debounce(this.getTags, 1000);
     },
     created() {
-        this.dGetTags = _.debounce(this.getTags, 1000);
+
     },
     methods: {
         limitTo(str, count = 50) {
