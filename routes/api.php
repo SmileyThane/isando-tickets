@@ -202,7 +202,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::delete('email_signature/{id}', 'API\EmailSignatureController@delete');
 
         //Tracking projects
-        Route::prefix('tracking')
+        Route::prefix('ttmanaging')
             ->namespace('API\Tracking')->group(function () {
                 //Tracking projects
                 Route::get('/projects', 'ProjectController@get');
@@ -223,10 +223,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
                 //Tracker
                 Route::get('/tracker', 'TrackingController@get');
-                Route::post('/tracker', 'TrackingController@create');
-                Route::patch('/tracker/{tracking}', 'TrackingController@update');
-                Route::post('/tracker/{tracking}/duplicate', 'TrackingController@duplicate');
-                Route::delete('/tracker/{tracking}', 'TrackingController@delete');
+                Route::post('/ttmanager', 'TrackingController@create');
+                Route::patch('/ttmanager/{ttmanaging}', 'TrackingController@update');
+                Route::post('/ttmanager/{ttmanaging}/duplicate', 'TrackingController@duplicate');
+                Route::delete('/ttmanager/{ttmanaging}', 'TrackingController@delete');
 
                 // Reports
                 Route::post('/reports', 'ReportController@create');
