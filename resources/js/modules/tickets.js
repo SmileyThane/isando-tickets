@@ -18,7 +18,7 @@ export default {
                     per_page: 30,
                     page: 1
                 });
-                axios.get(`/api/tracking/tickets?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
+                axios.get(`/api/ttmanaging/tickets?${queryParams.toString()}`, {retry: 5, retryDelay: 1000})
                     .then(({data: {success, data: {data}, error}}) => {
                         if (success) {
                             commit('GET_TICKETS', data)
