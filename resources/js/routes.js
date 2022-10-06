@@ -441,7 +441,7 @@ export default [
         meta: {
             requiresAuth: true,
         },
-        component: IncidentReportingScenarios
+        component: IncidentReportingActionBoards
     },
     {
         path: '/incident_reporting/action_boards',
