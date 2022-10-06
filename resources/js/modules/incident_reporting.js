@@ -21,6 +21,7 @@ export default {
             description: '',
             stage_monitoring: null
         },
+        IRType: 1,
         selectedIRAction: {
             id: null,
             name: '',
@@ -54,7 +55,7 @@ export default {
     },
     actions: {
         callGetIR({commit, dispatch, state}) {
-            return axios.get(`/api/ir`, {
+            return axios.get(`/api/ir/${state.IRType}`, {
                 params: {}
             }).then(({status, data: {data, success}}) => {
                 if (status === 200 && success) {
@@ -205,10 +206,16 @@ export default {
         },
         callSetManageActionDlg({commit}, data) {
             commit('setManageActionDlg', data)
+        },
+        callSetIRType({commit, dispatch}, data) {
+            commit('setIRType', data)
+            dispatch('callGetIR')
+
         }
     },
     mutations: {
         setIR: (state, data) => state.IR = data,
+        setIRType: (state, data) => state.IRType = data,
         setEmployees: (state, data) => state.employees = data,
         setIRActions: (state, data) => state.IRActions = data,
         setIROptions: (state, data) => state.options = data,
