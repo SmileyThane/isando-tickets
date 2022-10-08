@@ -231,6 +231,13 @@ export default {
             tab: 0,
         }
     },
+    watch: {
+        $route(){
+            let type = this.$route.name === 'incident_reporting_scenarios' ? 2 : 1
+            console.log(type)
+            this.$store.dispatch('IncidentReporting/callSetIRType', type);
+        }
+    },
     mounted() {
         const that = this
         EventBus.$on('update-theme-fg-color', function (color) {
