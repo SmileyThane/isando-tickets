@@ -102,7 +102,7 @@ export default {
             });
         },
         callGetIROptions({commit}) {
-            return axios.get(`/api/ir/options`)
+            return axios.get(`/api/ir/${state.IRType}/options`)
                 .then(({status, data: {data, success}}) => {
                     if (status === 200 && success) {
                         commit('setIROptions', data)
