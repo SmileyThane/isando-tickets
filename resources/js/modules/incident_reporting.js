@@ -64,7 +64,6 @@ export default {
                         const item = state.selectedIR.id ?
                             data.find(element => element.id = state.selectedIR.id) :
                             data[0]
-                        console.log(item)
                         commit('setSelectedIR', item)
                     }
 
