@@ -233,9 +233,7 @@ export default {
     },
     watch: {
         $route(){
-            let type = this.$route.name === 'incident_reporting_scenarios' ? 2 : 1
-            console.log(type)
-            this.$store.dispatch('IncidentReporting/callSetIRType', type);
+            this.checkABType()
         }
     },
     mounted() {
@@ -246,12 +244,17 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
-        this.$store.dispatch('IncidentReporting/callGetIR');
+        this.checkABType()
         this.$store.dispatch('IncidentReporting/callGetEmployees');
         this.$store.dispatch('IncidentReporting/callGetIROptions');
         this.$store.dispatch('IncidentReporting/callGetIRActions');
     },
     methods: {
+        checkABType()
+        {
+            let type = this.$route.name === 'incident_reporting_scenarios' ? 2 : 1
+            this.$store.dispatch('IncidentReporting/callSetIRType', type);
+        },
         setIsEditable() {
             this.$store.dispatch('IncidentReporting/callSetIsEditable', true)
         },
