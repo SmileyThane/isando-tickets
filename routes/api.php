@@ -360,7 +360,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('ir/ixarma/participants', 'API\IncidentReportingController@listIxarmaParticipants');
 
     Route::get('ir/{type_id}', [IncidentReportingController::class, 'index']);
-    Route::get('ir/options', [IncidentReportingController::class, 'options']);
+    Route::get('ir/{type_id}/options', [IncidentReportingController::class, 'options']);
     Route::post('ir', [IncidentReportingController::class, 'store']);
     Route::post('ir/{id}/clone', [IncidentReportingController::class, 'clone']);
     Route::put('ir/{id}', [IncidentReportingController::class, 'update']);
