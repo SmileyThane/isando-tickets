@@ -222,7 +222,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::get('/tickets', 'BaseController@getTickets');
 
                 //Tracker
-                Route::get('/tracker', 'TrackingController@get');
+                Route::get('/ttmanager', 'TrackingController@get');
                 Route::post('/ttmanager', 'TrackingController@create');
                 Route::patch('/ttmanager/{ttmanaging}', 'TrackingController@update');
                 Route::post('/ttmanager/{ttmanaging}/duplicate', 'TrackingController@duplicate');

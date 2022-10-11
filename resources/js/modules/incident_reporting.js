@@ -54,7 +54,7 @@ export default {
         activeTags: [],
     },
     actions: {
-        callGetIR({commit, state}) {
+        callGetIR({commit, dispatch, state}) {
             return axios.get(`/api/ir/${state.IRType}`, {
                 params: {}
             }).then(({status, data: {data, success}}) => {
@@ -74,7 +74,7 @@ export default {
                 return Promise.reject([])
             });
         },
-        callGetEmployees({commit}) {
+        callGetEmployees({commit, dispatch, state}) {
             return axios.get(`/api/employee`, {
                 params: {}
             }).then(({status, data: {data, success}}) => {
@@ -149,7 +149,7 @@ export default {
                 });
 
         },
-        callStoreIRAction({dispatch, state}) {
+        callStoreIRAction({commit, dispatch, state}) {
             let method = 'post'
             let url = `/api/ir/actions`
             if (state.selectedIRAction.id) {
