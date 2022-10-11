@@ -319,11 +319,10 @@ export default {
             that.themeBgColor = color;
         });
 
-        this.dGetTags();
         this.getCategoriesTree();
         this.getArticle();
         this.getArticles();
-        this.dGetTags = _.debounce(this.getTags, 1000);
+
 
     },
     watch: {
@@ -334,7 +333,7 @@ export default {
         }
     },
     created() {
-
+        this.dGetTags = _.debounce(this.getTags, 1500);
     },
     methods: {
         invertColor(hex) {
