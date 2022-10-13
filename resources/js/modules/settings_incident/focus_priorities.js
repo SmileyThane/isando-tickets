@@ -5,6 +5,7 @@ export default {
         focus_priority: {
             id: null,
             name: '',
+            color: ''
         },
     },
     actions: {
@@ -19,6 +20,7 @@ export default {
                 })
         },
         callAdd({commit}, data) {
+            console.log(data)
             return axios.post(`/api/ir/focus_priority`, data, {retry: 5, retryDelay: 1000})
                 .then(({data: {success, data}}) => {
                     if (success) {
@@ -29,6 +31,7 @@ export default {
                 })
         },
         callEdit({commit, state}) {
+            console.log(state.focus_priority)
             return axios.put(`/api/ir/focus_priority/${state.focus_priority.id}`, state.focus_priority, {
                 retry: 5,
                 retryDelay: 1000
@@ -63,6 +66,7 @@ export default {
             name: '',
         },
         setName: (state, name) => state.focus_priority.name = name,
+        setColor: (state, color) => state.focus_priority.color = color,
     },
     getters: {
         getItems: state => state.focus_priorities,
