@@ -5,6 +5,7 @@ export default {
         impact_potential: {
             id: null,
             name: '',
+            color: ''
         },
     },
     actions: {
@@ -63,6 +64,7 @@ export default {
             name: '',
         },
         setName: (state, name) => state.impact_potential.name = name,
+        setColor: (state, color) => state.impact_potential.color = color,
     },
     getters: {
         getItems: state => state.impact_potentials,
