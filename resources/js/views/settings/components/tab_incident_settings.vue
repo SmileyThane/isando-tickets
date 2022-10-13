@@ -34,8 +34,8 @@
                     </td>
                     <td>
                         <v-btn :disabled="name.length < 3"
-                            class="mt-4"
-                            icon @click="addItem()">
+                               class="mt-4"
+                               icon @click="addItem()">
                             <v-icon>mdi-plus</v-icon>
                         </v-btn>
                     </td>
@@ -60,6 +60,18 @@
                     />
                 </v-card-text>
 
+                <v-divider></v-divider>
+                <v-card-title v-if="issetColor">
+                    Edit color
+                </v-card-title>
+
+                <v-card-text v-if="issetColor">
+                    <v-color-picker
+                        v-model="selColor"
+                        dot-size="25"
+                        mode="hexa"
+                    />
+                </v-card-text>
                 <v-divider></v-divider>
 
                 <v-card-actions>
@@ -93,7 +105,7 @@ export default {
             required: true,
         }
     },
-    data: function() {
+    data: function () {
         return {
             name: '',
             editDialog: false,
@@ -118,7 +130,7 @@ export default {
             this.editDialog = false;
         },
         addItem() {
-            this.$store.dispatch(`SettingsIncident/${this.entity}/callAdd`, { name: this.name });
+            this.$store.dispatch(`SettingsIncident/${this.entity}/callAdd`, {name: this.name});
             this.name = '';
         },
         editItem() {
@@ -130,12 +142,23 @@ export default {
         }
     },
     computed: {
+        issetColor() {
+            return this.$store.getters[`SettingsIncident/${this.entity}/getItem`]?.color !== undefined
+        },
         selName: {
             get: function () {
                 return this.$store.getters[`SettingsIncident/${this.entity}/getItem`]?.name ?? '';
             },
             set: function (val) {
                 return this.$store.commit(`SettingsIncident/${this.entity}/setName`, val);
+            }
+        },
+        selColor: {
+            get: function () {
+                return this.$store.getters[`SettingsIncident/${this.entity}/getItem`]?.color ?? '';
+            },
+            set: function (val) {
+                return this.$store.commit(`SettingsIncident/${this.entity}/setColor`, val);
             }
         }
     }
