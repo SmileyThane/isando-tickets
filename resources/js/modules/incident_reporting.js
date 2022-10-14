@@ -48,6 +48,7 @@ export default {
                 deadline_time_parameters: [],
                 deadline_time_indicators: []
             }
+
         },
         search: '',
         searchWhere: [1, 2, 3],
@@ -55,7 +56,7 @@ export default {
     },
     actions: {
         callGetIR({commit, dispatch, state}) {
-            return axios.get(`/api/ir/${state.IRType}`, {
+            return axios.get(`/api/ir/ab/${state.IRType}`, {
                 params: {}
             }).then(({status, data: {data, success}}) => {
                 if (status === 200 && success) {
@@ -87,8 +88,8 @@ export default {
                 return Promise.reject([])
             });
         },
-        callGetIRActions({commit}) {
-            return axios.get(`/api/ir/actions`, {
+        callGetIRActions({commit, dispatch, state}) {
+            return axios.get(`/api/ir/${state.IRType}/actions`, {
                 params: {}
             }).then(({status, data: {data, success}}) => {
                 if (status === 200 && success) {
@@ -101,7 +102,7 @@ export default {
             });
         },
         callGetIROptions({commit}) {
-            return axios.get(`/api/ir/${state.IRType}/options`)
+            return axios.get(`/api/ir/ab/${state.IRType}/options`)
                 .then(({status, data: {data, success}}) => {
                     if (status === 200 && success) {
                         commit('setIROptions', data)
@@ -114,7 +115,7 @@ export default {
                 });
         },
         callDeleteIR({commit, dispatch}, id) {
-            return axios.delete(`/api/ir/${id}`, {
+            return axios.delete(`/api/ir/ab/${id}`, {
                 params: {}
             }).then(({status, data: {data, success}}) => {
                 if (status === 200 && success) {
@@ -127,7 +128,7 @@ export default {
         },
         callStoreIR({commit, dispatch, state}, incrementVersion) {
             let method = 'post'
-            let url = `/api/ir`
+            let url = `/api/ir/ab`
             if (state.selectedIR.id) {
                 method = 'put'
                 url += `/${state.selectedIR.id}`
@@ -141,6 +142,8 @@ export default {
                 .then(({status, data: {data, success}}) => {
                     if (status === 200 && success) {
                         dispatch('callSetIsEditable', false)
+                        dispatch('callSetSelectedIR', data)
+
                         return Promise.resolve(data)
                     }
                     dispatch('callGetIR')
