@@ -19,7 +19,10 @@ export default {
             stage_monitoring_id: null,
             access_id: null,
             description: '',
-            stage_monitoring: null
+            stage_monitoring: null,
+            status: {
+                name: ''
+            }
         },
         IRType: 1,
         selectedIRAction: {
@@ -198,7 +201,10 @@ export default {
                     stage_monitoring_id: null,
                     access_id: null,
                     description: '',
-                    stage_monitoring: null
+                    stage_monitoring: null,
+                    status: {
+                        name: ''
+                    }
                 }
             }
             commit('setSelectedIR', data)
