@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\IncidentReporting\ActionBoardStatus;
 use App\IncidentReporting\EventType;
 use App\IncidentReporting\FocusPriority;
 use App\IncidentReporting\ImpactPotential;
@@ -13,6 +14,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class IncidentReportingActionBoard extends Model
 {
+
+    const ACTION_BOARDS = 1;
+    const SCENARIOS = 2;
+
+
     protected $hidden = [
 //        'priority_id', 'access_id', 'state_id', 'stage_monitoring_id',
         'created_at', 'deleted_at'
@@ -22,7 +28,7 @@ class IncidentReportingActionBoard extends Model
         'name', 'description', 'stage_monitoring_id',
         'priority_id', 'access_id', 'version',
         'parent_id', 'with_child_clients', 'state_id',
-        'impact_potential_id', 'valid_till', 'updated_by'
+        'impact_potential_id', 'valid_till', 'updated_by', 'status_id'
     ];
 
     public function actions(): BelongsToMany
@@ -88,6 +94,15 @@ class IncidentReportingActionBoard extends Model
             ProcessState::class,
             'id',
             'state_id'
+        );
+    }
+
+    public function status(): HasOne
+    {
+        return $this->hasOne(
+            ActionBoardStatus::class,
+            'id',
+            'status_id'
         );
     }
 
