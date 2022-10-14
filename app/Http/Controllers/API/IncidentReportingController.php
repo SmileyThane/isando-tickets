@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\IncidentReporting\ActionBoardStatus;
 use App\IncidentReporting\EventType;
 use App\IncidentReporting\FocusPriority;
 use App\IncidentReporting\ImpactPotential;
@@ -72,6 +73,52 @@ class IncidentReportingController extends Controller
     {
         return self::showResponse($this->incidentRepo->deleteActionType($id));
     }
+
+    public function listActionBoardStatuses(Request $request)
+    {
+        $companyId = Auth::user()->employee->companyData->id;
+        $statuses = ActionBoardStatus::query()->where('company_id', '=', $companyId)->get();
+        return self::showResponse(true, $statuses);
+    }
+
+    public function addActionBoardStatus(Request $request)
+    {
+        $companyId = Auth::user()->employee->companyData->id;
+        return self::showResponse(true, ActionBoardStatus::query()->create([
+                'name' => $request->name ?? '',
+                'name_de' => $request->name_de,
+                'position' => $request->position,
+                'company_id' => $companyId
+            ]
+        ));
+    }
+
+    public function editActionBoardStatus(Request $request, $id)
+    {
+        $companyId = Auth::user()->employee->companyData->id;
+        $ABStatus = ActionBoardStatus::query()->where('id', '=', $id);
+        if ($ABStatus) {
+            $ABStatus->update([
+                    'name' => $request->name ?? '',
+                    'name_de' => $request->name_de,
+                    'position' => $request->position,
+                    'company_id' => $companyId
+                ]
+            );
+
+            return self::showResponse(true, ActionBoardStatus::query()->find($id));
+        }
+
+        return self::showResponse(false);
+    }
+
+    public function deleteActionBoardStatus($id)
+    {
+        ActionBoardStatus::query()->where('id', '=', $id)->delete();
+
+        return self::showResponse(true);
+    }
+
 
     public function listEventTypes(Request $request)
     {
