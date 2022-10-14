@@ -48,8 +48,8 @@
                 <v-spacer v-if="extended"></v-spacer>
                 <v-list-item-title v-if="extended">
                     <v-chip v-if="extended"
-                            :color="themeBgColor"
-                            :textColor="$helpers.color.invertColor(themeBgColor)"
+                            :color="item.impact_potentials ? item.impact_potentials.color : themeBgColor"
+                            :textColor="$helpers.color.invertColor(item.impact_potentials ? item.impact_potentials.color : themeBgColor)"
                             class="text-uppercase ml-2 mt-2"
                             label
                             x-small
