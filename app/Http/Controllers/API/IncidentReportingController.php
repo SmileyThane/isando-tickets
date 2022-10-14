@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\IncidentReporting\EventType;
 use App\IncidentReporting\FocusPriority;
+use App\IncidentReporting\ImpactPotential;
 use App\IncidentReporting\ProcessState;
 use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
@@ -47,7 +48,8 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $this->incidentRepo->getActionTypesInCompanyContext());
     }
 
-    public function addActionType(Request $request) {
+    public function addActionType(Request $request)
+    {
         return self::showResponse(true, $this->incidentRepo->createActionType(
             $request->name ?? '',
             $request->name_de,
@@ -56,7 +58,8 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function editActionType(Request $request, $id) {
+    public function editActionType(Request $request, $id)
+    {
         return self::showResponse(true, $this->incidentRepo->updateActionType(
             $id,
             $request->name ?? '',
@@ -65,7 +68,8 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function deleteActionType($id) {
+    public function deleteActionType($id)
+    {
         return self::showResponse($this->incidentRepo->deleteActionType($id));
     }
 
@@ -74,7 +78,8 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $this->incidentRepo->getEventTypesInCompanyContext());
     }
 
-    public function addEventType(Request $request) {
+    public function addEventType(Request $request)
+    {
         return self::showResponse(true, $this->incidentRepo->createEventType(
             $request->name ?? '',
             $request->name_de,
@@ -83,7 +88,8 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function editEventType(Request $request, $id) {
+    public function editEventType(Request $request, $id)
+    {
         return self::showResponse(true, $this->incidentRepo->updateEventType(
             $id,
             $request->name ?? '',
@@ -92,7 +98,8 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function deleteEventType($id) {
+    public function deleteEventType($id)
+    {
         return self::showResponse($this->incidentRepo->deleteEventType($id));
     }
 
@@ -101,7 +108,8 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $this->incidentRepo->getFocusPrioritiesInCompanyContext());
     }
 
-    public function addFocusPriority(Request $request) {
+    public function addFocusPriority(Request $request)
+    {
         return self::showResponse(true, $this->incidentRepo->createFocusPriority(
             $request->name ?? '',
             $request->name_de,
@@ -110,16 +118,33 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function editFocusPriority(Request $request, $id) {
-        return self::showResponse(true, $this->incidentRepo->updateFocusPriority(
-            $id,
-            $request->name ?? '',
-            $request->name_de,
-            $request->position
-        ));
+    public function editFocusPriority(Request $request, $id)
+    {
+        $result = FocusPriority::query()->where('id', '=', $id)->update(
+            [
+                'name' => $request->name ?? '',
+                'name_de' => $request->name_de,
+                'position' => $request->position,
+                'color' => $request->color
+            ]);
+        return self::showResponse(true, $result);
     }
 
-    public function deleteFocusPriority($id) {
+    public function update(Request $request, $id): JsonResponse
+    {
+        $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
+        $request['updated_by'] = Auth::id();
+        $board->update($request->all());
+        $this->incidentRepo->syncActionBoardRelations($request, $board);
+
+        return self::showResponse(true, $board->with([
+            'actions.assignee', 'categories', 'clients',
+            'stageMonitoring', 'priority', 'access', 'state'
+        ])->first());
+    }
+
+    public function deleteFocusPriority($id)
+    {
         return self::showResponse($this->incidentRepo->deleteFocusPriority($id));
     }
 
@@ -128,7 +153,8 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $this->incidentRepo->getImpactPotentialsInCompanyContext());
     }
 
-    public function addImpactPotential(Request $request) {
+    public function addImpactPotential(Request $request)
+    {
         return self::showResponse(true, $this->incidentRepo->createImpactPotential(
             $request->name ?? '',
             $request->name_de,
@@ -137,16 +163,21 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function editImpactPotential(Request $request, $id) {
-        return self::showResponse(true, $this->incidentRepo->updateImpactPotential(
-            $id,
-            $request->name ?? '',
-            $request->name_de,
-            $request->position
-        ));
+    public function editImpactPotential(Request $request, $id)
+    {
+        $result = ImpactPotential::query()->where('id', '=', $id)->update(
+            [
+                'name' => $request->name ?? '',
+                'name_de' => $request->name_de,
+                'position' => $request->position,
+                'color' => $request->color
+            ]);
+
+        return self::showResponse(true, $result);
     }
 
-    public function deleteImpactPotential($id) {
+    public function deleteImpactPotential($id)
+    {
         return self::showResponse($this->incidentRepo->deleteImpactPotential($id));
     }
 
@@ -155,7 +186,8 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $this->incidentRepo->getProcessStatesInCompanyContext());
     }
 
-    public function addProcessState(Request $request) {
+    public function addProcessState(Request $request)
+    {
         return self::showResponse(true, $this->incidentRepo->createProcessState(
             $request->name ?? '',
             $request->name_de,
@@ -164,7 +196,8 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function editProcessState(Request $request, $id) {
+    public function editProcessState(Request $request, $id)
+    {
         return self::showResponse(true, $this->incidentRepo->updateProcessState(
             $id,
             $request->name ?? '',
@@ -173,7 +206,8 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function deleteProcessState($id) {
+    public function deleteProcessState($id)
+    {
         return self::showResponse($this->incidentRepo->deleteProcessState($id));
     }
 
@@ -182,7 +216,8 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $this->incidentRepo->getResourceTypesInCompanyContext());
     }
 
-    public function addResourceType(Request $request) {
+    public function addResourceType(Request $request)
+    {
         return self::showResponse(true, $this->incidentRepo->createResourceType(
             $request->name ?? '',
             $request->name_de,
@@ -191,7 +226,8 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function editResourceType(Request $request, $id) {
+    public function editResourceType(Request $request, $id)
+    {
         return self::showResponse(true, $this->incidentRepo->updateResourceType(
             $id,
             $request->name ?? '',
@@ -200,7 +236,8 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function deleteResourceType($id) {
+    public function deleteResourceType($id)
+    {
         return self::showResponse($this->incidentRepo->deleteResourceType($id));
     }
 
@@ -209,7 +246,8 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $this->incidentRepo->getStakeholderTypesInCompanyContext());
     }
 
-    public function addStakeholderType(Request $request) {
+    public function addStakeholderType(Request $request)
+    {
         return self::showResponse(true, $this->incidentRepo->createStakeholderType(
             $request->name ?? '',
             $request->name_de,
@@ -218,7 +256,8 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function editStakeholderType(Request $request, $id) {
+    public function editStakeholderType(Request $request, $id)
+    {
         return self::showResponse(true, $this->incidentRepo->updateStakeholderType(
             $id,
             $request->name ?? '',
@@ -227,15 +266,18 @@ class IncidentReportingController extends Controller
         ));
     }
 
-    public function deleteStakeholderType(Request $request, $id) {
+    public function deleteStakeholderType(Request $request, $id)
+    {
         return self::showResponse($this->incidentRepo->deleteStakeholderType($id));
     }
 
-    public function listIxarmaCompanies(Request $request) {
+    public function listIxarmaCompanies(Request $request)
+    {
         return self::showResponse($this->ixarmaRepo->getOrganizations($request->company_id));
     }
 
-    public function listIxarmaParticipants(Request $request) {
+    public function listIxarmaParticipants(Request $request)
+    {
         return self::showResponse($this->ixarmaRepo->getParticipants($request->company_id));
     }
 
@@ -295,7 +337,7 @@ class IncidentReportingController extends Controller
         $action = IncidentReportingAction::query()->create($request->all());
 
         if ($request['action_board_id']) {
-            $actionBoard = IncidentReportingActionBoard::where('id', '=',$request['action_board_id'])->first();
+            $actionBoard = IncidentReportingActionBoard::where('id', '=', $request['action_board_id'])->first();
             $request['actions'] = $actionBoard->actions;
             $request['actions'][] = $action;
             $request['categories'] = $actionBoard->categories;
@@ -314,26 +356,13 @@ class IncidentReportingController extends Controller
         $board = IncidentReportingActionBoard::create($request->all());
 
         IncidentReportingActionBoard::query()
-            ->where('id','=', $id)
+            ->where('id', '=', $id)
             ->orWhere('parent_id', '=', $id)
             ->update(['parent_id' => $board->id]);
 
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
         return self::showResponse(true, $board);
-    }
-
-    public function update(Request $request, $id): JsonResponse
-    {
-        $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
-        $request['updated_by'] = Auth::id();
-        $board->update($request->all());
-        $this->incidentRepo->syncActionBoardRelations($request, $board);
-
-        return self::showResponse(true, $board->with([
-            'actions.assignee', 'categories', 'clients',
-            'stageMonitoring', 'priority', 'access', 'state'
-        ])->first());
     }
 
     public function updateAction(Request $request, $id): JsonResponse

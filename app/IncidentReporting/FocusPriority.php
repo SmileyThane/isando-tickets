@@ -6,6 +6,8 @@ class FocusPriority extends ReferenceBook
 {
     protected $table = 'incident_reporting_focus_priorities';
 
+    protected $fillable = ['name', 'name_de', 'position', 'color'];
+
     public static function boot() {
         parent::boot();
 
