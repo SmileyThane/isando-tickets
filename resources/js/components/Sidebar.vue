@@ -85,7 +85,7 @@
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>
-                            {{ item.alias }}
+                            {{ langMap.sidebar[item.alias] ? langMap.sidebar[item.alias] : item.name}}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
