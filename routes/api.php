@@ -365,12 +365,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('ir/ixarma/companies', 'API\IncidentReportingController@listIxarmaCompanies');
     Route::get('ir/ixarma/participants', 'API\IncidentReportingController@listIxarmaParticipants');
 
-    Route::get('ir/{type_id}', [IncidentReportingController::class, 'index']);
-    Route::get('ir/{type_id}/options', [IncidentReportingController::class, 'options']);
-    Route::post('ir', [IncidentReportingController::class, 'store']);
-    Route::post('ir/{id}/clone', [IncidentReportingController::class, 'clone']);
-    Route::put('ir/{id}', [IncidentReportingController::class, 'update']);
-    Route::delete('ir/{id}', [IncidentReportingController::class, 'delete']);
+    Route::get('ir/ab/{type_id}', [IncidentReportingController::class, 'listActionBoards']);
+    Route::get('ir/ab/{type_id}/options', [IncidentReportingController::class, 'optionsActionBoards']);
+    Route::post('ir/ab', [IncidentReportingController::class, 'storeActionBoard']);
+    Route::post('ir/ab/{id}/clone', [IncidentReportingController::class, 'cloneActionBoard']);
+    Route::put('ir/ab/{id}', [IncidentReportingController::class, 'updateActionBoard']);
+    Route::delete('ir/ab/{id}', [IncidentReportingController::class, 'deleteActionBoard']);
 
     Route::get('ir/{type_id}/actions', [IncidentReportingController::class, 'actions']);
     Route::post('ir/actions', [IncidentReportingController::class, 'storeAction']);
