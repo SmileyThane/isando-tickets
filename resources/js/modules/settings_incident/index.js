@@ -5,6 +5,7 @@ import {default as ImpactPotentials} from './impact_potentials'
 import {default as ProcessStates} from './process_states'
 import {default as ResourceTypes} from './resource_types'
 import {default as StakeholderTypes} from './stakeholder_types'
+import {default as ActionBoardStatuses} from './action_board_statuses'
 
 export default {
     namespaced: true,
@@ -16,5 +17,6 @@ export default {
         ProcessStates,
         ResourceTypes,
         StakeholderTypes,
+        ActionBoardStatuses,
     },
 }
