@@ -163,8 +163,14 @@
                     v-else
                 >
                     <v-chip
-                        :color="themeBgColor"
-                        :textColor="themeBgColor"
+                        :color="$store.getters['IncidentReporting/getSelectedIR'].impact_potentials ?
+                                $store.getters['IncidentReporting/getSelectedIR'].impact_potentials.color :
+                                themeBgColor
+                        "
+                        :textColor="$store.getters['IncidentReporting/getSelectedIR'].impact_potentials ?
+                                $store.getters['IncidentReporting/getSelectedIR'].impact_potentials.color :
+                                themeBgColor
+                        "
                         class="text-uppercase"
                         label
                         outlined
@@ -202,8 +208,14 @@
                     v-else
                 >
                     <v-chip
-                        :color="themeBgColor"
-                        :textColor="themeBgColor"
+                        :color="$store.getters['IncidentReporting/getSelectedIR'].priority ?
+                                $store.getters['IncidentReporting/getSelectedIR'].priority.color :
+                                themeBgColor
+                        "
+                        :textColor="$store.getters['IncidentReporting/getSelectedIR'].priority ?
+                                $store.getters['IncidentReporting/getSelectedIR'].priority.color :
+                                themeBgColor
+                        "
                         class="text-uppercase"
                         label
                         outlined
@@ -229,6 +241,8 @@
                     name="input-7-1"
                     outlined
                 ></v-textarea>
+            </v-col>
+            <v-col cols="4" lg="4" md="4" sm="0" xl="4">
             </v-col>
             <v-col
                 class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
