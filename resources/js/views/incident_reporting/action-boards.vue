@@ -245,6 +245,7 @@ export default {
             that.themeBgColor = color;
         });
         this.checkABType()
+        this.$store.dispatch('SettingsIncident/ActionBoardStatuses/callList');
         this.$store.dispatch('IncidentReporting/callGetEmployees');
         this.$store.dispatch('IncidentReporting/callGetIROptions');
         this.$store.dispatch('IncidentReporting/callGetIRActions');
