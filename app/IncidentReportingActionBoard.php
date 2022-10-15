@@ -33,8 +33,20 @@ class IncidentReportingActionBoard extends Model
 
     public function actions(): BelongsToMany
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             IncidentReportingAction::class,
+            'action',
+            'incident_reporting_action_board_has_actions',
+            'action_board_id',
+            'action_id'
+        );
+    }
+
+    public function actionBoards(): BelongsToMany
+    {
+        return $this->morphedByMany(
+            self::class,
+            'action',
             'incident_reporting_action_board_has_actions',
             'action_board_id',
             'action_id'
