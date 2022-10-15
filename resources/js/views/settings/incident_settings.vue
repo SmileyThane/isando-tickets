@@ -69,6 +69,11 @@ export default {
                     component: tabIncidentSettings,
                     entity: 'StakeholderTypes',
                 },
+                {
+                    name: 'Action Board Statuses',
+                    component: tabIncidentSettings,
+                    entity: 'ActionBoardStatuses',
+                },
             ]
         }
     },

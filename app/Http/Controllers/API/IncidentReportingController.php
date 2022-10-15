@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\IncidentReporting\ActionBoardStatus;
 use App\IncidentReporting\EventType;
 use App\IncidentReporting\FocusPriority;
 use App\IncidentReporting\ImpactPotential;
@@ -73,6 +74,52 @@ class IncidentReportingController extends Controller
         return self::showResponse($this->incidentRepo->deleteActionType($id));
     }
 
+    public function listActionBoardStatuses(Request $request)
+    {
+        $companyId = Auth::user()->employee->companyData->id;
+        $statuses = ActionBoardStatus::query()->where('company_id', '=', $companyId)->get();
+        return self::showResponse(true, $statuses);
+    }
+
+    public function addActionBoardStatus(Request $request)
+    {
+        $companyId = Auth::user()->employee->companyData->id;
+        return self::showResponse(true, ActionBoardStatus::query()->create([
+                'name' => $request->name ?? '',
+                'name_de' => $request->name_de,
+                'position' => $request->position,
+                'company_id' => $companyId
+            ]
+        ));
+    }
+
+    public function editActionBoardStatus(Request $request, $id)
+    {
+        $companyId = Auth::user()->employee->companyData->id;
+        $ABStatus = ActionBoardStatus::query()->where('id', '=', $id);
+        if ($ABStatus) {
+            $ABStatus->update([
+                    'name' => $request->name ?? '',
+                    'name_de' => $request->name_de,
+                    'position' => $request->position,
+                    'company_id' => $companyId
+                ]
+            );
+
+            return self::showResponse(true, ActionBoardStatus::query()->find($id));
+        }
+
+        return self::showResponse(false);
+    }
+
+    public function deleteActionBoardStatus($id)
+    {
+        ActionBoardStatus::query()->where('id', '=', $id)->delete();
+
+        return self::showResponse(true);
+    }
+
+
     public function listEventTypes(Request $request)
     {
         return self::showResponse(true, $this->incidentRepo->getEventTypesInCompanyContext());
@@ -130,15 +177,16 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $result);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function updateActionBoard(Request $request, $id): JsonResponse
     {
-        $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
+        $board = IncidentReportingActionBoard::query()->where('id', '=', $id)->first();
         $request['updated_by'] = Auth::id();
         $board->update($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
+        $board = IncidentReportingActionBoard::query()->where('id', '=', $id);
 
         return self::showResponse(true, $board->with([
-            'actions.assignee', 'categories', 'clients',
+            'actions.assignee', 'categories', 'clients', 'status',
             'stageMonitoring', 'priority', 'access', 'state'
         ])->first());
     }
@@ -281,14 +329,14 @@ class IncidentReportingController extends Controller
         return self::showResponse($this->ixarmaRepo->getParticipants($request->company_id));
     }
 
-    public function index($typeId): JsonResponse
+    public function listActionBoards($typeId): JsonResponse
     {
         $actionBoards = IncidentReportingActionBoard::query()
             ->where('parent_id', '=', null)
             ->where('type_id', '=', $typeId)
             ->with([
                 'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
-                'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy'
+                'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status'
             ])
             ->orderBy('name')
             ->get();
@@ -296,14 +344,22 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $actionBoards);
     }
 
-    public function actions(): JsonResponse
+    public function actionsActionBoards($typeId): JsonResponse
     {
-        $actions = IncidentReportingAction::query()->get();
+        switch ($typeId) {
+            case IncidentReportingActionBoard::SCENARIOS:
+                $actions = IncidentReportingAction::query()->get();
+                break;
+            case IncidentReportingActionBoard::ACTION_BOARDS:
+            default:
+                $actions = IncidentReportingActionBoard::query()->get();
+                break;
+        }
 
         return self::showResponse(true, $actions);
     }
 
-    public function options(): JsonResponse
+    public function optionsActionBoards(): JsonResponse
     {
         $options = [
             'categories' => $this->incidentRepo->getEventTypesInCompanyContext(),
@@ -322,7 +378,7 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $options);
     }
 
-    public function store(Request $request): JsonResponse
+    public function storeActionBoard(Request $request): JsonResponse
     {
         $request['state_id'] = $this->incidentRepo->getProcessStatesInCompanyContext()[0]->id;
         $request['updated_by'] = Auth::id();
@@ -349,7 +405,7 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $action);
     }
 
-    public function clone(Request $request, $id): JsonResponse
+    public function cloneActionBoards(Request $request, $id): JsonResponse
     {
         $request['with_child_organizations'] = false;
         $request['updated_by'] = Auth::id();
@@ -375,7 +431,7 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $action);
     }
 
-    public function delete(Request $request, $id): JsonResponse
+    public function deleteActionBoard(Request $request, $id): JsonResponse
     {
         $board = IncidentReportingActionBoard::where('id', '=', $id)->first();
         $request->action_ids = $request->category_ids = $request->client_ids = [];

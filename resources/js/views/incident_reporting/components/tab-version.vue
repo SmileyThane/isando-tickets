@@ -4,7 +4,21 @@
             cols="6" lg="6" md="6" sm="12" xl="4"
         >
             <div v-if="$store.getters['IncidentReporting/getIsEditable']" class="pt-4">
-
+                <v-select
+                    v-if="$store.getters['IncidentReporting/getSelectedIR']"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].status_id"
+                    :color="themeBgColor"
+                    :item-color="themeBgColor"
+                    :items="$store.getters['SettingsIncident/ActionBoardStatuses/getItems']"
+                    class=""
+                    dense
+                    hide-details
+                    item-text="name"
+                    item-value="id"
+                    outlined
+                    required
+                ></v-select>
+                <br>
                 <v-text-field
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].version"
                     :color="themeBgColor"
@@ -26,6 +40,11 @@
 
             </div>
             <div v-else>
+                <p> {{ langMap.main.status }}: {{
+                        $store.getters['IncidentReporting/getSelectedIR'].status ?
+                            $store.getters['IncidentReporting/getSelectedIR'].status.name :
+                            ''
+                    }}</p>
                 <p> {{ langMap.main.version }}: {{ $store.getters['IncidentReporting/getSelectedIR'].version }}</p>
                 <p> {{ 'Updated at' }}: {{
                         moment($store.getters['IncidentReporting/getSelectedIR'].updated_at).format('D/M/Y')

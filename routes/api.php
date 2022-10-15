@@ -332,6 +332,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('ir/action_type', 'API\IncidentReportingController@addActionType');
     Route::put('ir/action_type/{id}', 'API\IncidentReportingController@editActionType');
     Route::delete('ir/action_type/{id}', 'API\IncidentReportingController@deleteActionType');
+
+    Route::get('ir/action_board_statuses', 'API\IncidentReportingController@listActionBoardStatuses');
+    Route::post('ir/action_board_status', 'API\IncidentReportingController@addActionBoardStatus');
+    Route::put('ir/action_board_status/{id}', 'API\IncidentReportingController@editActionBoardStatus');
+    Route::delete('ir/action_board_status/{id}', 'API\IncidentReportingController@deleteActionBoardStatus');
+
     Route::get('ir/event_types', 'API\IncidentReportingController@listEventTypes');
     Route::post('ir/event_type', 'API\IncidentReportingController@addEventType');
     Route::put('ir/event_type/{id}', 'API\IncidentReportingController@editEventType');
@@ -359,14 +365,14 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('ir/ixarma/companies', 'API\IncidentReportingController@listIxarmaCompanies');
     Route::get('ir/ixarma/participants', 'API\IncidentReportingController@listIxarmaParticipants');
 
-    Route::get('ir/{type_id}', [IncidentReportingController::class, 'index']);
-    Route::get('ir/{type_id}/options', [IncidentReportingController::class, 'options']);
-    Route::post('ir', [IncidentReportingController::class, 'store']);
-    Route::post('ir/{id}/clone', [IncidentReportingController::class, 'clone']);
-    Route::put('ir/{id}', [IncidentReportingController::class, 'update']);
-    Route::delete('ir/{id}', [IncidentReportingController::class, 'delete']);
+    Route::get('ir/ab/{type_id}', [IncidentReportingController::class, 'listActionBoards']);
+    Route::get('ir/ab/{type_id}/options', [IncidentReportingController::class, 'optionsActionBoards']);
+    Route::post('ir/ab', [IncidentReportingController::class, 'storeActionBoard']);
+    Route::post('ir/ab/{id}/clone', [IncidentReportingController::class, 'cloneActionBoard']);
+    Route::put('ir/ab/{id}', [IncidentReportingController::class, 'updateActionBoard']);
+    Route::delete('ir/ab/{id}', [IncidentReportingController::class, 'deleteActionBoard']);
 
-    Route::get('ir/actions', [IncidentReportingController::class, 'actions']);
+    Route::get('ir/{type_id}/actions', [IncidentReportingController::class, 'actions']);
     Route::post('ir/actions', [IncidentReportingController::class, 'storeAction']);
     Route::put('ir/actions/{id}', [IncidentReportingController::class, 'updateAction']);
     Route::delete('ir/actions/{id}', [IncidentReportingController::class, 'deleteAction']);
