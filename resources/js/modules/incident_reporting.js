@@ -13,6 +13,7 @@ export default {
             categories: [],
             clients: [],
             actions: [],
+            action_boards: [],
             child_versions: [],
             priority_id: null,
             impact_potential_id: null,
@@ -238,6 +239,7 @@ export default {
     },
     getters: {
         getIR: state => state.IR,
+        getIRType: state => state.IRType,
         getEmployees: state => state.employees,
         getIRActions: state => state.IRActions,
         getIROptions: state => state.options,
