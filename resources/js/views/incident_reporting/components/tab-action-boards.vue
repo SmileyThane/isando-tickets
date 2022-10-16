@@ -173,6 +173,18 @@
                                 </v-row>
                             </v-list-item-content>
                         </v-list-item>
+                        <v-list-item link @click.prevent="createIRAction">
+                            <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
+                            <v-list-item-action>
+                                <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
+                            </v-list-item-action>
+                        </v-list-item>
+                        <v-list-item link @click.prevent="createIRAction">
+                            <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
+                            <v-list-item-action>
+                                <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
+                            </v-list-item-action>
+                        </v-list-item>
                     </v-card>
                 </div>
             </v-col>
