@@ -1,34 +1,6 @@
 <template>
     <div>
-        <div
-            v-if="$store.getters['IncidentReporting/getIsEditable']"
-            class="mx-auto mt-2"
-        >
-            <br/>
-            <h2 v-if="$store.getters['IncidentReporting/getIRType'] === 1">
-                {{ langMap.ir.ab.select_actions }}:
-            </h2>
-            <h2 v-if="$store.getters['IncidentReporting/getIRType'] === 2">
-                {{ langMap.sidebar.action_boards }}:
-            </h2>
-            <br/>
-            <v-select
-                v-model="$store.getters['IncidentReporting/getSelectedIR'].actions"
-                :color="themeBgColor"
-                :item-color="themeBgColor"
-                :items="$store.getters['IncidentReporting/getIRActions']"
-                :placeholder="langMap.main.actions"
-                class=""
-                dense
-                hide-details
-                item-text="name"
-                item-value="id"
-                multiple
-                outlined
-                required
-            ></v-select>
-        </div>
-        <v-row v-else>
+        <v-row>
             <v-col cols="5">{{ langMap.main.name }}</v-col>
             <v-col v-if="$store.getters['IncidentReporting/getIRType'] === 1" cols="2">
                 {{
@@ -172,23 +144,54 @@
                                     </v-col>
                                 </v-row>
                             </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item link @click.prevent="createIRAction">
-                            <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
-                            <v-list-item-action>
-                                <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
-                            </v-list-item-action>
-                        </v-list-item>
-                        <v-list-item link @click.prevent="createIRAction">
-                            <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
-                            <v-list-item-action>
-                                <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
-                            </v-list-item-action>
+
                         </v-list-item>
                     </v-card>
                 </div>
             </v-col>
         </v-row>
+        <div
+            v-if="$store.getters['IncidentReporting/getIsEditable']"
+            class="mx-auto mt-2"
+        >
+            <br/>
+            <h2 v-if="$store.getters['IncidentReporting/getIRType'] === 1">
+                {{ langMap.ir.ab.select_actions }}:
+            </h2>
+            <h2 v-if="$store.getters['IncidentReporting/getIRType'] === 2">
+                {{ langMap.sidebar.action_boards }}:
+            </h2>
+            <br/>
+            <v-row>
+                <v-col cols="5">
+                    <v-select
+                        v-model="$store.getters['IncidentReporting/getSelectedIR'].actions"
+                        :color="themeBgColor"
+                        :item-color="themeBgColor"
+                        :items="$store.getters['IncidentReporting/getIRActions']"
+                        :placeholder="langMap.main.actions"
+                        class=""
+                        dense
+                        hide-details
+                        item-text="name"
+                        item-value="id"
+                        multiple
+                        outlined
+                        required
+                    ></v-select>
+                </v-col>
+                <v-col cols="7"></v-col>
+                <v-col cols="5">
+                    <v-list-item link @click.prevent="createIRAction">
+                        <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
+                        <v-list-item-action>
+                            <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
+                        </v-list-item-action>
+                    </v-list-item>
+                </v-col>
+                <v-col cols="7"></v-col>
+            </v-row>
+        </div>
     </div>
 </template>
 
@@ -202,6 +205,11 @@ export default {
             themeBgColor: this.$store.state.themeBgColor,
 
         }
+    },
+    methods: {
+        createIRAction() {
+            this.$store.dispatch('IncidentReporting/callSetManageActionDlg', true)
+        },
     }
 }
 </script>
