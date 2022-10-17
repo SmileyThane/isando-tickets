@@ -105,7 +105,7 @@ export default {
                 return Promise.reject([])
             });
         },
-        callGetIROptions({commit}) {
+        callGetIROptions({commit, dispatch, state}) {
             return axios.get(`/api/ir/ab/${state.IRType}/options`)
                 .then(({status, data: {data, success}}) => {
                     if (status === 200 && success) {
