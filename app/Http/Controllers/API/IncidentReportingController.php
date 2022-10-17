@@ -349,11 +349,12 @@ class IncidentReportingController extends Controller
     {
         switch ($typeId) {
             case IncidentReportingActionBoard::SCENARIOS:
-                $actions = IncidentReportingAction::query()->get();
+                $actions = IncidentReportingActionBoard::query()->get();
                 break;
+
             case IncidentReportingActionBoard::ACTION_BOARDS:
             default:
-                $actions = IncidentReportingActionBoard::query()->get();
+                $actions = IncidentReportingAction::query()->get();
                 break;
         }
 
