@@ -79,7 +79,12 @@
 
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>{{ langMap.ir.ab.general }}</v-tab>
-                    <v-tab>{{ langMap.ir.ab.actions }}</v-tab>
+                    <v-tab>
+                        {{ $store.getters['IncidentReporting/getIRType'] === 1 ?
+                            langMap.ir.ab.actions :
+                            langMap.ir.ab.title
+                        }}
+                    </v-tab>
                     <v-tab>{{ langMap.ir.ab.version }}</v-tab>
                 </v-tabs>
                 <v-tabs-items v-model="tab">
@@ -154,7 +159,10 @@
                     </div>
                     <br/>
                     <v-label>
-                        {{ langMap.ir.ab.action_type }}:
+                        {{ $store.getters['IncidentReporting/getIRType'] === 1 ?
+                            langMap.ir.ab.action_type :
+                            langMap.ir.ab.title
+                        }}:
                     </v-label>
                     <v-select
                         v-model="$store.getters['IncidentReporting/getSelectedIRAction'].type_id"
