@@ -159,17 +159,34 @@
                 {{ langMap.ir.ab.select_actions }}:
             </h2>
             <h2 v-if="$store.getters['IncidentReporting/getIRType'] === 2">
-                {{ langMap.sidebar.action_boards }}:
+                {{ langMap.ir.ab.title }}:
             </h2>
             <br/>
             <v-row>
                 <v-col cols="5">
                     <v-select
+                        v-if="$store.getters['IncidentReporting/getIRType'] === 1"
                         v-model="$store.getters['IncidentReporting/getSelectedIR'].actions"
                         :color="themeBgColor"
                         :item-color="themeBgColor"
                         :items="$store.getters['IncidentReporting/getIRActions']"
                         :placeholder="langMap.main.actions"
+                        class=""
+                        dense
+                        hide-details
+                        item-text="name"
+                        item-value="id"
+                        multiple
+                        outlined
+                        required
+                    ></v-select>
+                    <v-select
+                        v-if="$store.getters['IncidentReporting/getIRType'] === 2"
+                        v-model="$store.getters['IncidentReporting/getSelectedIR'].action_boards"
+                        :color="themeBgColor"
+                        :item-color="themeBgColor"
+                        :items="$store.getters['IncidentReporting/getIRActions']"
+                        :placeholder="langMap.ir.ab.title"
                         class=""
                         dense
                         hide-details
