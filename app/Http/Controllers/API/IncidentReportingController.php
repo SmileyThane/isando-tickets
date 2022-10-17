@@ -4,18 +4,13 @@
 namespace App\Http\Controllers\API;
 
 use App\IncidentReporting\ActionBoardStatus;
-use App\IncidentReporting\EventType;
 use App\IncidentReporting\FocusPriority;
 use App\IncidentReporting\ImpactPotential;
-use App\IncidentReporting\ProcessState;
 use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardAccess;
-use App\IncidentReportingActionBoardCategory;
 use App\IncidentReportingActionBoardHasAction;
-use App\IncidentReportingActionBoardPriority;
 use App\IncidentReportingActionBoardStageMonitoring;
-use App\IncidentReportingActionBoardState;
 use App\Providers\IxarmaServiceProvider;
 use App\Repositories\IncidentReportingRepository;
 use App\Repositories\IxarmaRepository;
@@ -190,6 +185,7 @@ class IncidentReportingController extends Controller
             'stageMonitoring', 'priority', 'access', 'state', 'actionBoards'
         ])->first());
     }
+
 
     public function deleteFocusPriority($id)
     {
