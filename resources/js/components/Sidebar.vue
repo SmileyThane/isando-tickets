@@ -128,6 +128,19 @@
                     <v-list-item
                         color="#757575" link
                         style="background-color:white;"
+                        to="/incident_reporting/list"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi-shape-rectangle-plus</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>{{langMap.sidebar.incident_reporting}}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item
+                        color="#757575" link
+                        style="background-color:white;"
                         to="/incident_reporting/scenarios"
                     >
                         <v-list-item-action>
