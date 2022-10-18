@@ -214,6 +214,7 @@ class IncidentReportingRepository
     public function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
     {
         $board->actions()->sync($this->prepareRelationToSync($request->actions));
+        $board->actionBoards()->sync($this->prepareRelationToSync($request->action_boards));
         $board->categories()->sync($this->prepareRelationToSync($request->categories));
         $board->clients()->sync($this->prepareRelationToSync($request->clients));
     }
