@@ -12,6 +12,7 @@ use App\IncidentReportingActionBoardAccess;
 use App\IncidentReportingActionBoardHasAction;
 use App\IncidentReportingActionBoardStageMonitoring;
 use App\Providers\IxarmaServiceProvider;
+
 use App\Repositories\IncidentReportingRepository;
 use App\Repositories\IxarmaRepository;
 use App\Http\Controllers\Controller;
@@ -333,7 +334,7 @@ class IncidentReportingController extends Controller
             ->with([
                 'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
                 'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-                'actionBoards.impactPotentials'
+                'actionBoards.impactPotentials', 'actionBoards.actions'
             ])
             ->orderBy('name')
             ->get();
