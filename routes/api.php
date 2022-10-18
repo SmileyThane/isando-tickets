@@ -367,9 +367,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('ir/ab/{type_id}', [IncidentReportingController::class, 'listActionBoards']);
     Route::get('ir/ab/{type_id}/options', [IncidentReportingController::class, 'optionsActionBoards']);
-    Route::post('ir/ab', [IncidentReportingController::class, 'storeActionBoard']);
+    Route::post('ir/ab/{type_id}', [IncidentReportingController::class, 'storeActionBoard']);
     Route::post('ir/ab/{id}/clone', [IncidentReportingController::class, 'cloneActionBoard']);
-    Route::put('ir/ab/{id}', [IncidentReportingController::class, 'updateActionBoard']);
+    Route::put('ir/ab/{type_id}/{id}', [IncidentReportingController::class, 'updateActionBoard']);
     Route::delete('ir/ab/{id}', [IncidentReportingController::class, 'deleteActionBoard']);
 
     Route::get('ir/{type_id}/actions', [IncidentReportingController::class, 'actionsActionBoards']);
