@@ -29,7 +29,7 @@ class IncidentReportingActionBoard extends Model
         'priority_id', 'access_id', 'version',
         'parent_id', 'with_child_clients', 'state_id',
         'impact_potential_id', 'valid_till', 'updated_by', 'status_id',
-        'type_id'
+        'type_id', 'source', 'occurred_on', 'detected_on' ,'reported_on'
     ];
 
     public function actions(): BelongsToMany
