@@ -44,7 +44,7 @@
                                     <v-icon :color="themeBgColor">mdi-delete</v-icon>
                                 </v-list-item-action>
                             </v-list-item>
-                            <v-list-item link @click.prevent="createIRAction">
+                            <v-list-item v-if="$store.getters['IncidentReporting/getIRType'] === 1" link @click.prevent="createIRAction">
                                 <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
                                 <v-list-item-action>
                                     <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
@@ -269,6 +269,7 @@ export default {
                 type = 3
             }
 
+            this.$store.dispatch('IncidentReporting/callSetSelectedIR', null)
             this.$store.dispatch('IncidentReporting/callSetIRType', type);
         },
         setIsEditable() {

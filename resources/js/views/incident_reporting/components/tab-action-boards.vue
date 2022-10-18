@@ -272,7 +272,7 @@
                 </v-col>
                 <v-col cols="7"></v-col>
                 <v-col cols="5">
-                    <v-list-item link @click.prevent="createIRAction">
+                    <v-list-item v-if="$store.getters['IncidentReporting/getIRType'] === 1" link @click.prevent="createIRAction">
                         <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
                         <v-list-item-action>
                             <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
