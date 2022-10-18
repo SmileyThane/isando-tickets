@@ -23,7 +23,12 @@ export default {
             stage_monitoring: null,
             status: {
                 name: ''
-            }
+            },
+            source: '',
+            reported_on: null,
+            detected_on: null,
+            occurred_on: null
+
         },
         IRType: 1,
         selectedIRAction: {
