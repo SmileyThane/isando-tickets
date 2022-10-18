@@ -132,7 +132,7 @@ export default {
         },
         callStoreIR({commit, dispatch, state}, incrementVersion) {
             let method = 'post'
-            let url = `/api/ir/ab`
+            let url = `/api/ir/ab/${state.IRType}`
             if (state.selectedIR.id) {
                 method = 'put'
                 url += `/${state.selectedIR.id}`
