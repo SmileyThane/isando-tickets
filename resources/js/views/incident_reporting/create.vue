@@ -2,7 +2,6 @@
     <v-container fluid>
         <v-row>
             <v-col cols="12" lg="4" md="6" style="border-right: 1px solid gray">
-
                 <v-row>
                     <v-col class="text-left" cols="6">
                         <v-text-field id="incident_number" class="float-left" dense hide-details placeholder="Number"
@@ -12,31 +11,47 @@
                         <label class="float-right" for="incident_number">STATUS</label>
                     </v-col>
                     <v-col cols="12">
-                        <h4 class="heading headline">Incident 3</h4>
+                        <h4 class="heading headline">
+                            <v-text-field
+                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                v-model="$store.getters['IncidentReporting/getSelectedIR'].name"
+                                class="mb-2"
+                                dense
+                                hide-details
+                                outlined placeholder="Name"
+                                v-bind="attrs"
+                                v-on="on"
+                            ></v-text-field>
+                        </h4>
                         <v-tabs v-model="tab">
                             <v-tab>General</v-tab>
                             <v-tab>Team</v-tab>
-                            <v-tab>Version</v-tab>
+<!--                            <v-tab>Version</v-tab>-->
                         </v-tabs>
                         <v-tabs-items v-model="tab">
                             <v-tab-item>
                                 <v-card flat>
                                     <v-row no-gutters>
                                         <v-col class="pr-2 pt-2" cols="5">
-                                            <v-text-field class="mb-2" dense hide-details outlined
-                                                          placeholder="Version"/>
+                                            <v-text-field
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                v-model="$store.getters['IncidentReporting/getSelectedIR'].version"
+                                                class="mb-2" dense hide-details outlined
+                                                placeholder="Version"/>
                                         </v-col>
                                         <v-col class="px-2 pt-2" cols="5">
                                             <v-menu
                                                 ref="menu"
                                                 v-model="menu"
-                                                :close-on-content-click="false"
                                                 min-width="auto"
                                                 offset-y
                                                 transition="scale-transition"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                        v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
+                                                        :color="themeBgColor"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
@@ -46,118 +61,208 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :active-picker.sync="activePicker"
+                                                    :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
+                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
-                                                    @change="save"
+                                                    @input="validTillPicker = false"
                                                 ></v-date-picker>
                                             </v-menu>
                                         </v-col>
                                         <v-col class="text-right pt-2" cols="2">
-                                            <v-btn :color="themeBgColor" icon>
+                                            <v-btn
+                                                v-if="!$store.getters['IncidentReporting/getIsEditable']"
+                                                @click="setIsEditable"
+                                                :color="themeBgColor"
+                                                icon
+                                            >
                                                 <v-icon>mdi-pencil</v-icon>
+                                            </v-btn>
+                                            <v-btn
+                                                v-if="$store.getters['IncidentReporting/getIsEditable']"
+                                                @click="save"
+                                                :color="themeBgColor"
+                                                icon
+                                            >
+                                                <v-icon>mdi-check</v-icon>
                                             </v-btn>
                                         </v-col>
                                         <v-col cols="12">
-                                            <v-select class="mb-2" dense hide-details outlined
-                                                      placeholder="Stage"></v-select>
-                                            <v-select class="mb-2" dense hide-details outlined
-                                                      placeholder="Risk event"></v-select>
-                                            <v-select class="mb-2" dense hide-details outlined
-                                                      placeholder="Natural disasters"></v-select>
-                                            <v-select class="mb-2" dense hide-details outlined
-                                                      placeholder="All organizations"></v-select>
-                                            <v-checkbox class="mb-2" dense hide-details
-                                                        label="Include child organizations" outlined/>
-                                            <v-select class="mb-2" dense hide-details outlined
-                                                      placeholder="Medium"></v-select>
-                                            <v-textarea class="mb-2" dense hide-details outlined
-                                                        placeholder="Description"></v-textarea>
-                                            <v-text-field class="mb-2" dense hide-details outlined
-                                                          placeholder="Source"/>
+                                            <v-select
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                v-model="$store.getters['IncidentReporting/getSelectedIR'].stage_monitoring_id"
+                                                :color="themeBgColor"
+                                                :item-color="themeBgColor"
+                                                :items="$store.getters['IncidentReporting/getIROptions'].stage_monitorings"
+                                                class=""
+                                                dense
+                                                hide-details
+                                                item-text="name"
+                                                item-value="id"
+                                                outlined
+                                                placeholder="Valid from Stage Monitoring"
+                                                required
+                                            ></v-select>
+                                            <v-select
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                v-model="$store.getters['IncidentReporting/getSelectedIR'].impact_potential_id"
+                                                :color="themeBgColor"
+                                                :item-color="themeBgColor"
+                                                :items="$store.getters['IncidentReporting/getIROptions'].impact_potentials"
+                                                class=""
+                                                dense
+                                                hide-details
+                                                item-text="name"
+                                                item-value="id"
+                                                outlined
+                                                required
+                                            ></v-select>
+                                            <v-select
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                v-model="$store.getters['IncidentReporting/getSelectedIR'].clients"
+                                                :color="themeBgColor"
+                                                :item-color="themeBgColor"
+                                                :items="$store.getters['RiskRepository/getClients']"
+                                                class=""
+                                                dense
+                                                hide-details
+                                                item-text="name"
+                                                item-value="id"
+                                                multiple
+                                                outlined
+                                                placeholder="Clients"
+                                                required
+                                            ></v-select>
+                                            <v-checkbox
+                                                :aria-disabled="!$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0"
+                                                v-model="$store.getters['IncidentReporting/getSelectedIR'].with_child_clients"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                class="mt-0"
+                                                label="Include child organizations"
+                                            >
+                                            </v-checkbox>
+                                            <v-select
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                v-model="$store.getters['IncidentReporting/getSelectedIR'].priority_id"
+                                                :color="themeBgColor"
+                                                :item-color="themeBgColor"
+                                                :items="$store.getters['IncidentReporting/getIROptions'].priorities"
+                                                class=""
+                                                dense
+                                                hide-details
+                                                item-text="name"
+                                                item-value="id"
+                                                outlined
+                                                placeholder="Importance"
+                                                required
+                                            ></v-select>
+                                            <br>
+                                            <v-textarea
+                                                v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
+                                                :color="themeBgColor"
+                                                :readonly="!$store.getters['IncidentReporting/getIsEditable']"
+                                                auto-grow
+                                                label="Description"
+                                                name="input-7-1"
+                                                outlined
+                                            ></v-textarea>
+                                            <v-text-field
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                v-model="$store.getters['IncidentReporting/getSelectedIR'].source"
+                                                class="mb-2" dense hide-details outlined
+                                                placeholder="Source"/>
                                         </v-col>
                                         <v-col cols="4">
                                             <v-menu
                                                 ref="menu"
-                                                v-model="menu"
-                                                :close-on-content-click="false"
+                                                v-model="occurredOnMenu"
                                                 min-width="auto"
                                                 offset-y
                                                 transition="scale-transition"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                        v-model="$store.getters['IncidentReporting/getSelectedIR'].occurred_on"
+                                                        :color="themeBgColor"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
-                                                        outlined placeholder="Occurred on"
+                                                        outlined placeholder="Valid till"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :active-picker.sync="activePicker"
+                                                    :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
+                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].occurred_on"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
-                                                    @change="save"
+                                                    @input="occurredOnPicker = false"
                                                 ></v-date-picker>
                                             </v-menu>
                                         </v-col>
                                         <v-col cols="4">
                                             <v-menu
                                                 ref="menu"
-                                                v-model="menu"
-                                                :close-on-content-click="false"
+                                                v-model="detectedOnMenu"
                                                 min-width="auto"
                                                 offset-y
                                                 transition="scale-transition"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                        v-model="$store.getters['IncidentReporting/getSelectedIR'].detected_on"
+                                                        :color="themeBgColor"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
-                                                        outlined placeholder="Detected on"
+                                                        outlined placeholder="Valid till"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :active-picker.sync="activePicker"
+                                                    :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
+                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].detected_on"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
-                                                    @change="save"
+                                                    @input="detectedOnPicker = false"
                                                 ></v-date-picker>
                                             </v-menu>
                                         </v-col>
                                         <v-col cols="4">
                                             <v-menu
                                                 ref="menu"
-                                                v-model="menu"
-                                                :close-on-content-click="false"
+                                                v-model="reportedOnMenu"
                                                 min-width="auto"
                                                 offset-y
                                                 transition="scale-transition"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                        v-model="$store.getters['IncidentReporting/getSelectedIR'].reported_on"
+                                                        :color="themeBgColor"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
-                                                        outlined placeholder="Reported on"
+                                                        outlined placeholder="Valid till"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :active-picker.sync="activePicker"
+                                                    :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
+                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].reported_on"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
-                                                    @change="save"
+                                                    @input="reportedOnPicker = false"
                                                 ></v-date-picker>
                                             </v-menu>
                                         </v-col>
@@ -401,7 +506,14 @@ export default {
                 },
             ],
             menu: false,
+            occrredOnMenu: false,
+            detectedOnMenu: false,
+            reportedOnMenu: false,
             activePicker: false,
+            validTillPicker: false,
+            occurredOnPicker: false,
+            detectedOnPicker: false,
+            reportedOnPicker: false
         }
     },
     mounted() {
@@ -412,10 +524,22 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
+        this.$store.dispatch('RiskRepository/callGetClients');
+        this.$store.dispatch('SettingsIncident/ActionBoardStatuses/callList');
+        this.$store.dispatch('IncidentReporting/callGetEmployees');
+        this.$store.dispatch('IncidentReporting/callGetIROptions');
+        this.$store.dispatch('IncidentReporting/callGetIRActions');
+        this.$store.dispatch('IncidentReporting/callSetSelectedIR', null)
+        this.$store.dispatch('IncidentReporting/callSetIRType', 3);
     },
     methods: {
-        save: function () {
-
+        setIsEditable() {
+            this.$store.dispatch('IncidentReporting/callSetIsEditable', true)
+        },
+        save() {
+            this.$store.dispatch('IncidentReporting/callStoreIR', false)
+            this.$store.dispatch('IncidentReporting/callSetIsEditable', false)
+            this.$router.push(`/incident_reporting/list`)
         }
     }
 }
