@@ -173,9 +173,9 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $result);
     }
 
-    public function updateActionBoard(Request $request, $id): JsonResponse
+    public function updateActionBoard(Request $request, $typeId, $id): JsonResponse
     {
-        $board = IncidentReportingActionBoard::query()->where('id', '=', $id)->first();
+        $board = IncidentReportingActionBoard::where('id', '=', $id)->where('type_id', '=', $typeId)->first();
         $request['updated_by'] = Auth::id();
         $board->update($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
@@ -346,7 +346,9 @@ class IncidentReportingController extends Controller
     {
         switch ($typeId) {
             case IncidentReportingActionBoard::SCENARIOS:
-                $actions = IncidentReportingActionBoard::query()->get();
+                $actions = IncidentReportingActionBoard::query()
+                    ->where('type_id', '=', IncidentReportingActionBoard::ACTION_BOARDS)
+                    ->get();
                 break;
 
             case IncidentReportingActionBoard::ACTION_BOARDS:
@@ -377,10 +379,11 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $options);
     }
 
-    public function storeActionBoard(Request $request): JsonResponse
+    public function storeActionBoard(Request $request, $typeId): JsonResponse
     {
         $request['state_id'] = $this->incidentRepo->getProcessStatesInCompanyContext()[0]->id;
         $request['updated_by'] = Auth::id();
+        $request['type_id'] = $typeId;
         $board = IncidentReportingActionBoard::create($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
@@ -394,6 +397,7 @@ class IncidentReportingController extends Controller
         if ($request['action_board_id']) {
             $actionBoard = IncidentReportingActionBoard::where('id', '=', $request['action_board_id'])->first();
             $request['actions'] = $actionBoard->actions;
+            $request['action_boards'] = $actionBoard->action_boards;
             $request['actions'][] = $action;
             $request['categories'] = $actionBoard->categories;
             $request['clients'] = $actionBoard->clients;
