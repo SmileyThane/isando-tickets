@@ -261,7 +261,14 @@ export default {
     methods: {
         checkABType()
         {
-            let type = this.$route.name === 'incident_reporting_scenarios' ? 2 : 1
+            let type = 1
+            if (this.$route.name === 'incident_reporting_scenarios') {
+                type = 2
+            }
+            if (this.$route.name === 'incident_reporting_list') {
+                type = 3
+            }
+
             this.$store.dispatch('IncidentReporting/callSetIRType', type);
         },
         setIsEditable() {
