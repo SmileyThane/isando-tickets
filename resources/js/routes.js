@@ -443,6 +443,14 @@ export default [
         component: IncidentReportingActionBoards
     },
     {
+        path: '/incident_reporting/list',
+        name: 'incident_reporting_list',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReportingActionBoards
+    },
+    {
         path: '/incident_reporting/action_boards',
         name: 'incident_reporting_action_boards',
         meta: {
