@@ -1,15 +1,8 @@
 <template>
     <v-container fluid>
-        <v-row>
+        <v-row style="height: 85vh;">
             <v-col cols="12" lg="4" md="6" style="border-right: 1px solid gray">
                 <v-row>
-                    <v-col class="text-left" cols="6">
-                        <v-text-field id="incident_number" class="float-left" dense hide-details placeholder="Number"
-                                      readonly/>
-                    </v-col>
-                    <v-col class="text-right" cols="6">
-                        <label class="float-right" for="incident_number">STATUS</label>
-                    </v-col>
                     <v-col cols="12">
                         <h4 class="heading headline">
                             <v-text-field
@@ -19,20 +12,20 @@
                                 dense
                                 hide-details
                                 outlined placeholder="Name"
-                                v-bind="attrs"
-                                v-on="on"
+
+
                             ></v-text-field>
                         </h4>
                         <v-tabs v-model="tab">
                             <v-tab>General</v-tab>
                             <v-tab>Team</v-tab>
-<!--                            <v-tab>Version</v-tab>-->
+                            <!--                            <v-tab>Version</v-tab>-->
                         </v-tabs>
                         <v-tabs-items v-model="tab">
                             <v-tab-item>
                                 <v-card flat>
                                     <v-row no-gutters>
-                                        <v-col class="pr-2 pt-2" cols="5">
+                                        <v-col class="pr-2 pt-2" cols="6">
                                             <v-text-field
                                                 :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].version"
@@ -61,7 +54,6 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
                                                     v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
@@ -70,7 +62,7 @@
                                                 ></v-date-picker>
                                             </v-menu>
                                         </v-col>
-                                        <v-col class="text-right pt-2" cols="2">
+                                        <v-col class="text-right pt-2" cols="1">
                                             <v-btn
                                                 v-if="!$store.getters['IncidentReporting/getIsEditable']"
                                                 @click="setIsEditable"
@@ -189,7 +181,7 @@
                                                         class="mb-2"
                                                         dense
                                                         hide-details
-                                                        outlined placeholder="Valid till"
+                                                        outlined placeholder="Occurred on"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                     ></v-text-field>
@@ -251,7 +243,7 @@
                                                         class="mb-2"
                                                         dense
                                                         hide-details
-                                                        outlined placeholder="Valid till"
+                                                        outlined placeholder="Reported on"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                     ></v-text-field>
@@ -281,18 +273,8 @@
                 <v-row no-gutters>
                     <v-row>
                         <v-col cols="12">
-                            <v-chip
-                                v-for="(item, index) in ['Monitoring', 'Handling']"
-                                :key="index"
-                                class="mr-2"
-                                label
-                                outlined
-                            >{{ item }}
-                            </v-chip>
-                        </v-col>
-                        <v-col cols="12">
                             <v-card
-                                v-for="(taskGroup, index) in taskGroups"
+                                v-for="(taskGroup, index) in $store.getters['IncidentReporting/getIR']"
                                 :key="index"
                                 class="d-inline-flex flex-column mr-2 mb-2"
                                 max-width="170"
@@ -302,10 +284,10 @@
                                 <v-list-item three-line>
                                     <v-list-item-content>
                                         <div class="">
-                                            <span class="float-left">{{ taskGroup.name }}</span>
-                                            <span v-if="taskGroup.total" class="float-right">{{
-                                                    taskGroup.completed
-                                                }}/{{ taskGroup.total }}</span>
+                                            <span v-if="taskGroup.type_id === 2" class="float-left">Scenario:</span>
+                                            <span v-if="taskGroup.type_id === 1" class="float-left">Action board:</span>
+                                            <br>
+                                            <strong class="float-left">{{ taskGroup.name }}</strong>
                                         </div>
                                     </v-list-item-content>
                                 </v-list-item>
@@ -315,34 +297,90 @@
                                         outlined
                                         rounded
                                         text
+                                        @click="showList(taskGroup)"
                                     >
-                                        {{ taskGroup.tag }}
+                                        {{ 'show' }}
+                                    </v-btn>
+                                    <v-btn
+                                        outlined
+                                        rounded
+                                        text
+                                        icon
+                                        @click="addToList(taskGroup)"
+                                    >
+                                        <v-icon>mdi-plus</v-icon>
+
                                     </v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-col>
-                        <v-col cols="12">
+                        <v-col v-if="actionsList.length > 0" cols="12">
+                            <h3>Actions</h3>
                             <v-row no-gutters style="border-bottom: 1px solid gray">
-                                <v-col cols="5"></v-col>
-                                <v-col cols="2">Progress</v-col>
-                                <v-col cols="2">Deadline</v-col>
-                                <v-col cols="2">Assigned to</v-col>
+                                <v-col cols="4">Name</v-col>
+                                <v-col cols="3">Deadline</v-col>
+                                <v-col cols="4">Assigned to</v-col>
                                 <v-col cols="1"></v-col>
                             </v-row>
-                            <v-row v-for="(task, index) in tasks" :key="index" style="border-bottom: 1px solid gray">
-                                <v-col cols="5">{{ task.name }}</v-col>
-                                <v-col cols="2">
-                                    <v-chip
-                                        :color="task.color"
-                                        class="text-uppercase" outlined
-                                        small
-                                    >{{ task.progress }}
-                                    </v-chip>
+                            <v-row no-gutters v-for="(task, index) in actionsList" :key="index"
+                                   style="border-bottom: 1px solid gray">
+                                <v-col cols="4">{{ task.name }}</v-col>
+                                <v-col cols="3">
+                                    {{
+                                        task.deadline_time_indicator
+                                    }}
+                                    &nbsp;
+                                    {{
+                                        task.deadline_time_value
+                                    }}
+                                    &nbsp;
+                                    {{
+                                        task.deadline_time_parameter
+                                    }}
                                 </v-col>
-                                <v-col cols="2">{{ task.deadline }}</v-col>
-                                <v-col cols="2">{{ task.assignedTo }}</v-col>
+                                <v-col cols="4">{{ task.assignee ? task.assignee.user_data.email : '' }}</v-col>
                                 <v-col cols="1">
-                                    <v-icon v-if="task.email">mdi-email</v-icon>
+                                    <v-btn
+                                        outlined
+                                        rounded
+                                        text
+                                        icon
+                                        @click="addToList(task)"
+                                        style="margin-bottom: 12px;"
+                                    >
+                                        <v-icon>mdi-plus</v-icon>
+
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                        <v-col v-if="actionBoardsList.length > 0" cols="12">
+                            <h3>Action Boards</h3>
+                            <v-row no-gutters style="border-bottom: 1px solid gray">
+                                <v-col cols="4">Name</v-col>
+                                <v-col cols="3">Status</v-col>
+                                <v-col cols="3">Valid till</v-col>
+                                <v-col cols="2">Version</v-col>
+                                <v-col cols="1"></v-col>
+                            </v-row>
+                            <v-row no-gutters v-for="(task, index) in actionBoardsList" :key="index"
+                                   style="border-bottom: 1px solid gray">
+                                <v-col cols="4">{{ task.name }}</v-col>
+                                <v-col cols="3">{{ task.status ? task.status.name : '' }}</v-col>
+                                <v-col cols="3">{{ task.valid_till }}</v-col>
+                                <v-col cols="1">{{ task.version }}</v-col>
+                                <v-col cols="1">
+                                    <v-btn
+                                        outlined
+                                        rounded
+                                        text
+                                        icon
+                                        @click="addToList(task)"
+                                        style="margin-bottom: 12px;"
+                                    >
+                                        <v-icon>mdi-plus</v-icon>
+
+                                    </v-btn>
                                 </v-col>
                             </v-row>
                         </v-col>
@@ -354,37 +392,35 @@
                     <v-col cols="12">
                         <h4 class="heading headline float-left">Log of Actions</h4>
                         <v-spacer></v-spacer>
-                        <v-menu
-                            bottom
-                            left
-                        >
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    :color="themeBgColor"
-                                    class="float-right"
-                                    dark
-                                    icon
-                                    v-bind="attrs"
-                                    v-on="on"
-                                >
-                                    <v-icon>mdi-dots-vertical</v-icon>
-                                </v-btn>
-                            </template>
+                        <!--                        <v-menu-->
+                        <!--                            bottom-->
+                        <!--                            left-->
+                        <!--                        >-->
+                        <!--                            <template>-->
+                        <!--                                <v-btn-->
+                        <!--                                    :color="themeBgColor"-->
+                        <!--                                    class="float-right"-->
+                        <!--                                    dark-->
+                        <!--                                    icon-->
+                        <!--                                >-->
+                        <!--                                    <v-icon>mdi-dots-vertical</v-icon>-->
+                        <!--                                </v-btn>-->
+                        <!--                            </template>-->
 
-                            <v-list>
-                                <v-list-item>
-                                    <v-list-item-title>Menu 1</v-list-item-title>
-                                </v-list-item>
-                                <v-list-item>
-                                    <v-list-item-title>Menu 2</v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
+                        <!--                            <v-list>-->
+                        <!--                                <v-list-item>-->
+                        <!--                                    <v-list-item-title>Menu 1</v-list-item-title>-->
+                        <!--                                </v-list-item>-->
+                        <!--                                <v-list-item>-->
+                        <!--                                    <v-list-item-title>Menu 2</v-list-item-title>-->
+                        <!--                                </v-list-item>-->
+                        <!--                            </v-list>-->
+                        <!--                        </v-menu>-->
                     </v-col>
                 </v-row>
-                <v-row v-for="(action, index) in actions" :key="index" style="border-bottom: 1px solid gray">
+                <v-row v-for="(action, index) in finalList" :key="index" style="border-bottom: 1px solid gray">
                     <v-col cols="8" lg="8" md="12" sm="12">{{ action.name }}</v-col>
-                    <v-col cols="4" lg="4" md="12" sm="12">{{ action.date }}</v-col>
+                    <!--                    <v-col cols="4" lg="4" md="12" sm="12">{{ action.date }}</v-col>-->
                 </v-row>
             </v-col>
         </v-row>
@@ -405,132 +441,47 @@ export default {
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
             tab: 0,
-            actions: [
-                {
-                    name: 'Crisis team meeting scheduled',
-                    date: '2021.12.15',
-                },
-                {
-                    name: 'Crisis Reporter confirmed',
-                    date: '2021.12.15',
-                },
-                {
-                    name: 'Crisis Leader confirmed',
-                    date: '2021.12.15',
-                },
-                {
-                    name: 'Incident recorded',
-                    date: '2021.12.15',
-                },
-            ],
-            taskGroups: [
-                {
-                    name: 'Initial tasks',
-                    total: 6,
-                    completed: 5,
-                    tag: 'Monitoring'
-                },
-                {
-                    name: 'Activate backup location',
-                    total: null,
-                    completed: null,
-                    tag: 'Handling'
-                },
-                {
-                    name: 'Communication tasks',
-                    total: null,
-                    completed: null,
-                    tag: 'Handling'
-                },
-                {
-                    name: 'Activate backup location',
-                    total: null,
-                    completed: null,
-                    tag: 'Handling'
-                },
-                {
-                    name: 'Communication tasks',
-                    total: null,
-                    completed: null,
-                    tag: 'Handling'
-                },
-            ],
-            tasks: [
-                {
-                    name: 'Task 1',
-                    progress: 'complete',
-                    color: 'green',
-                    deadline: '2021.12.15',
-                    assignedTo: '',
-                    email: true
-                },
-                {
-                    name: 'Task 2',
-                    progress: 'in progress',
-                    color: 'primary',
-                    deadline: null,
-                    assignedTo: '',
-                    email: ''
-                },
-                {
-                    name: 'Task 3',
-                    progress: 'not started',
-                    color: 'gray',
-                    deadline: '2021.12.15',
-                    assignedTo: '',
-                    email: ''
-                },
-                {
-                    name: 'Task 4',
-                    progress: 'in progress',
-                    color: 'primary',
-                    deadline: '2021.12.15',
-                    assignedTo: '',
-                    email: ''
-                },
-                {
-                    name: 'Task 5',
-                    progress: 'not started',
-                    color: 'gray',
-                    deadline: null,
-                    assignedTo: '',
-                    email: ''
-                },
-                {
-                    name: 'Task 6',
-                    progress: 'not started',
-                    color: 'gray',
-                    deadline: null,
-                    assignedTo: '',
-                    email: ''
-                },
-            ],
             menu: false,
-            occrredOnMenu: false,
+            occurredOnMenu: false,
             detectedOnMenu: false,
             reportedOnMenu: false,
             activePicker: false,
             validTillPicker: false,
             occurredOnPicker: false,
             detectedOnPicker: false,
-            reportedOnPicker: false
+            reportedOnPicker: false,
+            actionsList: [],
+            actionBoardsList: [],
+            finalList: []
+
         }
     },
     mounted() {
         const that = this
+        let IR = null;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
+        if (this.$route.params.id) {
+            IR = this.$store.getters['IncidentReporting/getSelectedIR']
+            this.finalList = IR.actions
+        } else {
+            this.$store.commit('IncidentReporting/setIsEditable', true);
+        }
+        this.$store.commit('IncidentReporting/setIRType', -3);
+        this.$store.dispatch('IncidentReporting/callGetIR').then(() => {
+            this.$store.dispatch('IncidentReporting/callSetSelectedIR', IR)
+        });
+        this.$store.commit('IncidentReporting/setIRType', 3);
         this.$store.dispatch('RiskRepository/callGetClients');
         this.$store.dispatch('SettingsIncident/ActionBoardStatuses/callList');
         this.$store.dispatch('IncidentReporting/callGetEmployees');
         this.$store.dispatch('IncidentReporting/callGetIROptions');
         this.$store.dispatch('IncidentReporting/callGetIRActions');
-        this.$store.dispatch('IncidentReporting/callSetSelectedIR', null)
-        this.$store.dispatch('IncidentReporting/callSetIRType', 3);
+
     },
     methods: {
         setIsEditable() {
@@ -538,8 +489,27 @@ export default {
         },
         save() {
             this.$store.dispatch('IncidentReporting/callStoreIR', false)
-            this.$store.dispatch('IncidentReporting/callSetIsEditable', false)
-            this.$router.push(`/incident_reporting/list`)
+            // this.$store.dispatch('IncidentReporting/callSetIsEditable', false)
+            // this.$router.push(`/incident_reporting/list`)
+        },
+        showList(item) {
+            this.$store.commit('IncidentReporting/setRelatedIR', item)
+            this.actionsList = this.$store.getters['IncidentReporting/getRelatedIR'].actions
+            this.actionBoardsList = this.$store.getters['IncidentReporting/getRelatedIR'].action_boards
+        },
+        addToList(item) {
+            if (item.actions !== undefined && item.actions.length > 0) {
+                this.finalList = [...this.finalList, ...item.actions]
+            }
+            if (item.action_boards !== undefined && item.action_boards.length > 0) {
+                for (const key in item.action_boards) {
+                    this.finalList = [...this.finalList, ...item.action_boards[key].actions]
+                }
+            }
+            if (item.action_boards === undefined && item.actions === undefined) {
+                this.finalList = [...this.finalList, ...[item]]
+            }
+            this.$store.getters['IncidentReporting/getSelectedIR'].actions = this.finalList
         }
     }
 }
@@ -559,5 +529,8 @@ export default {
 
 .clearfix {
     clear: both;
+}
+.row {
+    margin-bottom: 12px;
 }
 </style>
