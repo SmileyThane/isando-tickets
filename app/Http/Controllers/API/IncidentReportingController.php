@@ -328,10 +328,14 @@ class IncidentReportingController extends Controller
 
     public function listActionBoards($typeId): JsonResponse
     {
-        $actionBoards = IncidentReportingActionBoard::query()
-            ->where('parent_id', '=', null)
-            ->where('type_id', '=', $typeId)
-            ->with([
+        $actionBoardsQuery = IncidentReportingActionBoard::query()
+            ->where('parent_id', '=', null);
+        if ($typeId > 0) {
+            $actionBoardsQuery->where('type_id', '=', $typeId);
+        } else {
+            $actionBoardsQuery->where('type_id', '!=', abs($typeId));
+        }
+        $actionBoards = $actionBoardsQuery->with([
                 'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
                 'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
                 'actionBoards.impactPotentials', 'actionBoards.actions'
@@ -351,9 +355,12 @@ class IncidentReportingController extends Controller
                     ->get();
                 break;
 
+            case IncidentReportingActionBoard::IR:
             case IncidentReportingActionBoard::ACTION_BOARDS:
             default:
-                $actions = IncidentReportingAction::query()->get();
+                $actions = IncidentReportingAction::query()
+                    ->where('related_to_ir_ab_id', '=', null)
+                    ->get();
                 break;
         }
 
