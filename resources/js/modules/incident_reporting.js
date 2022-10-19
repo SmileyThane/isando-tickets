@@ -30,6 +30,35 @@ export default {
             occurred_on: null
 
         },
+        relatedIR: {
+            id: 0,
+            with_child_clients: false,
+            version: '',
+            valid_till: '',
+            updated_by: {
+                name: '',
+                surname: ''
+            },
+            categories: [],
+            clients: [],
+            actions: [],
+            action_boards: [],
+            child_versions: [],
+            priority_id: null,
+            impact_potential_id: null,
+            stage_monitoring_id: null,
+            access_id: null,
+            description: '',
+            stage_monitoring: null,
+            status: {
+                name: ''
+            },
+            source: '',
+            reported_on: null,
+            detected_on: null,
+            occurred_on: null
+
+        },
         IRType: 1,
         selectedIRAction: {
             id: null,
