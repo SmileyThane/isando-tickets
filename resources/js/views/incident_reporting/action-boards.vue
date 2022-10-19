@@ -21,8 +21,17 @@
                 />
             </v-col>
             <v-col cols="8">
-                <div class="text-h6">
+                <v-btn
+                    v-if="$store.getters['IncidentReporting/getIRType'] === 3"
+                    @click="show"
+                    outlined
+                    rounded
+                    text>
                     {{ $store.getters['IncidentReporting/getSelectedIR'].name }}
+                </v-btn>
+                <div v-else class="text-h6">
+                    {{ $store.getters['IncidentReporting/getSelectedIR'].name }}
+
                     <v-menu v-if="!$store.getters['IncidentReporting/getIsEditable']" bottom>
                         <template v-slot:activator="{ on }">
                             <v-btn icon v-on="on">
@@ -44,7 +53,7 @@
                                     <v-icon :color="themeBgColor">mdi-delete</v-icon>
                                 </v-list-item-action>
                             </v-list-item>
-                            <v-list-item link @click.prevent="createIRAction">
+                            <v-list-item v-if="$store.getters['IncidentReporting/getIRType'] === 1" link @click.prevent="createIRAction">
                                 <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
                                 <v-list-item-action>
                                     <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
@@ -79,7 +88,7 @@
 
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>{{ langMap.ir.ab.general }}</v-tab>
-                    <v-tab>
+                    <v-tab v-if="$store.getters['IncidentReporting/getIRType'] !== 3">
                         {{ $store.getters['IncidentReporting/getIRType'] === 1 ?
                             langMap.ir.ab.actions :
                             langMap.ir.ab.title
@@ -91,7 +100,7 @@
                     <v-tab-item>
                         <IncidentTabGeneral/>
                     </v-tab-item>
-                    <v-tab-item>
+                    <v-tab-item v-if="$store.getters['IncidentReporting/getIRType'] !== 3">
                         <IncidentTabActionBoards/>
                     </v-tab-item>
                     <v-tab-item>
@@ -253,6 +262,7 @@ export default {
             that.themeBgColor = color;
         });
         this.checkABType()
+        this.$store.commit('IncidentReporting/setIsEditable', false)
         this.$store.dispatch('SettingsIncident/ActionBoardStatuses/callList');
         this.$store.dispatch('IncidentReporting/callGetEmployees');
         this.$store.dispatch('IncidentReporting/callGetIROptions');
@@ -261,7 +271,15 @@ export default {
     methods: {
         checkABType()
         {
-            let type = this.$route.name === 'incident_reporting_scenarios' ? 2 : 1
+            let type = 1
+            if (this.$route.name === 'incident_reporting_scenarios') {
+                type = 2
+            }
+            if (this.$route.name === 'incident_reporting_list') {
+                type = 3
+            }
+
+            this.$store.dispatch('IncidentReporting/callSetSelectedIR', null)
             this.$store.dispatch('IncidentReporting/callSetIRType', type);
         },
         setIsEditable() {
@@ -285,6 +303,10 @@ export default {
         cancelActionEditing() {
             this.$store.dispatch('IncidentReporting/callSetManageActionDlg', false)
         },
+        show() {
+            let id = this.$store.getters['IncidentReporting/getSelectedIR'].id
+            this.$router.push(`/incident_reporting/list/${id}`)
+        }
 
 
     }

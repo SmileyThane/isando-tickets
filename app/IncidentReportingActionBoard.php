@@ -17,6 +17,7 @@ class IncidentReportingActionBoard extends Model
 
     const ACTION_BOARDS = 1;
     const SCENARIOS = 2;
+    const IR = 3;
 
 
     protected $hidden = [
@@ -28,7 +29,8 @@ class IncidentReportingActionBoard extends Model
         'name', 'description', 'stage_monitoring_id',
         'priority_id', 'access_id', 'version',
         'parent_id', 'with_child_clients', 'state_id',
-        'impact_potential_id', 'valid_till', 'updated_by', 'status_id'
+        'impact_potential_id', 'valid_till', 'updated_by', 'status_id',
+        'type_id', 'source', 'occurred_on', 'detected_on' ,'reported_on'
     ];
 
     public function actions(): BelongsToMany

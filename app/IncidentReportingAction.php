@@ -16,7 +16,7 @@ class IncidentReportingAction extends Model
     protected $fillable = [
         'name', 'description',
         'deadline_time_parameter', 'deadline_time_value', 'deadline_time_indicator',
-        'user_id', 'type_id'
+        'user_id', 'type_id', 'related_to_ir_ab_id'
     ];
 
     public function assignee(): HasOne

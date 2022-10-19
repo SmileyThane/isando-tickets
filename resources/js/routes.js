@@ -443,6 +443,22 @@ export default [
         component: IncidentReportingActionBoards
     },
     {
+        path: '/incident_reporting/list',
+        name: 'incident_reporting_list',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReportingActionBoards
+    },
+    {
+        path: '/incident_reporting/list/:id',
+        name: 'incident_reporting_list_item',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReportingCreate
+    },
+    {
         path: '/incident_reporting/action_boards',
         name: 'incident_reporting_action_boards',
         meta: {

@@ -23,7 +23,41 @@ export default {
             stage_monitoring: null,
             status: {
                 name: ''
-            }
+            },
+            source: '',
+            reported_on: null,
+            detected_on: null,
+            occurred_on: null
+
+        },
+        relatedIR: {
+            id: 0,
+            with_child_clients: false,
+            version: '',
+            valid_till: '',
+            updated_by: {
+                name: '',
+                surname: ''
+            },
+            categories: [],
+            clients: [],
+            actions: [],
+            action_boards: [],
+            child_versions: [],
+            priority_id: null,
+            impact_potential_id: null,
+            stage_monitoring_id: null,
+            access_id: null,
+            description: '',
+            stage_monitoring: null,
+            status: {
+                name: ''
+            },
+            source: '',
+            reported_on: null,
+            detected_on: null,
+            occurred_on: null
+
         },
         IRType: 1,
         selectedIRAction: {
@@ -132,7 +166,7 @@ export default {
         },
         callStoreIR({commit, dispatch, state}, incrementVersion) {
             let method = 'post'
-            let url = `/api/ir/ab`
+            let url = `/api/ir/ab/${state.IRType}`
             if (state.selectedIR.id) {
                 method = 'put'
                 url += `/${state.selectedIR.id}`
@@ -233,6 +267,9 @@ export default {
         setSelectedIR: (state, data) => {
             state.selectedIR = data
         },
+        setRelatedIR: (state, data) => {
+            state.relatedIR = data
+        },
         setSearch: (state, data) => state.search = data,
         setSearchWhere: (state, data) => state.searchWhere = data,
         setActiveTags: (state, data) => state.activeTags = data,
@@ -246,6 +283,7 @@ export default {
         getIsEditable: state => state.isEditable,
         getManageActionDlg: state => state.manageActionDlg,
         getSelectedIR: state => state.selectedIR,
+        getRelatedIR: state => state.relatedIR,
         getSelectedIRAction: state => state.selectedIRAction,
         getSearch: state => state.search,
         getSearchWhere: state => state.searchWhere,
