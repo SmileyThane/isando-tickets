@@ -17,6 +17,7 @@ class IncidentReportingActionBoard extends Model
 
     const ACTION_BOARDS = 1;
     const SCENARIOS = 2;
+    const IR = 3;
 
 
     protected $hidden = [
