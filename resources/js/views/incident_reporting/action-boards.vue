@@ -21,8 +21,17 @@
                 />
             </v-col>
             <v-col cols="8">
-                <div class="text-h6">
+                <v-btn
+                    v-if="$store.getters['IncidentReporting/getIRType'] === 3"
+                    @click="show"
+                    outlined
+                    rounded
+                    text>
                     {{ $store.getters['IncidentReporting/getSelectedIR'].name }}
+                </v-btn>
+                <div v-else class="text-h6">
+                    {{ $store.getters['IncidentReporting/getSelectedIR'].name }}
+
                     <v-menu v-if="!$store.getters['IncidentReporting/getIsEditable']" bottom>
                         <template v-slot:activator="{ on }">
                             <v-btn icon v-on="on">
@@ -79,7 +88,7 @@
 
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>{{ langMap.ir.ab.general }}</v-tab>
-                    <v-tab>
+                    <v-tab v-if="$store.getters['IncidentReporting/getIRType'] !== 3">
                         {{ $store.getters['IncidentReporting/getIRType'] === 1 ?
                             langMap.ir.ab.actions :
                             langMap.ir.ab.title
@@ -91,7 +100,7 @@
                     <v-tab-item>
                         <IncidentTabGeneral/>
                     </v-tab-item>
-                    <v-tab-item>
+                    <v-tab-item v-if="$store.getters['IncidentReporting/getIRType'] !== 3">
                         <IncidentTabActionBoards/>
                     </v-tab-item>
                     <v-tab-item>
@@ -253,6 +262,7 @@ export default {
             that.themeBgColor = color;
         });
         this.checkABType()
+        this.$store.commit('IncidentReporting/setIsEditable', false)
         this.$store.dispatch('SettingsIncident/ActionBoardStatuses/callList');
         this.$store.dispatch('IncidentReporting/callGetEmployees');
         this.$store.dispatch('IncidentReporting/callGetIROptions');
@@ -293,6 +303,10 @@ export default {
         cancelActionEditing() {
             this.$store.dispatch('IncidentReporting/callSetManageActionDlg', false)
         },
+        show() {
+            let id = this.$store.getters['IncidentReporting/getSelectedIR'].id
+            this.$router.push(`/incident_reporting/list/${id}`)
+        }
 
 
     }
