@@ -267,6 +267,9 @@ export default {
         setSelectedIR: (state, data) => {
             state.selectedIR = data
         },
+        setRelatedIR: (state, data) => {
+            state.relatedIR = data
+        },
         setSearch: (state, data) => state.search = data,
         setSearchWhere: (state, data) => state.searchWhere = data,
         setActiveTags: (state, data) => state.activeTags = data,
@@ -280,6 +283,7 @@ export default {
         getIsEditable: state => state.isEditable,
         getManageActionDlg: state => state.manageActionDlg,
         getSelectedIR: state => state.selectedIR,
+        getRelatedIR: state => state.relatedIR,
         getSelectedIRAction: state => state.selectedIRAction,
         getSearch: state => state.search,
         getSearchWhere: state => state.searchWhere,
