@@ -11,7 +11,9 @@ use App\IncidentReporting\ProcessState;
 use App\IncidentReporting\ReferenceBook;
 use App\IncidentReporting\ResourceType;
 use App\IncidentReporting\StakeholderType;
+use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
+use App\IncidentReportingActionBoardHasAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
@@ -213,7 +215,27 @@ class IncidentReportingRepository
 
     public function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
     {
-        $board->actions()->sync($this->prepareRelationToSync($request->actions));
+        if ((int)$board->type_id === IncidentReportingActionBoard::IR) {
+            $board->actions()->sync([]);
+            $actionIds = $this->prepareRelationToSync($request->actions);
+            foreach ($actionIds as $key => $actionId) {
+                $action = IncidentReportingAction::query()->find($actionId);
+                $clonedAction = $action->replicate();
+                $clonedAction->related_to_ir_ab_id = $board->id;
+                $clonedAction->save();
+                if ($action->related_to_ir_ab_id !== null) {
+                    $action->delete();
+                }
+                IncidentReportingActionBoardHasAction::query()->create([
+                    'action_board_id' => $board->id,
+                    'action_id' => $clonedAction->id,
+                    'action_type' => IncidentReportingAction::class,
+                    'order' => $key
+                ]);
+            }
+        } else {
+            $board->actions()->sync($this->prepareRelationToSync($request->actions));
+        }
         $board->actionBoards()->sync($this->prepareRelationToSync($request->action_boards));
         $board->categories()->sync($this->prepareRelationToSync($request->categories));
         $board->clients()->sync($this->prepareRelationToSync($request->clients));
