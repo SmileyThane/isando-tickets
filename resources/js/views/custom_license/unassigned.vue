@@ -213,8 +213,7 @@ export default {
         },
         getClients() {
             this.loading = this.themeBgColor
-            axios.get('/api/client', {
-            }).then(response => {
+            axios.get('/api/client', {}).then(response => {
                 this.loading = false
                 response = response.data
                 if (response.success === true) {
@@ -238,8 +237,7 @@ export default {
             this.assignCompanyDialog = true
         },
         assignToIxarmaCompany() {
-            axios.post('/api/custom_license_unassigned/assign', this.unassignedUserForm, {
-            }).then(response => {
+            axios.post('/api/custom_license_unassigned/assign', this.unassignedUserForm, {}).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.snackbarMessage = this.langMap.main.update_successful;
