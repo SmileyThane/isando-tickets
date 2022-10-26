@@ -313,7 +313,7 @@
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.main.clients }}</v-toolbar-title>
                     </v-toolbar>
                     <div class="card-body">
-                        <v-expansion-panels v-model="relatedClientsPanel" v-if="relatedClients" multiple>
+                        <v-expansion-panels v-if="relatedClients" v-model="relatedClientsPanel" multiple>
                             <v-expansion-panel v-for="(item,i) in relatedClients"
                                                :key="'relatedClients'+i"
                                                @click="processRelatedLicenseUsers(item.id, 'relatedClients'+i)">
@@ -330,11 +330,11 @@
                                         }} |
                                         {{ langMap.custom_license.active }}
                                                                 <v-checkbox
-                                                                    style="display: inline-block; margin-top: 0; padding-top: 0;"
-                                                                    disabled
                                                                     v-model="item.custom_license.ixarma_object.limits.active"
                                                                     color="success"
+                                                                    disabled
                                                                     hide-details
+                                                                    style="display: inline-block; margin-top: 0; padding-top: 0;"
                                                                 ></v-checkbox>|
                                         {{
                                             langMap.custom_license.expired_at + ' ' + item.custom_license.ixarma_object.limits.expiresAt
@@ -344,8 +344,6 @@
                                         }} |
                                         {{ langMap.custom_license.auto_assign }}
                                         <v-checkbox
-                                            @click.prevent.stop="updateAutoAssignFlag(item)"
-                                            style="display: inline-block; margin-top: 0; padding-top: 0;"
                                             v-model="item.custom_license.ixarma_object.limits.autoLicensingEnabled"
                                             color="success"
                                             hide-details
