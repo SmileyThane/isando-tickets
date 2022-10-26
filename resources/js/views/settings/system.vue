@@ -1385,7 +1385,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.tracking.settings.create_tag_title }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -1393,8 +1394,8 @@
                                         <div class="row">
                                             <v-col class="pa-1" cols="md-6">
                                                 <v-text-field
-                                                    :label="langMap.tracking.settings.name"
                                                     v-model="forms.tags.name"
+                                                    :label="langMap.tracking.settings.name"
                                                     required
                                                 ></v-text-field>
 
@@ -1402,11 +1403,11 @@
                                             <v-col class="pa-1" cols="md-6">
                                                 <v-text-field
                                                     v-model="forms.tags.color"
-                                                    hide-details
-                                                    class="ma-0 pa-0"
-                                                    solo
                                                     :label="langMap.tracking.settings.color"
+                                                    class="ma-0 pa-0"
+                                                    hide-details
                                                     required
+                                                    solo
                                                 >
                                                     <template v-slot:append>
                                                         <v-menu
@@ -1448,7 +1449,9 @@
                                                 bottom dark fab right small
                                                 @click="createTag"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -1463,7 +1466,7 @@
         <v-row justify="center">
             <v-dialog v-model="updateTypeDialog" max-width="600px" persistent>
                 <v-card dense outlined>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.system_settings.update_type_info }}
                     </v-card-title>
                     <v-card-text>
@@ -1815,7 +1818,7 @@ export default {
             dialogCurrencies: false,
         }
     },
-    created () {
+    created() {
         this.debounceGetTags = _.debounce(this.__getTags, 1000);
         this.debounceGetServices = _.debounce(this.__getServices, 1000);
         this.debounceGetCurrencies = _.debounce(this.__getCurrencies, 1000);
@@ -1861,16 +1864,16 @@ export default {
             this.$store.dispatch('Languages/getLanguageList');
         },
         __getTags() {
-            this.$store.dispatch('Tags/getTagList', { search: this.searchTag });
+            this.$store.dispatch('Tags/getTagList', {search: this.searchTag});
             this.$store.getters['Tags/getTags'].map(i => {
                 this.addTranslationDialog[i.id] = false;
             });
         },
         __getServices() {
-            this.$store.dispatch('Services/getServicesList', { search: this.searchService });
+            this.$store.dispatch('Services/getServicesList', {search: this.searchService});
         },
         __getCurrencies() {
-            this.$store.dispatch('Currencies/getCurrencyList', { search: this.searchCurrency });
+            this.$store.dispatch('Currencies/getCurrencyList', {search: this.searchCurrency});
         },
         getCompany() {
             axios.get(`/api/main_company/name`).then(response => {
@@ -2453,8 +2456,6 @@ export default {
                         this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                         this.errorType = 'error';
                         this.alert = true;
-
-                        return;
                     }
                 });
             }
