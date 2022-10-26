@@ -7,13 +7,20 @@
             <div class="col-md-6">
                 <v-card class="elevation-12 without-bottom">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.display }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.display
+                            }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" :color="themeFgColor" :style="`color: ${themeBgColor}; margin-right: 10px;`" @click="cancelUpdateCompanySettings">
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEdit" :color="themeFgColor"
+                               :style="`color: ${themeBgColor}; margin-right: 10px;`"
+                               @click="cancelUpdateCompanySettings">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" :color="themeFgColor" :style="`color: ${themeBgColor};`" @click="updateCompanySettings">
+                        <v-btn v-if="enableToEdit" :color="themeFgColor" :style="`color: ${themeBgColor};`"
+                               @click="updateCompanySettings">
                             {{ langMap.main.update }}
                         </v-btn>
                     </v-toolbar>
@@ -24,11 +31,19 @@
                                 <v-row>
                                     <v-col class="col-md-12">
                                         <v-label>{{ langMap.system_settings.navbar_style }}</v-label>
-                                        <v-radio-group v-model="companySettings.navbar_style" :readonly="!enableToEdit" dense>
-                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_no_logo" :value="1"></v-radio>
-                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo" :value="2"></v-radio>
-                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo_2" :value="3"></v-radio>
-                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_only_logo" :value="4"></v-radio>
+                                        <v-radio-group v-model="companySettings.navbar_style" :readonly="!enableToEdit"
+                                                       dense>
+                                            <v-radio :color="themeBgColor"
+                                                     :label="langMap.system_settings.navbar_no_logo"
+                                                     :value="1"></v-radio>
+                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo"
+                                                     :value="2"></v-radio>
+                                            <v-radio :color="themeBgColor"
+                                                     :label="langMap.system_settings.navbar_logo_2"
+                                                     :value="3"></v-radio>
+                                            <v-radio :color="themeBgColor"
+                                                     :label="langMap.system_settings.navbar_only_logo"
+                                                     :value="4"></v-radio>
                                         </v-radio-group>
                                     </v-col>
                                 </v-row>
@@ -93,19 +108,19 @@
                             <v-form>
                                 <v-row>
                                     <v-col cols="6">
-                                        <label>{{langMap.system_settings.company_theme_fg_color}}</label>
+                                        <label>{{ langMap.system_settings.company_theme_fg_color }}</label>
                                         <v-color-picker
-                                            dot-size="25"
-                                            mode="hexa"
                                             v-model="companySettings.theme_fg_color"
                                             :disabled="!enableToEdit"
+                                            dot-size="25"
+                                            mode="hexa"
                                         />
                                         <v-checkbox
-                                            :color="themeBgColor"
-                                            :readonly="!enableToEdit"
-                                            :label="langMap.system_settings.automate_theme_fg_color"
-                                            :value="true"
                                             v-model="autoFgColor"
+                                            :color="themeBgColor"
+                                            :label="langMap.system_settings.automate_theme_fg_color"
+                                            :readonly="!enableToEdit"
+                                            :value="true"
                                             @change="setThemeFgColor"
                                         />
                                         <p>{{ langMap.system_settings.automate_theme_fg_color_hint }}</p>
