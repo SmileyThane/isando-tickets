@@ -127,12 +127,12 @@
 
                                     </v-col>
                                     <v-col cols="6">
-                                        <label>{{langMap.system_settings.company_theme_bg_color}}</label>
+                                        <label>{{ langMap.system_settings.company_theme_bg_color }}</label>
                                         <v-color-picker
-                                            dot-size="25"
-                                            mode="hexa"
                                             v-model="companySettings.theme_bg_color"
                                             :disabled="!enableToEdit"
+                                            dot-size="25"
+                                            mode="hexa"
                                         />
 
                                         <p>{{ langMap.system_settings.override_user_theme_color_hint }}</p>
@@ -241,7 +241,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.languages }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.languages
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -261,7 +264,8 @@
                                                                 v-on:change="updateCompanyLanguages(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list-item-group>
@@ -275,7 +279,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.countries }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.countries
+                            }}
+                        </v-toolbar-title>
                     </v-toolbar>
 
                     <v-card-text>
@@ -283,24 +290,24 @@
                             <v-row>
                                 <v-col class="col-md-12" style="max-height: 20em">
                                     <perfect-scrollbar style="height: 100%">
-                                    <v-list dense subheader>
-                                        <v-list-item-group :color="themeBgColor">
-                                            <v-list-item
-                                                v-for="(item, i) in countries"
-                                                :key="item.id"
-                                            >
-                                                <v-list-item-action>
-                                                    <v-checkbox v-model="companyCountries" :color="themeBgColor"
-                                                                :value="item.id"
-                                                                v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
-                                                </v-list-item-action>
-                                                <v-list-item-content>
-                                                    <v-list-item-title
-                                                        v-text="'('+item.iso_3166_2+') '+$helpers.i18n.localized(item)"></v-list-item-title>
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </v-list-item-group>
-                                    </v-list>
+                                        <v-list dense subheader>
+                                            <v-list-item-group :color="themeBgColor">
+                                                <v-list-item
+                                                    v-for="(item, i) in countries"
+                                                    :key="item.id"
+                                                >
+                                                    <v-list-item-action>
+                                                        <v-checkbox v-model="companyCountries" :color="themeBgColor"
+                                                                    :value="item.id"
+                                                                    v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
+                                                    </v-list-item-action>
+                                                    <v-list-item-content>
+                                                        <v-list-item-title
+                                                            v-text="'('+item.iso_3166_2+') '+$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    </v-list-item-content>
+                                                </v-list-item>
+                                            </v-list-item-group>
+                                        </v-list>
                                     </perfect-scrollbar>
                                 </v-col>
                             </v-row>
@@ -311,10 +318,14 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.employee_number_format }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{ langMap.system_settings.employee_number_format }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateCompanySettings">
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
+                               @click="cancelUpdateCompanySettings">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompanySettings">
@@ -327,11 +338,11 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-checkbox
-                                        :color="themeBgColor"
-                                        :readonly="!enableToEdit"
-                                        :label="langMap.system_settings.employee_number_automatic"
-                                        value="1"
                                         v-model="employeeNumberFormat.auto"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.employee_number_automatic"
+                                        :readonly="!enableToEdit"
+                                        value="1"
                                         @change="updateEmployeeNumber()"
                                     >
                                     </v-checkbox>
