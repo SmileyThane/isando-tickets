@@ -92,7 +92,8 @@
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'en'"
-                                                            :key="attachment.id" :color="themeBgColor" class="mr-2" close
+                                                            :key="attachment.id" :color="themeBgColor" class="mr-2"
+                                                            close
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
                                         <span @click="download(attachment.link)">
@@ -130,12 +131,15 @@
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <v-text-field v-model="article.name_de" :color="themeBgColor" :label="langMap.main.name"
+                                        <v-text-field v-model="article.name_de" :color="themeBgColor"
+                                                      :label="langMap.main.name"
                                                       hide-details single-line/>
-                                        <v-textarea v-model="article.summary_de" :color="themeBgColor" :label="langMap.kb.summary"
+                                        <v-textarea v-model="article.summary_de" :color="themeBgColor"
+                                                    :label="langMap.kb.summary"
                                                     hide-details rows="4" single-line/>
                                         <v-spacer>&nbsp;</v-spacer>
-                                        <tinymce ref="content_de" v-model="article.content_de" :placeholder="langMap.kb.article_content"
+                                        <tinymce ref="content_de" v-model="article.content_de"
+                                                 :placeholder="langMap.kb.article_content"
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
