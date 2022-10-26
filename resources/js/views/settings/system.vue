@@ -1412,10 +1412,10 @@
                                                     <template v-slot:append>
                                                         <v-menu
                                                             v-model="colorMenuCreate"
-                                                            top
+                                                            :close-on-content-click="false"
                                                             nudge-bottom="105"
                                                             nudge-left="16"
-                                                            :close-on-content-click="false"
+                                                            top
                                                         >
                                                             <template v-slot:activator="{ on }">
                                                                 <div
@@ -2594,13 +2594,13 @@ export default {
             const foundLang = languages.find(i => i.locale === code);
             return foundLang ? foundLang.name : code;
         },
-        saveTag (item) {
+        saveTag(item) {
             this.$store.dispatch('Tags/updateTag', item);
         },
-        saveService (item) {
+        saveService(item) {
             this.$store.dispatch('Services/updateService', item);
         },
-        saveCurrency (item) {
+        saveCurrency(item) {
             this.$store.dispatch('Currencies/updateCurrency', item);
         },
         removeTag(tagId) {
