@@ -394,10 +394,14 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.client_number_format }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{ langMap.system_settings.client_number_format }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateCompanySettings">
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
+                               @click="cancelUpdateCompanySettings">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompanySettings">
@@ -410,11 +414,11 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-checkbox
-                                        :color="themeBgColor"
-                                        :readonly="!enableToEdit"
-                                        :label="langMap.system_settings.client_number_automatic"
-                                        value="1"
                                         v-model="companyNumberFormat.auto"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.client_number_automatic"
+                                        :readonly="!enableToEdit"
+                                        value="1"
                                         @change="updateEmployeeNumber()"
                                     >
                                     </v-checkbox>
@@ -466,23 +470,26 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.currencies }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.tracking.settings.currencies
+                            }}
+                        </v-toolbar-title>
                     </v-toolbar>
 
                     <v-card-text>
                         <v-data-table
-                            dense
                             :headers="headers.currencies"
                             :items="$store.getters['Currencies/getCurrencies']"
                             :items-per-page="15"
                             class="elevation-1"
+                            dense
                         >
                             <template v-slot:item.name="props">
                                 <v-edit-dialog
-                                    @save="saveCurrency(props.item)"
                                     @cancel="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
                                     @close="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @save="saveCurrency(props.item)"
                                 >
                                     {{ props.item.name }}
                                     <template v-slot:input>
