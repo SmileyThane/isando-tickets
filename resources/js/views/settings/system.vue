@@ -543,8 +543,8 @@
                             </template>
                             <template v-slot:item.actions="props">
                                 <v-btn
-                                    icon
                                     :color="themeBgColor"
+                                    icon
                                     @click="removeCurrency(props.item.id)"
                                 >
                                     <v-icon>mdi-delete</v-icon>
@@ -556,7 +556,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.tracking.settings.create_currency_title }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -564,22 +565,22 @@
                                         <div class="row">
                                             <v-col class="pa-1" cols="md-4">
                                                 <v-text-field
-                                                    :label="langMap.tracking.settings.name"
                                                     v-model="forms.currency.name"
+                                                    :label="langMap.tracking.settings.name"
                                                     required
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col class="pa-1" cols="md-4">
                                                 <v-text-field
-                                                    :label="langMap.tracking.settings.slug"
                                                     v-model="forms.currency.slug"
+                                                    :label="langMap.tracking.settings.slug"
                                                     required
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col class="pa-1" cols="md-4">
                                                 <v-text-field
-                                                    :label="langMap.tracking.settings.symbol"
                                                     v-model="forms.currency.symbol"
+                                                    :label="langMap.tracking.settings.symbol"
                                                     required
                                                 ></v-text-field>
                                             </v-col>
@@ -588,7 +589,9 @@
                                                 bottom dark fab right small
                                                 @click="createCurrency(); dialogCurrencies = false"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
