@@ -25,7 +25,8 @@
                         <v-col cols="6">
                             <label>{{ langMap.kb.article_category }}</label>
                             <perfect-scrollbar>
-                                <v-treeview v-model="categories" :color="themeBgColor" :items="categoriesTree" :selected-color="themeBgColor"
+                                <v-treeview v-model="categories" :color="themeBgColor" :items="categoriesTree"
+                                            :selected-color="themeBgColor"
                                             item-key="id" open-all selectable>
                                     <template v-slot:prepend="{ item }">
                                         <v-icon>mdi-folder</v-icon>
@@ -38,8 +39,10 @@
                         </v-col>
                         <v-col cols="6">
                             <label>{{ langMap.kb.tags }}</label>
-                            <v-combobox v-model="article.tags" :color="themeBgColor" :items="$store.getters['Tags/getTags']"
-                                        :label="langMap.tracking.tag_btn.choose_tags" chips hide-selected item-text="name"
+                            <v-combobox v-model="article.tags" :color="themeBgColor"
+                                        :items="$store.getters['Tags/getTags']"
+                                        :label="langMap.tracking.tag_btn.choose_tags" chips hide-selected
+                                        item-text="name"
                                         item-value="id" multiple>
                                 <template v-slot:selection="{ attrs, item, parent, selected }">
                                     <v-chip v-if="item.id" :color="item.color" :text-color="invertColor(item.color)"
