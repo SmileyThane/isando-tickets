@@ -504,8 +504,8 @@
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn @click.stop.prevent="showUnassignDialog(item)" icon v-bind="attrs"
-                                               v-on="on">
+                                        <v-btn icon v-bind="attrs" v-on="on"
+                                               @click.stop.prevent="showUnassignDialog(item)">
                                             <v-icon>
                                                 mdi-delete
                                             </v-icon>
