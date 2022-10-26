@@ -1285,8 +1285,8 @@
                             </template>
                             <template v-slot:item.actions="props">
                                 <v-btn
-                                    icon
                                     :color="themeBgColor"
+                                    icon
                                     @click="removeTag(props.item.id)"
                                 >
                                     <v-icon>mdi-delete</v-icon>
@@ -1310,10 +1310,10 @@
                                             </div>
                                             <div class="d-inline-flex flex-grow-1">
                                                 <v-text-field
-                                                    class="mt-n1"
-                                                    hide-details
-                                                    dense
                                                     v-model="translate.name"
+                                                    class="mt-n1"
+                                                    dense
+                                                    hide-details
                                                     @blur="addOrUpdateTranslate(item, translate.lang, translate.name)"
                                                 ></v-text-field>
                                             </div>
@@ -1328,8 +1328,8 @@
                                                         :color="themeBgColor"
                                                         text
                                                         v-bind="attrs"
-                                                        v-on="on"
                                                         @click="resetDialog()"
+                                                        v-on="on"
                                                     >
                                                         {{ langMap.tracking.settings.add_translation }}
                                                     </v-btn>
@@ -1342,15 +1342,15 @@
 
                                                     <v-card-text>
                                                         <v-select
+                                                            v-model="tagTranslateForm.lang"
                                                             :items="filterLang(item)"
                                                             :label="langMap.tracking.settings.language"
                                                             item-text="name"
                                                             item-value="locale"
-                                                            v-model="tagTranslateForm.lang"
                                                         ></v-select>
                                                         <v-text-field
-                                                            label="Tag name"
                                                             v-model="tagTranslateForm.name"
+                                                            label="Tag name"
                                                         ></v-text-field>
                                                     </v-card-text>
 
