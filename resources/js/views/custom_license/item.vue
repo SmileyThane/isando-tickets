@@ -493,12 +493,12 @@
                             </template>
                             <template v-slot:item.licensed="{ item }">
                                 <v-checkbox
-                                    :disabled="client.is_portal === 1"
-                                    style="margin: 0;"
                                     v-model="item.licensed"
-                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed);"
+                                    :disabled="client.is_portal === 1"
                                     color="success"
                                     hide-details
+                                    style="margin: 0;"
+                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed);"
                                 ></v-checkbox>
                             </template>
                             <template v-slot:item.actions="{ item }">
