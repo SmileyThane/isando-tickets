@@ -1009,7 +1009,9 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.notification_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{ langMap.system_settings.notification_types }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -1027,15 +1029,18 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, notificationIcons,'updateNotificationType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteNotificationType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -1048,7 +1053,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_notification_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -1084,7 +1091,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(notificationTypeForm, 'addNotificationType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
@@ -1100,7 +1109,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.ticket_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.ticket_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -1118,20 +1130,23 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, ticketIcons,'updateTicketType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action v-if="item.id === 1">
-                                                    <v-icon small :title="langMap.profile.default_ticket_type">
+                                                    <v-icon :title="langMap.profile.default_ticket_type" small>
                                                         mdi-lock
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteTicketType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -1144,7 +1159,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_ticket_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -1165,7 +1182,8 @@
                                                                           dense></v-text-field>
                                                         </v-col>
                                                         <v-col class="pa-1" cols="md-2">
-                                                            <v-select v-model="ticketTypeForm.icon" :color="themeBgColor"
+                                                            <v-select v-model="ticketTypeForm.icon"
+                                                                      :color="themeBgColor"
                                                                       :item-color="themeBgColor" :items="ticketIcons"
                                                                       :label="langMap.main.icon" dense>
                                                                 <template slot="selection" slot-scope="data">
@@ -1178,7 +1196,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(ticketTypeForm, 'addTicketType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
