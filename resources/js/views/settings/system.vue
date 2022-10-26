@@ -804,7 +804,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.address_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.address_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -822,15 +825,18 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, addressIcons, 'updateAddressType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteAddressType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -843,7 +849,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_address_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -864,7 +872,8 @@
                                                                           dense></v-text-field>
                                                         </v-col>
                                                         <v-col class="pa-1" cols="md-2">
-                                                            <v-select v-model="addressTypeForm.icon" :color="themeBgColor"
+                                                            <v-select v-model="addressTypeForm.icon"
+                                                                      :color="themeBgColor"
                                                                       :item-color="themeBgColor"
                                                                       :items="addressIcons"
                                                                       :label="langMap.main.icon" dense>
@@ -878,7 +887,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(addressTypeForm, 'addAddressType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
@@ -894,7 +905,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.email_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.email_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -912,20 +926,23 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, emailIcons,'updateEmailType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action v-if="item.id === 1">
-                                                    <v-icon small :title="langMap.profile.login_email">
+                                                    <v-icon :title="langMap.profile.login_email" small>
                                                         mdi-lock
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteEmailType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -938,7 +955,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_email_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -972,7 +991,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(emailTypeForm, 'addEmailType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
