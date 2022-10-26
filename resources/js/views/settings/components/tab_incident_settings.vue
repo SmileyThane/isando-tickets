@@ -57,9 +57,11 @@
 
                 <v-card-text>
                     <v-text-field
-                        class="mt-4"
                         v-model="selName"
-                        dense outlined hide-details
+                        class="mt-4"
+                        dense
+                        hide-details
+                        outlined
                     />
                 </v-card-text>
 
