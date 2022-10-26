@@ -121,7 +121,7 @@
         <template>
             <v-dialog v-model="removeCustomerDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
@@ -150,7 +150,7 @@ export default {
             snackbar: false,
             actionColor: '',
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             totalCustomers: 0,
             lastPage: 0,
@@ -196,7 +196,7 @@ themeBgColor: this.$store.state.themeBgColor,
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },

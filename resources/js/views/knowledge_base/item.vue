@@ -11,7 +11,8 @@
             <v-card-text>
                 <div v-if="article.tags">
                     <h4 class="mb-2">{{ langMap.kb.tags }}</h4>
-                    <v-chip v-for="tag in article.tags" :key="tag.id" :color="tag.color" :text-color="invertColor(tag.color)" class="mr-2" label
+                    <v-chip v-for="tag in article.tags" :key="tag.id" :color="tag.color"
+                            :text-color="invertColor(tag.color)" class="mr-2" label
                             small v-text="tag.name"/>
                     <v-spacer>&nbsp;</v-spacer>
                 </div>

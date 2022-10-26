@@ -15,13 +15,16 @@
                                               v-on:keyup="openCategory($route.query.category)"/>
                             </v-col>
                             <v-col cols="4">
-                                <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions" hide-details
+                                <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
+                                          hide-details
                                           item-text="name" item-value="id" label="Search in" multiple
                                           v-on:change="openCategory($route.query.category)"/>
                             </v-col>
                             <v-col cols="3">
-                                <v-select v-model="activeTags" :color="themeBgColor" :items="$store.getters['Tags/getTags']"
-                                          :label="langMap.kb.tags" append-icon="mdi-tag-multiple-outline" hide-selected item-text="name" item-value="id"
+                                <v-select v-model="activeTags" :color="themeBgColor"
+                                          :items="$store.getters['Tags/getTags']"
+                                          :label="langMap.kb.tags" append-icon="mdi-tag-multiple-outline" hide-selected
+                                          item-text="name" item-value="id"
                                           multiple small-chips
                                           v-on:change="getArticles();">
                                     <template v-slot:selection="{ attrs, item, parent, selected }">
@@ -209,7 +212,8 @@
                             <v-col cols="6">
                                 <label>{{ langMap.kb.parent_category }}</label>
                                 <perfect-scrollbar>
-                                    <v-treeview :active="categoryForm._active" :color="themeBgColor" :items="categoriesTree"
+                                    <v-treeview :active="categoryForm._active" :color="themeBgColor"
+                                                :items="categoriesTree"
                                                 activatable item-key="id" open-all
                                                 @update:active="refreshCategoryForm">
                                         <template v-slot:prepend="{ item }">
@@ -242,7 +246,8 @@
                                             <v-text-field v-model="categoryForm.name" :color="themeBgColor"
                                                           :label="langMap.main.name" hide-details single-line/>
                                             <v-text-field v-model="categoryForm.description"
-                                                          :color="themeBgColor" :label="langMap.main.description" hide-details
+                                                          :color="themeBgColor" :label="langMap.main.description"
+                                                          hide-details
                                                           single-line/>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
@@ -252,7 +257,8 @@
                                             <v-text-field v-model="categoryForm.name_de" :color="themeBgColor"
                                                           :label="langMap.main.name" hide-details single-line/>
                                             <v-text-field v-model="categoryForm.description_de"
-                                                          :color="themeBgColor" :label="langMap.main.description" hide-details
+                                                          :color="themeBgColor" :label="langMap.main.description"
+                                                          hide-details
                                                           single-line/>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
@@ -264,7 +270,8 @@
                         <v-btn left text @click="updateCategoryDlg=false; clearCategoryForm();"
                                v-text="langMap.main.cancel"/>
                         <v-btn :color="themeBgColor" text
-                               @click="updateCategory" v-text="categoryForm.id ? langMap.main.update : langMap.main.create"/>
+                               @click="updateCategory"
+                               v-text="categoryForm.id ? langMap.main.update : langMap.main.create"/>
                     </v-card-actions>
                 </v-card>
             </v-dialog>

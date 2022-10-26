@@ -23,7 +23,8 @@
                                 }}
                             </v-toolbar-title>
                             <v-spacer></v-spacer>
-                            <v-icon v-if="!canBeEdited && $helpers.auth.checkPermissionByIds([35])" :color="themeFgColor" @click="canBeEdited = true">mdi-pencil
+                            <v-icon v-if="!canBeEdited && $helpers.auth.checkPermissionByIds([35])"
+                                    :color="themeFgColor" @click="canBeEdited = true">mdi-pencil
                             </v-icon>
                             <v-btn v-if="canBeEdited" color="white" style="color: black; margin-right: 10px"
                                    @click="canBeEdited = false">
@@ -38,11 +39,11 @@
 
                     <div class="card-body">
                         <v-data-table
+                            :footer-props="footerProps"
                             :headers="headers"
                             :items="items"
                             :items-per-page="10"
                             :loading="loading"
-                            :footer-props="footerProps"
                             :loading-text="langMap.main.loading"
                             class="elevation-1"
                             dense

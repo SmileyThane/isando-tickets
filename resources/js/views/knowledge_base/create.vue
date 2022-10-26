@@ -25,7 +25,8 @@
                         <v-col cols="6">
                             <label>{{ langMap.kb.article_category }}</label>
                             <perfect-scrollbar>
-                                <v-treeview v-model="categories" :color="themeBgColor" :items="categoriesTree" :selected-color="themeBgColor"
+                                <v-treeview v-model="categories" :color="themeBgColor" :items="categoriesTree"
+                                            :selected-color="themeBgColor"
                                             item-key="id" open-all selectable>
                                     <template v-slot:prepend="{ item }">
                                         <v-icon>mdi-folder</v-icon>
@@ -38,8 +39,10 @@
                         </v-col>
                         <v-col cols="6">
                             <label>{{ langMap.kb.tags }}</label>
-                            <v-combobox v-model="article.tags" :color="themeBgColor" :items="$store.getters['Tags/getTags']"
-                                        :label="langMap.tracking.tag_btn.choose_tags" chips hide-selected item-text="name"
+                            <v-combobox v-model="article.tags" :color="themeBgColor"
+                                        :items="$store.getters['Tags/getTags']"
+                                        :label="langMap.tracking.tag_btn.choose_tags" chips hide-selected
+                                        item-text="name"
                                         item-value="id" multiple>
                                 <template v-slot:selection="{ attrs, item, parent, selected }">
                                     <v-chip v-if="item.id" :color="item.color" :text-color="invertColor(item.color)"
@@ -64,12 +67,15 @@
                                     <v-expansion-panel-header>English</v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                         <v-text-field v-model="article.name" :color="themeBgColor"
-                                                      :label="langMap.main.name" :placeholder="langMap.main.name" hide-details
+                                                      :label="langMap.main.name" :placeholder="langMap.main.name"
+                                                      hide-details
                                                       single-line/>
-                                        <v-textarea v-model="article.summary" :color="themeBgColor" :label="langMap.kb.summary"
+                                        <v-textarea v-model="article.summary" :color="themeBgColor"
+                                                    :label="langMap.kb.summary"
                                                     hide-details rows="4" single-line/>
                                         <v-spacer>&nbsp;</v-spacer>
-                                        <tinymce ref="content" v-model="article.content" :placeholder="langMap.kb.article_content"
+                                        <tinymce ref="content" v-model="article.content"
+                                                 :placeholder="langMap.kb.article_content"
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
@@ -86,7 +92,8 @@
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'en'"
-                                                            :key="attachment.id" :color="themeBgColor" class="mr-2" close
+                                                            :key="attachment.id" :color="themeBgColor" class="mr-2"
+                                                            close
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
                                         <span @click="download(attachment.link)">
@@ -124,12 +131,15 @@
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <v-text-field v-model="article.name_de" :color="themeBgColor" :label="langMap.main.name"
+                                        <v-text-field v-model="article.name_de" :color="themeBgColor"
+                                                      :label="langMap.main.name"
                                                       hide-details single-line/>
-                                        <v-textarea v-model="article.summary_de" :color="themeBgColor" :label="langMap.kb.summary"
+                                        <v-textarea v-model="article.summary_de" :color="themeBgColor"
+                                                    :label="langMap.kb.summary"
                                                     hide-details rows="4" single-line/>
                                         <v-spacer>&nbsp;</v-spacer>
-                                        <tinymce ref="content_de" v-model="article.content_de" :placeholder="langMap.kb.article_content"
+                                        <tinymce ref="content_de" v-model="article.content_de"
+                                                 :placeholder="langMap.kb.article_content"
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
@@ -146,7 +156,8 @@
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'de'"
-                                                            :key="attachment.id" :color="themeBgColor" class="mr-2" close
+                                                            :key="attachment.id" :color="themeBgColor" class="mr-2"
+                                                            close
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
                                         <span @click="download(attachment.link)">
@@ -210,7 +221,8 @@
                             <v-list dense outlined>
                                 <v-list-item v-for="(step, index) in article.next" v-bind:key="step.id" dense>
                                     <v-list-item-content>
-                                        <v-select v-model="article.next[index]" :color="themeBgColor" :item-color="themeBgColor"
+                                        <v-select v-model="article.next[index]" :color="themeBgColor"
+                                                  :item-color="themeBgColor"
                                                   :items="articles" :label="langMap.kb.next_step" dense
                                                   item-value="id">
                                             <template v-slot:item="{ item }">{{

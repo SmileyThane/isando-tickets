@@ -7,13 +7,20 @@
             <div class="col-md-6">
                 <v-card class="elevation-12 without-bottom">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.display }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.display
+                            }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" :color="themeFgColor" :style="`color: ${themeBgColor}; margin-right: 10px;`" @click="cancelUpdateCompanySettings">
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEdit" :color="themeFgColor"
+                               :style="`color: ${themeBgColor}; margin-right: 10px;`"
+                               @click="cancelUpdateCompanySettings">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" :color="themeFgColor" :style="`color: ${themeBgColor};`" @click="updateCompanySettings">
+                        <v-btn v-if="enableToEdit" :color="themeFgColor" :style="`color: ${themeBgColor};`"
+                               @click="updateCompanySettings">
                             {{ langMap.main.update }}
                         </v-btn>
                     </v-toolbar>
@@ -24,11 +31,19 @@
                                 <v-row>
                                     <v-col class="col-md-12">
                                         <v-label>{{ langMap.system_settings.navbar_style }}</v-label>
-                                        <v-radio-group v-model="companySettings.navbar_style" :readonly="!enableToEdit" dense>
-                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_no_logo" :value="1"></v-radio>
-                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo" :value="2"></v-radio>
-                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo_2" :value="3"></v-radio>
-                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_only_logo" :value="4"></v-radio>
+                                        <v-radio-group v-model="companySettings.navbar_style" :readonly="!enableToEdit"
+                                                       dense>
+                                            <v-radio :color="themeBgColor"
+                                                     :label="langMap.system_settings.navbar_no_logo"
+                                                     :value="1"></v-radio>
+                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo"
+                                                     :value="2"></v-radio>
+                                            <v-radio :color="themeBgColor"
+                                                     :label="langMap.system_settings.navbar_logo_2"
+                                                     :value="3"></v-radio>
+                                            <v-radio :color="themeBgColor"
+                                                     :label="langMap.system_settings.navbar_only_logo"
+                                                     :value="4"></v-radio>
                                         </v-radio-group>
                                     </v-col>
                                 </v-row>
@@ -93,31 +108,31 @@
                             <v-form>
                                 <v-row>
                                     <v-col cols="6">
-                                        <label>{{langMap.system_settings.company_theme_fg_color}}</label>
+                                        <label>{{ langMap.system_settings.company_theme_fg_color }}</label>
                                         <v-color-picker
-                                            dot-size="25"
-                                            mode="hexa"
                                             v-model="companySettings.theme_fg_color"
                                             :disabled="!enableToEdit"
+                                            dot-size="25"
+                                            mode="hexa"
                                         />
                                         <v-checkbox
-                                            :color="themeBgColor"
-                                            :readonly="!enableToEdit"
-                                            :label="langMap.system_settings.automate_theme_fg_color"
-                                            :value="true"
                                             v-model="autoFgColor"
+                                            :color="themeBgColor"
+                                            :label="langMap.system_settings.automate_theme_fg_color"
+                                            :readonly="!enableToEdit"
+                                            :value="true"
                                             @change="setThemeFgColor"
                                         />
                                         <p>{{ langMap.system_settings.automate_theme_fg_color_hint }}</p>
 
                                     </v-col>
                                     <v-col cols="6">
-                                        <label>{{langMap.system_settings.company_theme_bg_color}}</label>
+                                        <label>{{ langMap.system_settings.company_theme_bg_color }}</label>
                                         <v-color-picker
-                                            dot-size="25"
-                                            mode="hexa"
                                             v-model="companySettings.theme_bg_color"
                                             :disabled="!enableToEdit"
+                                            dot-size="25"
+                                            mode="hexa"
                                         />
 
                                         <p>{{ langMap.system_settings.override_user_theme_color_hint }}</p>
@@ -226,7 +241,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.languages }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.languages
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -246,7 +264,8 @@
                                                                 v-on:change="updateCompanyLanguages(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list-item-group>
@@ -260,7 +279,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.countries }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.countries
+                            }}
+                        </v-toolbar-title>
                     </v-toolbar>
 
                     <v-card-text>
@@ -268,24 +290,24 @@
                             <v-row>
                                 <v-col class="col-md-12" style="max-height: 20em">
                                     <perfect-scrollbar style="height: 100%">
-                                    <v-list dense subheader>
-                                        <v-list-item-group :color="themeBgColor">
-                                            <v-list-item
-                                                v-for="(item, i) in countries"
-                                                :key="item.id"
-                                            >
-                                                <v-list-item-action>
-                                                    <v-checkbox v-model="companyCountries" :color="themeBgColor"
-                                                                :value="item.id"
-                                                                v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
-                                                </v-list-item-action>
-                                                <v-list-item-content>
-                                                    <v-list-item-title
-                                                        v-text="'('+item.iso_3166_2+') '+$helpers.i18n.localized(item)"></v-list-item-title>
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </v-list-item-group>
-                                    </v-list>
+                                        <v-list dense subheader>
+                                            <v-list-item-group :color="themeBgColor">
+                                                <v-list-item
+                                                    v-for="(item, i) in countries"
+                                                    :key="item.id"
+                                                >
+                                                    <v-list-item-action>
+                                                        <v-checkbox v-model="companyCountries" :color="themeBgColor"
+                                                                    :value="item.id"
+                                                                    v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
+                                                    </v-list-item-action>
+                                                    <v-list-item-content>
+                                                        <v-list-item-title
+                                                            v-text="'('+item.iso_3166_2+') '+$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    </v-list-item-content>
+                                                </v-list-item>
+                                            </v-list-item-group>
+                                        </v-list>
                                     </perfect-scrollbar>
                                 </v-col>
                             </v-row>
@@ -296,10 +318,14 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.employee_number_format }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{ langMap.system_settings.employee_number_format }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateCompanySettings">
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
+                               @click="cancelUpdateCompanySettings">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompanySettings">
@@ -312,11 +338,11 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-checkbox
-                                        :color="themeBgColor"
-                                        :readonly="!enableToEdit"
-                                        :label="langMap.system_settings.employee_number_automatic"
-                                        value="1"
                                         v-model="employeeNumberFormat.auto"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.employee_number_automatic"
+                                        :readonly="!enableToEdit"
+                                        value="1"
                                         @change="updateEmployeeNumber()"
                                     >
                                     </v-checkbox>
@@ -368,10 +394,14 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.client_number_format }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{ langMap.system_settings.client_number_format }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateCompanySettings">
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
+                               @click="cancelUpdateCompanySettings">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompanySettings">
@@ -384,11 +414,11 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-checkbox
-                                        :color="themeBgColor"
-                                        :readonly="!enableToEdit"
-                                        :label="langMap.system_settings.client_number_automatic"
-                                        value="1"
                                         v-model="companyNumberFormat.auto"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.client_number_automatic"
+                                        :readonly="!enableToEdit"
+                                        value="1"
                                         @change="updateEmployeeNumber()"
                                     >
                                     </v-checkbox>
@@ -440,78 +470,81 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.currencies }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.tracking.settings.currencies
+                            }}
+                        </v-toolbar-title>
                     </v-toolbar>
 
                     <v-card-text>
                         <v-data-table
-                            dense
                             :headers="headers.currencies"
                             :items="$store.getters['Currencies/getCurrencies']"
                             :items-per-page="15"
                             class="elevation-1"
+                            dense
                         >
                             <template v-slot:item.name="props">
                                 <v-edit-dialog
-                                    @save="saveCurrency(props.item)"
                                     @cancel="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
                                     @close="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @save="saveCurrency(props.item)"
                                 >
                                     {{ props.item.name }}
                                     <template v-slot:input>
                                         <v-text-field
                                             v-model="props.item.name"
-                                            :label="langMap.tracking.settings.name"
                                             :hint="langMap.tracking.settings.name"
-                                            single-line
+                                            :label="langMap.tracking.settings.name"
                                             counter
+                                            single-line
                                         ></v-text-field>
                                     </template>
                                 </v-edit-dialog>
                             </template>
                             <template v-slot:item.slug="props">
                                 <v-edit-dialog
-                                    @save="saveCurrency(props.item)"
                                     @cancel="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
                                     @close="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @save="saveCurrency(props.item)"
                                 >
                                     {{ props.item.slug }}
                                     <template v-slot:input>
                                         <v-text-field
                                             v-model="props.item.slug"
-                                            :label="langMap.tracking.settings.slug"
                                             :hint="langMap.tracking.settings.slug"
-                                            single-line
+                                            :label="langMap.tracking.settings.slug"
                                             counter
+                                            single-line
                                         ></v-text-field>
                                     </template>
                                 </v-edit-dialog>
                             </template>
                             <template v-slot:item.symbol="props">
                                 <v-edit-dialog
-                                    @save="saveCurrency(props.item)"
                                     @cancel="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
                                     @close="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @save="saveCurrency(props.item)"
                                 >
                                     {{ props.item.symbol }}
                                     <template v-slot:input>
                                         <v-text-field
                                             v-model="props.item.symbol"
-                                            :label="langMap.tracking.settings.symbol"
                                             :hint="langMap.tracking.settings.symbol"
-                                            single-line
+                                            :label="langMap.tracking.settings.symbol"
                                             counter
+                                            single-line
                                         ></v-text-field>
                                     </template>
                                 </v-edit-dialog>
                             </template>
                             <template v-slot:item.actions="props">
                                 <v-btn
-                                    icon
                                     :color="themeBgColor"
+                                    icon
                                     @click="removeCurrency(props.item.id)"
                                 >
                                     <v-icon>mdi-delete</v-icon>
@@ -523,7 +556,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.tracking.settings.create_currency_title }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -531,22 +565,22 @@
                                         <div class="row">
                                             <v-col class="pa-1" cols="md-4">
                                                 <v-text-field
-                                                    :label="langMap.tracking.settings.name"
                                                     v-model="forms.currency.name"
+                                                    :label="langMap.tracking.settings.name"
                                                     required
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col class="pa-1" cols="md-4">
                                                 <v-text-field
-                                                    :label="langMap.tracking.settings.slug"
                                                     v-model="forms.currency.slug"
+                                                    :label="langMap.tracking.settings.slug"
                                                     required
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col class="pa-1" cols="md-4">
                                                 <v-text-field
-                                                    :label="langMap.tracking.settings.symbol"
                                                     v-model="forms.currency.symbol"
+                                                    :label="langMap.tracking.settings.symbol"
                                                     required
                                                 ></v-text-field>
                                             </v-col>
@@ -555,7 +589,9 @@
                                                 bottom dark fab right small
                                                 @click="createCurrency(); dialogCurrencies = false"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -569,7 +605,10 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.phone_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.phone_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -587,15 +626,18 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, phoneIcons,'updatePhoneType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deletePhoneType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -608,7 +650,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_phone_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -642,7 +686,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(phoneTypeForm, 'addPhoneType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
@@ -658,7 +704,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.social_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.social_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -676,15 +725,18 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, socialIcons, 'updateSocialType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteSocialType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -697,7 +749,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_social_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -718,7 +772,8 @@
                                                                           dense></v-text-field>
                                                         </v-col>
                                                         <v-col class="pa-1" cols="md-2">
-                                                            <v-select v-model="socialTypeForm.icon" :color="themeBgColor"
+                                                            <v-select v-model="socialTypeForm.icon"
+                                                                      :color="themeBgColor"
                                                                       :item-color="themeBgColor" :items="socialIcons"
                                                                       :label="langMap.main.icon" dense>
                                                                 <template slot="selection" slot-scope="data">
@@ -731,7 +786,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(socialTypeForm, 'addSocialType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
@@ -747,7 +804,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.address_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.address_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -765,15 +825,18 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, addressIcons, 'updateAddressType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteAddressType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -786,7 +849,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_address_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -807,7 +872,8 @@
                                                                           dense></v-text-field>
                                                         </v-col>
                                                         <v-col class="pa-1" cols="md-2">
-                                                            <v-select v-model="addressTypeForm.icon" :color="themeBgColor"
+                                                            <v-select v-model="addressTypeForm.icon"
+                                                                      :color="themeBgColor"
                                                                       :item-color="themeBgColor"
                                                                       :items="addressIcons"
                                                                       :label="langMap.main.icon" dense>
@@ -821,7 +887,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(addressTypeForm, 'addAddressType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
@@ -837,7 +905,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.email_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.email_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -855,20 +926,23 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, emailIcons,'updateEmailType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action v-if="item.id === 1">
-                                                    <v-icon small :title="langMap.profile.login_email">
+                                                    <v-icon :title="langMap.profile.login_email" small>
                                                         mdi-lock
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteEmailType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -881,7 +955,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_email_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -915,7 +991,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(emailTypeForm, 'addEmailType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
@@ -931,7 +1009,9 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.notification_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{ langMap.system_settings.notification_types }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -949,15 +1029,18 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, notificationIcons,'updateNotificationType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteNotificationType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -970,7 +1053,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_notification_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -1006,7 +1091,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(notificationTypeForm, 'addNotificationType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
@@ -1022,7 +1109,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.ticket_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.ticket_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -1040,20 +1130,23 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, ticketIcons,'updateTicketType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action v-if="item.id === 1">
-                                                    <v-icon small :title="langMap.profile.default_ticket_type">
+                                                    <v-icon :title="langMap.profile.default_ticket_type" small>
                                                         mdi-lock
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteTicketType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -1066,7 +1159,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_ticket_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -1087,7 +1182,8 @@
                                                                           dense></v-text-field>
                                                         </v-col>
                                                         <v-col class="pa-1" cols="md-2">
-                                                            <v-select v-model="ticketTypeForm.icon" :color="themeBgColor"
+                                                            <v-select v-model="ticketTypeForm.icon"
+                                                                      :color="themeBgColor"
                                                                       :item-color="themeBgColor" :items="ticketIcons"
                                                                       :label="langMap.main.icon" dense>
                                                                 <template slot="selection" slot-scope="data">
@@ -1100,7 +1196,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(ticketTypeForm, 'addTicketType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
@@ -1116,35 +1214,38 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.tags }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.tracking.settings.tags
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
                     <v-card-text>
                         <v-data-table
-                            dense
                             :headers="headers.tags"
                             :items="$store.getters['Tags/getTags']"
                             :items-per-page="15"
                             class="elevation-1"
-                            single-expand
+                            dense
                             show-expand
+                            single-expand
                         >
                             <template v-slot:item.name="props">
                                 <v-edit-dialog
-                                    @save="saveTag(props.item)"
                                     @cancel="saveTag(props.item)"
-                                    @open="saveTag(props.item)"
                                     @close="saveTag(props.item)"
+                                    @open="saveTag(props.item)"
+                                    @save="saveTag(props.item)"
                                 >
                                     {{ props.item.name }}
                                     <template v-slot:input>
                                         <v-text-field
                                             v-model="props.item.name"
-                                            :label="langMap.tracking.settings.name"
                                             :hint="langMap.tracking.settings.name"
-                                            single-line
+                                            :label="langMap.tracking.settings.name"
                                             counter
+                                            single-line
                                         ></v-text-field>
                                     </template>
                                 </v-edit-dialog>
@@ -1152,14 +1253,13 @@
                             <template v-slot:item.color="props">
                                 <v-menu
                                     v-model="colorMenu[props.item.id]"
-                                    top
+                                    :close-on-content-click="false"
                                     nudge-bottom="105"
                                     nudge-left="16"
-                                    :close-on-content-click="false"
+                                    top
                                 >
                                     <template v-slot:activator="{ on }">
                                         <div
-                                            v-on="on"
                                             :style="{
                                                     backgroundColor: props.item.color,
                                                     cursor: 'pointer',
@@ -1168,6 +1268,7 @@
                                                     borderRadius: colorMenu[props.item.id] ? '50%' : '4px',
                                                     transition: 'border-radius 200ms ease-in-out'
                                                 }"
+                                            v-on="on"
                                         />
                                     </template>
                                     <v-card>
@@ -1184,8 +1285,8 @@
                             </template>
                             <template v-slot:item.actions="props">
                                 <v-btn
-                                    icon
                                     :color="themeBgColor"
+                                    icon
                                     @click="removeTag(props.item.id)"
                                 >
                                     <v-icon>mdi-delete</v-icon>
@@ -1209,10 +1310,10 @@
                                             </div>
                                             <div class="d-inline-flex flex-grow-1">
                                                 <v-text-field
-                                                    class="mt-n1"
-                                                    hide-details
-                                                    dense
                                                     v-model="translate.name"
+                                                    class="mt-n1"
+                                                    dense
+                                                    hide-details
                                                     @blur="addOrUpdateTranslate(item, translate.lang, translate.name)"
                                                 ></v-text-field>
                                             </div>
@@ -1227,8 +1328,8 @@
                                                         :color="themeBgColor"
                                                         text
                                                         v-bind="attrs"
-                                                        v-on="on"
                                                         @click="resetDialog()"
+                                                        v-on="on"
                                                     >
                                                         {{ langMap.tracking.settings.add_translation }}
                                                     </v-btn>
@@ -1241,15 +1342,15 @@
 
                                                     <v-card-text>
                                                         <v-select
+                                                            v-model="tagTranslateForm.lang"
                                                             :items="filterLang(item)"
                                                             :label="langMap.tracking.settings.language"
                                                             item-text="name"
                                                             item-value="locale"
-                                                            v-model="tagTranslateForm.lang"
                                                         ></v-select>
                                                         <v-text-field
-                                                            label="Tag name"
                                                             v-model="tagTranslateForm.name"
+                                                            label="Tag name"
                                                         ></v-text-field>
                                                     </v-card-text>
 
@@ -1284,7 +1385,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.tracking.settings.create_tag_title }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -1292,8 +1394,8 @@
                                         <div class="row">
                                             <v-col class="pa-1" cols="md-6">
                                                 <v-text-field
-                                                    :label="langMap.tracking.settings.name"
                                                     v-model="forms.tags.name"
+                                                    :label="langMap.tracking.settings.name"
                                                     required
                                                 ></v-text-field>
 
@@ -1301,19 +1403,19 @@
                                             <v-col class="pa-1" cols="md-6">
                                                 <v-text-field
                                                     v-model="forms.tags.color"
-                                                    hide-details
-                                                    class="ma-0 pa-0"
-                                                    solo
                                                     :label="langMap.tracking.settings.color"
+                                                    class="ma-0 pa-0"
+                                                    hide-details
                                                     required
+                                                    solo
                                                 >
                                                     <template v-slot:append>
                                                         <v-menu
                                                             v-model="colorMenuCreate"
-                                                            top
+                                                            :close-on-content-click="false"
                                                             nudge-bottom="105"
                                                             nudge-left="16"
-                                                            :close-on-content-click="false"
+                                                            top
                                                         >
                                                             <template v-slot:activator="{ on }">
                                                                 <div
@@ -1347,7 +1449,9 @@
                                                 bottom dark fab right small
                                                 @click="createTag"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -1362,7 +1466,7 @@
         <v-row justify="center">
             <v-dialog v-model="updateTypeDialog" max-width="600px" persistent>
                 <v-card dense outlined>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.system_settings.update_type_info }}
                     </v-card-title>
                     <v-card-text>
@@ -1714,7 +1818,7 @@ export default {
             dialogCurrencies: false,
         }
     },
-    created () {
+    created() {
         this.debounceGetTags = _.debounce(this.__getTags, 1000);
         this.debounceGetServices = _.debounce(this.__getServices, 1000);
         this.debounceGetCurrencies = _.debounce(this.__getCurrencies, 1000);
@@ -1760,16 +1864,16 @@ export default {
             this.$store.dispatch('Languages/getLanguageList');
         },
         __getTags() {
-            this.$store.dispatch('Tags/getTagList', { search: this.searchTag });
+            this.$store.dispatch('Tags/getTagList', {search: this.searchTag});
             this.$store.getters['Tags/getTags'].map(i => {
                 this.addTranslationDialog[i.id] = false;
             });
         },
         __getServices() {
-            this.$store.dispatch('Services/getServicesList', { search: this.searchService });
+            this.$store.dispatch('Services/getServicesList', {search: this.searchService});
         },
         __getCurrencies() {
-            this.$store.dispatch('Currencies/getCurrencyList', { search: this.searchCurrency });
+            this.$store.dispatch('Currencies/getCurrencyList', {search: this.searchCurrency});
         },
         getCompany() {
             axios.get(`/api/main_company/name`).then(response => {
@@ -2352,8 +2456,6 @@ export default {
                         this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                         this.errorType = 'error';
                         this.alert = true;
-
-                        return;
                     }
                 });
             }
@@ -2492,13 +2594,13 @@ export default {
             const foundLang = languages.find(i => i.locale === code);
             return foundLang ? foundLang.name : code;
         },
-        saveTag (item) {
+        saveTag(item) {
             this.$store.dispatch('Tags/updateTag', item);
         },
-        saveService (item) {
+        saveService(item) {
             this.$store.dispatch('Services/updateService', item);
         },
-        saveCurrency (item) {
+        saveCurrency(item) {
             this.$store.dispatch('Currencies/updateCurrency', item);
         },
         removeTag(tagId) {

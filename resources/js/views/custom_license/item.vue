@@ -313,7 +313,7 @@
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.main.clients }}</v-toolbar-title>
                     </v-toolbar>
                     <div class="card-body">
-                        <v-expansion-panels v-model="relatedClientsPanel" v-if="relatedClients" multiple>
+                        <v-expansion-panels v-if="relatedClients" v-model="relatedClientsPanel" multiple>
                             <v-expansion-panel v-for="(item,i) in relatedClients"
                                                :key="'relatedClients'+i"
                                                @click="processRelatedLicenseUsers(item.id, 'relatedClients'+i)">
@@ -330,11 +330,11 @@
                                         }} |
                                         {{ langMap.custom_license.active }}
                                                                 <v-checkbox
-                                                                    style="display: inline-block; margin-top: 0; padding-top: 0;"
-                                                                    disabled
                                                                     v-model="item.custom_license.ixarma_object.limits.active"
                                                                     color="success"
+                                                                    disabled
                                                                     hide-details
+                                                                    style="display: inline-block; margin-top: 0; padding-top: 0;"
                                                                 ></v-checkbox>|
                                         {{
                                             langMap.custom_license.expired_at + ' ' + item.custom_license.ixarma_object.limits.expiresAt
@@ -344,11 +344,11 @@
                                         }} |
                                         {{ langMap.custom_license.auto_assign }}
                                         <v-checkbox
-                                            @click.prevent.stop="updateAutoAssignFlag(item)"
-                                            style="display: inline-block; margin-top: 0; padding-top: 0;"
                                             v-model="item.custom_license.ixarma_object.limits.autoLicensingEnabled"
                                             color="success"
                                             hide-details
+                                            style="display: inline-block; margin-top: 0; padding-top: 0;"
+                                            @click.prevent.stop="updateAutoAssignFlag(item)"
                                         ></v-checkbox>
                                     </span>
                                     <strong v-else>{{ item.name }}</strong>
@@ -418,18 +418,18 @@
                                                     </template>
                                                     <template v-slot:item.licensed="{ item }">
                                                         <v-checkbox
-                                                            style="margin: 0;"
                                                             v-model="item.licensed"
-                                                            @click.stop.prevent="manageLicenseUsers(item.id, item.licensed);"
                                                             color="success"
                                                             hide-details
+                                                            style="margin: 0;"
+                                                            @click.stop.prevent="manageLicenseUsers(item.id, item.licensed);"
                                                         ></v-checkbox>
                                                     </template>
                                                     <template v-slot:item.actions="{ item }">
                                                         <v-tooltip top>
                                                             <template v-slot:activator="{ on, attrs }">
-                                                                <v-btn @click.stop.prevent="showUnassignDialog(item)"
-                                                                       icon v-bind="attrs" v-on="on">
+                                                                <v-btn icon
+                                                                       v-bind="attrs" v-on="on" @click.stop.prevent="showUnassignDialog(item)">
                                                                     <v-icon>
                                                                         mdi-delete
                                                                     </v-icon>
@@ -469,8 +469,8 @@
                             :loading-text="langMap.main.loading"
                             :options.sync="options"
                             class="elevation-1"
-                            hide-default-footer
                             dense
+                            hide-default-footer
                             @click:row="showAssignDialog"
                         >
                             <template v-slot:item.lastActivationChangeString="{ item }">
@@ -493,19 +493,19 @@
                             </template>
                             <template v-slot:item.licensed="{ item }">
                                 <v-checkbox
-                                    :disabled="client.is_portal === 1"
-                                    style="margin: 0;"
                                     v-model="item.licensed"
-                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed);"
+                                    :disabled="client.is_portal === 1"
                                     color="success"
                                     hide-details
+                                    style="margin: 0;"
+                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed);"
                                 ></v-checkbox>
                             </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn @click.stop.prevent="showUnassignDialog(item)" icon v-bind="attrs"
-                                               v-on="on">
+                                        <v-btn icon v-bind="attrs" v-on="on"
+                                               @click.stop.prevent="showUnassignDialog(item)">
                                             <v-icon>
                                                 mdi-delete
                                             </v-icon>
