@@ -605,7 +605,10 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.phone_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.phone_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -623,15 +626,18 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, phoneIcons,'updatePhoneType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deletePhoneType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -644,7 +650,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_phone_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -678,7 +686,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(phoneTypeForm, 'addPhoneType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
@@ -694,7 +704,10 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.social_types }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.social_types
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
@@ -712,15 +725,18 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, socialIcons, 'updateSocialType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteSocialType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -733,7 +749,9 @@
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_social_type }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
@@ -754,7 +772,8 @@
                                                                           dense></v-text-field>
                                                         </v-col>
                                                         <v-col class="pa-1" cols="md-2">
-                                                            <v-select v-model="socialTypeForm.icon" :color="themeBgColor"
+                                                            <v-select v-model="socialTypeForm.icon"
+                                                                      :color="themeBgColor"
                                                                       :item-color="themeBgColor" :items="socialIcons"
                                                                       :label="langMap.main.icon" dense>
                                                                 <template slot="selection" slot-scope="data">
@@ -767,7 +786,9 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(socialTypeForm, 'addSocialType')">
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </div>
                                                 </v-form>
