@@ -495,48 +495,48 @@
                                     <template v-slot:input>
                                         <v-text-field
                                             v-model="props.item.name"
-                                            :label="langMap.tracking.settings.name"
                                             :hint="langMap.tracking.settings.name"
-                                            single-line
+                                            :label="langMap.tracking.settings.name"
                                             counter
+                                            single-line
                                         ></v-text-field>
                                     </template>
                                 </v-edit-dialog>
                             </template>
                             <template v-slot:item.slug="props">
                                 <v-edit-dialog
-                                    @save="saveCurrency(props.item)"
                                     @cancel="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
                                     @close="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @save="saveCurrency(props.item)"
                                 >
                                     {{ props.item.slug }}
                                     <template v-slot:input>
                                         <v-text-field
                                             v-model="props.item.slug"
-                                            :label="langMap.tracking.settings.slug"
                                             :hint="langMap.tracking.settings.slug"
-                                            single-line
+                                            :label="langMap.tracking.settings.slug"
                                             counter
+                                            single-line
                                         ></v-text-field>
                                     </template>
                                 </v-edit-dialog>
                             </template>
                             <template v-slot:item.symbol="props">
                                 <v-edit-dialog
-                                    @save="saveCurrency(props.item)"
                                     @cancel="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
                                     @close="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @save="saveCurrency(props.item)"
                                 >
                                     {{ props.item.symbol }}
                                     <template v-slot:input>
                                         <v-text-field
                                             v-model="props.item.symbol"
-                                            :label="langMap.tracking.settings.symbol"
                                             :hint="langMap.tracking.settings.symbol"
-                                            single-line
+                                            :label="langMap.tracking.settings.symbol"
                                             counter
+                                            single-line
                                         ></v-text-field>
                                     </template>
                                 </v-edit-dialog>
