@@ -67,12 +67,15 @@
                                     <v-expansion-panel-header>English</v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                         <v-text-field v-model="article.name" :color="themeBgColor"
-                                                      :label="langMap.main.name" :placeholder="langMap.main.name" hide-details
+                                                      :label="langMap.main.name" :placeholder="langMap.main.name"
+                                                      hide-details
                                                       single-line/>
-                                        <v-textarea v-model="article.summary" :color="themeBgColor" :label="langMap.kb.summary"
+                                        <v-textarea v-model="article.summary" :color="themeBgColor"
+                                                    :label="langMap.kb.summary"
                                                     hide-details rows="4" single-line/>
                                         <v-spacer>&nbsp;</v-spacer>
-                                        <tinymce ref="content" v-model="article.content" :placeholder="langMap.kb.article_content"
+                                        <tinymce ref="content" v-model="article.content"
+                                                 :placeholder="langMap.kb.article_content"
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
