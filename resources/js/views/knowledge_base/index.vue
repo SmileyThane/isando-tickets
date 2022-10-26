@@ -246,7 +246,8 @@
                                             <v-text-field v-model="categoryForm.name" :color="themeBgColor"
                                                           :label="langMap.main.name" hide-details single-line/>
                                             <v-text-field v-model="categoryForm.description"
-                                                          :color="themeBgColor" :label="langMap.main.description" hide-details
+                                                          :color="themeBgColor" :label="langMap.main.description"
+                                                          hide-details
                                                           single-line/>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
@@ -256,7 +257,8 @@
                                             <v-text-field v-model="categoryForm.name_de" :color="themeBgColor"
                                                           :label="langMap.main.name" hide-details single-line/>
                                             <v-text-field v-model="categoryForm.description_de"
-                                                          :color="themeBgColor" :label="langMap.main.description" hide-details
+                                                          :color="themeBgColor" :label="langMap.main.description"
+                                                          hide-details
                                                           single-line/>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
@@ -268,7 +270,8 @@
                         <v-btn left text @click="updateCategoryDlg=false; clearCategoryForm();"
                                v-text="langMap.main.cancel"/>
                         <v-btn :color="themeBgColor" text
-                               @click="updateCategory" v-text="categoryForm.id ? langMap.main.update : langMap.main.create"/>
+                               @click="updateCategory"
+                               v-text="categoryForm.id ? langMap.main.update : langMap.main.create"/>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
