@@ -1214,35 +1214,38 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.tags }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.tracking.settings.tags
+                            }}
+                        </v-toolbar-title>
 
                     </v-toolbar>
 
                     <v-card-text>
                         <v-data-table
-                            dense
                             :headers="headers.tags"
                             :items="$store.getters['Tags/getTags']"
                             :items-per-page="15"
                             class="elevation-1"
-                            single-expand
+                            dense
                             show-expand
+                            single-expand
                         >
                             <template v-slot:item.name="props">
                                 <v-edit-dialog
-                                    @save="saveTag(props.item)"
                                     @cancel="saveTag(props.item)"
-                                    @open="saveTag(props.item)"
                                     @close="saveTag(props.item)"
+                                    @open="saveTag(props.item)"
+                                    @save="saveTag(props.item)"
                                 >
                                     {{ props.item.name }}
                                     <template v-slot:input>
                                         <v-text-field
                                             v-model="props.item.name"
-                                            :label="langMap.tracking.settings.name"
                                             :hint="langMap.tracking.settings.name"
-                                            single-line
+                                            :label="langMap.tracking.settings.name"
                                             counter
+                                            single-line
                                         ></v-text-field>
                                     </template>
                                 </v-edit-dialog>
@@ -1250,14 +1253,13 @@
                             <template v-slot:item.color="props">
                                 <v-menu
                                     v-model="colorMenu[props.item.id]"
-                                    top
+                                    :close-on-content-click="false"
                                     nudge-bottom="105"
                                     nudge-left="16"
-                                    :close-on-content-click="false"
+                                    top
                                 >
                                     <template v-slot:activator="{ on }">
                                         <div
-                                            v-on="on"
                                             :style="{
                                                     backgroundColor: props.item.color,
                                                     cursor: 'pointer',
@@ -1266,6 +1268,7 @@
                                                     borderRadius: colorMenu[props.item.id] ? '50%' : '4px',
                                                     transition: 'border-radius 200ms ease-in-out'
                                                 }"
+                                            v-on="on"
                                         />
                                     </template>
                                     <v-card>
