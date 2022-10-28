@@ -214,9 +214,7 @@
                     <v-btn :color="themeBgColor" text @click="saveArticle(true)" v-text="langMap.kb.save_and_close"/>
                 </v-card-actions>
             </v-card>
-
             <v-spacer>&nbsp;</v-spacer>
-
             <v-card outlined>
                 <v-card-title>
                     {{ langMap.kb.article_steps }}
