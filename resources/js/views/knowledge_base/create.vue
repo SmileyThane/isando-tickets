@@ -372,7 +372,7 @@ export default {
         }
     },
     created() {
-        this.dGetTags = _.debounce(this.getTags, 1500);
+        //
     },
     methods: {
         invertColor(hex) {
