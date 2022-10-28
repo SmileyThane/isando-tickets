@@ -25,8 +25,31 @@
                         <v-col cols="6">
                             <label>{{ langMap.kb.article_category }}</label>
                             <perfect-scrollbar>
-                                <v-treeview v-model="categories" :color="themeBgColor" :items="categoriesTree" :selected-color="themeBgColor"
-                                            item-key="id" open-all selectable>
+                                <v-row>
+                                    <v-col
+                                        cols="6"
+                                    >
+                                        <v-select
+
+                                            v-model="childCategoriesSelectedItem"
+                                            :items="childCategoriesSelection"
+                                            item-text="label"
+                                            item-value="value"
+                                            label="Selection type"
+                                        />
+                                    </v-col>
+
+                                </v-row>
+                                <v-treeview
+                                    v-model="categories"
+                                    :color="themeBgColor"
+                                    :items="categoriesTree"
+                                    :selected-color="themeBgColor"
+                                    item-key="id"
+                                    open-all
+                                    selectable
+                                    :selection-type="childCategoriesSelectedItem"
+                                >
                                     <template v-slot:prepend="{ item }">
                                         <v-icon>mdi-folder</v-icon>
                                     </template>
