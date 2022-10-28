@@ -89,7 +89,8 @@
                                     <v-expansion-panel-header>English</v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                         <v-text-field v-model="article.name" :color="themeBgColor"
-                                                      :label="langMap.main.name" :placeholder="langMap.main.name" hide-details
+                                                      :label="langMap.main.name" :placeholder="langMap.main.name"
+                                                      hide-details
                                                       single-line/>
                                         <v-textarea v-model="article.summary" :color="themeBgColor"
                                                     :label="langMap.kb.summary"
@@ -111,16 +112,16 @@
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'en'"
-                                                            :key="attachment.id" :color="themeBgColor" class="mr-2" close
+                                                            :key="attachment.id" :color="themeBgColor" class="mr-2"
+                                                            close
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
-                                        <span @click="download(attachment.link)">
-                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
-                                            {{ attachment.name }}
-                                        </span>
+                                                        <span @click="download(attachment.link)">
+                                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
+                                                            {{ attachment.name }}
+                                                        </span>
                                                     </v-chip>
                                                 </v-chip-group>
-
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <v-file-input
                                                     ref="fileupload"
