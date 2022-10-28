@@ -138,7 +138,8 @@
                                                     <template v-slot:selection="{ file, index, text }">
                                                         <v-chip :color="themeBgColor" label outlined>
                                                             <v-icon :color="themeBgColor" left
-                                                                    v-text="fileIcon(file.name)"/>
+                                                                    v-text="fileIcon(file.name)"
+                                                            />
                                                             {{ text }}
                                                         </v-chip>
                                                     </template>
@@ -150,16 +151,18 @@
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <v-text-field v-model="article.name_de" :color="themeBgColor" :label="langMap.main.name"
+                                        <v-text-field v-model="article.name_de" :color="themeBgColor"
+                                                      :label="langMap.main.name"
                                                       hide-details single-line/>
-                                        <v-textarea v-model="article.summary_de" :color="themeBgColor" :label="langMap.kb.summary"
+                                        <v-textarea v-model="article.summary_de" :color="themeBgColor"
+                                                    :label="langMap.kb.summary"
                                                     hide-details rows="4" single-line/>
                                         <v-spacer>&nbsp;</v-spacer>
-                                        <tinymce ref="content_de" v-model="article.content_de" :placeholder="langMap.kb.article_content"
+                                        <tinymce ref="content_de" v-model="article.content_de"
+                                                 :placeholder="langMap.kb.article_content"
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
-
                                         <v-row>
                                             <v-col cols="6">
                                                 <v-textarea v-model="article.keywords_de" :color="themeBgColor"
