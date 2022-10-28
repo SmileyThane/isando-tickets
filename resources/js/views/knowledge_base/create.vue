@@ -358,6 +358,7 @@ export default {
         });
 
         this.getCategoriesTree();
+        this.getTags();
         this.getArticle();
         this.getArticles();
 
