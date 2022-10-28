@@ -513,7 +513,7 @@ export default {
             }
 
             if (redirect) {
-                this.openCategory();
+                window.history.back();
             }
         },
         removeTag(item) {
