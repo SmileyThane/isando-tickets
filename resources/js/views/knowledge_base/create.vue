@@ -307,7 +307,18 @@ export default {
                 {id: 4, name: this.$store.state.lang.lang_map.kb.radios},
             ],
             stepType: 1,
-            articles: []
+            articles: [],
+            childCategoriesSelection: [
+                {
+                    label: 'recursive',
+                    value: 'leaf'
+                },
+                {
+                    label: 'independent',
+                    value: 'independent'
+                }
+            ],
+            childCategoriesSelectedItem: 'independent'
         }
     },
     mounted() {
