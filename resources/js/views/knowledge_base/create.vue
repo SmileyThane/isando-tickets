@@ -171,20 +171,19 @@
                                             <v-col cols="6">
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <label>{{ langMap.kb.attachments }}</label>
-
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'de'"
-                                                            :key="attachment.id" :color="themeBgColor" class="mr-2" close
+                                                            :key="attachment.id" :color="themeBgColor" class="mr-2"
+                                                            close
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
-                                        <span @click="download(attachment.link)">
-                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
-                                            {{ attachment.name }}
-                                        </span>
+                                                        <span @click="download(attachment.link)">
+                                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
+                                                            {{ attachment.name }}
+                                                        </span>
                                                     </v-chip>
                                                 </v-chip-group>
-
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <v-file-input
                                                     ref="fileupload_de"
@@ -237,7 +236,8 @@
                             <v-list dense outlined>
                                 <v-list-item v-for="(step, index) in article.next" v-bind:key="step.id" dense>
                                     <v-list-item-content>
-                                        <v-select v-model="article.next[index]" :color="themeBgColor" :item-color="themeBgColor"
+                                        <v-select v-model="article.next[index]" :color="themeBgColor"
+                                                  :item-color="themeBgColor"
                                                   :items="articles" :label="langMap.kb.next_step" dense
                                                   item-value="id">
                                             <template v-slot:item="{ item }">{{
