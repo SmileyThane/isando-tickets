@@ -61,8 +61,10 @@
                         </v-col>
                         <v-col cols="6">
                             <label>{{ langMap.kb.tags }}</label>
-                            <v-combobox v-model="article.tags" :color="themeBgColor" :items="$store.getters['Tags/getTags']"
-                                        :label="langMap.tracking.tag_btn.choose_tags" chips hide-selected item-text="name"
+                            <v-combobox v-model="article.tags" :color="themeBgColor"
+                                        :items="$store.getters['Tags/getTags']"
+                                        :label="langMap.tracking.tag_btn.choose_tags" chips hide-selected
+                                        item-text="name"
                                         item-value="id" multiple>
                                 <template v-slot:selection="{ attrs, item, parent, selected }">
                                     <v-chip v-if="item.id" :color="item.color" :text-color="invertColor(item.color)"
@@ -89,14 +91,15 @@
                                         <v-text-field v-model="article.name" :color="themeBgColor"
                                                       :label="langMap.main.name" :placeholder="langMap.main.name" hide-details
                                                       single-line/>
-                                        <v-textarea v-model="article.summary" :color="themeBgColor" :label="langMap.kb.summary"
+                                        <v-textarea v-model="article.summary" :color="themeBgColor"
+                                                    :label="langMap.kb.summary"
                                                     hide-details rows="4" single-line/>
                                         <v-spacer>&nbsp;</v-spacer>
-                                        <tinymce ref="content" v-model="article.content" :placeholder="langMap.kb.article_content"
+                                        <tinymce ref="content" v-model="article.content"
+                                                 :placeholder="langMap.kb.article_content"
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
-
                                         <v-row>
                                             <v-col cols="6">
                                                 <v-textarea v-model="article.keywords" :color="themeBgColor"
@@ -105,7 +108,6 @@
                                             <v-col cols="6">
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <label>{{ langMap.kb.attachments }}</label>
-
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'en'"
