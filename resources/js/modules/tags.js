@@ -6,20 +6,16 @@ export default {
         tags: []
     },
     actions: {
-        getTagList({commit, state}, {
-            force = false,
-            coworkers = null, billable = null, clients = null, projects = null, services = null, tag = null
-        }) {
-            if (state.tags.length && !force) {
-                return state.tags;
-            } else {
-                axios.get('/api/tags', {retry: 5, retryDelay: 1000})
-                    .then(({data: {success, data: tags}}) => {
-                        if (success) {
-                            commit('GET_TAGS', tags)
-                        }
-                    })
-            }
+        getTagList({commit, dispatch, state}) {
+            return axios.get('/api/tags')
+                .then(({data: {success, data: tags}}) => {
+                    if (success) {
+                        commit('GET_TAGS', tags)
+                        return Promise.resolve(tags)
+                    }
+                    commit('GET_TAGS', [])
+                    return Promise.reject([])
+                })
         },
         createTag({commit, dispatch}, tag) {
             return axios.post('/api/tags', tag, {retry: 5, retryDelay: 1000})
