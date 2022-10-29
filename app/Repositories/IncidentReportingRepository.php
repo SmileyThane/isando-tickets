@@ -11,6 +11,7 @@ use App\IncidentReporting\ProcessState;
 use App\IncidentReporting\ReferenceBook;
 use App\IncidentReporting\ResourceType;
 use App\IncidentReporting\StakeholderType;
+use App\IncidentReporting\TeamRole;
 use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardHasAction;
@@ -168,6 +169,29 @@ class IncidentReportingRepository
     {
         return $this->_delete(ProcessState::class, $id);
     }
+
+    // TeamRole
+    public function getTeamRoleInCompanyContext($companyId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        return TeamRole::where('company_id', $companyId)->orderBy('position', 'ASC')->get();
+    }
+
+    public function createTeamRole($name, $name_de = null, $position = null, $company_id = null): TeamRole
+    {
+        return $this->_create(TeamRole::class, $name, $name_de, $position, $company_id);
+    }
+
+    public function updateTeamRole($id, $name, $name_de = null, $position = null): ?TeamRole
+    {
+        return $this->_update(TeamRole::class, $id, $name, $name_de, $position);
+    }
+
+    public function deleteTeamRole($id): bool
+    {
+        return $this->_delete(TeamRole::class, $id);
+    }
+
 
     // ResourceType
     public function getResourceTypesInCompanyContext($companyId = null)
