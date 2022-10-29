@@ -256,6 +256,14 @@ class IncidentReportingController extends Controller
         return self::showResponse($this->incidentRepo->deleteProcessState($id));
     }
 
+    public function listTeamRoles(Request $request): JsonResponse
+    {
+        return self::showResponse(true, $this->incidentRepo->getTeamRoleInCompanyContext());
+    }
+
+
+
+
     public function listResourceTypes(Request $request)
     {
         return self::showResponse(true, $this->incidentRepo->getResourceTypesInCompanyContext());
