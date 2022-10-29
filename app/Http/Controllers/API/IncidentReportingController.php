@@ -261,6 +261,16 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $this->incidentRepo->getTeamRoleInCompanyContext());
     }
 
+    public function addTeamRole(Request $request): JsonResponse
+    {
+        return self::showResponse(true, $this->incidentRepo->createTeamRole(
+            $request->name ?? '',
+            $request->name_de,
+            $request->position,
+            $request->company_id
+        ));
+    }
+
 
 
 
