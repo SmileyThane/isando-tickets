@@ -271,8 +271,15 @@ class IncidentReportingController extends Controller
         ));
     }
 
-
-
+    public function editTeamRole(Request $request, $id): JsonResponse
+    {
+        return self::showResponse(true, $this->incidentRepo->updateTeamRole(
+            $id,
+            $request->name ?? '',
+            $request->name_de,
+            $request->position
+        ));
+    }
 
     public function listResourceTypes(Request $request)
     {
