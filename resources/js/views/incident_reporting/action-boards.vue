@@ -292,7 +292,7 @@ export default {
         },
         saveIR(incrementVersion) {
             this.$store.dispatch('IncidentReporting/callStoreIR', incrementVersion)
-
+            this.tab = 0
         },
         createIRAction() {
             this.$store.dispatch('IncidentReporting/callSetManageActionDlg', true)
