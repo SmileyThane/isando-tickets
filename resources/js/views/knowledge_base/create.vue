@@ -43,10 +43,10 @@
                                 <v-treeview
                                     v-model="categories"
                                     :color="themeBgColor"
+                                    open-all
                                     :items="categoriesTree"
                                     :selected-color="themeBgColor"
                                     item-key="id"
-                                    open-all
                                     selectable
                                     :selection-type="childCategoriesSelectedItem"
                                 >
