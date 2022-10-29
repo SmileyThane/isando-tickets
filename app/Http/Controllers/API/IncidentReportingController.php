@@ -281,6 +281,12 @@ class IncidentReportingController extends Controller
         ));
     }
 
+    public function deleteTeamRole($id): JsonResponse
+    {
+        return self::showResponse($this->incidentRepo->deleteTeamRole($id));
+    }
+
+
     public function listResourceTypes(Request $request)
     {
         return self::showResponse(true, $this->incidentRepo->getResourceTypesInCompanyContext());
