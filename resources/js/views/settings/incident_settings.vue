@@ -74,6 +74,11 @@ export default {
                     component: tabIncidentSettings,
                     entity: 'ActionBoardStatuses',
                 },
+                {
+                    name: 'Team Roles',
+                    component: tabIncidentSettings,
+                    entity: 'TeamRoles',
+                },
             ]
         }
     },
