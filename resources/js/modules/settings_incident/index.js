@@ -6,6 +6,7 @@ import {default as ProcessStates} from './process_states'
 import {default as ResourceTypes} from './resource_types'
 import {default as StakeholderTypes} from './stakeholder_types'
 import {default as ActionBoardStatuses} from './action_board_statuses'
+import {default as TeamRoles} from './team_roles'
 
 export default {
     namespaced: true,
@@ -18,5 +19,6 @@ export default {
         ResourceTypes,
         StakeholderTypes,
         ActionBoardStatuses,
+        TeamRoles
     },
 }
