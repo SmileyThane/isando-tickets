@@ -61,7 +61,11 @@
                                             </v-list-item-action>
                                         </v-list-item>
                                         <v-list-item link @click.prevent="createArticle">
-                                            <v-list-item-title>{{ langMap.kb.create_article }}</v-list-item-title>
+                                            <v-list-item-title>
+                                                {{ langMap.main.create }}
+                                                {{ langMap.sidebar[$route.params.alias]}}
+                                                {{ langMap.kb.create_article }}
+                                            </v-list-item-title>
                                             <v-list-item-action>
                                                 <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
                                             </v-list-item-action>
