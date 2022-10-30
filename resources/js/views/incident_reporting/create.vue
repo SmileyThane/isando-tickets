@@ -6,8 +6,8 @@
                     <v-col cols="12">
                         <h4 class="heading headline">
                             <v-text-field
-                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].name"
+                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                 class="mb-2"
                                 dense
                                 hide-details
@@ -27,8 +27,8 @@
                                     <v-row no-gutters>
                                         <v-col class="pr-2 pt-2" cols="6">
                                             <v-text-field
-                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].version"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 class="mb-2" dense hide-details outlined
                                                 placeholder="Version"/>
                                         </v-col>
@@ -42,9 +42,9 @@
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
                                                         :color="themeBgColor"
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
@@ -54,8 +54,8 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :color="themeBgColor"
                                                     v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
+                                                    :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @input="validTillPicker = false"
@@ -65,17 +65,17 @@
                                         <v-col class="text-right pt-2" cols="1">
                                             <v-btn
                                                 v-if="!$store.getters['IncidentReporting/getIsEditable']"
-                                                @click="setIsEditable"
                                                 :color="themeBgColor"
                                                 icon
+                                                @click="setIsEditable"
                                             >
                                                 <v-icon>mdi-pencil</v-icon>
                                             </v-btn>
                                             <v-btn
                                                 v-if="$store.getters['IncidentReporting/getIsEditable']"
-                                                @click="save"
                                                 :color="themeBgColor"
                                                 icon
+                                                @click="save"
                                             >
                                                 <v-icon>mdi-check</v-icon>
                                             </v-btn>
