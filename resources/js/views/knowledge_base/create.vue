@@ -290,7 +290,6 @@
 <script>
 import EventBus from '../../components/EventBus';
 import * as Helper from '../tracking/helper';
-import * as _ from "lodash";
 
 export default {
     data() {
