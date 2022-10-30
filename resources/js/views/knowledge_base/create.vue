@@ -43,12 +43,12 @@
                                 <v-treeview
                                     v-model="categories"
                                     :color="themeBgColor"
-                                    open-all
                                     :items="categoriesTree"
                                     :selected-color="themeBgColor"
-                                    item-key="id"
-                                    selectable
                                     :selection-type="childCategoriesSelectedItem"
+                                    item-key="id"
+                                    open-all
+                                    selectable
                                 >
                                     <template v-slot:prepend="{ item }">
                                         <v-icon>mdi-folder</v-icon>
@@ -117,7 +117,8 @@
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
                                                         <span @click="download(attachment.link)">
-                                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
+                                                            <v-icon :color="themeBgColor" left
+                                                                    v-text="fileIcon(attachment.name)"/>
                                                             {{ attachment.name }}
                                                         </span>
                                                     </v-chip>
@@ -179,7 +180,8 @@
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
                                                         <span @click="download(attachment.link)">
-                                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
+                                                            <v-icon :color="themeBgColor" left
+                                                                    v-text="fileIcon(attachment.name)"/>
                                                             {{ attachment.name }}
                                                         </span>
                                                     </v-chip>
