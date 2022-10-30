@@ -1,47 +1,77 @@
 <template>
     <v-container fluid>
-        <v-snackbar v-model="snackbar" :bottom="true" :color="actionColor" :right="true">
+        <v-snackbar v-model="snackbar"
+                    :bottom="true"
+                    :color="actionColor"
+                    :right="true"
+        >
             {{ snackbarMessage }}
         </v-snackbar>
         <v-card ref="card" outlined>
-            <v-img v-if="article.featured_image" :src="article.featured_image.link" width="100%"/>
+            <v-img v-if="article.featured_image"
+                   :src="article.featured_image.link"
+                   width="100%"
+            />
             <v-card-title>
                 {{ $helpers.i18n.localized(article) }}
             </v-card-title>
             <v-card-text>
                 <div v-if="article.tags">
-                    <h4 class="mb-2">{{ langMap.kb.tags }}</h4>
-                    <v-chip v-for="tag in article.tags" :key="tag.id" :color="tag.color"
-                            :text-color="invertColor(tag.color)" class="mr-2" label
-                            small v-text="tag.name"/>
+                    <h4 class="mb-2">
+                        {{ langMap.kb.tags }}
+                    </h4>
+                    <v-chip
+                        v-for="tag in article.tags"
+                        :key="tag.id"
+                        :color="tag.color"
+                        :text-color="invertColor(tag.color)"
+                        class="mr-2"
+                        label
+                        small
+                        v-text="tag.name"
+                    />
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
-
                 <div v-if="$helpers.i18n.localized(article, 'summary')">
-                    <p ref="summary" class="summary pa-3">{{ $helpers.i18n.localized(article, 'summary') }}</p>
+                    <p ref="summary"
+                       class="summary pa-3"
+                    >
+                        {{ $helpers.i18n.localized(article, 'summary') }}
+                    </p>
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
-
-                <div class="content" v-html="$helpers.i18n.localized(article, 'content') "/>
-
+                <div class="content"
+                     v-html="$helpers.i18n.localized(article, 'content') "
+                />
                 <div v-if="article.attachments && article.attachments.length > 0">
                     <v-spacer>&nbsp;</v-spacer>
                     <hr/>
                     <h4 class="mb-2">{{ langMap.kb.attachments }}</h4>
-
                     <v-chip-group column>
                         <v-chip v-for="attachment in article.attachments"
-                                v-if="attachment.service_info && attachment.service_info.lang == $helpers.i18n.getCurrentLocale()"
-                                :key="attachment.id" :color="themeBgColor" class="mr-2" label outlined
-                                @click="download(attachment.link)">
-                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
+                                v-if="attachment.service_info && attachment.service_info.lang === $helpers.i18n.getCurrentLocale()"
+                                :key="attachment.id" :color="themeBgColor"
+                                class="mr-2"
+                                label
+                                outlined
+                                @click="download(attachment.link)"
+                        >
+                            <v-icon
+                                :color="themeBgColor"
+                                left
+                                v-text="fileIcon(attachment.name)"
+                            />
                             {{ attachment.name }}
                         </v-chip>
                     </v-chip-group>
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-btn :color="themeBgColor" text @click="window.history.back()" v-text="langMap.kb.back_to_category"/>
+                <v-btn :color="themeBgColor"
+                       text
+                       @click="window.history.back()"
+                       v-text="langMap.kb.back_to_category"
+                />
             </v-card-actions>
         </v-card>
     </v-container>
