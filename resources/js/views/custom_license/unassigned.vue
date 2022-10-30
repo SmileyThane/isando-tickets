@@ -76,11 +76,11 @@
                     {{ langMap.main.assign }}
                 </v-card-title>
                 <v-card-text>
-                    <v-select :color="themeBgColor" :item-color="themeBgColor"
-                              v-model="unassignedUserForm.company_id" :items="customers"
-                              item-value="id"
-                              item-text="name"
-                              dense :label="langMap.main.company">
+                    <v-select v-model="unassignedUserForm.company_id" :color="themeBgColor"
+                              :item-color="themeBgColor" :items="customers"
+                              :label="langMap.main.company"
+                              dense
+                              item-text="name" item-value="id">
                     </v-select>
                 </v-card-text>
                 <v-card-actions>
@@ -132,10 +132,22 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.phone}`, value: 'phoneNumber', sortable: false},
                 {text: `${this.$store.state.lang.lang_map.ticket.ip_address}`, value: 'serverIp'},
                 {text: `${this.$store.state.lang.lang_map.custom_license.organisation}`, value: 'orgPath'},
-                {text: `${this.$store.state.lang.lang_map.custom_license.platform}`, value: 'platform', sortable: false},
-                {text: `${this.$store.state.lang.lang_map.custom_license.licensed}`, value: 'licensed', sortable: false},
+                {
+                    text: `${this.$store.state.lang.lang_map.custom_license.platform}`,
+                    value: 'platform',
+                    sortable: false
+                },
+                {
+                    text: `${this.$store.state.lang.lang_map.custom_license.licensed}`,
+                    value: 'licensed',
+                    sortable: false
+                },
                 {text: `${this.$store.state.lang.lang_map.custom_license.active}`, value: 'active', sortable: false},
-                {text: `${this.$store.state.lang.lang_map.custom_license.expired_at}`, value: 'trialExpirationAtString', sortable: false},
+                {
+                    text: `${this.$store.state.lang.lang_map.custom_license.expired_at}`,
+                    value: 'trialExpirationAtString',
+                    sortable: false
+                },
             ],
             customersSearch: '',
             customers: [],
@@ -201,8 +213,7 @@ export default {
         },
         getClients() {
             this.loading = this.themeBgColor
-            axios.get('/api/client', {
-            }).then(response => {
+            axios.get('/api/client', {}).then(response => {
                 this.loading = false
                 response = response.data
                 if (response.success === true) {
@@ -226,8 +237,7 @@ export default {
             this.assignCompanyDialog = true
         },
         assignToIxarmaCompany() {
-            axios.post('/api/custom_license_unassigned/assign', this.unassignedUserForm, {
-            }).then(response => {
+            axios.post('/api/custom_license_unassigned/assign', this.unassignedUserForm, {}).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.snackbarMessage = this.langMap.main.update_successful;

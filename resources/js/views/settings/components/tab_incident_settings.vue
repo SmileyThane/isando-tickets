@@ -4,7 +4,7 @@
             <template v-slot:default>
                 <thead>
                 <tr>
-                    <th style="width: 90%" class="text-left">Name</th>
+                    <th class="text-left" style="width: 90%">Name</th>
                     <th class="text-left">Actions</th>
                 </tr>
                 </thead>
@@ -26,16 +26,19 @@
                     <td class="mt-4">
                         <v-text-field
                             v-model="name"
-                            placeholder="Create new"
-                            dense outlined hide-details
                             class="mt-4"
+                            dense
+                            hide-details
+                            outlined
+                            placeholder="Create new"
                             @keydown="pressEnter"
                         />
                     </td>
                     <td>
                         <v-btn :disabled="name.length < 3"
                                class="mt-4"
-                               icon @click="addItem()">
+                               icon
+                               @click="addItem()">
                             <v-icon>mdi-plus</v-icon>
                         </v-btn>
                     </td>
@@ -54,9 +57,11 @@
 
                 <v-card-text>
                     <v-text-field
-                        class="mt-4"
                         v-model="selName"
-                        dense outlined hide-details
+                        class="mt-4"
+                        dense
+                        hide-details
+                        outlined
                     />
                 </v-card-text>
 

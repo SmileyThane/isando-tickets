@@ -16,7 +16,7 @@
                 v-for="(component, index) in components"
                 :key="index"
             >
-                <component :is="component.component" :entity="component.entity" />
+                <component :is="component.component" :entity="component.entity"/>
             </v-tab-item>
         </v-tabs-items>
     </v-card>
