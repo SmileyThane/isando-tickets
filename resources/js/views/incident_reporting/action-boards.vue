@@ -23,10 +23,10 @@
             <v-col cols="8">
                 <v-btn
                     v-if="$store.getters['IncidentReporting/getIRType'] === 3"
-                    @click="show"
                     outlined
                     rounded
-                    text>
+                    text
+                    @click="show">
                     {{ $store.getters['IncidentReporting/getSelectedIR'].name }}
                 </v-btn>
                 <div v-else class="text-h6">
@@ -53,7 +53,8 @@
                                     <v-icon :color="themeBgColor">mdi-delete</v-icon>
                                 </v-list-item-action>
                             </v-list-item>
-                            <v-list-item v-if="$store.getters['IncidentReporting/getIRType'] === 1" link @click.prevent="createIRAction">
+                            <v-list-item v-if="$store.getters['IncidentReporting/getIRType'] === 1" link
+                                         @click.prevent="createIRAction">
                                 <v-list-item-title>{{ langMap.main.action }}</v-list-item-title>
                                 <v-list-item-action>
                                     <v-icon :color="themeBgColor">mdi-plus-outline</v-icon>
@@ -89,9 +90,10 @@
                 <v-tabs v-model="tab" :color="themeBgColor">
                     <v-tab>{{ langMap.ir.ab.general }}</v-tab>
                     <v-tab v-if="$store.getters['IncidentReporting/getIRType'] !== 3">
-                        {{ $store.getters['IncidentReporting/getIRType'] === 1 ?
-                            langMap.ir.ab.actions :
-                            langMap.ir.ab.title
+                        {{
+                            $store.getters['IncidentReporting/getIRType'] === 1 ?
+                                langMap.ir.ab.actions :
+                                langMap.ir.ab.title
                         }}
                     </v-tab>
                     <v-tab>{{ langMap.ir.ab.version }}</v-tab>
@@ -168,9 +170,10 @@
                     </div>
                     <br/>
                     <v-label>
-                        {{ $store.getters['IncidentReporting/getIRType'] === 1 ?
-                            langMap.ir.ab.action_type :
-                            langMap.ir.ab.title
+                        {{
+                            $store.getters['IncidentReporting/getIRType'] === 1 ?
+                                langMap.ir.ab.action_type :
+                                langMap.ir.ab.title
                         }}:
                     </v-label>
                     <v-select
@@ -249,7 +252,7 @@ export default {
         }
     },
     watch: {
-        $route(){
+        $route() {
             this.checkABType()
         }
     },
@@ -269,8 +272,7 @@ export default {
         this.$store.dispatch('IncidentReporting/callGetIRActions');
     },
     methods: {
-        checkABType()
-        {
+        checkABType() {
             let type = 1
             if (this.$route.name === 'incident_reporting_scenarios') {
                 type = 2
