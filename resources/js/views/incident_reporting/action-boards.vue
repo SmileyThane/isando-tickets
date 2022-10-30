@@ -252,7 +252,7 @@ export default {
         }
     },
     watch: {
-        $route(){
+        $route() {
             this.checkABType()
         }
     },
@@ -272,8 +272,7 @@ export default {
         this.$store.dispatch('IncidentReporting/callGetIRActions');
     },
     methods: {
-        checkABType()
-        {
+        checkABType() {
             let type = 1
             if (this.$route.name === 'incident_reporting_scenarios') {
                 type = 2
