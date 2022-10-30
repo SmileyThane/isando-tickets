@@ -256,6 +256,37 @@ class IncidentReportingController extends Controller
         return self::showResponse($this->incidentRepo->deleteProcessState($id));
     }
 
+    public function listTeamRoles(Request $request): JsonResponse
+    {
+        return self::showResponse(true, $this->incidentRepo->getTeamRoleInCompanyContext());
+    }
+
+    public function addTeamRole(Request $request): JsonResponse
+    {
+        return self::showResponse(true, $this->incidentRepo->createTeamRole(
+            $request->name ?? '',
+            $request->name_de,
+            $request->position,
+            $request->company_id
+        ));
+    }
+
+    public function editTeamRole(Request $request, $id): JsonResponse
+    {
+        return self::showResponse(true, $this->incidentRepo->updateTeamRole(
+            $id,
+            $request->name ?? '',
+            $request->name_de,
+            $request->position
+        ));
+    }
+
+    public function deleteTeamRole($id): JsonResponse
+    {
+        return self::showResponse($this->incidentRepo->deleteTeamRole($id));
+    }
+
+
     public function listResourceTypes(Request $request)
     {
         return self::showResponse(true, $this->incidentRepo->getResourceTypesInCompanyContext());

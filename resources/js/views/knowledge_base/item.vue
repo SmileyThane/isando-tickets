@@ -41,7 +41,7 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-btn :color="themeBgColor" text @click="openCategory" v-text="langMap.kb.back_to_category"/>
+                <v-btn :color="themeBgColor" text @click="window.history.back()" v-text="langMap.kb.back_to_category"/>
             </v-card-actions>
         </v-card>
     </v-container>

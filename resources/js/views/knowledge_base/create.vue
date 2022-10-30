@@ -25,9 +25,31 @@
                         <v-col cols="6">
                             <label>{{ langMap.kb.article_category }}</label>
                             <perfect-scrollbar>
-                                <v-treeview v-model="categories" :color="themeBgColor" :items="categoriesTree"
-                                            :selected-color="themeBgColor"
-                                            item-key="id" open-all selectable>
+                                <v-row>
+                                    <v-col
+                                        cols="6"
+                                    >
+                                        <v-select
+
+                                            v-model="childCategoriesSelectedItem"
+                                            :items="childCategoriesSelection"
+                                            item-text="label"
+                                            item-value="value"
+                                            label="Selection type"
+                                        />
+                                    </v-col>
+
+                                </v-row>
+                                <v-treeview
+                                    v-model="categories"
+                                    :color="themeBgColor"
+                                    open-all
+                                    :items="categoriesTree"
+                                    :selected-color="themeBgColor"
+                                    item-key="id"
+                                    selectable
+                                    :selection-type="childCategoriesSelectedItem"
+                                >
                                     <template v-slot:prepend="{ item }">
                                         <v-icon>mdi-folder</v-icon>
                                     </template>
@@ -79,7 +101,6 @@
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
-
                                         <v-row>
                                             <v-col cols="6">
                                                 <v-textarea v-model="article.keywords" :color="themeBgColor"
@@ -88,7 +109,6 @@
                                             <v-col cols="6">
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <label>{{ langMap.kb.attachments }}</label>
-
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'en'"
@@ -96,13 +116,12 @@
                                                             close
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
-                                        <span @click="download(attachment.link)">
-                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
-                                            {{ attachment.name }}
-                                        </span>
+                                                        <span @click="download(attachment.link)">
+                                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
+                                                            {{ attachment.name }}
+                                                        </span>
                                                     </v-chip>
                                                 </v-chip-group>
-
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <v-file-input
                                                     ref="fileupload"
@@ -119,7 +138,8 @@
                                                     <template v-slot:selection="{ file, index, text }">
                                                         <v-chip :color="themeBgColor" label outlined>
                                                             <v-icon :color="themeBgColor" left
-                                                                    v-text="fileIcon(file.name)"/>
+                                                                    v-text="fileIcon(file.name)"
+                                                            />
                                                             {{ text }}
                                                         </v-chip>
                                                     </template>
@@ -143,7 +163,6 @@
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
-
                                         <v-row>
                                             <v-col cols="6">
                                                 <v-textarea v-model="article.keywords_de" :color="themeBgColor"
@@ -152,7 +171,6 @@
                                             <v-col cols="6">
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <label>{{ langMap.kb.attachments }}</label>
-
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'de'"
@@ -160,13 +178,12 @@
                                                             close
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
-                                        <span @click="download(attachment.link)">
-                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
-                                            {{ attachment.name }}
-                                        </span>
+                                                        <span @click="download(attachment.link)">
+                                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
+                                                            {{ attachment.name }}
+                                                        </span>
                                                     </v-chip>
                                                 </v-chip-group>
-
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <v-file-input
                                                     ref="fileupload_de"
@@ -202,9 +219,7 @@
                     <v-btn :color="themeBgColor" text @click="saveArticle(true)" v-text="langMap.kb.save_and_close"/>
                 </v-card-actions>
             </v-card>
-
             <v-spacer>&nbsp;</v-spacer>
-
             <v-card outlined>
                 <v-card-title>
                     {{ langMap.kb.article_steps }}
@@ -319,7 +334,18 @@ export default {
                 {id: 4, name: this.$store.state.lang.lang_map.kb.radios},
             ],
             stepType: 1,
-            articles: []
+            articles: [],
+            childCategoriesSelection: [
+                {
+                    label: 'recursive',
+                    value: 'leaf'
+                },
+                {
+                    label: 'independent',
+                    value: 'independent'
+                }
+            ],
+            childCategoriesSelectedItem: 'independent'
         }
     },
     mounted() {
@@ -332,6 +358,7 @@ export default {
         });
 
         this.getCategoriesTree();
+        this.getTags();
         this.getArticle();
         this.getArticles();
 
@@ -345,7 +372,7 @@ export default {
         }
     },
     created() {
-        this.dGetTags = _.debounce(this.getTags, 1500);
+        //
     },
     methods: {
         invertColor(hex) {
@@ -491,7 +518,7 @@ export default {
             }
 
             if (redirect) {
-                this.openCategory();
+                window.history.back();
             }
         },
         removeTag(item) {

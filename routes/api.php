@@ -365,6 +365,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('ir/ixarma/companies', 'API\IncidentReportingController@listIxarmaCompanies');
     Route::get('ir/ixarma/participants', 'API\IncidentReportingController@listIxarmaParticipants');
 
+    Route::get('ir/team_roles', 'API\IncidentReportingController@listTeamRoles');
+    Route::post('ir/team_role', 'API\IncidentReportingController@addTeamRole');
+    Route::put('ir/team_role/{id}', 'API\IncidentReportingController@editTeamRole');
+    Route::delete('ir/team_role/{id}', 'API\IncidentReportingController@deleteTeamRole');
+
     Route::get('ir/ab/{type_id}', [IncidentReportingController::class, 'listActionBoards']);
     Route::get('ir/ab/{type_id}/options', [IncidentReportingController::class, 'optionsActionBoards']);
     Route::post('ir/ab/{type_id}', [IncidentReportingController::class, 'storeActionBoard']);
