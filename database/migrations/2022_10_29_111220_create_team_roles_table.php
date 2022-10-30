@@ -14,6 +14,7 @@ class CreateTeamRolesTable extends Migration
     public function up()
     {
         Schema::create('incident_reporting_team_roles', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('company_id')->constrained('companies');
             $table->string('name');
             $table->string('name_de')->nullable();
