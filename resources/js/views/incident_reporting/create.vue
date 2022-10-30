@@ -111,7 +111,6 @@
                                                 required
                                             ></v-select>
                                             <v-select
-                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].clients"
                                                 :color="themeBgColor"
                                                 :disabled="!$store.getters['IncidentReporting/getIsEditable']"
@@ -219,9 +218,9 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].detected_on"
                                                     :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
-                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].detected_on"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @input="detectedOnPicker = false"
@@ -238,9 +237,9 @@
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         v-model="$store.getters['IncidentReporting/getSelectedIR'].reported_on"
                                                         :color="themeBgColor"
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
@@ -250,9 +249,9 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].reported_on"
                                                     :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
-                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].reported_on"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @input="reportedOnPicker = false"
@@ -303,10 +302,10 @@
                                         {{ 'show' }}
                                     </v-btn>
                                     <v-btn
+                                        icon
                                         outlined
                                         rounded
                                         text
-                                        icon
                                         @click="addToList(taskGroup)"
                                     >
                                         <v-icon>mdi-plus</v-icon>
@@ -323,7 +322,7 @@
                                 <v-col cols="4">Assigned to</v-col>
                                 <v-col cols="1"></v-col>
                             </v-row>
-                            <v-row no-gutters v-for="(task, index) in actionsList" :key="index"
+                            <v-row v-for="(task, index) in actionsList" :key="index" no-gutters
                                    style="border-bottom: 1px solid gray">
                                 <v-col cols="4">{{ task.name }}</v-col>
                                 <v-col cols="3">
@@ -342,12 +341,12 @@
                                 <v-col cols="4">{{ task.assignee ? task.assignee.user_data.email : '' }}</v-col>
                                 <v-col cols="1">
                                     <v-btn
+                                        icon
                                         outlined
                                         rounded
-                                        text
-                                        icon
-                                        @click="addToList(task)"
                                         style="margin-bottom: 12px;"
+                                        text
+                                        @click="addToList(task)"
                                     >
                                         <v-icon>mdi-plus</v-icon>
 
@@ -364,7 +363,7 @@
                                 <v-col cols="2">Version</v-col>
                                 <v-col cols="1"></v-col>
                             </v-row>
-                            <v-row no-gutters v-for="(task, index) in actionBoardsList" :key="index"
+                            <v-row v-for="(task, index) in actionBoardsList" :key="index" no-gutters
                                    style="border-bottom: 1px solid gray">
                                 <v-col cols="4">{{ task.name }}</v-col>
                                 <v-col cols="3">{{ task.status ? task.status.name : '' }}</v-col>
@@ -372,12 +371,12 @@
                                 <v-col cols="1">{{ task.version }}</v-col>
                                 <v-col cols="1">
                                     <v-btn
+                                        icon
                                         outlined
                                         rounded
-                                        text
-                                        icon
-                                        @click="addToList(task)"
                                         style="margin-bottom: 12px;"
+                                        text
+                                        @click="addToList(task)"
                                     >
                                         <v-icon>mdi-plus</v-icon>
 
@@ -531,6 +530,7 @@ export default {
 .clearfix {
     clear: both;
 }
+
 .row {
     margin-bottom: 12px;
 }
