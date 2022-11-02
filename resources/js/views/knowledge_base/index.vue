@@ -399,7 +399,7 @@ export default {
 
         this.openCategory(this.$route.query.category);
         this.getCategoriesTree();
-        this.dGetTags = _.debounce(this.getTags, 1000);
+        this.getTags()
     },
     created() {
 
