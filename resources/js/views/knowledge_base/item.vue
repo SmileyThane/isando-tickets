@@ -69,7 +69,7 @@
             <v-card-actions>
                 <v-btn :color="themeBgColor"
                        text
-                       @click="window.history.back()"
+                       @click="back()"
                        v-text="langMap.kb.back_to_category"
                 />
             </v-card-actions>
@@ -112,6 +112,9 @@ export default {
         this.getArticle();
     },
     methods: {
+        back() {
+            window.history.back()
+        },
         invertColor(hex) {
             return this.$helpers.color.invertColor(hex);
         },
