@@ -4,6 +4,9 @@
             cols="6" lg="6" md="6" sm="12" xl="4"
         >
             <div v-if="$store.getters['IncidentReporting/getIsEditable']" class="pt-4">
+                <v-label>
+                    {{ 'Status' }}
+                </v-label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getSelectedIR']"
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].status_id"
@@ -32,6 +35,7 @@
                 <v-label>
                     {{ langMap.ir.ab.valid_till }}:
                 </v-label>
+                <br>
                 <v-date-picker
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
                     :color="themeBgColor"
