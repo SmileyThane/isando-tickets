@@ -188,6 +188,7 @@ export default {
                     if (status === 200 && success) {
                         dispatch('callSetIsEditable', false)
                         dispatch('callSetSelectedIR', data)
+                        dispatch('callGetIR')
 
                         return Promise.resolve(data)
                     }
