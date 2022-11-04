@@ -976,6 +976,9 @@ class LanguageSeeder extends Seeder
                             'updated_by' => 'Updated by',
                             'select' => 'Select',
                             'unit' => 'Unit',
+                            'select_actions' => 'Select predefined actions',
+                            'new_action' => 'Add new action',
+                            'select_action_boards' => 'Select predefined action boards'
                         ]
                     ],
                     'exceptions' => [
@@ -1918,7 +1921,9 @@ class LanguageSeeder extends Seeder
                                 'updated_by' => 'Updated by',
                                 'select' => 'Select',
                                 'unit' => 'Unit',
-                            ]
+                                'select_actions' => 'Select predefined actions',
+                                'new_action' => 'Add new action',
+                                'select_action_boards' => 'Select predefined action boards'                            ]
                         ],
                         'exceptions' => [
                             'field_is_required' => '%{field} ist erforderlich',
