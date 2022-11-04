@@ -182,8 +182,9 @@ class IncidentReportingController extends Controller
         $board = IncidentReportingActionBoard::query()->where('id', '=', $id);
 
         return self::showResponse(true, $board->with([
-            'actions.assignee', 'categories', 'clients', 'status',
-            'stageMonitoring', 'priority', 'access', 'state', 'actionBoards'
+            'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+            'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
+            'actionBoards.impactPotentials', 'actionBoards.actions'
         ])->first());
     }
 
@@ -425,7 +426,13 @@ class IncidentReportingController extends Controller
         $board = IncidentReportingActionBoard::create($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
-        return self::showResponse(true, $board);
+        $result = IncidentReportingActionBoard::query()->where('id', '=', $board->id)
+            ->with([
+            'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+            'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
+            'actionBoards.impactPotentials', 'actionBoards.actions'
+        ])->first();
+        return self::showResponse(true, $result);
     }
 
     public function storeAction(Request $request): JsonResponse
