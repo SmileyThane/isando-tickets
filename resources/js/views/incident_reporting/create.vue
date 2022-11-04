@@ -93,7 +93,7 @@
                                                 item-text="name"
                                                 item-value="id"
                                                 outlined
-                                                placeholder="Valid from Stage Monitoring"
+                                                :placeholder="langMap.ir.ab.stage_monitoring"
                                                 required
                                             ></v-select>
                                             <v-select

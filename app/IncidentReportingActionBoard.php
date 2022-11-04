@@ -40,7 +40,8 @@ class IncidentReportingActionBoard extends Model
             'action',
             'incident_reporting_action_board_has_actions',
             'action_board_id',
-            'action_id'
+            'action_id',
+            'team_id'
         );
     }
 

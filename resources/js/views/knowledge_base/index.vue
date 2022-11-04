@@ -231,13 +231,22 @@
                             </v-col>
                             <v-col cols="6">
                                 <label>{{ langMap.main.icon }}</label>
-                                <v-radio-group v-model="categoryForm.icon">
-                                    <v-radio v-for="item in categoryIcons" :key="item">
-                                        <template v-slot:label="{ item }">
-                                            {{ item.icon }}
-                                        </template>
-                                    </v-radio>
-                                </v-radio-group>
+                                <v-select v-model="categoryForm.icon"
+                                          :color="themeBgColor"
+                                          :items="categoryIcons"
+                                          :label="langMap.main.icon"
+                                          append-icon="mdi-tag-multiple-outline"
+                                          hide-selected
+                                          item-text="name"
+                                          item-value="id"
+                                          v-on:change="getArticles();">
+                                    <template v-slot:selection="{ attrs, item, parent, selected }">
+                                        <i class="mdi" :class="item"></i>
+                                    </template>
+                                    <template v-slot:item="{ attrs, item, parent, selected }">
+                                        <i class="mdi" :class="item"></i>
+                                    </template>
+                                </v-select>
 
                                 <label>{{ langMap.kb.icon_color }}</label>
                                 <v-color-picker :model="categoryForm.icon_color" dot-size="25" mode="hexa"
