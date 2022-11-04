@@ -420,7 +420,10 @@ class IncidentReportingController extends Controller
 
     public function storeActionBoard(Request $request, $typeId): JsonResponse
     {
-        $request['state_id'] = $this->incidentRepo->getProcessStatesInCompanyContext()[0]->id;
+        if (is_null($request['version'])) {
+
+            $request['version'] = '0';
+        }
         $request['updated_by'] = Auth::id();
         $request['type_id'] = $typeId;
         $board = IncidentReportingActionBoard::create($request->all());
