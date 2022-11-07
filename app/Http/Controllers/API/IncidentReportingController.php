@@ -190,7 +190,7 @@ class IncidentReportingController extends Controller
         return self::showResponse(true, $board->with([
             'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
             'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-            'actionBoards.impactPotentials', 'actionBoards.actions'
+            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
         ])->first());
     }
 
@@ -376,7 +376,7 @@ class IncidentReportingController extends Controller
         $actionBoards = $actionBoardsQuery->with([
                 'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
                 'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-                'actionBoards.impactPotentials', 'actionBoards.actions'
+                'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
             ])
             ->orderBy('name')
             ->get();
@@ -440,7 +440,7 @@ class IncidentReportingController extends Controller
             ->with([
             'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
             'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-            'actionBoards.impactPotentials', 'actionBoards.actions'
+            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
         ])->first();
 
         return self::showResponse(true, $result);
