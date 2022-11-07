@@ -265,6 +265,26 @@ class IncidentReportingRepository
         $board->clients()->sync($this->prepareRelationToSync($request->clients));
     }
 
+    public function logActionBoard($id, $log)
+    {
+        IncidentReportingActionBoardLog::query()->create([
+            'action_board_id' => $id,
+            'log' => $log
+        ]);
+    }
+
+    public function compareUpdatedAttributes($board, $request): array
+    {
+        $result = [];
+        foreach ($board->getAttributes() as $attribute) {
+            if (isset($request[$attribute]) && $board[$attribute] !== $request[$attribute]) {
+                $result[] = $attribute;
+            }
+        }
+
+        return $result;
+    }
+
     private function prepareRelationToSync($relation)
     {
         $temp = [];
