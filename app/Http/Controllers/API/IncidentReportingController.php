@@ -442,6 +442,7 @@ class IncidentReportingController extends Controller
             'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
             'actionBoards.impactPotentials', 'actionBoards.actions'
         ])->first();
+
         return self::showResponse(true, $result);
     }
 
