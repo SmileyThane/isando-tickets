@@ -177,6 +177,7 @@ class IncidentReportingController extends Controller
     {
         $board = IncidentReportingActionBoard::where('id', '=', $id)->where('type_id', '=', $typeId)->first();
         $request['updated_by'] = Auth::id();
+        $updatedAttributes = $this->incidentRepo->compareUpdatedAttributes($board, $request->all());
         $board->update($request->all());
         $this->incidentRepo->syncActionBoardRelations($request, $board);
         $board = IncidentReportingActionBoard::query()->where('id', '=', $id);
