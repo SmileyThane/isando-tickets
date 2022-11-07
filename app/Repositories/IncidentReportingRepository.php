@@ -15,6 +15,7 @@ use App\IncidentReporting\TeamRole;
 use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardHasAction;
+use App\IncidentReportingActionBoardLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
@@ -240,6 +241,7 @@ class IncidentReportingRepository
     public function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
     {
         if ((int)$board->type_id === IncidentReportingActionBoard::IR) {
+            $this->logActionBoard($board->id, 'incident_actions_updated');
             $board->actions()->sync([]);
             $actionIds = $this->prepareRelationToSync($request->actions);
             foreach ($actionIds as $key => $actionId) {
