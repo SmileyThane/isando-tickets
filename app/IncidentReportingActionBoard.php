@@ -139,4 +139,9 @@ class IncidentReportingActionBoard extends Model
     {
         return $this->hasOne(User::class, 'id', 'updated_by');
     }
+
+    public function logs(): HasMany
+    {
+        return $this->hasMany(IncidentReportingActionBoardLog::class, 'action_board_id', 'id');
+    }
 }
