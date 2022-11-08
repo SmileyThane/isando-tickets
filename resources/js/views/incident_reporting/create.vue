@@ -150,6 +150,28 @@
                                                 required
                                             ></v-select>
                                             <br>
+                                            <v-select
+                                                :color="themeBgColor"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                :item-color="themeBgColor"
+                                                :items="$store.getters['IncidentReporting/getIR']"
+                                                class=""
+                                                dense
+                                                hide-details
+                                                outlined
+                                                placeholder="Scenarios"
+                                                required
+                                                @change="$store.commit('IncidentReporting/setRelatedIR', $event)"
+                                            >
+                                                <template v-slot:selection="{ attrs, item, parent, selected }">
+                                                    {{ item.name }}
+                                                </template>
+                                                <template v-slot:item="{ attrs, item, parent, selected }">
+                                                    {{ item.name }}
+                                                </template>
+                                            </v-select>
+                                            <br>
+
                                             <v-textarea
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
                                                 :color="themeBgColor"
