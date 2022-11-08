@@ -244,6 +244,7 @@ class IncidentReportingRepository
             $this->logActionBoard($board->id, 'incident_actions_updated');
             $board->actions()->sync([]);
             $actionIds = $this->prepareRelationToSync($request->actions);
+
             foreach ($actionIds as $key => $actionId) {
                 $action = IncidentReportingAction::query()->find($actionId);
                 $clonedAction = $action->replicate();
@@ -252,6 +253,7 @@ class IncidentReportingRepository
                 if ($action->related_to_ir_ab_id !== null) {
                     $action->delete();
                 }
+
                 IncidentReportingActionBoardHasAction::query()->create([
                     'action_board_id' => $board->id,
                     'action_id' => $clonedAction->id,
