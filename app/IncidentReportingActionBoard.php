@@ -30,7 +30,8 @@ class IncidentReportingActionBoard extends Model
         'priority_id', 'access_id', 'version',
         'parent_id', 'with_child_clients', 'state_id',
         'impact_potential_id', 'valid_till', 'updated_by', 'status_id',
-        'type_id', 'source', 'occurred_on', 'detected_on' ,'reported_on'
+        'type_id', 'source', 'occurred_on', 'detected_on' ,'reported_on',
+        'team_id'
     ];
 
     public function actions(): BelongsToMany
@@ -40,8 +41,7 @@ class IncidentReportingActionBoard extends Model
             'action',
             'incident_reporting_action_board_has_actions',
             'action_board_id',
-            'action_id',
-            'team_id'
+            'action_id'
         );
     }
 
@@ -138,5 +138,10 @@ class IncidentReportingActionBoard extends Model
     public function updatedBy(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'updated_by');
+    }
+
+    public function logs(): HasMany
+    {
+        return $this->hasMany(IncidentReportingActionBoardLog::class, 'action_board_id', 'id');
     }
 }

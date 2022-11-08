@@ -150,6 +150,28 @@
                                                 required
                                             ></v-select>
                                             <br>
+                                            <v-select
+                                                :color="themeBgColor"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                :item-color="themeBgColor"
+                                                :items="$store.getters['IncidentReporting/getIR']"
+                                                class=""
+                                                dense
+                                                hide-details
+                                                outlined
+                                                placeholder="Scenarios"
+                                                required
+                                                @change="$store.commit('IncidentReporting/setRelatedIR', $event)"
+                                            >
+                                                <template v-slot:selection="{ attrs, item, parent, selected }">
+                                                    {{ item.name }}
+                                                </template>
+                                                <template v-slot:item="{ attrs, item, parent, selected }">
+                                                    {{ item.name }}
+                                                </template>
+                                            </v-select>
+                                            <br>
+
                                             <v-textarea
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
                                                 :color="themeBgColor"
@@ -269,12 +291,15 @@
 
             </v-col>
             <v-col cols="12" lg="4" md="6" style="border-right: 1px solid gray">
-                <h4 class="heading headline">Incident tasks</h4>
+                <h4 class="heading headline">Action boards</h4>
                 <v-row no-gutters>
                     <v-row>
-                        <v-col cols="12">
+                        <v-col
+                            cols="12"
+                            v-if="$store.getters['IncidentReporting/getRelatedIR']"
+                        >
                             <v-card
-                                v-for="(taskGroup, index) in $store.getters['IncidentReporting/getIR']"
+                                v-for="(taskGroup, index) in $store.getters['IncidentReporting/getRelatedIR'].action_boards"
                                 :key="index"
                                 class="d-inline-flex flex-column mr-2 mb-2"
                                 max-width="170"
@@ -284,9 +309,6 @@
                                 <v-list-item three-line>
                                     <v-list-item-content>
                                         <div class="">
-                                            <span v-if="taskGroup.type_id === 2" class="float-left">Scenario:</span>
-                                            <span v-if="taskGroup.type_id === 1" class="float-left">Action board:</span>
-                                            <br>
                                             <strong class="float-left">{{ taskGroup.name }}</strong>
                                         </div>
                                     </v-list-item-content>
@@ -386,6 +408,40 @@
                         </v-col>
                     </v-row>
                 </v-row>
+                <v-row no-gutters>
+                    <v-col cols="12">
+                        <h4 class="heading headline float-left">Selected Actions</h4>
+                        <v-spacer></v-spacer>
+                        <!--                        <v-menu-->
+                        <!--                            bottom-->
+                        <!--                            left-->
+                        <!--                        >-->
+                        <!--                            <template>-->
+                        <!--                                <v-btn-->
+                        <!--                                    :color="themeBgColor"-->
+                        <!--                                    class="float-right"-->
+                        <!--                                    dark-->
+                        <!--                                    icon-->
+                        <!--                                >-->
+                        <!--                                    <v-icon>mdi-dots-vertical</v-icon>-->
+                        <!--                                </v-btn>-->
+                        <!--                            </template>-->
+
+                        <!--                            <v-list>-->
+                        <!--                                <v-list-item>-->
+                        <!--                                    <v-list-item-title>Menu 1</v-list-item-title>-->
+                        <!--                                </v-list-item>-->
+                        <!--                                <v-list-item>-->
+                        <!--                                    <v-list-item-title>Menu 2</v-list-item-title>-->
+                        <!--                                </v-list-item>-->
+                        <!--                            </v-list>-->
+                        <!--                        </v-menu>-->
+                    </v-col>
+                </v-row>
+                <v-row v-for="(action, index) in this.$store.getters['IncidentReporting/getSelectedIR'].actions" :key="index" style="border-bottom: 1px solid gray">
+                    <v-col cols="8" lg="8" md="12" sm="12">{{ action.name }}</v-col>
+                    <!--                    <v-col cols="4" lg="4" md="12" sm="12">{{ action.date }}</v-col>-->
+                </v-row>
             </v-col>
             <v-col cols="12" lg="4" md="6">
                 <v-row no-gutters>
@@ -418,9 +474,9 @@
                         <!--                        </v-menu>-->
                     </v-col>
                 </v-row>
-                <v-row v-for="(action, index) in finalList" :key="index" style="border-bottom: 1px solid gray">
-                    <v-col cols="8" lg="8" md="12" sm="12">{{ action.name }}</v-col>
-                    <!--                    <v-col cols="4" lg="4" md="12" sm="12">{{ action.date }}</v-col>-->
+                <v-row v-for="(action, index) in this.$store.getters['IncidentReporting/getSelectedIR'].logs" :key="index" style="border-bottom: 1px solid gray">
+                    <v-col cols="8" lg="8" md="12" sm="12">{{ action.log }}</v-col>
+                                        <v-col cols="4" lg="4" md="12" sm="12">{{ action.created_at }}</v-col>
                 </v-row>
             </v-col>
         </v-row>
@@ -471,7 +527,7 @@ export default {
         } else {
             this.$store.commit('IncidentReporting/setIsEditable', true);
         }
-        this.$store.commit('IncidentReporting/setIRType', -3);
+        this.$store.commit('IncidentReporting/setIRType', 2);
         this.$store.dispatch('IncidentReporting/callGetIR').then(() => {
             this.$store.dispatch('IncidentReporting/callSetSelectedIR', IR)
         });
@@ -493,9 +549,9 @@ export default {
             // this.$router.push(`/incident_reporting/list`)
         },
         showList(item) {
-            this.$store.commit('IncidentReporting/setRelatedIR', item)
-            this.actionsList = this.$store.getters['IncidentReporting/getRelatedIR'].actions
-            this.actionBoardsList = this.$store.getters['IncidentReporting/getRelatedIR'].action_boards
+            // this.$store.commit('IncidentReporting/setRelatedIR', item)
+            this.actionsList = item.actions ?? []
+            this.actionBoardsList = item.action_boards ?? []
         },
         addToList(item) {
             if (item.actions !== undefined && item.actions.length > 0) {

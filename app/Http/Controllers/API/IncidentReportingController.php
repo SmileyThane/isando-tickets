@@ -177,14 +177,20 @@ class IncidentReportingController extends Controller
     {
         $board = IncidentReportingActionBoard::where('id', '=', $id)->where('type_id', '=', $typeId)->first();
         $request['updated_by'] = Auth::id();
+        $updatedAttributes = $this->incidentRepo->compareUpdatedAttributes($board, $request->all());
         $board->update($request->all());
+
+        foreach ($updatedAttributes as $updatedAttribute) {
+            $this->incidentRepo->logActionBoard($board->id, $updatedAttribute . '_updated');
+        }
+
         $this->incidentRepo->syncActionBoardRelations($request, $board);
         $board = IncidentReportingActionBoard::query()->where('id', '=', $id);
 
         return self::showResponse(true, $board->with([
             'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
             'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-            'actionBoards.impactPotentials', 'actionBoards.actions'
+            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
         ])->first());
     }
 
@@ -370,7 +376,7 @@ class IncidentReportingController extends Controller
         $actionBoards = $actionBoardsQuery->with([
                 'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
                 'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-                'actionBoards.impactPotentials', 'actionBoards.actions'
+                'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
             ])
             ->orderBy('name')
             ->get();
@@ -427,14 +433,16 @@ class IncidentReportingController extends Controller
         $request['updated_by'] = Auth::id();
         $request['type_id'] = $typeId;
         $board = IncidentReportingActionBoard::create($request->all());
+        $this->incidentRepo->logActionBoard($board->id, 'created');
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
         $result = IncidentReportingActionBoard::query()->where('id', '=', $board->id)
             ->with([
             'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
             'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-            'actionBoards.impactPotentials', 'actionBoards.actions'
+            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
         ])->first();
+
         return self::showResponse(true, $result);
     }
 

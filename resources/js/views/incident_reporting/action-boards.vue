@@ -283,6 +283,7 @@ export default {
 
             this.$store.dispatch('IncidentReporting/callSetSelectedIR', null)
             this.$store.dispatch('IncidentReporting/callSetIRType', type);
+            this.$store.dispatch('IncidentReporting/callGetIRActions');
         },
         setIsEditable() {
             this.$store.dispatch('IncidentReporting/callSetIsEditable', true)
