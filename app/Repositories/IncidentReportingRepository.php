@@ -295,7 +295,6 @@ class IncidentReportingRepository
     public function compareUpdatedAttributes($board, $request): array
     {
         $result = [];
-
         $attributes = array_diff(
             array_keys($board->getAttributes()),
             $board->getHidden(),
