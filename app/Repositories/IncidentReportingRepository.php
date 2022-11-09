@@ -277,18 +277,6 @@ class IncidentReportingRepository
         ]);
     }
 
-    public function compareUpdatedAttributes($board, $request): array
-    {
-        $result = [];
-        foreach ($board->getAttributes() as $attribute) {
-            if (isset($request[$attribute]) && $board[$attribute] !== $request[$attribute]) {
-                $result[] = $attribute;
-            }
-        }
-
-        return $result;
-    }
-
     private function prepareRelationToSync($relation)
     {
         $temp = [];
@@ -302,5 +290,22 @@ class IncidentReportingRepository
         }
 
         return count($temp) > 0 ? $temp : $relation;
+    }
+
+    public function compareUpdatedAttributes($board, $request): array
+    {
+        $result = [];
+        $attributes = array_diff(
+            array_keys($board->getAttributes()),
+            $board->getHidden(),
+            ['updated_at']
+        );
+        foreach ($attributes as $attribute) {
+            if (isset($request[$attribute]) && $board[$attribute] !== $request[$attribute]) {
+                $result[] = $attribute;
+            }
+        }
+
+        return $result;
     }
 }

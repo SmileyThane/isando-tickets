@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\IncidentReporting\ActionBoardStatus;
 use App\IncidentReporting\FocusPriority;
 use App\IncidentReporting\ImpactPotential;
@@ -11,11 +12,8 @@ use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardAccess;
 use App\IncidentReportingActionBoardHasAction;
 use App\IncidentReportingActionBoardStageMonitoring;
-use App\Providers\IxarmaServiceProvider;
-
 use App\Repositories\IncidentReportingRepository;
 use App\Repositories\IxarmaRepository;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -374,10 +372,10 @@ class IncidentReportingController extends Controller
             $actionBoardsQuery->where('type_id', '!=', abs($typeId));
         }
         $actionBoards = $actionBoardsQuery->with([
-                'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
-                'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-                'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
-            ])
+            'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+            'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
+            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
+        ])
             ->orderBy('name')
             ->get();
 
@@ -438,10 +436,10 @@ class IncidentReportingController extends Controller
 
         $result = IncidentReportingActionBoard::query()->where('id', '=', $board->id)
             ->with([
-            'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
-            'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
-        ])->first();
+                'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+                'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
+                'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
+            ])->first();
 
         return self::showResponse(true, $result);
     }
