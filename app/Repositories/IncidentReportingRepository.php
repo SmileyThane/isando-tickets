@@ -277,6 +277,21 @@ class IncidentReportingRepository
         ]);
     }
 
+    private function prepareRelationToSync($relation)
+    {
+        $temp = [];
+        if (is_array($relation) && count($relation) > 0) {
+            foreach ($relation as $item) {
+                if (!is_integer($item)) {
+                    $temp[] = $item['id'];
+                }
+            }
+
+        }
+
+        return count($temp) > 0 ? $temp : $relation;
+    }
+
     public function compareUpdatedAttributes($board, $request): array
     {
         $result = [];
@@ -293,20 +308,5 @@ class IncidentReportingRepository
         }
 
         return $result;
-    }
-
-    private function prepareRelationToSync($relation)
-    {
-        $temp = [];
-        if (is_array($relation) && count($relation) > 0) {
-            foreach ($relation as $item) {
-                if (!is_integer($item)) {
-                    $temp[] = $item['id'];
-                }
-            }
-
-        }
-
-        return count($temp) > 0 ? $temp : $relation;
     }
 }
