@@ -436,10 +436,10 @@ class IncidentReportingController extends Controller
 
         $result = IncidentReportingActionBoard::query()->where('id', '=', $board->id)
             ->with([
-            'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
-            'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
-        ])->first();
+                'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+                'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
+                'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
+            ])->first();
 
         return self::showResponse(true, $result);
     }
