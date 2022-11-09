@@ -280,7 +280,13 @@ class IncidentReportingRepository
     public function compareUpdatedAttributes($board, $request): array
     {
         $result = [];
-        foreach ($board->getAttributes() as $attribute) {
+
+        $attributes = array_diff(
+            array_keys($board->getAttributes()),
+            $board->getHidden(),
+            ['updated_at']
+        );
+        foreach ($attributes as $attribute) {
             if (isset($request[$attribute]) && $board[$attribute] !== $request[$attribute]) {
                 $result[] = $attribute;
             }
