@@ -372,10 +372,10 @@ class IncidentReportingController extends Controller
             $actionBoardsQuery->where('type_id', '!=', abs($typeId));
         }
         $actionBoards = $actionBoardsQuery->with([
-                'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
-                'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-                'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
-            ])
+            'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+            'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
+            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
+        ])
             ->orderBy('name')
             ->get();
 
