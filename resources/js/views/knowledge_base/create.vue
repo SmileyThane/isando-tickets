@@ -149,7 +149,7 @@
                                         </v-row>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
-                                <v-expansion-panel>
+                                <v-expansion-panel style="background-color: #ededf0;">
                                     <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                         <v-text-field v-model="article.name_de" :color="themeBgColor"
