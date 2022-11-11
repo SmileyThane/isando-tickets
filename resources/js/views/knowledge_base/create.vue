@@ -84,7 +84,7 @@
 
                         </v-col>
                         <v-col cols="12">
-                            <v-expansion-panels>
+                            <v-expansion-panels multiple>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>English</v-expansion-panel-header>
                                     <v-expansion-panel-content>
