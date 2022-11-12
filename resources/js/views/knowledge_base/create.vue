@@ -548,11 +548,12 @@ export default {
             });
         },
         openCategory() {
-            if (parseInt(localStorage.getItem('kb_category'))) {
-                this.$router.push(`/${this.$route.params.alias}?category=` + localStorage.getItem('kb_category'));
-            } else {
-                this.$router.push(`/${this.$route.params.alias}`);
-            }
+            window.history.back();
+            // if (parseInt(localStorage.getItem('kb_category'))) {
+            //     this.$router.push(`/${this.$route.params.alias}?category=` + localStorage.getItem('kb_category'));
+            // } else {
+            //     this.$router.push(`/${this.$route.params.alias}`);
+            // }
         },
         download(url) {
             window.open(url, '_blank');
