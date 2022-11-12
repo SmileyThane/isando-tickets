@@ -164,8 +164,9 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link>
-                                            <v-list-item-title @click="editArticle(article.id)">{{
+                                        <v-list-item link @click="editArticle(article.id)">
+                                            <v-list-item-title >
+                                                {{
                                                     langMap.kb.edit
                                                 }}
                                             </v-list-item-title>
@@ -176,10 +177,9 @@
                                         <v-list-item
                                             v-if="$helpers.auth.checkPermissionByIds([99])"
                                             link
+                                            @click="deleteArticle(article)"
                                         >
-                                            <v-list-item-title
-                                                @click="deleteArticle(article)"
-                                            >
+                                            <v-list-item-title>
                                                 {{
                                                     langMap.kb.delete
                                                 }}
