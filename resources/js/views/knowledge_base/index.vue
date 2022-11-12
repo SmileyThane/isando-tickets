@@ -94,6 +94,10 @@
                                 <v-icon :color="category.icon_color" large left
                                         v-text="category.icon ? category.icon : 'mdi-help'"/>
                                 {{ $helpers.i18n.localized(category) }}
+                                <h6 class="subtitle-2 ml-2">
+                                    {{ langMap.kb.articles }}: {{ category.articles_count }}
+                                    {{ langMap.kb.categories }}: {{ category.categories_count }}
+                                </h6>
                                 <v-spacer></v-spacer>
                                 <v-menu
                                     v-if="$helpers.auth.checkPermissionByIds([98])"
