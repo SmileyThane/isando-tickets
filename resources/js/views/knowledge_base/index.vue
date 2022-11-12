@@ -55,7 +55,9 @@
 
                                     <v-list>
                                         <v-list-item link @click.prevent="updateCategoryDlg = true">
-                                            <v-list-item-title>{{ langMap.kb.create_category }}</v-list-item-title>
+                                            <v-list-item-title>
+                                                {{ langMap.kb.create_category }}
+                                            </v-list-item-title>
                                             <v-list-item-action>
                                                 <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
                                             </v-list-item-action>
@@ -100,13 +102,16 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link>
-                                            <v-list-item-title @click="editCategory(category)">{{
+                                        <v-list-item link @click="editCategory(category)">
+                                            <v-list-item-title>
+                                                {{
                                                     langMap.kb.edit
                                                 }}
                                             </v-list-item-title>
                                             <v-list-item-action>
-                                                <v-icon :color="themeBgColor">mdi-folder-edit-outline</v-icon>
+                                                <v-icon :color="themeBgColor">
+                                                    mdi-folder-edit-outline
+                                                </v-icon>
                                             </v-list-item-action>
                                         </v-list-item>
                                         <v-list-item
