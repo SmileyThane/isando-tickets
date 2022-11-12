@@ -135,18 +135,13 @@
                                 <p v-if="$helpers.i18n.localized(category, 'description')"
                                    :tooltip="$helpers.i18n.localized(category, 'description')" class="lim">
                                     {{ $helpers.i18n.localized(category, 'description') }}</p>
-                                <p>
-                                    {{ langMap.kb.articles }}: {{ category.articles_count }} <br/>
-                                    {{ langMap.kb.categories }}: {{ category.categories_count }}
-                                </p>
-
                             </v-card-text>
-                            <v-card-actions>
-                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text
-                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>
-                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"
-                                       v-text="langMap.kb.open_category"/>
-                            </v-card-actions>
+<!--                            <v-card-actions>-->
+<!--                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text-->
+<!--                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>-->
+<!--                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"-->
+<!--                                       v-text="langMap.kb.open_category"/>-->
+<!--                            </v-card-actions>-->
                         </v-card>
                     </v-col>
                 </v-row>
