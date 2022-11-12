@@ -86,7 +86,11 @@
                 <v-row>
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12">
                         <v-card :class="category.id == $route.query.category ? 'parent' : ''" outlined>
-                            <v-card-title>
+                            <v-card-title @click="openCategory(category.id)">
+                                <v-icon :color="category.icon_color" large left
+                                        v-if="category.id == $route.query.category"
+                                        @click.prevent.stop="openCategory(category.parent_id)"
+                                        v-text="'mdi-arrow-left'"/>
                                 <v-icon :color="category.icon_color" large left
                                         v-text="category.icon ? category.icon : 'mdi-help'"/>
                                 {{ $helpers.i18n.localized(category) }}
