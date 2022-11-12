@@ -117,9 +117,9 @@
                                         <v-list-item
                                             v-if="$helpers.auth.checkPermissionByIds([99])"
                                             link
+                                            @click="deleteCategory(category)"
                                         >
-                                            <v-list-item-title
-                                                @click="deleteCategory(category)">
+                                            <v-list-item-title>
                                                 {{
                                                     langMap.kb.delete
                                                 }}
