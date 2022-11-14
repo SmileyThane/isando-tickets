@@ -373,7 +373,7 @@ export default {
         }
     },
     created() {
-        //
+        this.getCategoriesTree();
     },
     methods: {
         invertColor(hex) {
