@@ -87,7 +87,7 @@
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12">
                         <v-card :class="category.id == $route.query.category ? 'parent' : ''" outlined>
                             <v-card-title @click="openCategory(category.id)">
-                                <v-icon :color="category.icon_color" large left
+                                <v-icon :color="themeBgColor" large left
                                         v-if="category.id == $route.query.category"
                                         @click.prevent.stop="openCategory(category.parent_id)"
                                         v-text="'mdi-arrow-left'"/>
@@ -139,7 +139,7 @@
                                     </v-list>
                                 </v-menu>
                             </v-card-title>
-                            <v-card-text style="height: 6em;">
+                            <v-card-text>
                                 <p v-if="$helpers.i18n.localized(category, 'description')"
                                    :tooltip="$helpers.i18n.localized(category, 'description')" class="lim">
                                     {{ $helpers.i18n.localized(category, 'description') }}</p>
@@ -334,7 +334,7 @@
 
 <style scoped>
 >>> .parent {
-    background: #fafafa !important;
+    background: #ededf0 !important;
 }
 
 >>> .lim {
