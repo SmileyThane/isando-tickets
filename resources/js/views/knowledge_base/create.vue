@@ -509,7 +509,7 @@ export default {
                         this.actionColor = 'success'
                         this.snackbar = true;
 
-                        this.$router.push(`/${this.$route.params.alias}`);
+                        window.history.back();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.errorType = 'error';
@@ -518,7 +518,7 @@ export default {
                 });
             }
 
-            if (redirect) {
+            if (redirect === true) {
                 window.history.back();
             }
         },
