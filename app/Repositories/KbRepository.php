@@ -21,13 +21,8 @@ class KbRepository
         $result = [];
         $company = Company::find($companyId);
         if ($company) {
-            $result = $company->kbCategories()
-                ->where('parent_id', null)
-                ->orderBy('name', 'ASC')
-                ->where('type_id', $typeId)
-                ->orderBy('name_de', 'ASC')
-                ->get()
-                ->toTree();
+            $result = $company
+                ->kbCategories()->orderBy('name', 'ASC')->where('type_id', $typeId)->orderBy('name_de', 'ASC')->get()->toTree();
         }
         return $result;
     }
