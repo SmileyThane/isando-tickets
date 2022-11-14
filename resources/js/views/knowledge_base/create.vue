@@ -486,12 +486,19 @@ export default {
                 axios.post(`/api/kb/article/${this.article.id}`, formData, {'content-type': 'multipart/form-data'}).then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        this.getArticle();
                         this.getArticles();
-
+                        this.article = response.data
                         this.snackbarMessage = this.langMap.kb.article_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
+
+                        if (redirect === true) {
+                            let category = ''
+                            if (response.data.categories.length > 0) {
+                                category = `?category=${response.data.categories[0].id}`
+                            }
+                            window.location.href = `/${this.$route.params.alias}${category}`;
+                        }
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.errorType = 'error';
@@ -509,7 +516,16 @@ export default {
                         this.actionColor = 'success'
                         this.snackbar = true;
 
-                        window.history.back();
+                        if (redirect === true) {
+                            let category = ''
+                            if (response.data.categories.length > 0) {
+                                category = `?category=${response.data.categories[0].id}`
+                            }
+                            window.location.href = `/${this.$route.params.alias}${category}`;
+                        } else {
+                            window.location.href = `/${this.$route.params.alias}/${response.data.id}/edit`
+                        }
+
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.errorType = 'error';
@@ -518,9 +534,6 @@ export default {
                 });
             }
 
-            if (redirect === true) {
-                window.history.back();
-            }
         },
         removeTag(item) {
             this.article.tags.splice(this.article.tags.indexOf(item), 1)
