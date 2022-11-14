@@ -90,10 +90,11 @@
                                 <v-icon :color="themeBgColor" large left
                                         v-if="category.id == $route.query.category"
                                         @click.prevent.stop="openCategory(category.parent_id)"
-                                        v-text="'mdi-arrow-left'"/>
+                                        v-text="'mdi-arrow-left'"
+                                />
                                 <v-icon :color="category.icon_color" large left
                                         v-text="category.icon ? category.icon : 'mdi-help'"/>
-                                {{ $helpers.i18n.localized(category) }}
+                                {{ category.id == $route.query.category ? category.full_name : category.name }}
                                 <h6 class="subtitle-2 ml-2">
                                     {{ langMap.kb.articles }}: {{ category.articles_count }}
                                     {{ langMap.kb.categories }}: {{ category.categories_count }}
