@@ -15,7 +15,7 @@ class KbCategory extends Model
 
     protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'company_id', 'parent_id', 'type_id'];
 
-    protected $appends = ['articles_count', 'categories_count'];
+    protected $appends = ['articles_count', 'categories_count', 'full_name'];
 
     public function company(): BelongsTo
     {
