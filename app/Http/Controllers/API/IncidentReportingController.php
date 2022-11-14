@@ -113,7 +113,6 @@ class IncidentReportingController extends Controller
         return self::showResponse(true);
     }
 
-
     public function listEventTypes(Request $request)
     {
         return self::showResponse(true, $this->incidentRepo->getEventTypesInCompanyContext());
@@ -191,7 +190,6 @@ class IncidentReportingController extends Controller
             'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
         ])->first());
     }
-
 
     public function deleteFocusPriority($id)
     {
@@ -290,7 +288,6 @@ class IncidentReportingController extends Controller
     {
         return self::showResponse($this->incidentRepo->deleteTeamRole($id));
     }
-
 
     public function listResourceTypes(Request $request)
     {

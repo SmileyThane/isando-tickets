@@ -55,7 +55,9 @@
 
                                     <v-list>
                                         <v-list-item link @click.prevent="updateCategoryDlg = true">
-                                            <v-list-item-title>{{ langMap.kb.create_category }}</v-list-item-title>
+                                            <v-list-item-title>
+                                                {{ langMap.kb.create_category }}
+                                            </v-list-item-title>
                                             <v-list-item-action>
                                                 <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
                                             </v-list-item-action>
@@ -84,10 +86,18 @@
                 <v-row>
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12">
                         <v-card :class="category.id == $route.query.category ? 'parent' : ''" outlined>
-                            <v-card-title>
+                            <v-card-title @click="openCategory(category.id)">
+                                <v-icon :color="category.icon_color" large left
+                                        v-if="category.id == $route.query.category"
+                                        @click.prevent.stop="openCategory(category.parent_id)"
+                                        v-text="'mdi-arrow-left'"/>
                                 <v-icon :color="category.icon_color" large left
                                         v-text="category.icon ? category.icon : 'mdi-help'"/>
                                 {{ $helpers.i18n.localized(category) }}
+                                <h6 class="subtitle-2 ml-2">
+                                    {{ langMap.kb.articles }}: {{ category.articles_count }}
+                                    {{ langMap.kb.categories }}: {{ category.categories_count }}
+                                </h6>
                                 <v-spacer></v-spacer>
                                 <v-menu
                                     v-if="$helpers.auth.checkPermissionByIds([98])"
@@ -100,21 +110,24 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link>
-                                            <v-list-item-title @click="editCategory(category)">{{
+                                        <v-list-item link @click="editCategory(category)">
+                                            <v-list-item-title>
+                                                {{
                                                     langMap.kb.edit
                                                 }}
                                             </v-list-item-title>
                                             <v-list-item-action>
-                                                <v-icon :color="themeBgColor">mdi-folder-edit-outline</v-icon>
+                                                <v-icon :color="themeBgColor">
+                                                    mdi-folder-edit-outline
+                                                </v-icon>
                                             </v-list-item-action>
                                         </v-list-item>
                                         <v-list-item
                                             v-if="$helpers.auth.checkPermissionByIds([99])"
                                             link
+                                            @click="deleteCategory(category)"
                                         >
-                                            <v-list-item-title
-                                                @click="deleteCategory(category)">
+                                            <v-list-item-title>
                                                 {{
                                                     langMap.kb.delete
                                                 }}
@@ -130,18 +143,13 @@
                                 <p v-if="$helpers.i18n.localized(category, 'description')"
                                    :tooltip="$helpers.i18n.localized(category, 'description')" class="lim">
                                     {{ $helpers.i18n.localized(category, 'description') }}</p>
-                                <p>
-                                    {{ langMap.kb.articles }}: {{ category.articles_count }} <br/>
-                                    {{ langMap.kb.categories }}: {{ category.categories_count }}
-                                </p>
-
                             </v-card-text>
-                            <v-card-actions>
-                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text
-                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>
-                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"
-                                       v-text="langMap.kb.open_category"/>
-                            </v-card-actions>
+<!--                            <v-card-actions>-->
+<!--                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text-->
+<!--                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>-->
+<!--                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"-->
+<!--                                       v-text="langMap.kb.open_category"/>-->
+<!--                            </v-card-actions>-->
                         </v-card>
                     </v-col>
                 </v-row>
@@ -164,8 +172,9 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link>
-                                            <v-list-item-title @click="editArticle(article.id)">{{
+                                        <v-list-item link @click="editArticle(article.id)">
+                                            <v-list-item-title >
+                                                {{
                                                     langMap.kb.edit
                                                 }}
                                             </v-list-item-title>
@@ -176,10 +185,9 @@
                                         <v-list-item
                                             v-if="$helpers.auth.checkPermissionByIds([99])"
                                             link
+                                            @click="deleteArticle(article)"
                                         >
-                                            <v-list-item-title
-                                                @click="deleteArticle(article)"
-                                            >
+                                            <v-list-item-title>
                                                 {{
                                                     langMap.kb.delete
                                                 }}

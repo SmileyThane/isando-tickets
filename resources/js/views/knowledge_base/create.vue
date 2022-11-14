@@ -84,7 +84,7 @@
 
                         </v-col>
                         <v-col cols="12">
-                            <v-expansion-panels>
+                            <v-expansion-panels multiple>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>English</v-expansion-panel-header>
                                     <v-expansion-panel-content>
@@ -149,7 +149,7 @@
                                         </v-row>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
-                                <v-expansion-panel>
+                                <v-expansion-panel style="background-color: #ededf0;">
                                     <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                         <v-text-field v-model="article.name_de" :color="themeBgColor"
@@ -548,11 +548,12 @@ export default {
             });
         },
         openCategory() {
-            if (parseInt(localStorage.getItem('kb_category'))) {
-                this.$router.push(`/${this.$route.params.alias}?category=` + localStorage.getItem('kb_category'));
-            } else {
-                this.$router.push(`/${this.$route.params.alias}`);
-            }
+            window.history.back();
+            // if (parseInt(localStorage.getItem('kb_category'))) {
+            //     this.$router.push(`/${this.$route.params.alias}?category=` + localStorage.getItem('kb_category'));
+            // } else {
+            //     this.$router.push(`/${this.$route.params.alias}`);
+            // }
         },
         download(url) {
             window.open(url, '_blank');
