@@ -86,7 +86,7 @@
                 <v-row>
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12">
                         <v-card :class="category.id == $route.query.category ? 'parent' : ''" outlined>
-                            <v-card-title @click="openCategory(category.id)">
+                            <v-card-title style="cursor: pointer;" @click="openCategory(category.id)">
                                 <v-icon :color="themeBgColor" large left
                                         v-if="category.id == $route.query.category"
                                         @click.prevent.stop="openCategory(category.parent_id)"
