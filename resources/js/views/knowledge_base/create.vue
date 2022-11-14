@@ -346,7 +346,7 @@ export default {
                     value: 'independent'
                 }
             ],
-            childCategoriesSelectedItem: 'independent'
+            childCategoriesSelectedItem: 'leaf'
         }
     },
     mounted() {
