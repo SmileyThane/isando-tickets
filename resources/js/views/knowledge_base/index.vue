@@ -86,14 +86,15 @@
                 <v-row>
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12">
                         <v-card :class="category.id == $route.query.category ? 'parent' : ''" outlined>
-                            <v-card-title @click="openCategory(category.id)">
-                                <v-icon :color="category.icon_color" large left
+                            <v-card-title style="cursor: pointer;" @click="openCategory(category.id)">
+                                <v-icon :color="themeBgColor" large left
                                         v-if="category.id == $route.query.category"
                                         @click.prevent.stop="openCategory(category.parent_id)"
-                                        v-text="'mdi-arrow-left'"/>
+                                        v-text="'mdi-arrow-left'"
+                                />
                                 <v-icon :color="category.icon_color" large left
                                         v-text="category.icon ? category.icon : 'mdi-help'"/>
-                                {{ $helpers.i18n.localized(category) }}
+                                {{ category.id == $route.query.category ? category.full_name : category.name }}
                                 <h6 class="subtitle-2 ml-2">
                                     {{ langMap.kb.articles }}: {{ category.articles_count }}
                                     {{ langMap.kb.categories }}: {{ category.categories_count }}
@@ -139,7 +140,7 @@
                                     </v-list>
                                 </v-menu>
                             </v-card-title>
-                            <v-card-text style="height: 6em;">
+                            <v-card-text>
                                 <p v-if="$helpers.i18n.localized(category, 'description')"
                                    :tooltip="$helpers.i18n.localized(category, 'description')" class="lim">
                                     {{ $helpers.i18n.localized(category, 'description') }}</p>
@@ -334,7 +335,7 @@
 
 <style scoped>
 >>> .parent {
-    background: #fafafa !important;
+    background: #ededf0 !important;
 }
 
 >>> .lim {

@@ -21,7 +21,8 @@ class KbRepository
         $result = [];
         $company = Company::find($companyId);
         if ($company) {
-            $result = $company->kbCategories()->orderBy('name', 'ASC')->where('type_id', $typeId)->orderBy('name_de', 'ASC')->get()->toTree();
+            $result = $company
+                ->kbCategories()->orderBy('name', 'ASC')->where('type_id', $typeId)->orderBy('name_de', 'ASC')->get()->toTree();
         }
         return $result;
     }
@@ -35,9 +36,9 @@ class KbRepository
         if ($company) {
             $result = $company->kbCategories()->where('type_id', $typeId)->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
 
-            if (!empty($category_id)) {
+//            if (!empty($category_id)) {
                 $result = $result->where('parent_id', $category_id);
-            }
+//            }
 
             if (!empty($search)) {
                 $result = $result->where(function ($query) use ($search) {
