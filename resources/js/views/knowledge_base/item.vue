@@ -72,6 +72,13 @@
                        @click="back()"
                        v-text="langMap.kb.back_to_category"
                 />
+                <v-btn :color="themeBgColor"
+                       v-if="article.next.length > 0"
+                       text
+                       @click="next(article.next[0].id)"
+                       v-text="langMap.kb.next_step"
+                />
+
             </v-card-actions>
         </v-card>
     </v-container>
@@ -114,6 +121,10 @@ export default {
     methods: {
         back() {
             window.history.back()
+        },
+        next(id) {
+            let url = `/${this.$route.params.alias}/${id}`
+            window.location.href = url;
         },
         invertColor(hex) {
             return this.$helpers.color.invertColor(hex);
