@@ -34,11 +34,11 @@ class KbRepository
         $result = [];
         $company = Company::find($companyId);
         if ($company) {
-            $result = $company->kbCategories()->where('type_id', $typeId)->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
-
-//            if (!empty($category_id)) {
-                $result = $result->where('parent_id', $category_id);
-//            }
+            $result = $company->kbCategories()
+                ->where('type_id', $typeId)
+                ->where('parent_id', $category_id)
+                ->orderBy('name', 'ASC')
+                ->orderBy('name_de', 'ASC');
 
             if (!empty($search)) {
                 $result = $result->where(function ($query) use ($search) {
