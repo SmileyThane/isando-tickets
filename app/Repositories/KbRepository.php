@@ -34,11 +34,11 @@ class KbRepository
         $result = [];
         $company = Company::find($companyId);
         if ($company) {
-            $result = $company->kbCategories()->where('type_id', $typeId)->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
-
-//            if (!empty($category_id)) {
-                $result = $result->where('parent_id', $category_id);
-//            }
+            $result = $company->kbCategories()
+                ->where('type_id', $typeId)
+                ->where('parent_id', $category_id)
+                ->orderBy('name', 'ASC')
+                ->orderBy('name_de', 'ASC');
 
             if (!empty($search)) {
                 $result = $result->where(function ($query) use ($search) {
@@ -74,13 +74,15 @@ class KbRepository
     public function getArticles($typeId, $category_id, $search, $search_in_text = false, $tags = [])
     {
         $articles = KbArticle::with('tags', 'attachments')->where('type_id', $typeId)->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+
         if ($category_id) {
             $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
                 $query->where('category_id', $category_id);
             });
-        } elseif(empty($search)) {
+        } elseif (empty($search)) {
             $articles = $articles->whereDoesntHave('categories');
         }
+
         if (!empty($search)) {
             $articles = $articles->where(function ($query) use ($search, $search_in_text) {
                 $query->where('name', 'like', '%' . $search . '%')->orWhere('name_de', 'like', '%' . $search . '%')
