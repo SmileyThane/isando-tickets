@@ -16,6 +16,7 @@ use App\Repositories\UserRepository;
 use App\Role;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,7 +45,7 @@ class AuthController extends Controller
         $this->roleRepo = $roleRepository;
     }
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $result = false;
         $tokenData = null;
@@ -61,10 +62,11 @@ class AuthController extends Controller
                 $result = true;
             }
         }
+
         return self::showResponse($result, $tokenData);
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $token = $request->user()->token();
         $token->revoke();
