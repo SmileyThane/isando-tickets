@@ -55,7 +55,7 @@
 
                     }}</p>
                 <p> {{ langMap.ir.ab.valid_till }}: {{
-                        moment($store.getters['IncidentReporting/getSelectedIR'].valid_till).format('Y-M-D')
+                        moment($store.getters['IncidentReporting/getSelectedIR'].valid_till).format('Y-M-D H:m:s')
                     }}</p>
                 <p> {{ langMap.ir.ab.updated_by }}:
                     <span v-if="$store.getters['IncidentReporting/getSelectedIR'].updated_by">
