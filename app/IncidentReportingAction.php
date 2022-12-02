@@ -3,6 +3,7 @@
 namespace App;
 
 use App\IncidentReporting\ActionType;
+use App\IncidentReporting\TeamRole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -21,7 +22,7 @@ class IncidentReportingAction extends Model
 
     public function assignee(): HasOne
     {
-        return $this->hasOne(CompanyUser::class, 'id', 'user_id');
+        return $this->hasOne(TeamRole::class, 'id', 'user_id');
     }
 
     public function type(): HasOne
