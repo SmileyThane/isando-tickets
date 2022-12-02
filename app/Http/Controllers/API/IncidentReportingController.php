@@ -49,7 +49,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -124,7 +124,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -154,7 +154,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -207,7 +207,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -240,7 +240,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -270,7 +270,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -300,7 +300,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -330,7 +330,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -351,12 +351,12 @@ class IncidentReportingController extends Controller
 
     public function listIxarmaCompanies(Request $request)
     {
-        return self::showResponse($this->ixarmaRepo->getOrganizations($request->company_id));
+        return self::showResponse($this->ixarmaRepo->getOrganizations(Auth::user()->employee->company_id));
     }
 
     public function listIxarmaParticipants(Request $request)
     {
-        return self::showResponse($this->ixarmaRepo->getParticipants($request->company_id));
+        return self::showResponse($this->ixarmaRepo->getParticipants(Auth::user()->employee->company_id));
     }
 
     public function listActionBoards($typeId): JsonResponse

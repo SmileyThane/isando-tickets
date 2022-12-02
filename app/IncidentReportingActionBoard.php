@@ -7,6 +7,7 @@ use App\IncidentReporting\EventType;
 use App\IncidentReporting\FocusPriority;
 use App\IncidentReporting\ImpactPotential;
 use App\IncidentReporting\ProcessState;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -143,5 +144,10 @@ class IncidentReportingActionBoard extends Model
     public function logs(): HasMany
     {
         return $this->hasMany(IncidentReportingActionBoardLog::class, 'action_board_id', 'id');
+    }
+
+    public function getValidTillAttribute()
+    {
+        return $this->attributes['valid_till'] ?? Carbon::parse($this->attributes['created_at'])->addYear();
     }
 }

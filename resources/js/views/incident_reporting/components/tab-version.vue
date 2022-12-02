@@ -51,11 +51,11 @@
                     }}</p>
                 <p> {{ langMap.main.version }}: {{ $store.getters['IncidentReporting/getSelectedIR'].version }}</p>
                 <p> {{ 'Updated at' }}: {{
-                        moment($store.getters['IncidentReporting/getSelectedIR'].updated_at).format('D/M/Y')
+                        moment($store.getters['IncidentReporting/getSelectedIR'].updated_at).format('Y-M-D H:m:s')
 
                     }}</p>
                 <p> {{ langMap.ir.ab.valid_till }}: {{
-                        $store.getters['IncidentReporting/getSelectedIR'].valid_till
+                        moment($store.getters['IncidentReporting/getSelectedIR'].valid_till).format('Y-M-D H:m:s')
                     }}</p>
                 <p> {{ langMap.ir.ab.updated_by }}:
                     <span v-if="$store.getters['IncidentReporting/getSelectedIR'].updated_by">
