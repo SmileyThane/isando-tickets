@@ -5,7 +5,7 @@ namespace App\IncidentReporting;
 class ImpactPotential extends ReferenceBook
 {
     protected $table = 'incident_reporting_impact_potentials';
-    protected $fillable =['name', 'name_de', 'position', 'color'];
+    protected $fillable =['name', 'name_de', 'position', 'color', 'company_id'];
 
     public static function boot() {
         parent::boot();
