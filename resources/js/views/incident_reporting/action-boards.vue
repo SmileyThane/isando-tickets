@@ -196,11 +196,11 @@
                         v-model="$store.getters['IncidentReporting/getSelectedIRAction'].user_id"
                         :color="themeBgColor"
                         :item-color="themeBgColor"
-                        :items="$store.getters['IncidentReporting/getEmployees']"
+                        :items="$store.getters['SettingsIncident/TeamRoles/getItems']"
                         class="small"
                         dense
                         hide-details
-                        item-text="user_data.email"
+                        item-text="name"
                         item-value="id"
                         prepend-icon="mdi-list-status"
                     ></v-select>
@@ -268,6 +268,7 @@ export default {
         this.$store.commit('IncidentReporting/setIsEditable', false)
         this.$store.dispatch('SettingsIncident/ActionBoardStatuses/callList');
         this.$store.dispatch('IncidentReporting/callGetEmployees');
+        this.$store.dispatch('SettingsIncident/TeamRoles/callList');
         this.$store.dispatch('IncidentReporting/callGetIROptions');
         this.$store.dispatch('IncidentReporting/callGetIRActions');
     },
