@@ -9,5 +9,5 @@ abstract class ReferenceBook extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['company_id', 'name', 'name_de', 'position'];
+    protected $fillable = ['id', 'company_id', 'name', 'name_de', 'position'];
 }
