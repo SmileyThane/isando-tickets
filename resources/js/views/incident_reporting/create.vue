@@ -360,7 +360,7 @@
                                         task.deadline_time_parameter
                                     }}
                                 </v-col>
-                                <v-col cols="4">{{ task.assignee ? task.assignee.user_data.email : '' }}</v-col>
+                                <v-col cols="4">{{ task.assignee ? task.assignee.name : '' }}</v-col>
                                 <v-col cols="1">
                                     <v-btn
                                         icon
