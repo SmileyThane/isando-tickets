@@ -14,7 +14,7 @@
             </v-col>
 
             <v-col v-if="$store.getters['IncidentReporting/getIRType'] === 1" cols="4">
-                {{ langMap.main.customer }}
+                Team role
             </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getIRType'] === 2" cols="2">
                 {{ langMap.main.version }}
