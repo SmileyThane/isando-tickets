@@ -20,7 +20,8 @@ class Tracking extends Model
         'entity_id',
         'entity_type',
         'date_from',
-        'date_to'
+        'date_to',
+        'user_id'
     ];
 
     protected $appends = [
