@@ -116,7 +116,7 @@ class Tracking extends Model
 
         }
 
-        return Carbon::parse($this->date_to);
+        return now();
     }
 
     public function getPassedDecimalAttribute()
