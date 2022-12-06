@@ -31,7 +31,7 @@ class TrackingController extends BaseController
 
     public function update(Request $request, $trackingId)
     {
-        $tracking = Tracking::query()->find($trackingId);
+        $tracking = Tracking::find($trackingId);
         $result = null;
         try {
             $this->trackingRepo->validate($request, false);
@@ -45,7 +45,7 @@ class TrackingController extends BaseController
 
     public function delete(Tracking $trackingId)
     {
-        $tracking = Tracking::query()->find($trackingId);
+        $tracking = Tracking::find($trackingId);
         try {
             $result = $this->trackingRepo->delete($tracking);
             return self::showResponse($result);
@@ -57,9 +57,8 @@ class TrackingController extends BaseController
     public function duplicate(Tracking $trackingId)
     {
         $result = null;
-        $tracking = Tracking::query()->find($trackingId);
+        $tracking = Tracking::find($trackingId);
         if ($tracking) {
-            dd($tracking);
             $result = $this->trackingRepo->duplicate($tracking);
         }
         return self::showResponse((bool)$result, $result);
