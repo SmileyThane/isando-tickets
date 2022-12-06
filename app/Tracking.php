@@ -109,7 +109,14 @@ class Tracking extends Model
 
     public function getPassedAttribute()
     {
-        return Carbon::parse($this->attributes['date_from'])->diffInSeconds($this->status === self::$STATUS_STARTED ? now() : Carbon::parse($this->date_to));
+        if (array_key_exists('date_from', $this->attributes)) {
+            return Carbon::parse($this->attributes['date_from'])->diffInSeconds($this->status === self::$STATUS_STARTED ?
+                now() :
+                Carbon::parse($this->date_to));
+
+        }
+
+        return Carbon::parse($this->date_to));
     }
 
     public function getPassedDecimalAttribute()
