@@ -43,7 +43,7 @@ class TrackingController extends BaseController
         return self::showResponse(true, $result);
     }
 
-    public function delete(Tracking $trackingId)
+    public function delete($trackingId)
     {
         $tracking = Tracking::find($trackingId);
         try {
@@ -54,7 +54,7 @@ class TrackingController extends BaseController
         }
     }
 
-    public function duplicate(Tracking $trackingId)
+    public function duplicate($trackingId)
     {
         $result = null;
         $tracking = Tracking::find($trackingId);
