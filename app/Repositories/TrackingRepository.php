@@ -37,16 +37,16 @@ class TrackingRepository
             'tags.*.name' => 'string',
         ],
         'update' => [
-//            'product.id' => 'nullable|exists:App\Product,id',
-//            'description' => 'nullable|string',
-//            'date_from' => 'nullable|string',
+            'product.id' => 'nullable|exists:App\Product,id',
+            'description' => 'nullable|string',
+            'date_from' => 'nullable|string',
             'date_to' => 'nullable|string',
             'status' => 'nullable|integer|in:0,1,2,3',
-//            'billable' => 'boolean',
-//            'billed' => 'boolean',
-//            'tags' => 'array|nullable',
-//            'tags.*.id' => 'integer|nullable',
-//            'tags.*.name' => 'string',
+            'billable' => 'boolean',
+            'billed' => 'boolean',
+            'tags' => 'array|nullable',
+            'tags.*.id' => 'integer|nullable',
+            'tags.*.name' => 'string',
         ]
     ];
 

@@ -18,7 +18,9 @@ class Tracking extends Model
     protected $table = 'tracking';//'archived';
     protected $fillable = [
         'entity_id',
-        'entity_type'
+        'entity_type',
+        'date_from',
+        'date_to'
     ];
 
     protected $appends = [
