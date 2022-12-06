@@ -27,7 +27,7 @@ class TrackingRepository
         'create' => [
             'product.id' => 'nullable|exists:App\Product,id',
             'description' => 'nullable|string',
-            'date_from' => 'required|string',
+            'date_from' => 'nullable|string',
             'date_to' => 'nullable|string',
             'status' => 'required|integer|in:0,1,2,3',
             'billable' => 'boolean',
