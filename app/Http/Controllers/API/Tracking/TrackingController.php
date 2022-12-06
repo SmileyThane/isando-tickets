@@ -43,8 +43,9 @@ class TrackingController extends BaseController
         return self::showResponse(true, $result);
     }
 
-    public function delete(Tracking $tracking)
+    public function delete(Tracking $trackingId)
     {
+        $tracking = Tracking::query()->find($trackingId);
         try {
             $result = $this->trackingRepo->delete($tracking);
             return self::showResponse($result);
@@ -53,8 +54,9 @@ class TrackingController extends BaseController
         }
     }
 
-    public function duplicate(Tracking $tracking)
+    public function duplicate(Tracking $trackingId)
     {
+        $tracking = Tracking::query()->find($trackingId);
         $result = $this->trackingRepo->duplicate($tracking);
         return self::showResponse((bool)$result, $result);
     }
