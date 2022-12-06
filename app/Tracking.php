@@ -134,7 +134,7 @@ class Tracking extends Model
     public function getDateToAttribute()
     {
         if ($this->attributes['date_to']) {
-            return Carbon::parse($this->attributes['date_to'])->format(self::$DATETIME_FORMAT);
+            return Carbon::parse($this->date_to)->format(self::$DATETIME_FORMAT);
         }
         return null;
     }
