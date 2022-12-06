@@ -29,9 +29,9 @@ class TrackingController extends BaseController
         return self::showResponse($success, $result);
     }
 
-    public function update(Request $request, $tracking)
+    public function update(Request $request, $trackingId)
     {
-        dd($tracking);
+        $tracking = Tracking::query()->find($trackingId);
         $result = null;
         try {
             $this->trackingRepo->validate($request, false);
