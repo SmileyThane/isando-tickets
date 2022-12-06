@@ -185,7 +185,7 @@ class IncidentReportingController extends Controller
         $board = IncidentReportingActionBoard::query()->where('id', '=', $id);
 
         return self::showResponse(true, $board->with([
-            'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+            'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
             'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
             'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
         ])->first());
@@ -369,7 +369,7 @@ class IncidentReportingController extends Controller
             $actionBoardsQuery->where('type_id', '!=', abs($typeId));
         }
         $actionBoards = $actionBoardsQuery->with([
-            'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+            'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
             'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
             'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
         ])
@@ -433,7 +433,7 @@ class IncidentReportingController extends Controller
 
         $result = IncidentReportingActionBoard::query()->where('id', '=', $board->id)
             ->with([
-                'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+                'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
                 'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
                 'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
             ])->first();

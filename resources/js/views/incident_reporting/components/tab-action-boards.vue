@@ -14,7 +14,7 @@
             </v-col>
 
             <v-col v-if="$store.getters['IncidentReporting/getIRType'] === 1" cols="4">
-                {{ langMap.main.customer }}
+                Team role
             </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getIRType'] === 2" cols="2">
                 {{ langMap.main.version }}
@@ -47,7 +47,7 @@
                                     </v-col>
                                     <v-col cols="4">
                                         {{
-                                            action.assignee && action.assignee.user_data ? action.assignee.user_data.email : 'not assinged'
+                                            action.assignee && action.assignee.name ? action.assignee.name : 'not assinged'
                                         }}
                                     </v-col>
                                     <v-col class="text-right" cols="1">
