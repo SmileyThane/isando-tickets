@@ -36,6 +36,7 @@ class TrackingController extends BaseController
             $this->trackingRepo->validate($request, false);
             $result = $this->trackingRepo->update($request, $tracking);
         } catch (\Throwable $exception) {
+            dd($exception);
             return self::showResponse(false, $exception);
         }
         return self::showResponse(true, $result);
