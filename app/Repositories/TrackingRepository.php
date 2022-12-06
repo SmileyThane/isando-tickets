@@ -348,7 +348,7 @@ class TrackingRepository
             ->first();
     }
 
-    public function delete(Tracking $tracking)
+    public function delete($tracking)
     {
         $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
         if (
@@ -376,7 +376,7 @@ class TrackingRepository
         return true;
     }
 
-    public function duplicate(Tracking $tracking)
+    public function duplicate($tracking)
     {
         if ($tracking->user_id === Auth::user()->id) {
             $newTracking = $tracking->replicate();
