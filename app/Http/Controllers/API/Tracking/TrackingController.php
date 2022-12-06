@@ -56,8 +56,12 @@ class TrackingController extends BaseController
 
     public function duplicate(Tracking $trackingId)
     {
+        $result = null;
         $tracking = Tracking::query()->find($trackingId);
-        $result = $this->trackingRepo->duplicate($tracking);
+        if ($tracking) {
+            dd($tracking);
+            $result = $this->trackingRepo->duplicate($tracking);
+        }
         return self::showResponse((bool)$result, $result);
     }
 
