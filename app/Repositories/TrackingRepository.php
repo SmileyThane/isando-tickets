@@ -236,6 +236,7 @@ class TrackingRepository
 
     public function update(Request $request, Tracking $tracking)
     {
+        $tracking->user_id = Auth::user()->id;
         $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
         if (
             !Auth::user()->employee->hasPermissionId([Permission::TRACKER_EDIT_DELETE_OWN_TIME_UNLIMITED_ACCESS])
