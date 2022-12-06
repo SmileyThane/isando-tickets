@@ -378,6 +378,7 @@ class TrackingRepository
 
     public function duplicate($tracking)
     {
+        dd($tracking);
         if ($tracking->user_id === Auth::user()->id) {
             $newTracking = $tracking->replicate();
             $newTracking->date_from = Carbon::parse($newTracking->date_from)->setSeconds(0)->format(Tracking::$DATETIME_FORMAT);
