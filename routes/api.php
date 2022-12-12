@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ActivityController;
 use App\Http\Controllers\API\ClientGroupController;
 use App\Http\Controllers\API\IncidentReportingController;
 use App\Http\Controllers\API\InternalBillingController;
