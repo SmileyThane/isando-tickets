@@ -745,6 +745,10 @@ class LanguageSeeder extends Seeder
                             'team_manager' => 'Team manager',
                             'example' => 'Example',
                             'user_permissions_warning' => 'You have limited access to system settings!',
+                            'activities' => 'Activities',
+                            'add_activity' => 'Add Activity',
+                            'update_activity' => 'Update Activity',
+                            'delete_activity' => 'Delete Activity'
                         ],
                     'system_settings' =>
                         [
