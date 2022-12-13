@@ -1959,7 +1959,7 @@ export default {
         this.getCountries();
         this.getProducts();
         this.getEmployees();
-
+        this.getActivityTypes();
         this.employeeForm.client_id = parseInt(this.$route.params.id);
         this.$store.dispatch('getMainCompany');
 
@@ -2034,6 +2034,18 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.countries = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getActivityTypes() {
+            axios.get('/api/activities/types').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.activityTypes = response.data
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
