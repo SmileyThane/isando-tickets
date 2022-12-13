@@ -683,6 +683,7 @@
                                                     item-value="id"
                                                 />
                                             </v-col>
+
                                             <v-btn
                                                 :color="themeBgColor"
                                                 bottom
@@ -1399,7 +1400,8 @@
                                 <v-list-item v-for="(item, i) in client.billing" :key="item.id">
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.name"></v-list-item-title>
-                                        <v-list-item-subtitle v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
+                                        <v-list-item-subtitle
+                                            v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon small @click="editInternalBilling(item)">
@@ -1761,7 +1763,6 @@
 
 <script>
 import EventBus from "../../components/EventBus";
-import _ from "lodash";
 
 export default {
 
