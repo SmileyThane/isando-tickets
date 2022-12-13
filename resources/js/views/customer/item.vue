@@ -1788,6 +1788,20 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
+            activityExpanded: [],
+            activityHeaders: [
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'id',
+                },
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'title'},
+                {text: `${this.$store.state.lang.lang_map.individuals.new_employee}`, value: 'employee.user_data.full_name'},
+                {text: `${this.$store.state.lang.lang_map.tracking.tracker.date}`, value: 'datetime'},
+                {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.name'},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+            ],
             snackbar: false,
             actionColor: '',
             snackbarMessage: '',
@@ -1901,6 +1915,14 @@ export default {
                 client_id: null,
                 product_id: null
             },
+            activityForm: {
+                model_id: null,
+                model_type: 'App\\Client',
+                date: null,
+                time: null,
+            },
+            menuActivityDate: false,
+            menuActivityTime: false,
             productsSearch: '',
             products: [],
             phoneTypes: [],
@@ -1921,7 +1943,8 @@ export default {
             internalBillingForm: {},
             currency: {
                 symbol: ''
-            }
+            },
+            activityTypes: []
         }
     },
     mounted() {
