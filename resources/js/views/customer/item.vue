@@ -42,7 +42,8 @@
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
                                     <hr class="lighten"/>
                                     <p v-for="(item, i) in client.emails" :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                class="mr-2"
                                                 dense small v-text="item.type.icon"/>
                                         {{ item.email }}
                                     </p>
@@ -51,7 +52,8 @@
                                 <div v-if="client.phones && client.phones.length > 0">
                                     <hr class="lighten"/>
                                     <p v-for="(item, i) in client.phones" :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                class="mr-2"
                                                 dense small v-text="item.type.icon"/>
                                         {{ item.phone }}
                                     </p>
@@ -60,21 +62,25 @@
                             <v-col cols="6">
                                 <div v-if="client.addresses && client.addresses.length > 0" class="mb-3">
                                     <p v-for="(item, i) in client.addresses" :key="item.id" class="mb-1">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2 mb-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                class="mr-2 mb-2"
                                                 dense small v-text="item.type.icon"/>
 
                                         <span v-if="item.street">{{ item.street }}</span>
                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                         <br/>{{ item.postal_code }} {{ item.city }}
-                                        <br/><span v-if="item.country">{{ $helpers.i18n.localized(item.country) }}</span>
+                                        <br/><span v-if="item.country">{{
+                                            $helpers.i18n.localized(item.country)
+                                        }}</span>
                                     </p>
                                 </div>
 
                                 <div v-if="client.socials && client.socials.length > 0">
                                     <hr class="lighten"/>
                                     <p v-for="(item, i) in client.socials" :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                class="mr-2"
                                                 dense small v-text="item.type.icon"/>
                                         {{ item.social_link }}
                                     </p>
