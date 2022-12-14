@@ -2640,6 +2640,10 @@ export default {
             this.selectedProductId = item.id;
             this.deleteProductDlg = true;
         },
+        showDeleteActivityDlg(item) {
+            this.selectedProductId = item.id;
+            this.deleteProductDlg = true;
+        },
         getProducts() {
             axios.get(`/api/product?
                     search=${this.productsSearch}&
