@@ -2759,6 +2759,14 @@ export default {
                 product_id: null
             }
         },
+        resetActivity() {
+            this.activityForm = {
+                model_id: this.client.id,
+                model_type: 'App\\Client',
+                date: null,
+                time: null,
+            }
+        },
         resetSocial() {
             this.socialForm = {
                 id: '',
