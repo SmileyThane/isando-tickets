@@ -156,7 +156,9 @@ class ClientRepository
                 'billing',
                 'addresses.country',
                 'socials.type',
-                'emails.type'
+                'emails.type',
+                'activities.type',
+                'activities.employee'
             )
             ->first();
     }
