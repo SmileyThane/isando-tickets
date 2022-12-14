@@ -2689,6 +2689,34 @@ export default {
                 }
             });
         },
+        addActivity() {
+            // console.log(this.activityForm);
+            axios.post(`/api/activities`, this.activityForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient();
+                    this.resetActivity();
+                } else {
+                    console.log('error')
+                }
+            });
+        },
+        deleteActivity(id) {
+            axios.delete(`/api/activities/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient()
+                    this.selectedProductId = null;
+                    this.snackbarMessage = ''
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
         resetEmail() {
             this.emailForm = {
                 entity_id: '',
