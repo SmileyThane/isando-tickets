@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
@@ -109,5 +110,10 @@ class CompanyUser extends Model
     public function getColorAttribute()
     {
         return $this->userData ? $this->userData->color : '';
+    }
+
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(Activity::class, 'model');
     }
 }
