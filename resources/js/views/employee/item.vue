@@ -1593,6 +1593,8 @@ themeBgColor: this.$store.state.themeBgColor,
         this.getEmailTypes()
         this.getRoles()
         this.getClients()
+        this.getEmployees();
+        this.getActivityTypes();
         // if (localStorage.getItem('auth_token')) {
         //     this.$router.push('tickets')
         // }
