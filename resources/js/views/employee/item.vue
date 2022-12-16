@@ -1556,6 +1556,31 @@ themeBgColor: this.$store.state.themeBgColor,
             primaryEmailId: null,
             avatar: '',
             newAvatar: null,
+            activityForm: {
+                model_id: null,
+                model_type: 'App\\Client',
+                date: null,
+                time: null,
+            },
+            activityTypes: [],
+            activityExpanded: [],
+            activityHeaders: [
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'id',
+                },
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'title'},
+                {text: `${this.$store.state.lang.lang_map.individuals.new_employee}`, value: 'employee.user_data.full_name'},
+                {text: `${this.$store.state.lang.lang_map.tracking.tracker.date}`, value: 'datetime'},
+                {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.name'},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+            ],
+            menuActivityDate: false,
+            menuActivityTime: false,
+            employees: []
+
         }
     },
     mounted() {
