@@ -1614,6 +1614,20 @@ themeBgColor: this.$store.state.themeBgColor,
         }
     },
     methods: {
+        getEmployees() {
+            axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
+                response => {
+                    this.loading = false
+                    response = response.data
+                    if (response.success === true) {
+                        this.employees = response.data.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.snackbar = true;
+                    }
+                });
+        },
         getCountries() {
             axios.get('/api/countries').then(response => {
                 response = response.data
@@ -2280,7 +2294,55 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.snackbar = true;
                 }
             });
-        }
+        },
+        addActivity() {
+            // console.log(this.activityForm);
+            axios.post(`/api/activities`, this.activityForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser();
+                    this.resetActivity();
+                } else {
+                    console.log('error')
+                }
+            });
+        },
+        deleteActivity(id) {
+            axios.delete(`/api/activities/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.selectedProductId = null;
+                    this.snackbarMessage = ''
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        resetActivity() {
+            this.activityForm = {
+                model_id: this.userData.employee.id,
+                model_type: 'App\\CompanyUser',
+                date: null,
+                time: null,
+            }
+        },
+        getActivityTypes() {
+            axios.get('/api/activities/types').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.activityTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
     }
 }
 </script>
