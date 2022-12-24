@@ -269,6 +269,8 @@
                             </v-list>
                         </v-col>
                     </v-row>
+                    <v-switch v-model="article.is_draft" :color="themeBgColor"
+                              :label="langMap.kb.is_draft"/>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn text @click="openCategory" v-text="langMap.main.cancel"/>
@@ -318,7 +320,8 @@ export default {
                 keywords: '',
                 keywords_de: '',
                 is_internal: 0,
-                next: []
+                next: [],
+                is_draft: 0
             },
             categories: [],
             featured: '',
