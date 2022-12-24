@@ -8,6 +8,7 @@ use App\KbArticle;
 use App\KbArticleClient;
 use App\KbCategory;
 use App\Language;
+use App\Permission;
 use App\Tag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -103,12 +104,21 @@ class KbRepository
             });
         }
 
+        if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+            $articles->where('is_draft', '=', false);
+        }
+
         return $articles->get();
     }
 
     public function getAllArticles($typeId)
     {
-        return KbArticle::select('id', 'name', 'name_de')->where('type_id', $typeId)->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
+        $articles = KbArticle::select('id', 'name', 'name_de')->where('type_id', $typeId);
+        if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+            $articles->where('is_draft', '=', false);
+        }
+
+        return $articles->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
     }
 
     public function getArticle($id)
