@@ -8,6 +8,7 @@ use App\KbArticle;
 use App\KbArticleClient;
 use App\KbCategory;
 use App\Language;
+use App\Permission;
 use App\Tag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -103,12 +104,21 @@ class KbRepository
             });
         }
 
+        if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+            $articles->where('is_draft', '=', false);
+        }
+
         return $articles->get();
     }
 
     public function getAllArticles($typeId)
     {
-        return KbArticle::select('id', 'name', 'name_de')->where('type_id', $typeId)->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
+        $articles = KbArticle::select('id', 'name', 'name_de')->where('type_id', $typeId);
+        if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+            $articles->where('is_draft', '=', false);
+        }
+
+        return $articles->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
     }
 
     public function getArticle($id)
@@ -116,10 +126,10 @@ class KbRepository
         return KbArticle::with('categories', 'tags', 'attachments', 'next', 'clients')->find($id);
     }
 
-    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $type_id = null, $client_ids = [])
+    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $type_id = null, $client_ids = [], $is_draft = 0)
     {
         $owner_id = Auth::user()->employee->id;
-        $article = KbArticle::create(compact('company_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'type_id', 'owner_id'));
+        $article = KbArticle::create(compact('company_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'type_id', 'owner_id', 'is_draft'));
 
         foreach ($categories as $category) {
             $article->categories()->attach($category);
@@ -162,10 +172,10 @@ class KbRepository
         return $article;
     }
 
-    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $approved_at = null, $client_ids = [])
+    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $approved_at = null, $client_ids = [], $is_draft = 0)
     {
         $owner_id = Auth::user()->employee->id;
-        $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'approved_at', 'owner_id'));
+        $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'approved_at', 'owner_id', 'is_draft'));
 
         foreach ($article->categories as $category) {
             $article->categories()->detach($category->id);
