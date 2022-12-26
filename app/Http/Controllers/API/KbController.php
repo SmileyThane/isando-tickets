@@ -107,7 +107,8 @@ class KbController extends Controller
             $request->next ? json_decode($request->next) : [],
             $request->step_type,
             $this->getTypeByAlias($request->type),
-            $request->client_ids
+            $request->client_ids,
+            (int)$request->is_draft
         );
 
         if ($request->has('files')) {
@@ -138,7 +139,9 @@ class KbController extends Controller
             $request->featured_color,
             $request->next ? json_decode($request->next) : [],
             $request->step_type,
-            $request->client_ids
+            $request->client_ids,
+            [],
+            (int)$request->is_draft
         );
 
 
