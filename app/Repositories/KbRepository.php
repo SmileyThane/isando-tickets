@@ -172,10 +172,10 @@ class KbRepository
         return $article;
     }
 
-    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $approved_at = null, $client_ids = [])
+    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $approved_at = null, $client_ids = [], $is_draft = 0)
     {
         $owner_id = Auth::user()->employee->id;
-        $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'approved_at', 'owner_id'));
+        $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'approved_at', 'owner_id', 'is_draft'));
 
         foreach ($article->categories as $category) {
             $article->categories()->detach($category->id);
