@@ -126,10 +126,10 @@ class KbRepository
         return KbArticle::with('categories', 'tags', 'attachments', 'next', 'clients')->find($id);
     }
 
-    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $type_id = null, $client_ids = [])
+    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $type_id = null, $client_ids = [], $is_draft = 0)
     {
         $owner_id = Auth::user()->employee->id;
-        $article = KbArticle::create(compact('company_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'type_id', 'owner_id'));
+        $article = KbArticle::create(compact('company_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'type_id', 'owner_id', 'is_draft'));
 
         foreach ($categories as $category) {
             $article->categories()->attach($category);
