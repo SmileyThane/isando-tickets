@@ -214,6 +214,9 @@
                             </v-expansion-panels>
                         </v-col>
                     </v-row>
+                    <v-switch v-model="article.is_draft" :color="themeBgColor"
+                              :label="langMap.kb.is_draft" :value="1"/>
+
                 </v-card-text>
                 <v-card-actions>
                     <v-btn text @click="openCategory" v-text="langMap.main.cancel"/>
@@ -269,8 +272,6 @@
                             </v-list>
                         </v-col>
                     </v-row>
-                    <v-switch v-model="article.is_draft" :color="themeBgColor"
-                              :label="langMap.kb.is_draft"/>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn text @click="openCategory" v-text="langMap.main.cancel"/>
