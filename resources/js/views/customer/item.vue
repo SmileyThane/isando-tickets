@@ -631,6 +631,16 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
+                        <v-card-title>
+                            <v-text-field
+                                v-model="activitySearch"
+                                append-icon="mdi-magnify"
+                                :color="themeBgColor"
+                                :label="langMap.main.search"
+                                single-line
+                                hide-details
+                            ></v-text-field>
+                        </v-card-title>
                         <v-data-table
                             :footer-props="footerProps"
                             :headers="activityHeaders"
@@ -642,6 +652,7 @@
                             single-expand
                             show-expand
                             item-key="id"
+                            :search="activitySearch"
                             @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }">
