@@ -893,21 +893,21 @@
                                             </v-col>
                                             <v-col cols="md-6">
                                                 <v-autocomplete
-                                                    v-model="activityForm.company_user_id"
+                                                    v-model="activityForm.client_id"
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
-                                                    :items="employees"
-                                                    :label="langMap.main.activity_contact"
+                                                    :items="companies"
+                                                    :label="langMap.main.activity_company"
                                                     prepend-icon="mdi-account-outline"
                                                     dense
-                                                    item-value="id"
+                                                    item-value="clients.id"
                                                 >
                                                     <template v-slot:selection="data">
-                                                        {{ data.item.user_data.full_name }}
+                                                        {{ data.item.clients.name }}
                                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                                     </template>
                                                     <template v-slot:item="data">
-                                                        {{ data.item.user_data.full_name }}
+                                                        {{ data.item.clients.name }}
                                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                                     </template>
                                                 </v-autocomplete>
@@ -1598,7 +1598,7 @@ themeBgColor: this.$store.state.themeBgColor,
                     value: 'id',
                 },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'title'},
-                {text: `${this.$store.state.lang.lang_map.individuals.new_employee}`, value: 'employee.user_data.full_name'},
+                {text: `${this.$store.state.lang.lang_map.main.activity_company}`, value: 'client.name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.tracker.date}`, value: 'datetime'},
                 {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.name'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
