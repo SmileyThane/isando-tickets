@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 class Activity extends Model
 {
 
-    protected $fillable = ['title', 'content', 'model_id', 'model_type', 'type_id', 'company_user_id', 'datetime'];
+    protected $fillable = ['title', 'content', 'model_id', 'model_type', 'type_id', 'client_id', 'company_user_id', 'datetime'];
 
     public function type(): HasOne
     {
@@ -19,5 +19,10 @@ class Activity extends Model
     public function employee(): HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'company_user_id');
+    }
+
+    public function client(): HasOne
+    {
+        return $this->hasOne(Client::class, 'id', 'client_id');
     }
 }
