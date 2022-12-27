@@ -836,7 +836,7 @@
                         <v-spacer>&nbsp;</v-spacer>
 
                         <v-expansion-panels>
-                            <v-expansion-panel @click="resetActivity">
+                            <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.main.add_activity }}
                                     <template v-slot:actions>
@@ -984,10 +984,25 @@
                                                 dark
                                                 fab
                                                 right
+                                                small
                                                 @click="addActivity"
                                             >
                                                 <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
                                                     mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                            &nbsp;
+                                            <v-btn
+                                                color="#f1f1f1"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                small
+                                                @click="resetActivity"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: red;`">
+                                                    mdi-cancel
                                                 </v-icon>
                                             </v-btn>
                                         </div>
