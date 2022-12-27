@@ -725,14 +725,14 @@
                                                     :label="langMap.team.members"
                                                     prepend-icon="mdi-account-outline"
                                                     dense
-                                                    item-value="id"
+                                                    item-value="employee.id"
                                                 >
                                                     <template v-slot:selection="data">
-                                                        {{ data.item.user_data.full_name }}
+                                                        {{ data.item.employee.user_data.full_name }}
                                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                                     </template>
                                                     <template v-slot:item="data">
-                                                        {{ data.item.user_data.full_name }}
+                                                        {{ data.item.employee.user_data.full_name }}
                                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                                     </template>
                                                 </v-autocomplete>
@@ -1996,6 +1996,7 @@ export default {
                     this.client.supplier_object = {}
                     this.client.supplier_object[this.client.supplier_type] = this.client.supplier_id
                     this.$store.state.pageName = this.client.client_name
+                    this.activityForm.model_id = this.client.id
                     console.log(this.client);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
