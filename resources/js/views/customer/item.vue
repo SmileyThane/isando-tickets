@@ -722,7 +722,7 @@
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
                                                     :items="client.employees"
-                                                    :label="langMap.team.members"
+                                                    :label="langMap.main.activity_contact"
                                                     prepend-icon="mdi-account-outline"
                                                     dense
                                                     item-value="employee.id"

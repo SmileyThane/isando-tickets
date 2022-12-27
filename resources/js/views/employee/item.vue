@@ -886,7 +886,7 @@
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
                                                     :items="employees"
-                                                    :label="langMap.team.members"
+                                                    :label="langMap.main.activity_contact"
                                                     prepend-icon="mdi-account-outline"
                                                     dense
                                                     item-value="id"
