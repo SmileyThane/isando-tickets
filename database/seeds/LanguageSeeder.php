@@ -748,7 +748,8 @@ class LanguageSeeder extends Seeder
                             'activities' => 'Activities',
                             'add_activity' => 'Add Activity',
                             'update_activity' => 'Update Activity',
-                            'delete_activity' => 'Delete Activity'
+                            'delete_activity' => 'Delete Activity',
+                            'activity_contact' => 'Linked contact'
                         ],
                     'system_settings' =>
                         [
@@ -1704,7 +1705,8 @@ class LanguageSeeder extends Seeder
                             'activities' => 'Activities',
                             'add_activity' => 'Add Activity',
                             'update_activity' => 'Update Activity',
-                            'delete_activity' => 'Delete Activity'
+                            'delete_activity' => 'Delete Activity',
+                            'activity_contact' => 'Linked contact'
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
