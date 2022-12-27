@@ -658,6 +658,14 @@
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="selectActivity(item)">
+                                            <v-icon small>mdi-pencil</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.main.update_activity }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
                                         <v-btn v-bind="attrs" v-on="on" icon @click="deleteActivity(item.id)">
                                             <v-icon small>mdi-trash-can</v-icon>
                                         </v-btn>
@@ -682,7 +690,7 @@
 
                         <v-spacer>&nbsp;</v-spacer>
 
-                        <v-expansion-panels>
+                        <v-expansion-panels v-model="activityFormPanel">
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.main.add_activity }}
@@ -1946,6 +1954,8 @@ export default {
                 date: null,
                 time: null,
             },
+            activityFormPanel:[],
+            activitySearch: '',
             menuActivityDate: false,
             menuActivityTime: false,
             productsSearch: '',
@@ -2720,16 +2730,38 @@ export default {
             });
         },
         addActivity() {
-            // console.log(this.activityForm);
-            axios.post(`/api/activities`, this.activityForm).then(response => {
+            if (this.activityForm.id) {
+                console.log(this.activityForm.id)
+                this.updateActivity()
+            } else {
+                // console.log(this.activityForm);
+                axios.post(`/api/activities`, this.activityForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient();
+                        this.resetActivity();
+                    } else {
+                        console.log('error')
+                    }
+                });
+            }
+        },
+        updateActivity() {
+            console.log(this.activityForm);
+            axios.put(`/api/activities/${this.activityForm.id}`, this.activityForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getClient();
                     this.resetActivity();
+                    this.activityFormPanel = []
                 } else {
                     console.log('error')
                 }
             });
+        },
+        selectActivity(item) {
+            this.activityForm = item
+            this.activityFormPanel = 0
         },
         deleteActivity(id) {
             axios.delete(`/api/activities/${id}`).then(response => {
