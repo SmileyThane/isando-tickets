@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\belongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 
 class KbArticle extends Model
@@ -89,5 +90,12 @@ class KbArticle extends Model
         return $this->belongsToMany(Client::class, 'kb_article_clients', 'client_id', 'kb_article_id');
     }
 
+    public function getNameAttribute($value): ?string
+    {
+        if(Auth::user()->language_id === 2) {
+            return $this->name_de;
+        }
 
+        return $value;
+    }
 }

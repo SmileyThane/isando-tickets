@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Kalnoy\Nestedset\NodeTrait;
 
 
@@ -37,21 +38,21 @@ class KbCategory extends Model
         return $this->hasMany(KbCategory::class, 'parent_id', 'id')->count();
     }
 
-    public function getFullNameAttribute(): string
+    public function getFullNameAttribute()
     {
         if ($this->parent_id) {
-            return $this->parent->full_name . ' > ' . $this->name;
+            return $this->parent->full_name . ' > ' . $this->getTranslatedName();
         } else {
-            return $this->name;
+            return $this->getTranslatedName();
         }
     }
 
-    public function getFullNameDeAttribute(): string
+    private function getTranslatedName()
     {
-        if ($this->parent_id) {
-            return $this->parent->full_name_de . ' > ' . $this->name_de;
-        } else {
+        if(Auth::user()->language_id === 2) {
             return $this->name_de;
         }
+
+        return $this->name ?? '';
     }
 }

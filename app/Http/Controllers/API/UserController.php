@@ -34,7 +34,7 @@ class UserController extends Controller
             'employee.companyData',
             'employee.assignedToClients.clients',
             'employee.activities.type',
-            'employee.activities.employee']
+            'employee.activities.client']
             : [];
         $id = $id ?? Auth::id();
         $user = $this->userRepo->find($id, $with);

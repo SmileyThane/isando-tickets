@@ -965,7 +965,7 @@
                         </v-row>
                     </v-card-text>
                 </v-card>
-                <v-card>
+                <v-card v-if="userData.ixarma_link">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -986,7 +986,7 @@
                         <v-row>
                             <v-col cols="6">
                                 <p class="mb-0">
-                                    <v-icon v-if="userData.ixarma_link.login && userData.ixarma_link.password" color="success" dense left small>
+                                    <v-icon v-if="userData.ixarma_link && userData.ixarma_link.login && userData.ixarma_link.password" color="success" dense left small>
                                         mdi-check-circle
                                     </v-icon>
                                     <v-icon v-else dense left small>mdi-cancel</v-icon>
@@ -996,7 +996,7 @@
                             <v-col cols="6">
                                 <p class="mb-0">
                                     {{ langMap.profile.ixarma_login }}
-                                    {{ userData.ixarma_link.login }}
+                                    {{ userData.ixarma_link ? userData.ixarma_link.login : '' }}
                                 </p>
                             </v-col>
                         </v-row>

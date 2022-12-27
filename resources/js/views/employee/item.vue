@@ -795,6 +795,16 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
+                        <v-card-title>
+                            <v-text-field
+                                v-model="activitySearch"
+                                append-icon="mdi-magnify"
+                                :color="themeBgColor"
+                                :label="langMap.main.search"
+                                single-line
+                                hide-details
+                            ></v-text-field>
+                        </v-card-title>
                         <v-data-table
                             :footer-props="footerProps"
                             :headers="activityHeaders"
@@ -806,9 +816,18 @@
                             single-expand
                             show-expand
                             item-key="id"
+                            :search="activitySearch"
                             @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="selectActivity(item)">
+                                            <v-icon small>mdi-pencil</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.main.update_activity }}</span>
+                                </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn v-bind="attrs" v-on="on" icon @click="deleteActivity(item.id)">
@@ -835,8 +854,8 @@
 
                         <v-spacer>&nbsp;</v-spacer>
 
-                        <v-expansion-panels>
-                            <v-expansion-panel @click="resetActivity">
+                        <v-expansion-panels v-model="activityFormPanel">
+                            <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.main.add_activity }}
                                     <template v-slot:actions>
@@ -882,21 +901,21 @@
                                             </v-col>
                                             <v-col cols="md-6">
                                                 <v-autocomplete
-                                                    v-model="activityForm.company_user_id"
+                                                    v-model="activityForm.client_id"
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
-                                                    :items="employees"
-                                                    :label="langMap.team.members"
+                                                    :items="companies"
+                                                    :label="langMap.main.activity_company"
                                                     prepend-icon="mdi-account-outline"
                                                     dense
-                                                    item-value="id"
+                                                    item-value="clients.id"
                                                 >
                                                     <template v-slot:selection="data">
-                                                        {{ data.item.user_data.full_name }}
+                                                        {{ data.item.clients.name }}
                                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                                     </template>
                                                     <template v-slot:item="data">
-                                                        {{ data.item.user_data.full_name }}
+                                                        {{ data.item.clients.name }}
                                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                                     </template>
                                                 </v-autocomplete>
@@ -984,10 +1003,25 @@
                                                 dark
                                                 fab
                                                 right
+                                                small
                                                 @click="addActivity"
                                             >
                                                 <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
                                                     mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                            &nbsp;
+                                            <v-btn
+                                                color="#f1f1f1"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                small
+                                                @click="resetActivity"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: red;`">
+                                                    mdi-cancel
                                                 </v-icon>
                                             </v-btn>
                                         </div>
@@ -1443,7 +1477,7 @@ export default {
     data() {
         return {
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             headers: [
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'clients.name'},
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
@@ -1489,7 +1523,7 @@ themeBgColor: this.$store.state.themeBgColor,
             singleUserForm: {
                 user: '',
                 role_ids: [],
-                company_user_id: ''
+                client_id: ''
             },
             roles: [],
             rolesDialog: false,
@@ -1558,7 +1592,7 @@ themeBgColor: this.$store.state.themeBgColor,
             newAvatar: null,
             activityForm: {
                 model_id: null,
-                model_type: 'App\\Client',
+                model_type: 'App\\CompanyUser',
                 date: null,
                 time: null,
             },
@@ -1572,11 +1606,13 @@ themeBgColor: this.$store.state.themeBgColor,
                     value: 'id',
                 },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'title'},
-                {text: `${this.$store.state.lang.lang_map.individuals.new_employee}`, value: 'employee.user_data.full_name'},
+                {text: `${this.$store.state.lang.lang_map.main.activity_company}`, value: 'client.name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.tracker.date}`, value: 'datetime'},
                 {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.name'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
+            activitySearch: '',
+            activityFormPanel:[],
             menuActivityDate: false,
             menuActivityTime: false,
             employees: []
@@ -1665,6 +1701,7 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
                     // console.log(this.companies);
                     this.employeeForm.company_user_id = this.userData.employee.id
+                    this.activityForm.model_id = this.userData.employee.id
 
                     if (this.userData.notification_statuses.length) {
                         let that = this;
@@ -2296,8 +2333,11 @@ themeBgColor: this.$store.state.themeBgColor,
             });
         },
         addActivity() {
+            if (this.activityForm.id) {
+                this.updateActivity()
+            } else {
             // console.log(this.activityForm);
-            axios.post(`/api/activities`, this.activityForm).then(response => {
+                axios.post(`/api/activities`, this.activityForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getUser();
@@ -2306,6 +2346,24 @@ themeBgColor: this.$store.state.themeBgColor,
                     console.log('error')
                 }
             });
+            }
+        },
+        updateActivity() {
+            console.log(this.activityForm);
+            axios.put(`/api/activities/${this.activityForm.id}`, this.activityForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser();
+                    this.resetActivity();
+                    this.activityFormPanel = []
+                } else {
+                    console.log('error')
+                }
+            });
+        },
+        selectActivity(item) {
+            this.activityForm = item
+            this.activityFormPanel = 0
         },
         deleteActivity(id) {
             axios.delete(`/api/activities/${id}`).then(response => {

@@ -631,6 +631,16 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
+                        <v-card-title>
+                            <v-text-field
+                                v-model="activitySearch"
+                                append-icon="mdi-magnify"
+                                :color="themeBgColor"
+                                :label="langMap.main.search"
+                                single-line
+                                hide-details
+                            ></v-text-field>
+                        </v-card-title>
                         <v-data-table
                             :footer-props="footerProps"
                             :headers="activityHeaders"
@@ -642,9 +652,18 @@
                             single-expand
                             show-expand
                             item-key="id"
+                            :search="activitySearch"
                             @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="selectActivity(item)">
+                                            <v-icon small>mdi-pencil</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.main.update_activity }}</span>
+                                </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn v-bind="attrs" v-on="on" icon @click="deleteActivity(item.id)">
@@ -671,8 +690,8 @@
 
                         <v-spacer>&nbsp;</v-spacer>
 
-                        <v-expansion-panels>
-                            <v-expansion-panel @click="resetActivity">
+                        <v-expansion-panels v-model="activityFormPanel">
+                            <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.main.add_activity }}
                                     <template v-slot:actions>
@@ -721,18 +740,18 @@
                                                     v-model="activityForm.company_user_id"
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
-                                                    :items="employees"
-                                                    :label="langMap.team.members"
+                                                    :items="client.employees"
+                                                    :label="langMap.main.activity_contact"
                                                     prepend-icon="mdi-account-outline"
                                                     dense
-                                                    item-value="id"
+                                                    item-value="employee.id"
                                                 >
                                                     <template v-slot:selection="data">
-                                                        {{ data.item.user_data.full_name }}
+                                                        {{ data.item.employee.user_data.full_name }}
                                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                                     </template>
                                                     <template v-slot:item="data">
-                                                        {{ data.item.user_data.full_name }}
+                                                        {{ data.item.employee.user_data.full_name }}
                                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                                     </template>
                                                 </v-autocomplete>
@@ -820,10 +839,25 @@
                                                 dark
                                                 fab
                                                 right
+                                                small
                                                 @click="addActivity"
                                             >
                                                 <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
                                                     mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                            &nbsp;
+                                            <v-btn
+                                                color="#f1f1f1"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                small
+                                                @click="resetActivity"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: red;`">
+                                                    mdi-cancel
                                                 </v-icon>
                                             </v-btn>
                                         </div>
@@ -1920,6 +1954,8 @@ export default {
                 date: null,
                 time: null,
             },
+            activityFormPanel:[],
+            activitySearch: '',
             menuActivityDate: false,
             menuActivityTime: false,
             productsSearch: '',
@@ -1957,10 +1993,10 @@ export default {
         this.getEmailTypes();
         this.getCountries();
         this.getProducts();
-        this.getEmployees();
         this.getActivityTypes();
         this.employeeForm.client_id = parseInt(this.$route.params.id);
         this.$store.dispatch('getMainCompany');
+        // this.getEmployees();
 
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
@@ -1981,6 +2017,7 @@ export default {
                     this.client.supplier_object = {}
                     this.client.supplier_object[this.client.supplier_type] = this.client.supplier_id
                     this.$store.state.pageName = this.client.client_name
+                    this.activityForm.model_id = this.client.id
                     console.log(this.client);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
@@ -2057,20 +2094,20 @@ export default {
             this.contactInfoModal = true
 
         },
-        getEmployees() {
-            axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
-                response => {
-                    this.loading = false
-                    response = response.data
-                    if (response.success === true) {
-                        this.employees = response.data.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.errorType = 'error';
-                        this.snackbar = true;
-                    }
-                });
-        },
+        // getEmployees() {
+        //     axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
+        //         response => {
+        //             this.loading = false
+        //             response = response.data
+        //             if (response.success === true) {
+        //                 this.employees = response.data.data
+        //             } else {
+        //                 this.snackbarMessage = this.langMap.main.generic_error;
+        //                 this.errorType = 'error';
+        //                 this.snackbar = true;
+        //             }
+        //         });
+        // },
         addEmployee(update = false) {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
@@ -2693,16 +2730,38 @@ export default {
             });
         },
         addActivity() {
-            // console.log(this.activityForm);
-            axios.post(`/api/activities`, this.activityForm).then(response => {
+            if (this.activityForm.id) {
+                console.log(this.activityForm.id)
+                this.updateActivity()
+            } else {
+                // console.log(this.activityForm);
+                axios.post(`/api/activities`, this.activityForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient();
+                        this.resetActivity();
+                    } else {
+                        console.log('error')
+                    }
+                });
+            }
+        },
+        updateActivity() {
+            console.log(this.activityForm);
+            axios.put(`/api/activities/${this.activityForm.id}`, this.activityForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getClient();
                     this.resetActivity();
+                    this.activityFormPanel = []
                 } else {
                     console.log('error')
                 }
             });
+        },
+        selectActivity(item) {
+            this.activityForm = item
+            this.activityFormPanel = 0
         },
         deleteActivity(id) {
             axios.delete(`/api/activities/${id}`).then(response => {
