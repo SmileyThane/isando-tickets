@@ -498,7 +498,7 @@ export default {
 
                         if (redirect === true) {
                             let category = ''
-                            if (response.data.categories.length > 0) {
+                            if (response.data.categories && response.data.categories.length > 0) {
                                 category = `?category=${response.data.categories[0].id}`
                             }
                             window.location.href = `/${this.$route.params.alias}${category}`;
@@ -522,7 +522,7 @@ export default {
 
                         if (redirect === true) {
                             let category = ''
-                            if (response.data.categories.length > 0) {
+                            if (response.data.categories && response.data.categories.length > 0) {
                                 category = `?category=${response.data.categories[0].id}`
                             }
                             window.location.href = `/${this.$route.params.alias}${category}`;
