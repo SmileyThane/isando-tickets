@@ -721,7 +721,7 @@
                                                     v-model="activityForm.company_user_id"
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
-                                                    :items="employees"
+                                                    :items="client.employees"
                                                     :label="langMap.team.members"
                                                     prepend-icon="mdi-account-outline"
                                                     dense
@@ -1972,10 +1972,10 @@ export default {
         this.getEmailTypes();
         this.getCountries();
         this.getProducts();
-        this.getEmployees();
         this.getActivityTypes();
         this.employeeForm.client_id = parseInt(this.$route.params.id);
         this.$store.dispatch('getMainCompany');
+        // this.getEmployees();
 
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
@@ -2072,20 +2072,20 @@ export default {
             this.contactInfoModal = true
 
         },
-        getEmployees() {
-            axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
-                response => {
-                    this.loading = false
-                    response = response.data
-                    if (response.success === true) {
-                        this.employees = response.data.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.errorType = 'error';
-                        this.snackbar = true;
-                    }
-                });
-        },
+        // getEmployees() {
+        //     axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
+        //         response => {
+        //             this.loading = false
+        //             response = response.data
+        //             if (response.success === true) {
+        //                 this.employees = response.data.data
+        //             } else {
+        //                 this.snackbarMessage = this.langMap.main.generic_error;
+        //                 this.errorType = 'error';
+        //                 this.snackbar = true;
+        //             }
+        //         });
+        // },
         addEmployee(update = false) {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
