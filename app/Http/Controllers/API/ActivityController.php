@@ -14,7 +14,6 @@ class ActivityController extends Controller
     public function store(Request $request)
     {
         $request['datetime'] = Carbon::parse($request->date . ' ' . $request->time);
-//        dd($request->all());
         $activity = Activity::query()->create($request->all());
 
         return self::showResponse(true, $activity);
@@ -22,6 +21,8 @@ class ActivityController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request['datetime'] = Carbon::parse($request->date . ' ' . $request->time);
+
         $activity = Activity::query()->find($id)->update($request->all());
 
         return self::showResponse(true, $activity);
