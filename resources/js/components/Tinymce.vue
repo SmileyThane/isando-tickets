@@ -14,6 +14,7 @@
            alignleft aligncenter alignright alignjustify searchreplace| \
            bullist numlist outdent indent emoticons| removeformat',
            image_title: true,
+           relative_urls : false,
            file_picker_types: 'image',
            file_picker_callback: pickerCallback
        }"
@@ -36,7 +37,6 @@ export default {
     },
     methods: {
         handleInput(e) {
-            // console.log(e);
             this.$emit('input', e)
         },
         pickerCallback(cb, value, meta) {
