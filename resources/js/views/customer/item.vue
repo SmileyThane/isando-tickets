@@ -2017,7 +2017,6 @@ export default {
                     this.client.supplier_object[this.client.supplier_type] = this.client.supplier_id
                     this.$store.state.pageName = this.client.client_name
                     this.activityForm.model_id = this.client.id
-                    console.log(this.client);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -2481,7 +2480,6 @@ export default {
             });
         },
         removeEmployeeProcess(item) {
-            console.log(item);
             this.selectedEmployeeId = item.id
             this.removeEmployeeDialog = true
         },
@@ -2505,7 +2503,6 @@ export default {
             });
         },
         unlinkEmployeeProcess(item) {
-            console.log(item);
             this.selectedEmployeeId = item.id
             this.unlinkEmployeeDialog = true
         },
@@ -2698,7 +2695,6 @@ export default {
             });
         },
         addProductClient() {
-            console.log(this.client.id);
             this.supplierForm.client_id = this.client.id
             axios.post(`/api/product/client`, this.supplierForm).then(response => {
                 response = response.data
@@ -2730,10 +2726,8 @@ export default {
         },
         addActivity() {
             if (this.activityForm.id) {
-                console.log(this.activityForm.id)
                 this.updateActivity()
             } else {
-                // console.log(this.activityForm);
                 axios.post(`/api/activities`, this.activityForm).then(response => {
                     response = response.data
                     if (response.success === true) {
@@ -2746,7 +2740,6 @@ export default {
             }
         },
         updateActivity() {
-            console.log(this.activityForm);
             axios.put(`/api/activities/${this.activityForm.id}`, this.activityForm).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -2845,7 +2838,6 @@ export default {
     watch: {
         clientUpdates(value) {
             this.clientIsLoaded = true;
-            // console.log(this.singleUserForm.user);
             if (this.singleUserForm.user) {
                 this.singleUserForm.user = this.client.employees.find(x => x.employee.user_id === this.singleUserForm.user.id).employee.user_data;
             }
