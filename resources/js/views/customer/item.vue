@@ -177,6 +177,25 @@
                                                         type="text"
                                                     />
                                                 </v-col>
+                                                <v-col cols="12">
+                                                    <v-select
+                                                        dense
+                                                        label="Owner"
+                                                        :color="themeBgColor"
+                                                        :item-color="themeBgColor"
+                                                        item-text="employee.user_data.full_name"
+                                                        item-value="employee.id"
+                                                        v-model="client.owner_id"
+                                                        :items="client.employees"
+                                                    >
+                                                        <template v-slot:item="props">
+                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                        </template>
+                                                        <template v-slot:selection="props">
+                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                        </template>
+                                                    </v-select>
+                                                </v-col>
                                             </v-row>
                                         </v-col>
                                     </v-row>
