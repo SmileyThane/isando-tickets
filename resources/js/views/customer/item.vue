@@ -58,6 +58,12 @@
                                         {{ item.phone }}
                                     </p>
                                 </div>
+                                <div v-if="client.owner">
+                                    <hr class="lighten"/>
+                                    <p class="mb-0">
+                                        {{ client.owner.user_data.full_name }}
+                                    </p>
+                                </div>
                             </v-col>
                             <v-col cols="6">
                                 <div v-if="client.addresses && client.addresses.length > 0" class="mb-3">
