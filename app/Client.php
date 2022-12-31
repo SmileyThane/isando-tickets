@@ -116,4 +116,9 @@ class Client extends Model
     {
         return $this->morphMany(InternalBilling::class, 'entity');
     }
+
+    public function owner(): HasOne
+    {
+        return $this->hasOne(CompanyUser::class, 'id', 'owner_id');
+    }
 }
