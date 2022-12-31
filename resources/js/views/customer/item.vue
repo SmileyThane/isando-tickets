@@ -61,7 +61,7 @@
                                 <div v-if="client.owner">
                                     <hr class="lighten"/>
                                     <p class="mb-0">
-                                        {{ client.owner.user_data.full_name }}
+                                        {{langMap.main.owner}}: {{ client.owner.user_data.full_name }}
                                     </p>
                                 </div>
                             </v-col>
@@ -186,7 +186,7 @@
                                                 <v-col cols="12">
                                                     <v-select
                                                         dense
-                                                        label="Owner"
+                                                        :label="langMap.main.owner"
                                                         :color="themeBgColor"
                                                         :item-color="themeBgColor"
                                                         item-text="employee.user_data.full_name"
