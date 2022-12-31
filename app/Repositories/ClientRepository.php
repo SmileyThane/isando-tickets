@@ -19,11 +19,11 @@ use Throwable;
 
 class ClientRepository
 {
-    public function validate($request, $new = true)
+    public function validate($request, $new = true, $id = null)
     {
         $params = [
             'client_name' => 'required',
-            'number' => 'nullable|unique:clients',
+            'number' => 'nullable|unique:clients,number,' . $id,
             // 'client_description' => 'required',
         ];
         if ($new === true) {
