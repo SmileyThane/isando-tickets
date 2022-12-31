@@ -231,13 +231,13 @@
                 </v-card-title>
                 <v-card-text>
                     <v-row>
-                        <v-col cols="6">
-                            <v-radio-group v-model="stepType" dense>
-                                <v-radio v-for="type in stepTypes" v-bind:key="type.id" :color="themeBgColor"
-                                         :label="type.name" :value="type.id"/>
-                            </v-radio-group>
-                        </v-col>
-                        <v-col cols="6">
+                        <!--                        <v-col cols="6">-->
+                        <!--                            <v-radio-group v-model="stepType" dense>-->
+                        <!--                                <v-radio v-for="type in stepTypes" v-bind:key="type.id" :color="themeBgColor"-->
+                        <!--                                         :label="type.name" :value="type.id"/>-->
+                        <!--                            </v-radio-group>-->
+                        <!--                        </v-col>-->
+                        <v-col cols="8">
                             <v-list dense outlined>
                                 <v-list-item v-for="(step, index) in article.next" v-bind:key="step.id" dense>
                                     <v-list-item-content>

@@ -272,6 +272,7 @@
                     {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
                     {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
+                    {text: `${this.$store.state.lang.lang_map.main.owner}`, value: 'owner.user_data.full_name'},
                 ],
                 customersSearch: '',
                 customers: [],

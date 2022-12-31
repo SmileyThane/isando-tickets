@@ -74,10 +74,13 @@
                 />
                 <v-btn :color="themeBgColor"
                        v-if="article.next.length > 0"
+                       v-for="item in article.next"
+                       key="id"
                        text
-                       @click="next(article.next[0].id)"
-                       v-text="langMap.kb.next_step"
-                />
+                       @click="next(item.id)"
+                >
+                    {{langMap.kb.next_step}}({{item.name}})
+                </v-btn>
 
             </v-card-actions>
         </v-card>

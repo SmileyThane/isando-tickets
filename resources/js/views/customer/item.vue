@@ -58,6 +58,12 @@
                                         {{ item.phone }}
                                     </p>
                                 </div>
+                                <div v-if="client.owner">
+                                    <hr class="lighten"/>
+                                    <p class="mb-0">
+                                        {{langMap.main.owner}}: {{ client.owner.user_data.full_name }}
+                                    </p>
+                                </div>
                             </v-col>
                             <v-col cols="6">
                                 <div v-if="client.addresses && client.addresses.length > 0" class="mb-3">
@@ -176,6 +182,25 @@
                                                         rows="3"
                                                         type="text"
                                                     />
+                                                </v-col>
+                                                <v-col cols="12">
+                                                    <v-select
+                                                        dense
+                                                        :label="langMap.main.owner"
+                                                        :color="themeBgColor"
+                                                        :item-color="themeBgColor"
+                                                        item-text="employee.user_data.full_name"
+                                                        item-value="employee.id"
+                                                        v-model="client.owner_id"
+                                                        :items="client.employees"
+                                                    >
+                                                        <template v-slot:item="props">
+                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                        </template>
+                                                        <template v-slot:selection="props">
+                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                        </template>
+                                                    </v-select>
                                                 </v-col>
                                             </v-row>
                                         </v-col>
@@ -2017,7 +2042,6 @@ export default {
                     this.client.supplier_object[this.client.supplier_type] = this.client.supplier_id
                     this.$store.state.pageName = this.client.client_name
                     this.activityForm.model_id = this.client.id
-                    console.log(this.client);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -2481,7 +2505,6 @@ export default {
             });
         },
         removeEmployeeProcess(item) {
-            console.log(item);
             this.selectedEmployeeId = item.id
             this.removeEmployeeDialog = true
         },
@@ -2505,7 +2528,6 @@ export default {
             });
         },
         unlinkEmployeeProcess(item) {
-            console.log(item);
             this.selectedEmployeeId = item.id
             this.unlinkEmployeeDialog = true
         },
@@ -2698,7 +2720,6 @@ export default {
             });
         },
         addProductClient() {
-            console.log(this.client.id);
             this.supplierForm.client_id = this.client.id
             axios.post(`/api/product/client`, this.supplierForm).then(response => {
                 response = response.data
@@ -2730,10 +2751,8 @@ export default {
         },
         addActivity() {
             if (this.activityForm.id) {
-                console.log(this.activityForm.id)
                 this.updateActivity()
             } else {
-                // console.log(this.activityForm);
                 axios.post(`/api/activities`, this.activityForm).then(response => {
                     response = response.data
                     if (response.success === true) {
@@ -2746,7 +2765,6 @@ export default {
             }
         },
         updateActivity() {
-            console.log(this.activityForm);
             axios.put(`/api/activities/${this.activityForm.id}`, this.activityForm).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -2845,7 +2863,6 @@ export default {
     watch: {
         clientUpdates(value) {
             this.clientIsLoaded = true;
-            // console.log(this.singleUserForm.user);
             if (this.singleUserForm.user) {
                 this.singleUserForm.user = this.client.employees.find(x => x.employee.user_id === this.singleUserForm.user.id).employee.user_data;
             }

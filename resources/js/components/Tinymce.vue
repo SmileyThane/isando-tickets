@@ -14,6 +14,7 @@
            alignleft aligncenter alignright alignjustify searchreplace| \
            bullist numlist outdent indent emoticons| removeformat',
            image_title: true,
+           relative_urls : false,
            file_picker_types: 'image',
            file_picker_callback: pickerCallback
        }"
@@ -36,7 +37,6 @@ export default {
     },
     methods: {
         handleInput(e) {
-            // console.log(e);
             this.$emit('input', e)
         },
         pickerCallback(cb, value, meta) {
@@ -46,16 +46,17 @@ export default {
 
             input.onchange = function () {
                 let file = this.files[0];
-
                 let reader = new FileReader();
+
                 reader.onload = function () {
                     let id = 'blobid' + (new Date()).getTime();
-                    let blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+                    let blobCache = tinymce.activeEditor.editorUpload.blobCache;
                     let base64 = reader.result.split(',')[1];
                     let blobInfo = blobCache.create(id, file, base64);
                     blobCache.add(blobInfo);
-                    cb(blobInfo.blobUri(), { title: file.name });
+                    cb(blobInfo.blobUri(), {title: file.name});
                 };
+
                 reader.readAsDataURL(file);
             };
 
