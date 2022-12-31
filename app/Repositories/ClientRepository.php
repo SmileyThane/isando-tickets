@@ -52,7 +52,7 @@ class ClientRepository
         $childClientIds = $this->getRecursiveChildClientIds($clients->get());
         $clients = $clients->orWhereIn('id', $childClientIds)
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
-        return $clients->paginate($request->per_page ?? $clients->count());
+        return $clients->with('owner.userData')->paginate($request->per_page ?? $clients->count());
     }
 
     public function getClients($request)
@@ -158,7 +158,8 @@ class ClientRepository
                 'socials.type',
                 'emails.type',
                 'activities.type',
-                'activities.employee'
+                'activities.employee',
+                'owner.userData'
             )
             ->first();
     }
@@ -197,6 +198,7 @@ class ClientRepository
         $client->number = $request->number ?? $client->number;
         $client->short_name = $request->short_name ?? $client->short_name;
         $client->photo = $request->photo ?? $client->photo;
+        $client->owner_id = $request->owner_id ?? $client->owner_id;
         if ($request->supplier_id && $request->supplier_type) {
             $client->supplier_id = $request->supplier_id ?? $client->supplier_id;
             $client->supplier_type = $request->supplier_type ?? $client->supplier_type;
