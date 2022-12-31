@@ -38,7 +38,6 @@ class ActivityController extends Controller
         return self::showResponse(true);
     }
 
-
     public function getTypes()
     {
         return self::showResponse(true, ActivityType::all());
