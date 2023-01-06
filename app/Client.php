@@ -20,6 +20,11 @@ class Client extends Model
         'contact_phone', 'contact_email', 'supplier_name'
     ];
 
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(Activity::class, 'model');
+    }
+
     public function clientable(): MorphTo
     {
         return $this->morphTo();
@@ -110,5 +115,10 @@ class Client extends Model
     public function billing(): MorphMany
     {
         return $this->morphMany(InternalBilling::class, 'entity');
+    }
+
+    public function owner(): HasOne
+    {
+        return $this->hasOne(CompanyUser::class, 'id', 'owner_id');
     }
 }

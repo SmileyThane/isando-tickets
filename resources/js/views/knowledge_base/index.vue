@@ -55,13 +55,19 @@
 
                                     <v-list>
                                         <v-list-item link @click.prevent="updateCategoryDlg = true">
-                                            <v-list-item-title>{{ langMap.kb.create_category }}</v-list-item-title>
+                                            <v-list-item-title>
+                                                {{ langMap.kb.create_category }}
+                                            </v-list-item-title>
                                             <v-list-item-action>
                                                 <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
                                             </v-list-item-action>
                                         </v-list-item>
                                         <v-list-item link @click.prevent="createArticle">
-                                            <v-list-item-title>{{ langMap.kb.create_article }}</v-list-item-title>
+                                            <v-list-item-title>
+                                                {{ langMap.main.create }}
+                                                {{ langMap.sidebar[$route.params.alias] }}
+                                                {{ langMap.kb.create_article }}
+                                            </v-list-item-title>
                                             <v-list-item-action>
                                                 <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
                                             </v-list-item-action>
@@ -80,10 +86,19 @@
                 <v-row>
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12">
                         <v-card :class="category.id == $route.query.category ? 'parent' : ''" outlined>
-                            <v-card-title>
+                            <v-card-title style="cursor: pointer;" @click="openCategory(category.id)">
+                                <v-icon :color="themeBgColor" large left
+                                        v-if="category.id == $route.query.category"
+                                        @click.prevent.stop="openCategory(category.parent_id)"
+                                        v-text="'mdi-arrow-left'"
+                                />
                                 <v-icon :color="category.icon_color" large left
                                         v-text="category.icon ? category.icon : 'mdi-help'"/>
-                                {{ $helpers.i18n.localized(category) }}
+                                {{ category.id == $route.query.category ? category.full_name : category.name }}
+                                <h6 class="subtitle-2 ml-2">
+                                    {{ langMap.kb.articles }}: {{ category.articles_count }}
+                                    {{ langMap.kb.categories }}: {{ category.categories_count }}
+                                </h6>
                                 <v-spacer></v-spacer>
                                 <v-menu
                                     v-if="$helpers.auth.checkPermissionByIds([98])"
@@ -96,21 +111,24 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link>
-                                            <v-list-item-title @click="editCategory(category)">{{
+                                        <v-list-item link @click="editCategory(category)">
+                                            <v-list-item-title>
+                                                {{
                                                     langMap.kb.edit
                                                 }}
                                             </v-list-item-title>
                                             <v-list-item-action>
-                                                <v-icon :color="themeBgColor">mdi-folder-edit-outline</v-icon>
+                                                <v-icon :color="themeBgColor">
+                                                    mdi-folder-edit-outline
+                                                </v-icon>
                                             </v-list-item-action>
                                         </v-list-item>
                                         <v-list-item
                                             v-if="$helpers.auth.checkPermissionByIds([99])"
                                             link
+                                            @click="deleteCategory(category)"
                                         >
-                                            <v-list-item-title
-                                                @click="deleteCategory(category)">
+                                            <v-list-item-title>
                                                 {{
                                                     langMap.kb.delete
                                                 }}
@@ -122,22 +140,17 @@
                                     </v-list>
                                 </v-menu>
                             </v-card-title>
-                            <v-card-text style="height: 6em;">
+                            <v-card-text>
                                 <p v-if="$helpers.i18n.localized(category, 'description')"
                                    :tooltip="$helpers.i18n.localized(category, 'description')" class="lim">
                                     {{ $helpers.i18n.localized(category, 'description') }}</p>
-                                <p>
-                                    {{ langMap.kb.articles }}: {{ category.articles_count }} <br/>
-                                    {{ langMap.kb.categories }}: {{ category.categories_count }}
-                                </p>
-
                             </v-card-text>
-                            <v-card-actions>
-                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text
-                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>
-                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"
-                                       v-text="langMap.kb.open_category"/>
-                            </v-card-actions>
+<!--                            <v-card-actions>-->
+<!--                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text-->
+<!--                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>-->
+<!--                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"-->
+<!--                                       v-text="langMap.kb.open_category"/>-->
+<!--                            </v-card-actions>-->
                         </v-card>
                     </v-col>
                 </v-row>
@@ -160,8 +173,9 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link>
-                                            <v-list-item-title @click="editArticle(article.id)">{{
+                                        <v-list-item link @click="editArticle(article.id)">
+                                            <v-list-item-title >
+                                                {{
                                                     langMap.kb.edit
                                                 }}
                                             </v-list-item-title>
@@ -172,10 +186,9 @@
                                         <v-list-item
                                             v-if="$helpers.auth.checkPermissionByIds([99])"
                                             link
+                                            @click="deleteArticle(article)"
                                         >
-                                            <v-list-item-title
-                                                @click="deleteArticle(article)"
-                                            >
+                                            <v-list-item-title>
                                                 {{
                                                     langMap.kb.delete
                                                 }}
@@ -227,13 +240,24 @@
                             </v-col>
                             <v-col cols="6">
                                 <label>{{ langMap.main.icon }}</label>
-                                <v-radio-group v-model="categoryForm.icon">
-                                    <v-radio v-for="item in categoryIcons" :key="item">
-                                        <template v-slot:label="{ item }">
-                                            {{ item.icon }}
-                                        </template>
-                                    </v-radio>
-                                </v-radio-group>
+                                <v-select v-model="categoryForm.icon"
+                                          :color="themeBgColor"
+                                          :items="categoryIcons"
+                                          :label="langMap.main.icon"
+                                          append-icon="mdi-tag-multiple-outline"
+                                          hide-selected
+                                          item-text="name"
+                                          item-value="id"
+                                          v-on:change="getArticles();">
+                                    <template v-slot:selection="{ attrs, item, parent, selected }">
+                                        <i :class="item"></i>&nbsp;
+                                        {{item.replace(/mdi/g,'').replace(/-/g,' ')}}
+                                    </template>
+                                    <template v-slot:item="{ attrs, item, parent, selected }">
+                                        <i :class="item"></i>&nbsp;
+                                        {{item.replace(/mdi/g,'').replace(/-/g,' ')}}
+                                    </template>
+                                </v-select>
 
                                 <label>{{ langMap.kb.icon_color }}</label>
                                 <v-color-picker :model="categoryForm.icon_color" dot-size="25" mode="hexa"
@@ -313,7 +337,7 @@
 
 <style scoped>
 >>> .parent {
-    background: #fafafa !important;
+    background: #ededf0 !important;
 }
 
 >>> .lim {
@@ -366,9 +390,118 @@ export default {
                 _active: []
             },
             categoryIcons: [
-                'mdi-help',
-                'mdi-help-circle',
-                'mdi-rocket',
+                'mdi mdi-alert-outline',
+                'mdi mdi-bell-ring-outline',
+                'mdi mdi-alarm',
+                'mdi mdi-alert-rhombus-outline',
+                'mdi mdi-bell-alert-outline',
+                'mdi mdi-car-brake-alert',
+                'mdi mdi-alert-circle-outline',
+                'mdi mdi-alert-octagon-outline',
+                'mdi mdi-alert-decagram-outline',
+                'mdi mdi-alert-box-outline',
+                'mdi mdi-weather-cloudy-alert',
+                'mdi mdi-alarm-multiple',
+                'mdi mdi-bell-circle-outline',
+                'mdi mdi-exit-run',
+                'mdi mdi-exit-to-app',
+                'mdi mdi-fire',
+                'mdi mdi-fire-extinguisher',
+                'mdi mdi-air-horn',
+                'mdi mdi-fire-hydrant',
+                'mdi mdi-water-alert-outline',
+                'mdi mdi-water-remove-outline',
+                'mdi mdi-pipe-leak',
+                'mdi mdi-ambulance',
+                'mdi mdi-medical-bag',
+                'mdi mdi-hospital-box-outline',
+                'mdi mdi-zodiac-aquarius',
+                'mdi mdi-wrench-outline',
+                'mdi mdi-server-off',
+                'mdi mdi-lan-disconnect',
+                'mdi mdi-alarm-light-outline',
+                'mdi mdi-alarm-light-outline',
+                'mdi mdi-hazard-lights',
+                'mdi mdi-triforce',
+                'mdi mdi-molecule-co2',
+                'mdi mdi-flash-alert-outline',
+                'mdi mdi-bottle-tonic-skull-outline',
+                'mdi mdi-skull-crossbones-outline',
+                'mdi mdi-skull',
+                'mdi mdi-virus-outline',
+                'mdi mdi-bacteria-outline',
+                'mdi mdi-shield-alert-outline',
+                'mdi mdi-shield-key-outline',
+                'mdi mdi-account-alert-outline',
+                'mdi mdi-security-network',
+                'mdi mdi-security',
+                'mdi mdi-lock-open-alert',
+                'mdi mdi-lock-open-outline',
+                'mdi mdi-key-outline',
+                'mdi mdi-key-remove',
+                'mdi mdi-home-alert',
+                'mdi mdi-home-lock-open',
+                'mdi mdi-window-shutter-alert',
+                'mdi mdi-volume-off',
+                'mdi mdi-broom',
+                'mdi mdi-rake',
+                'mdi mdi-hammer-wrench',
+                'mdi mdi-wrench-outline',
+                'mdi mdi-help-circle-outline',
+                'mdi mdi-lan-disconnect',
+                'mdi mdi-server-off',
+                'mdi mdi-desktop-classic',
+                'mdi mdi-content-save-alert-outline',
+                'mdi mdi-disc-alert',
+                'mdi mdi-timeline-alert-outline',
+                'mdi mdi-folder-key-outline',
+                'mdi mdi-folder-alert',
+                'mdi mdi-table-alert',
+                'mdi mdi-wifi-strength-alert-outline',
+                'mdi mdi-restart-alert',
+                'mdi mdi-information-outline',
+                'mdi mdi-information-variant',
+                'mdi mdi-clock-alert-outline',
+                'mdi mdi-calendar-alert',
+                'mdi mdi-exclamation',
+                'mdi mdi-exclamation-thick',
+                'mdi mdi-clipboard-alert-outline',
+                'mdi mdi-sticker-alert-outline',
+                'mdi mdi-coffee-outline',
+                'mdi mdi-bus-alert',
+                'mdi mdi-subway-alert-variant',
+                'mdi mdi-traffic-light',
+                'mdi mdi-coolant-temperature',
+                'mdi mdi-radioactive',
+                'mdi mdi-printer-3d-nozzle-alert-outline',
+                'mdi mdi-tray-alert',
+                'mdi mdi-beaker-alert-outline',
+                'mdi mdi-water-percent-alert',
+                'mdi mdi-thermometer-alert',
+                'mdi mdi-thermometer-lines',
+                'mdi mdi-oil-level',
+                'mdi mdi-dishwasher-alert',
+                'mdi mdi-battery-alert-variant-outline',
+                'mdi mdi-vibrate',
+                'mdi mdi-watch-vibrate',
+                'mdi mdi-fuse-alert',
+                'mdi mdi-engine-outline',
+                'mdi mdi-fridge-alert-outline',
+                'mdi mdi-state-machine',
+                'mdi mdi-gas-cylinder',
+                'mdi mdi-diving-scuba-tank',
+                'mdi mdi-fan-alert',
+                'mdi mdi-lightbulb-on-outline',
+                'mdi mdi-power-plug-off-outline',
+                'mdi mdi-car-tire-alert',
+                'mdi mdi-lightning-bolt-outline',
+                'mdi mdi-transmission-tower',
+                'mdi mdi-scale-balance',
+                'mdi mdi-snowflake-alert',
+                'mdi mdi-snowflake-melt',
+                'mdi mdi-weather-cloudy-alert',
+                'mdi mdi-weather-lightning',
+                'mdi mdi-weather-pouring',
             ],
             deleteArticleDlg: false,
             selectedArticle: {
@@ -395,7 +528,7 @@ export default {
 
         this.openCategory(this.$route.query.category);
         this.getCategoriesTree();
-        this.dGetTags = _.debounce(this.getTags, 1000);
+        this.getTags()
     },
     created() {
 

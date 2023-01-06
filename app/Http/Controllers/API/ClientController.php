@@ -91,12 +91,12 @@ class ClientController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
-        $isValid = $this->clientRepo->validate($request, false);
+        $isValid = $this->clientRepo->validate($request, false, $id);
         if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->clientRepo->update($request, $id));
         }
 
-        return self::showResponse(false);
+        return self::showResponse(false, $isValid);
     }
 
     public function delete(Request $request, $id): JsonResponse

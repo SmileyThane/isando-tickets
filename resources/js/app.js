@@ -14,6 +14,7 @@ import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
 import Tinymce from "./components/Tinymce";
 import helpers from './helpers';
 import Sortable from 'sortablejs';
+import 'primeicons/primeicons.css';
 
 Vue.component('Tinymce', Tinymce)
 Vue.use(PerfectScrollbar)

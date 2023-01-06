@@ -19,11 +19,11 @@ use Throwable;
 
 class ClientRepository
 {
-    public function validate($request, $new = true)
+    public function validate($request, $new = true, $id = null)
     {
         $params = [
             'client_name' => 'required',
-            'number' => 'nullable|unique:clients',
+            'number' => 'nullable|unique:clients,number,' . $id,
             // 'client_description' => 'required',
         ];
         if ($new === true) {
@@ -52,7 +52,7 @@ class ClientRepository
         $childClientIds = $this->getRecursiveChildClientIds($clients->get());
         $clients = $clients->orWhereIn('id', $childClientIds)
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
-        return $clients->paginate($request->per_page ?? $clients->count());
+        return $clients->with('owner.userData')->paginate($request->per_page ?? $clients->count());
     }
 
     public function getClients($request)
@@ -156,7 +156,10 @@ class ClientRepository
                 'billing',
                 'addresses.country',
                 'socials.type',
-                'emails.type'
+                'emails.type',
+                'activities.type',
+                'activities.employee',
+                'owner.userData'
             )
             ->first();
     }
@@ -195,6 +198,7 @@ class ClientRepository
         $client->number = $request->number ?? $client->number;
         $client->short_name = $request->short_name ?? $client->short_name;
         $client->photo = $request->photo ?? $client->photo;
+        $client->owner_id = $request->owner_id ?? $client->owner_id;
         if ($request->supplier_id && $request->supplier_type) {
             $client->supplier_id = $request->supplier_id ?? $client->supplier_id;
             $client->supplier_type = $request->supplier_type ?? $client->supplier_type;

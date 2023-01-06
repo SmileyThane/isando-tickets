@@ -38,7 +38,7 @@
                     dense
                     hide-details
                     outlined
-                    placeholder="Valid from Stage Monitoring"
+                    :placeholder="langMap.ir.ab.stage_monitoring"
                 ></v-select>
             </v-col>
             <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>

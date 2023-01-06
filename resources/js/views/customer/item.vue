@@ -42,7 +42,8 @@
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
                                     <hr class="lighten"/>
                                     <p v-for="(item, i) in client.emails" :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                class="mr-2"
                                                 dense small v-text="item.type.icon"/>
                                         {{ item.email }}
                                     </p>
@@ -51,30 +52,41 @@
                                 <div v-if="client.phones && client.phones.length > 0">
                                     <hr class="lighten"/>
                                     <p v-for="(item, i) in client.phones" :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                class="mr-2"
                                                 dense small v-text="item.type.icon"/>
                                         {{ item.phone }}
+                                    </p>
+                                </div>
+                                <div v-if="client.owner">
+                                    <hr class="lighten"/>
+                                    <p class="mb-0">
+                                        {{langMap.main.owner}}: {{ client.owner.user_data.full_name }}
                                     </p>
                                 </div>
                             </v-col>
                             <v-col cols="6">
                                 <div v-if="client.addresses && client.addresses.length > 0" class="mb-3">
                                     <p v-for="(item, i) in client.addresses" :key="item.id" class="mb-1">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2 mb-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                class="mr-2 mb-2"
                                                 dense small v-text="item.type.icon"/>
 
                                         <span v-if="item.street">{{ item.street }}</span>
                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                         <br/>{{ item.postal_code }} {{ item.city }}
-                                        <br/><span v-if="item.country">{{ $helpers.i18n.localized(item.country) }}</span>
+                                        <br/><span v-if="item.country">{{
+                                            $helpers.i18n.localized(item.country)
+                                        }}</span>
                                     </p>
                                 </div>
 
                                 <div v-if="client.socials && client.socials.length > 0">
                                     <hr class="lighten"/>
                                     <p v-for="(item, i) in client.socials" :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                class="mr-2"
                                                 dense small v-text="item.type.icon"/>
                                         {{ item.social_link }}
                                     </p>
@@ -170,6 +182,25 @@
                                                         rows="3"
                                                         type="text"
                                                     />
+                                                </v-col>
+                                                <v-col cols="12">
+                                                    <v-select
+                                                        dense
+                                                        :label="langMap.main.owner"
+                                                        :color="themeBgColor"
+                                                        :item-color="themeBgColor"
+                                                        item-text="employee.user_data.full_name"
+                                                        item-value="employee.id"
+                                                        v-model="client.owner_id"
+                                                        :items="client.employees"
+                                                    >
+                                                        <template v-slot:item="props">
+                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                        </template>
+                                                        <template v-slot:selection="props">
+                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                        </template>
+                                                    </v-select>
                                                 </v-col>
                                             </v-row>
                                         </v-col>
@@ -618,46 +649,76 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.product.info }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.main.activities
+                            }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
+                        <v-card-title>
+                            <v-text-field
+                                v-model="activitySearch"
+                                append-icon="mdi-magnify"
+                                :color="themeBgColor"
+                                :label="langMap.main.search"
+                                single-line
+                                hide-details
+                            ></v-text-field>
+                        </v-card-title>
                         <v-data-table
                             :footer-props="footerProps"
-                            :headers="productHeaders"
-                            :items="client.products"
+                            :headers="activityHeaders"
+                            :items="client.activities"
                             :options.sync="options"
                             class="elevation-1"
                             dense
+                            :expanded.sync="activityExpanded"
+                            single-expand
+                            show-expand
                             item-key="id"
+                            :search="activitySearch"
                             @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showProduct(item.product_data)">
-                                            <v-icon small>mdi-eye</v-icon>
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="selectActivity(item)">
+                                            <v-icon small>mdi-pencil</v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{ langMap.customer.show_product }}</span>
+                                    <span>{{ langMap.main.update_activity }}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
-                                            <v-icon small>mdi-link-off</v-icon>
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="deleteActivity(item.id)">
+                                            <v-icon small>mdi-trash-can</v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{ langMap.product.unlink_product }}</span>
+                                    <span>{{ langMap.main.delete_activity }}</span>
                                 </v-tooltip>
+                            </template>
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <td :colspan="headers.length">
+                                    <v-spacer>
+                                        &nbsp;
+                                    </v-spacer>
+                                    <span class="ml-2">
+                                    {{ item.content }}
+                                </span>
+                                    <v-spacer>
+                                        &nbsp;
+                                    </v-spacer>
+                                </td>
                             </template>
                         </v-data-table>
 
                         <v-spacer>&nbsp;</v-spacer>
 
-                        <v-expansion-panels>
-                            <v-expansion-panel @click="resetProduct">
+                        <v-expansion-panels v-model="activityFormPanel">
+                            <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{ langMap.product.add_new }}
+                                    {{ langMap.main.add_activity }}
                                     <template v-slot:actions>
                                         <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
                                         </v-icon>
@@ -667,15 +728,135 @@
                                     <v-form>
                                         <div class="row">
                                             <v-col cols="md-12">
+                                                <v-text-field
+                                                    v-model="activityForm.title"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.company.name"
+                                                    dense
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    required
+                                                    type="text"
+                                                />
+                                            </v-col>
+                                            <v-col cols="md-12">
+                                                <v-textarea
+                                                    v-model="activityForm.content"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.company.description"
+                                                    dense
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    required
+                                                    type="text"
+                                                />
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-select v-model="activityForm.type_id"
+                                                          :color="themeBgColor"
+                                                          :item-color="themeBgColor"
+                                                          :items="activityTypes"
+                                                          :label="langMap.main.type"
+                                                          dense
+                                                          item-text="name" item-value="id"
+                                                >
+                                                </v-select>
+                                            </v-col>
+                                            <v-col cols="md-6">
                                                 <v-autocomplete
-                                                    v-model="supplierForm.product_id"
+                                                    v-model="activityForm.company_user_id"
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
-                                                    :items="products"
-                                                    :label="langMap.main.products"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                />
+                                                    :items="client.employees"
+                                                    :label="langMap.main.activity_contact"
+                                                    prepend-icon="mdi-account-outline"
+                                                    dense
+                                                    item-value="employee.id"
+                                                >
+                                                    <template v-slot:selection="data">
+                                                        {{ data.item.employee.user_data.full_name }}
+                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                                    </template>
+                                                    <template v-slot:item="data">
+                                                        {{ data.item.employee.user_data.full_name }}
+                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                                    </template>
+                                                </v-autocomplete>
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-menu
+                                                    ref="menuActivityDateRef"
+                                                    v-model="menuActivityDate"
+                                                    :close-on-content-click="false"
+                                                    :return-value.sync="activityForm.date"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    min-width="auto"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-text-field
+                                                            v-model="activityForm.date"
+                                                            label="Date"
+                                                            :color="themeBgColor"
+                                                            prepend-icon="mdi-calendar"
+                                                            readonly
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-date-picker
+                                                        v-model="activityForm.date"
+                                                        no-title
+                                                        :color="themeBgColor"
+                                                        scrollable
+                                                    >
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn
+                                                            text
+                                                            color="primary"
+                                                            @click="menuActivityDate = false"
+                                                        >
+                                                            Cancel
+                                                        </v-btn>
+                                                        <v-btn
+                                                            text
+                                                            color="primary"
+                                                            @click="$refs.menuActivityDateRef.save(activityForm.date)"
+                                                        >
+                                                            OK
+                                                        </v-btn>
+                                                    </v-date-picker>
+                                                </v-menu>
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-menu
+                                                    ref="menuActivityTimeRef"
+                                                    v-model="menuActivityTime"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    :return-value.sync="activityForm.time"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    max-width="290px"
+                                                    min-width="290px"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-text-field
+                                                            v-model="activityForm.time"
+                                                            label="Time"
+                                                            :color="themeBgColor"
+                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                            readonly
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-time-picker
+                                                        v-if="menuActivityTime"
+                                                        v-model="activityForm.time"
+                                                        :color="themeBgColor"
+                                                        full-width
+                                                        @click:minute="$refs.menuActivityTimeRef.save(activityForm.time)"
+                                                    ></v-time-picker>
+                                                </v-menu>
                                             </v-col>
                                             <v-btn
                                                 :color="themeBgColor"
@@ -683,10 +864,25 @@
                                                 dark
                                                 fab
                                                 right
-                                                @click="addProductClient"
+                                                small
+                                                @click="addActivity"
                                             >
                                                 <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
                                                     mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                            &nbsp;
+                                            <v-btn
+                                                color="#f1f1f1"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                small
+                                                @click="resetActivity"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: red;`">
+                                                    mdi-cancel
                                                 </v-icon>
                                             </v-btn>
                                         </div>
@@ -1172,7 +1368,8 @@
                                 <v-list-item v-for="(item, i) in client.billing" :key="item.id">
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.name"></v-list-item-title>
-                                        <v-list-item-subtitle v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
+                                        <v-list-item-subtitle
+                                            v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon small @click="editInternalBilling(item)">
@@ -1263,6 +1460,95 @@
                                 </v-expansion-panels>
                             </v-col>
                         </v-row>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card>
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.product.info }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="productHeaders"
+                            :items="client.products"
+                            :options.sync="options"
+                            class="elevation-1"
+                            dense
+                            item-key="id"
+                            @update:options="updateItemsPerPage"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showProduct(item.product_data)">
+                                            <v-icon small>mdi-eye</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.show_product }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
+                                            <v-icon small>mdi-link-off</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.product.unlink_product }}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+
+                        <v-spacer>&nbsp;</v-spacer>
+
+                        <v-expansion-panels>
+                            <v-expansion-panel @click="resetProduct">
+                                <v-expansion-panel-header>
+                                    {{ langMap.product.add_new }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12">
+                                                <v-autocomplete
+                                                    v-model="supplierForm.product_id"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="products"
+                                                    :label="langMap.main.products"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                />
+                                            </v-col>
+
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                @click="addProductClient"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -1534,7 +1820,6 @@
 
 <script>
 import EventBus from "../../components/EventBus";
-import _ from "lodash";
 
 export default {
 
@@ -1558,6 +1843,20 @@ export default {
                 },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'product_data.name'},
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+            ],
+            activityExpanded: [],
+            activityHeaders: [
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'id',
+                },
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'title'},
+                {text: `${this.$store.state.lang.lang_map.individuals.new_employee}`, value: 'employee.user_data.full_name'},
+                {text: `${this.$store.state.lang.lang_map.tracking.tracker.date}`, value: 'datetime'},
+                {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.name'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
             snackbar: false,
@@ -1673,6 +1972,16 @@ export default {
                 client_id: null,
                 product_id: null
             },
+            activityForm: {
+                model_id: null,
+                model_type: 'App\\Client',
+                date: null,
+                time: null,
+            },
+            activityFormPanel:[],
+            activitySearch: '',
+            menuActivityDate: false,
+            menuActivityTime: false,
             productsSearch: '',
             products: [],
             phoneTypes: [],
@@ -1693,7 +2002,8 @@ export default {
             internalBillingForm: {},
             currency: {
                 symbol: ''
-            }
+            },
+            activityTypes: []
         }
     },
     mounted() {
@@ -1707,10 +2017,10 @@ export default {
         this.getEmailTypes();
         this.getCountries();
         this.getProducts();
-        this.getEmployees();
-
+        this.getActivityTypes();
         this.employeeForm.client_id = parseInt(this.$route.params.id);
         this.$store.dispatch('getMainCompany');
+        // this.getEmployees();
 
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
@@ -1731,7 +2041,7 @@ export default {
                     this.client.supplier_object = {}
                     this.client.supplier_object[this.client.supplier_type] = this.client.supplier_id
                     this.$store.state.pageName = this.client.client_name
-                    console.log(this.client);
+                    this.activityForm.model_id = this.client.id
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1790,25 +2100,37 @@ export default {
                 }
             });
         },
+        getActivityTypes() {
+            axios.get('/api/activities/types').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.activityTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
         showContactInfo(item) {
             this.contactInfoForm = item
             this.contactInfoModal = true
 
         },
-        getEmployees() {
-            axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
-                response => {
-                    this.loading = false
-                    response = response.data
-                    if (response.success === true) {
-                        this.employees = response.data.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.errorType = 'error';
-                        this.snackbar = true;
-                    }
-                });
-        },
+        // getEmployees() {
+        //     axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
+        //         response => {
+        //             this.loading = false
+        //             response = response.data
+        //             if (response.success === true) {
+        //                 this.employees = response.data.data
+        //             } else {
+        //                 this.snackbarMessage = this.langMap.main.generic_error;
+        //                 this.errorType = 'error';
+        //                 this.snackbar = true;
+        //             }
+        //         });
+        // },
         addEmployee(update = false) {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
@@ -2183,7 +2505,6 @@ export default {
             });
         },
         removeEmployeeProcess(item) {
-            console.log(item);
             this.selectedEmployeeId = item.id
             this.removeEmployeeDialog = true
         },
@@ -2207,7 +2528,6 @@ export default {
             });
         },
         unlinkEmployeeProcess(item) {
-            console.log(item);
             this.selectedEmployeeId = item.id
             this.unlinkEmployeeDialog = true
         },
@@ -2377,6 +2697,10 @@ export default {
             this.selectedProductId = item.id;
             this.deleteProductDlg = true;
         },
+        showDeleteActivityDlg(item) {
+            this.selectedProductId = item.id;
+            this.deleteProductDlg = true;
+        },
         getProducts() {
             axios.get(`/api/product?
                     search=${this.productsSearch}&
@@ -2396,7 +2720,6 @@ export default {
             });
         },
         addProductClient() {
-            console.log(this.client.id);
             this.supplierForm.client_id = this.client.id
             axios.post(`/api/product/client`, this.supplierForm).then(response => {
                 response = response.data
@@ -2419,6 +2742,53 @@ export default {
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.resetProduct();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        addActivity() {
+            if (this.activityForm.id) {
+                this.updateActivity()
+            } else {
+                axios.post(`/api/activities`, this.activityForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient();
+                        this.resetActivity();
+                    } else {
+                        console.log('error')
+                    }
+                });
+            }
+        },
+        updateActivity() {
+            axios.put(`/api/activities/${this.activityForm.id}`, this.activityForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient();
+                    this.resetActivity();
+                    this.activityFormPanel = []
+                } else {
+                    console.log('error')
+                }
+            });
+        },
+        selectActivity(item) {
+            this.activityForm = item
+            this.activityFormPanel = 0
+        },
+        deleteActivity(id) {
+            axios.delete(`/api/activities/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient()
+                    this.selectedProductId = null;
+                    this.snackbarMessage = ''
+                    this.actionColor = 'success'
+                    this.snackbar = true;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -2468,6 +2838,14 @@ export default {
                 product_id: null
             }
         },
+        resetActivity() {
+            this.activityForm = {
+                model_id: this.client.id,
+                model_type: 'App\\Client',
+                date: null,
+                time: null,
+            }
+        },
         resetSocial() {
             this.socialForm = {
                 id: '',
@@ -2485,7 +2863,6 @@ export default {
     watch: {
         clientUpdates(value) {
             this.clientIsLoaded = true;
-            // console.log(this.singleUserForm.user);
             if (this.singleUserForm.user) {
                 this.singleUserForm.user = this.client.employees.find(x => x.employee.user_id === this.singleUserForm.user.id).employee.user_data;
             }

@@ -11,9 +11,11 @@ use App\IncidentReporting\ProcessState;
 use App\IncidentReporting\ReferenceBook;
 use App\IncidentReporting\ResourceType;
 use App\IncidentReporting\StakeholderType;
+use App\IncidentReporting\TeamRole;
 use App\IncidentReportingAction;
 use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardHasAction;
+use App\IncidentReportingActionBoardLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
@@ -169,6 +171,29 @@ class IncidentReportingRepository
         return $this->_delete(ProcessState::class, $id);
     }
 
+    // TeamRole
+    public function getTeamRoleInCompanyContext($companyId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        return TeamRole::where('company_id', $companyId)->orderBy('position', 'ASC')->get();
+    }
+
+    public function createTeamRole($name, $name_de = null, $position = null, $company_id = null): TeamRole
+    {
+        return $this->_create(TeamRole::class, $name, $name_de, $position, $company_id);
+    }
+
+    public function updateTeamRole($id, $name, $name_de = null, $position = null): ?TeamRole
+    {
+        return $this->_update(TeamRole::class, $id, $name, $name_de, $position);
+    }
+
+    public function deleteTeamRole($id): bool
+    {
+        return $this->_delete(TeamRole::class, $id);
+    }
+
+
     // ResourceType
     public function getResourceTypesInCompanyContext($companyId = null)
     {
@@ -216,8 +241,10 @@ class IncidentReportingRepository
     public function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
     {
         if ((int)$board->type_id === IncidentReportingActionBoard::IR) {
+            $this->logActionBoard($board->id, 'incident_actions_updated');
             $board->actions()->sync([]);
             $actionIds = $this->prepareRelationToSync($request->actions);
+
             foreach ($actionIds as $key => $actionId) {
                 $action = IncidentReportingAction::query()->find($actionId);
                 $clonedAction = $action->replicate();
@@ -226,6 +253,7 @@ class IncidentReportingRepository
                 if ($action->related_to_ir_ab_id !== null) {
                     $action->delete();
                 }
+
                 IncidentReportingActionBoardHasAction::query()->create([
                     'action_board_id' => $board->id,
                     'action_id' => $clonedAction->id,
@@ -241,6 +269,14 @@ class IncidentReportingRepository
         $board->clients()->sync($this->prepareRelationToSync($request->clients));
     }
 
+    public function logActionBoard($id, $log)
+    {
+        IncidentReportingActionBoardLog::query()->create([
+            'action_board_id' => $id,
+            'log' => $log
+        ]);
+    }
+
     private function prepareRelationToSync($relation)
     {
         $temp = [];
@@ -254,5 +290,22 @@ class IncidentReportingRepository
         }
 
         return count($temp) > 0 ? $temp : $relation;
+    }
+
+    public function compareUpdatedAttributes($board, $request): array
+    {
+        $result = [];
+        $attributes = array_diff(
+            array_keys($board->getAttributes()),
+            $board->getHidden(),
+            ['updated_at']
+        );
+        foreach ($attributes as $attribute) {
+            if (isset($request[$attribute]) && $board[$attribute] !== $request[$attribute]) {
+                $result[] = $attribute;
+            }
+        }
+
+        return $result;
     }
 }

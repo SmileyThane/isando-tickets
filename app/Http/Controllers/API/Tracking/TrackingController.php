@@ -29,20 +29,23 @@ class TrackingController extends BaseController
         return self::showResponse($success, $result);
     }
 
-    public function update(Request $request, Tracking $tracking)
+    public function update(Request $request, $trackingId)
     {
+        $tracking = Tracking::find($trackingId);
         $result = null;
         try {
-            $result = $this->trackingRepo->validate($request, false);
+            $this->trackingRepo->validate($request, false);
             $result = $this->trackingRepo->update($request, $tracking);
-        } catch (\Exception $exception) {
-            return self::showResponse(false, $exception->getMessage());
+        } catch (\Throwable $exception) {
+            dd($exception);
+            return self::showResponse(false, $exception);
         }
         return self::showResponse(true, $result);
     }
 
-    public function delete(Tracking $tracking)
+    public function delete($trackingId)
     {
+        $tracking = Tracking::find($trackingId);
         try {
             $result = $this->trackingRepo->delete($tracking);
             return self::showResponse($result);
@@ -51,9 +54,13 @@ class TrackingController extends BaseController
         }
     }
 
-    public function duplicate(Tracking $tracking)
+    public function duplicate($trackingId)
     {
-        $result = $this->trackingRepo->duplicate($tracking);
+        $result = null;
+        $tracking = Tracking::find($trackingId);
+        if ($tracking) {
+            $result = $this->trackingRepo->duplicate($tracking);
+        }
         return self::showResponse((bool)$result, $result);
     }
 

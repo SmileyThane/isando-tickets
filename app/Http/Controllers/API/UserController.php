@@ -30,7 +30,12 @@ class UserController extends Controller
 
     public function find($id = null)
     {
-        $with = $id ? ['employee.companyData', 'employee.assignedToClients.clients'] : [];
+        $with = $id ? [
+            'employee.companyData',
+            'employee.assignedToClients.clients',
+            'employee.activities.type',
+            'employee.activities.client']
+            : [];
         $id = $id ?? Auth::id();
         $user = $this->userRepo->find($id, $with);
         return self::showResponse(true, $user);

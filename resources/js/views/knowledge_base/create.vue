@@ -25,9 +25,31 @@
                         <v-col cols="6">
                             <label>{{ langMap.kb.article_category }}</label>
                             <perfect-scrollbar>
-                                <v-treeview v-model="categories" :color="themeBgColor" :items="categoriesTree"
-                                            :selected-color="themeBgColor"
-                                            item-key="id" open-all selectable>
+                                <v-row>
+                                    <v-col
+                                        cols="6"
+                                    >
+                                        <v-select
+
+                                            v-model="childCategoriesSelectedItem"
+                                            :items="childCategoriesSelection"
+                                            item-text="label"
+                                            item-value="value"
+                                            label="Selection type"
+                                        />
+                                    </v-col>
+
+                                </v-row>
+                                <v-treeview
+                                    v-model="categories"
+                                    :color="themeBgColor"
+                                    :items="categoriesTree"
+                                    :selected-color="themeBgColor"
+                                    :selection-type="childCategoriesSelectedItem"
+                                    item-key="id"
+                                    open-all
+                                    selectable
+                                >
                                     <template v-slot:prepend="{ item }">
                                         <v-icon>mdi-folder</v-icon>
                                     </template>
@@ -62,7 +84,7 @@
 
                         </v-col>
                         <v-col cols="12">
-                            <v-expansion-panels>
+                            <v-expansion-panels multiple>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>English</v-expansion-panel-header>
                                     <v-expansion-panel-content>
@@ -79,7 +101,6 @@
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
-
                                         <v-row>
                                             <v-col cols="6">
                                                 <v-textarea v-model="article.keywords" :color="themeBgColor"
@@ -88,7 +109,6 @@
                                             <v-col cols="6">
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <label>{{ langMap.kb.attachments }}</label>
-
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'en'"
@@ -96,13 +116,13 @@
                                                             close
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
-                                        <span @click="download(attachment.link)">
-                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
-                                            {{ attachment.name }}
-                                        </span>
+                                                        <span @click="download(attachment.link)">
+                                                            <v-icon :color="themeBgColor" left
+                                                                    v-text="fileIcon(attachment.name)"/>
+                                                            {{ attachment.name }}
+                                                        </span>
                                                     </v-chip>
                                                 </v-chip-group>
-
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <v-file-input
                                                     ref="fileupload"
@@ -119,7 +139,8 @@
                                                     <template v-slot:selection="{ file, index, text }">
                                                         <v-chip :color="themeBgColor" label outlined>
                                                             <v-icon :color="themeBgColor" left
-                                                                    v-text="fileIcon(file.name)"/>
+                                                                    v-text="fileIcon(file.name)"
+                                                            />
                                                             {{ text }}
                                                         </v-chip>
                                                     </template>
@@ -128,7 +149,7 @@
                                         </v-row>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
-                                <v-expansion-panel>
+                                <v-expansion-panel style="background-color: #ededf0;">
                                     <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                         <v-text-field v-model="article.name_de" :color="themeBgColor"
@@ -143,7 +164,6 @@
                                                  aria-rowcount="40"/>
                                         <v-spacer>&nbsp;</v-spacer>
                                         <hr/>
-
                                         <v-row>
                                             <v-col cols="6">
                                                 <v-textarea v-model="article.keywords_de" :color="themeBgColor"
@@ -152,7 +172,6 @@
                                             <v-col cols="6">
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <label>{{ langMap.kb.attachments }}</label>
-
                                                 <v-chip-group column>
                                                     <v-chip v-for="attachment in article.attachments"
                                                             v-if="attachment.service_info && attachment.service_info.lang == 'de'"
@@ -160,13 +179,13 @@
                                                             close
                                                             label outlined
                                                             @click:close="deleteAttachment(attachment)">
-                                        <span @click="download(attachment.link)">
-                                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)"/>
-                                            {{ attachment.name }}
-                                        </span>
+                                                        <span @click="download(attachment.link)">
+                                                            <v-icon :color="themeBgColor" left
+                                                                    v-text="fileIcon(attachment.name)"/>
+                                                            {{ attachment.name }}
+                                                        </span>
                                                     </v-chip>
                                                 </v-chip-group>
-
                                                 <v-spacer>&nbsp;</v-spacer>
                                                 <v-file-input
                                                     ref="fileupload_de"
@@ -195,6 +214,9 @@
                             </v-expansion-panels>
                         </v-col>
                     </v-row>
+                    <v-switch v-model="article.is_draft" :color="themeBgColor"
+                              :label="langMap.kb.is_draft" :value="1"/>
+
                 </v-card-text>
                 <v-card-actions>
                     <v-btn text @click="openCategory" v-text="langMap.main.cancel"/>
@@ -202,22 +224,20 @@
                     <v-btn :color="themeBgColor" text @click="saveArticle(true)" v-text="langMap.kb.save_and_close"/>
                 </v-card-actions>
             </v-card>
-
             <v-spacer>&nbsp;</v-spacer>
-
             <v-card outlined>
                 <v-card-title>
                     {{ langMap.kb.article_steps }}
                 </v-card-title>
                 <v-card-text>
                     <v-row>
-                        <v-col cols="6">
-                            <v-radio-group v-model="stepType" dense>
-                                <v-radio v-for="type in stepTypes" v-bind:key="type.id" :color="themeBgColor"
-                                         :label="type.name" :value="type.id"/>
-                            </v-radio-group>
-                        </v-col>
-                        <v-col cols="6">
+                        <!--                        <v-col cols="6">-->
+                        <!--                            <v-radio-group v-model="stepType" dense>-->
+                        <!--                                <v-radio v-for="type in stepTypes" v-bind:key="type.id" :color="themeBgColor"-->
+                        <!--                                         :label="type.name" :value="type.id"/>-->
+                        <!--                            </v-radio-group>-->
+                        <!--                        </v-col>-->
+                        <v-col cols="8">
                             <v-list dense outlined>
                                 <v-list-item v-for="(step, index) in article.next" v-bind:key="step.id" dense>
                                     <v-list-item-content>
@@ -273,7 +293,6 @@
 <script>
 import EventBus from '../../components/EventBus';
 import * as Helper from '../tracking/helper';
-import * as _ from "lodash";
 
 export default {
     data() {
@@ -302,7 +321,8 @@ export default {
                 keywords: '',
                 keywords_de: '',
                 is_internal: 0,
-                next: []
+                next: [],
+                is_draft: 0
             },
             categories: [],
             featured: '',
@@ -319,7 +339,18 @@ export default {
                 {id: 4, name: this.$store.state.lang.lang_map.kb.radios},
             ],
             stepType: 1,
-            articles: []
+            articles: [],
+            childCategoriesSelection: [
+                {
+                    label: 'recursive',
+                    value: 'leaf'
+                },
+                {
+                    label: 'independent',
+                    value: 'independent'
+                }
+            ],
+            childCategoriesSelectedItem: 'independent'
         }
     },
     mounted() {
@@ -332,6 +363,7 @@ export default {
         });
 
         this.getCategoriesTree();
+        this.getTags();
         this.getArticle();
         this.getArticles();
 
@@ -345,7 +377,7 @@ export default {
         }
     },
     created() {
-        this.dGetTags = _.debounce(this.getTags, 1500);
+        this.getCategoriesTree();
     },
     methods: {
         invertColor(hex) {
@@ -458,12 +490,19 @@ export default {
                 axios.post(`/api/kb/article/${this.article.id}`, formData, {'content-type': 'multipart/form-data'}).then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        this.getArticle();
                         this.getArticles();
-
+                        this.article = response.data
                         this.snackbarMessage = this.langMap.kb.article_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
+
+                        if (redirect === true) {
+                            let category = ''
+                            if (response.data.categories && response.data.categories.length > 0) {
+                                category = `?category=${response.data.categories[0].id}`
+                            }
+                            window.location.href = `/${this.$route.params.alias}${category}`;
+                        }
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.errorType = 'error';
@@ -481,7 +520,16 @@ export default {
                         this.actionColor = 'success'
                         this.snackbar = true;
 
-                        this.$router.push(`/${this.$route.params.alias}`);
+                        if (redirect === true) {
+                            let category = ''
+                            if (response.data.categories && response.data.categories.length > 0) {
+                                category = `?category=${response.data.categories[0].id}`
+                            }
+                            window.location.href = `/${this.$route.params.alias}${category}`;
+                        } else {
+                            window.location.href = `/${this.$route.params.alias}/${response.data.id}/edit`
+                        }
+
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.errorType = 'error';
@@ -490,9 +538,6 @@ export default {
                 });
             }
 
-            if (redirect) {
-                this.openCategory();
-            }
         },
         removeTag(item) {
             this.article.tags.splice(this.article.tags.indexOf(item), 1)
@@ -520,11 +565,12 @@ export default {
             });
         },
         openCategory() {
-            if (parseInt(localStorage.getItem('kb_category'))) {
-                this.$router.push(`/${this.$route.params.alias}?category=` + localStorage.getItem('kb_category'));
-            } else {
-                this.$router.push(`/${this.$route.params.alias}`);
-            }
+            window.history.back();
+            // if (parseInt(localStorage.getItem('kb_category'))) {
+            //     this.$router.push(`/${this.$route.params.alias}?category=` + localStorage.getItem('kb_category'));
+            // } else {
+            //     this.$router.push(`/${this.$route.params.alias}`);
+            // }
         },
         download(url) {
             window.open(url, '_blank');

@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\IncidentReporting\ActionBoardStatus;
 use App\IncidentReporting\FocusPriority;
 use App\IncidentReporting\ImpactPotential;
@@ -11,11 +12,8 @@ use App\IncidentReportingActionBoard;
 use App\IncidentReportingActionBoardAccess;
 use App\IncidentReportingActionBoardHasAction;
 use App\IncidentReportingActionBoardStageMonitoring;
-use App\Providers\IxarmaServiceProvider;
-
 use App\Repositories\IncidentReportingRepository;
 use App\Repositories\IxarmaRepository;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +49,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -115,7 +113,6 @@ class IncidentReportingController extends Controller
         return self::showResponse(true);
     }
 
-
     public function listEventTypes(Request $request)
     {
         return self::showResponse(true, $this->incidentRepo->getEventTypesInCompanyContext());
@@ -127,7 +124,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -157,7 +154,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -177,16 +174,22 @@ class IncidentReportingController extends Controller
     {
         $board = IncidentReportingActionBoard::where('id', '=', $id)->where('type_id', '=', $typeId)->first();
         $request['updated_by'] = Auth::id();
+        $updatedAttributes = $this->incidentRepo->compareUpdatedAttributes($board, $request->all());
         $board->update($request->all());
+
+        foreach ($updatedAttributes as $updatedAttribute) {
+            $this->incidentRepo->logActionBoard($board->id, $updatedAttribute . '_updated');
+        }
+
         $this->incidentRepo->syncActionBoardRelations($request, $board);
         $board = IncidentReportingActionBoard::query()->where('id', '=', $id);
 
         return self::showResponse(true, $board->with([
-            'actions.assignee', 'categories', 'clients', 'status',
-            'stageMonitoring', 'priority', 'access', 'state', 'actionBoards'
+            'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+            'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
+            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
         ])->first());
     }
-
 
     public function deleteFocusPriority($id)
     {
@@ -204,7 +207,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -237,7 +240,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -256,6 +259,36 @@ class IncidentReportingController extends Controller
         return self::showResponse($this->incidentRepo->deleteProcessState($id));
     }
 
+    public function listTeamRoles(Request $request): JsonResponse
+    {
+        return self::showResponse(true, $this->incidentRepo->getTeamRoleInCompanyContext());
+    }
+
+    public function addTeamRole(Request $request): JsonResponse
+    {
+        return self::showResponse(true, $this->incidentRepo->createTeamRole(
+            $request->name ?? '',
+            $request->name_de,
+            $request->position,
+            Auth::user()->employee->company_id
+        ));
+    }
+
+    public function editTeamRole(Request $request, $id): JsonResponse
+    {
+        return self::showResponse(true, $this->incidentRepo->updateTeamRole(
+            $id,
+            $request->name ?? '',
+            $request->name_de,
+            $request->position
+        ));
+    }
+
+    public function deleteTeamRole($id): JsonResponse
+    {
+        return self::showResponse($this->incidentRepo->deleteTeamRole($id));
+    }
+
     public function listResourceTypes(Request $request)
     {
         return self::showResponse(true, $this->incidentRepo->getResourceTypesInCompanyContext());
@@ -267,7 +300,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -297,7 +330,7 @@ class IncidentReportingController extends Controller
             $request->name ?? '',
             $request->name_de,
             $request->position,
-            $request->company_id
+            Auth::user()->employee->company_id
         ));
     }
 
@@ -318,12 +351,12 @@ class IncidentReportingController extends Controller
 
     public function listIxarmaCompanies(Request $request)
     {
-        return self::showResponse($this->ixarmaRepo->getOrganizations($request->company_id));
+        return self::showResponse($this->ixarmaRepo->getOrganizations(Auth::user()->employee->company_id));
     }
 
     public function listIxarmaParticipants(Request $request)
     {
-        return self::showResponse($this->ixarmaRepo->getParticipants($request->company_id));
+        return self::showResponse($this->ixarmaRepo->getParticipants(Auth::user()->employee->company_id));
     }
 
     public function listActionBoards($typeId): JsonResponse
@@ -336,10 +369,10 @@ class IncidentReportingController extends Controller
             $actionBoardsQuery->where('type_id', '!=', abs($typeId));
         }
         $actionBoards = $actionBoardsQuery->with([
-                'actions.assignee.userData', 'actions.type', 'categories', 'clients', 'stageMonitoring',
-                'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
-                'actionBoards.impactPotentials', 'actionBoards.actions'
-            ])
+            'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+            'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
+            'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
+        ])
             ->orderBy('name')
             ->get();
 
@@ -388,13 +421,24 @@ class IncidentReportingController extends Controller
 
     public function storeActionBoard(Request $request, $typeId): JsonResponse
     {
-        $request['state_id'] = $this->incidentRepo->getProcessStatesInCompanyContext()[0]->id;
+        if (is_null($request['version'])) {
+
+            $request['version'] = '0';
+        }
         $request['updated_by'] = Auth::id();
         $request['type_id'] = $typeId;
         $board = IncidentReportingActionBoard::create($request->all());
+        $this->incidentRepo->logActionBoard($board->id, 'created');
         $this->incidentRepo->syncActionBoardRelations($request, $board);
 
-        return self::showResponse(true, $board);
+        $result = IncidentReportingActionBoard::query()->where('id', '=', $board->id)
+            ->with([
+                'actions.assignee', 'actions.type', 'categories', 'clients', 'stageMonitoring',
+                'priority', 'access', 'state', 'childVersions', 'impactPotentials', 'updatedBy', 'status',
+                'actionBoards.impactPotentials', 'actionBoards.actions', 'logs'
+            ])->first();
+
+        return self::showResponse(true, $result);
     }
 
     public function storeAction(Request $request): JsonResponse

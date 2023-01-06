@@ -4,22 +4,26 @@
             <v-col
                 v-if="$store.getters['IncidentReporting/getIsEditable']" class="pb-0" cols="6" lg="6" md="6"
                 sm="12"
-                xl="4">
+                xl="6">
+                <label>
+                    {{langMap.main.name}}:
+                </label>
                 <v-text-field
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].name"
                     :color="themeBgColor"
-                    :label="langMap.main.name"
-                    prepend-icon="mdi-text"
+                    outlined
+                    hide-details
+                    dense
                     required
                     type="text"
                 ></v-text-field>
             </v-col>
             <v-col
                 v-if="$store.getters['IncidentReporting/getIsEditable']"
-                cols="6" lg="6" md="6" sm="12" xl="8">
+                cols="6" lg="6" md="6" sm="12" xl="6">
             </v-col>
             <v-col
-                class="pb-0" cols="12" lg="12" md="12" sm="12" xl="12">
+                class="pb-0" cols="6" lg="12" md="12" sm="12" xl="6">
                 <label>{{ langMap.ir.ab.categories }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -54,8 +58,10 @@
                     </v-chip>
                 </div>
             </v-col>
+            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].categories" cols="6" lg="6" md="6" sm="12" xl="6">
+            </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                   class="pb-0" cols="12" lg="12" md="12" sm="12" xl="12">
+                   class="pb-0" cols="6" lg="12" md="12" sm="12" xl="6">
                 <label>
                     {{ langMap.ir.ab.clients }}:
                 </label>
@@ -100,23 +106,26 @@
                     </v-chip>
                 </span>
             </v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
+            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
+                   cols="6" lg="6" md="6" sm="12" xl="6">
+            </v-col>
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
                 <label>
                     {{ langMap.ir.ab.stage_monitoring }}:
                 </label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
-                    v-model="$store.getters['IncidentReporting/getSelectedIR'].stage_monitoring_id"
+                    v-model="$store.getters['IncidentReporting/getSelectedIR'].state_id"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :items="$store.getters['IncidentReporting/getIROptions'].stage_monitorings"
+                    :items="$store.getters['SettingsIncident/ProcessStates/getItems']"
                     class=""
                     dense
                     hide-details
                     item-text="name"
                     item-value="id"
                     outlined
-                    placeholder="Valid from Stage Monitoring"
+                    :placeholder="langMap.ir.ab.stage_monitoring"
                     required
                 ></v-select>
                 <div
@@ -132,16 +141,16 @@
                         x-small
                     >
                         {{
-                            $store.getters['IncidentReporting/getSelectedIR'].stage_monitoring ?
-                                $store.getters['IncidentReporting/getSelectedIR'].stage_monitoring.name :
+                            $store.getters['IncidentReporting/getSelectedIR'].state ?
+                                $store.getters['IncidentReporting/getSelectedIR'].state.name :
                                 ''
                         }}
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="8">
+            <v-col cols="6" lg="6" md="6" sm="12" xl="6">
             </v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
                 <label>
                     {{ langMap.ir.ab.impact_potentials }}:
                 </label>
@@ -185,9 +194,9 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="8">
+            <v-col cols="6" lg="6" md="6" sm="12" xl="6">
             </v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
+            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
                 <label>{{ langMap.ir.ab.importance }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -229,23 +238,24 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="8">
+            <v-col cols="6" lg="6" md="6" sm="12" xl="6">
             </v-col>
-            <v-col class="pb-0" cols="8" lg="8" md="8" sm="12" xl="8">
+            <v-col class="pb-0" cols="8" lg="8" md="8" sm="12" xl="6">
+                <label>Description:</label>
                 <v-textarea
                     v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
                     :color="themeBgColor"
                     :readonly="!$store.getters['IncidentReporting/getIsEditable']"
                     auto-grow
-                    label="Description"
+                    hide-details
                     name="input-7-1"
                     outlined
                 ></v-textarea>
             </v-col>
-            <v-col cols="4" lg="4" md="4" sm="0" xl="4">
+            <v-col cols="4" lg="4" md="4" sm="0" xl="6">
             </v-col>
             <v-col
-                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
+                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
                 <label>{{ langMap.ir.ab.access }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -282,7 +292,7 @@
                 </div>
             </v-col>
             <v-col
-                cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
+                cols="6" lg="6" md="6" sm="12" xl="6"></v-col>
         </v-row>
         <div v-else>
             <h3>No data</h3>
@@ -304,6 +314,7 @@ export default {
     },
     mounted() {
         this.$store.dispatch('RiskRepository/callGetClients');
+        this.$store.dispatch('SettingsIncident/ProcessStates/callList');
         const that = this
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;

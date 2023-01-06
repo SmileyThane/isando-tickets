@@ -40,7 +40,7 @@ export default {
                     entity: 'ImpactPotentials',
                 },
                 {
-                    name: 'Process states',
+                    name: 'Process Stages',
                     component: tabIncidentSettings,
                     entity: 'ProcessStates',
                 },
@@ -73,6 +73,11 @@ export default {
                     name: 'Action Board Statuses',
                     component: tabIncidentSettings,
                     entity: 'ActionBoardStatuses',
+                },
+                {
+                    name: 'Team Roles',
+                    component: tabIncidentSettings,
+                    entity: 'TeamRoles',
                 },
             ]
         }

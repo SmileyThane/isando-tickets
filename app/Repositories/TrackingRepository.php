@@ -27,7 +27,7 @@ class TrackingRepository
         'create' => [
             'product.id' => 'nullable|exists:App\Product,id',
             'description' => 'nullable|string',
-            'date_from' => 'required|string',
+            'date_from' => 'nullable|string',
             'date_to' => 'nullable|string',
             'status' => 'required|integer|in:0,1,2,3',
             'billable' => 'boolean',
@@ -236,6 +236,7 @@ class TrackingRepository
 
     public function update(Request $request, Tracking $tracking)
     {
+        $tracking->user_id = Auth::user()->id;
         $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
         if (
             !Auth::user()->employee->hasPermissionId([Permission::TRACKER_EDIT_DELETE_OWN_TIME_UNLIMITED_ACCESS])
@@ -347,7 +348,7 @@ class TrackingRepository
             ->first();
     }
 
-    public function delete(Tracking $tracking)
+    public function delete($tracking)
     {
         $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
         if (
@@ -375,7 +376,7 @@ class TrackingRepository
         return true;
     }
 
-    public function duplicate(Tracking $tracking)
+    public function duplicate($tracking)
     {
         if ($tracking->user_id === Auth::user()->id) {
             $newTracking = $tracking->replicate();

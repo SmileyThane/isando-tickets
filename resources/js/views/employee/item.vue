@@ -778,6 +778,259 @@
                         </v-card>
                     </v-expand-transition>
                 </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card>
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.main.activities
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-card-title>
+                            <v-text-field
+                                v-model="activitySearch"
+                                append-icon="mdi-magnify"
+                                :color="themeBgColor"
+                                :label="langMap.main.search"
+                                single-line
+                                hide-details
+                            ></v-text-field>
+                        </v-card-title>
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="activityHeaders"
+                            :items="userData.employee.activities"
+                            :options.sync="options"
+                            class="elevation-1"
+                            dense
+                            :expanded.sync="activityExpanded"
+                            single-expand
+                            show-expand
+                            item-key="id"
+                            :search="activitySearch"
+                            @update:options="updateItemsPerPage"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="selectActivity(item)">
+                                            <v-icon small>mdi-pencil</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.main.update_activity }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="deleteActivity(item.id)">
+                                            <v-icon small>mdi-trash-can</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.main.delete_activity }}</span>
+                                </v-tooltip>
+                            </template>
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <td :colspan="headers.length">
+                                    <v-spacer>
+                                        &nbsp;
+                                    </v-spacer>
+                                    <span class="ml-2">
+                                    {{ item.content }}
+                                </span>
+                                    <v-spacer>
+                                        &nbsp;
+                                    </v-spacer>
+                                </td>
+                            </template>
+                        </v-data-table>
+
+                        <v-spacer>&nbsp;</v-spacer>
+
+                        <v-expansion-panels v-model="activityFormPanel">
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.main.add_activity }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12">
+                                                <v-text-field
+                                                    v-model="activityForm.title"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.company.name"
+                                                    dense
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    required
+                                                    type="text"
+                                                />
+                                            </v-col>
+                                            <v-col cols="md-12">
+                                                <v-textarea
+                                                    v-model="activityForm.content"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.company.description"
+                                                    dense
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    required
+                                                    type="text"
+                                                />
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-select v-model="activityForm.type_id"
+                                                          :color="themeBgColor"
+                                                          :item-color="themeBgColor"
+                                                          :items="activityTypes"
+                                                          :label="langMap.main.type"
+                                                          dense
+                                                          item-text="name" item-value="id"
+                                                >
+                                                </v-select>
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-autocomplete
+                                                    v-model="activityForm.client_id"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="companies"
+                                                    :label="langMap.main.activity_company"
+                                                    prepend-icon="mdi-account-outline"
+                                                    dense
+                                                    item-value="clients.id"
+                                                >
+                                                    <template v-slot:selection="data">
+                                                        {{ data.item.clients.name }}
+                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                                    </template>
+                                                    <template v-slot:item="data">
+                                                        {{ data.item.clients.name }}
+                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                                    </template>
+                                                </v-autocomplete>
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-menu
+                                                    ref="menuActivityDateRef"
+                                                    v-model="menuActivityDate"
+                                                    :close-on-content-click="false"
+                                                    :return-value.sync="activityForm.date"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    min-width="auto"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-text-field
+                                                            v-model="activityForm.date"
+                                                            label="Date"
+                                                            :color="themeBgColor"
+                                                            prepend-icon="mdi-calendar"
+                                                            readonly
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-date-picker
+                                                        v-model="activityForm.date"
+                                                        no-title
+                                                        :color="themeBgColor"
+                                                        scrollable
+                                                    >
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn
+                                                            text
+                                                            color="primary"
+                                                            @click="menuActivityDate = false"
+                                                        >
+                                                            Cancel
+                                                        </v-btn>
+                                                        <v-btn
+                                                            text
+                                                            color="primary"
+                                                            @click="$refs.menuActivityDateRef.save(activityForm.date)"
+                                                        >
+                                                            OK
+                                                        </v-btn>
+                                                    </v-date-picker>
+                                                </v-menu>
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-menu
+                                                    ref="menuActivityTimeRef"
+                                                    v-model="menuActivityTime"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    :return-value.sync="activityForm.time"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    max-width="290px"
+                                                    min-width="290px"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-text-field
+                                                            v-model="activityForm.time"
+                                                            label="Time"
+                                                            :color="themeBgColor"
+                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                            readonly
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-time-picker
+                                                        v-if="menuActivityTime"
+                                                        v-model="activityForm.time"
+                                                        :color="themeBgColor"
+                                                        full-width
+                                                        @click:minute="$refs.menuActivityTimeRef.save(activityForm.time)"
+                                                    ></v-time-picker>
+                                                </v-menu>
+                                            </v-col>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                small
+                                                @click="addActivity"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                            &nbsp;
+                                            <v-btn
+                                                color="#f1f1f1"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                small
+                                                @click="resetActivity"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: red;`">
+                                                    mdi-cancel
+                                                </v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
             </v-col>
             <v-col cols="6">
                 <v-card>
@@ -1224,7 +1477,7 @@ export default {
     data() {
         return {
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             headers: [
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'clients.name'},
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
@@ -1270,7 +1523,7 @@ themeBgColor: this.$store.state.themeBgColor,
             singleUserForm: {
                 user: '',
                 role_ids: [],
-                company_user_id: ''
+                client_id: ''
             },
             roles: [],
             rolesDialog: false,
@@ -1337,6 +1590,33 @@ themeBgColor: this.$store.state.themeBgColor,
             primaryEmailId: null,
             avatar: '',
             newAvatar: null,
+            activityForm: {
+                model_id: null,
+                model_type: 'App\\CompanyUser',
+                date: null,
+                time: null,
+            },
+            activityTypes: [],
+            activityExpanded: [],
+            activityHeaders: [
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'id',
+                },
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'title'},
+                {text: `${this.$store.state.lang.lang_map.main.activity_company}`, value: 'client.name'},
+                {text: `${this.$store.state.lang.lang_map.tracking.tracker.date}`, value: 'datetime'},
+                {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.name'},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+            ],
+            activitySearch: '',
+            activityFormPanel:[],
+            menuActivityDate: false,
+            menuActivityTime: false,
+            employees: []
+
         }
     },
     mounted() {
@@ -1349,6 +1629,8 @@ themeBgColor: this.$store.state.themeBgColor,
         this.getEmailTypes()
         this.getRoles()
         this.getClients()
+        this.getEmployees();
+        this.getActivityTypes();
         // if (localStorage.getItem('auth_token')) {
         //     this.$router.push('tickets')
         // }
@@ -1368,6 +1650,20 @@ themeBgColor: this.$store.state.themeBgColor,
         }
     },
     methods: {
+        getEmployees() {
+            axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
+                response => {
+                    this.loading = false
+                    response = response.data
+                    if (response.success === true) {
+                        this.employees = response.data.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.snackbar = true;
+                    }
+                });
+        },
         getCountries() {
             axios.get('/api/countries').then(response => {
                 response = response.data
@@ -1405,6 +1701,7 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
                     // console.log(this.companies);
                     this.employeeForm.company_user_id = this.userData.employee.id
+                    this.activityForm.model_id = this.userData.employee.id
 
                     if (this.userData.notification_statuses.length) {
                         let that = this;
@@ -2034,7 +2331,76 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.snackbar = true;
                 }
             });
-        }
+        },
+        addActivity() {
+            if (this.activityForm.id) {
+                this.updateActivity()
+            } else {
+            // console.log(this.activityForm);
+                axios.post(`/api/activities`, this.activityForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser();
+                    this.resetActivity();
+                } else {
+                    console.log('error')
+                }
+            });
+            }
+        },
+        updateActivity() {
+            console.log(this.activityForm);
+            axios.put(`/api/activities/${this.activityForm.id}`, this.activityForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser();
+                    this.resetActivity();
+                    this.activityFormPanel = []
+                } else {
+                    console.log('error')
+                }
+            });
+        },
+        selectActivity(item) {
+            this.activityForm = item
+            this.activityFormPanel = 0
+        },
+        deleteActivity(id) {
+            axios.delete(`/api/activities/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.selectedProductId = null;
+                    this.snackbarMessage = ''
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        resetActivity() {
+            this.activityForm = {
+                model_id: this.userData.employee.id,
+                model_type: 'App\\CompanyUser',
+                date: null,
+                time: null,
+            }
+        },
+        getActivityTypes() {
+            axios.get('/api/activities/types').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.activityTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
     }
 }
 </script>

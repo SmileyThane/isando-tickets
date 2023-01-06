@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ActivityController;
 use App\Http\Controllers\API\ClientGroupController;
 use App\Http\Controllers\API\IncidentReportingController;
 use App\Http\Controllers\API\InternalBillingController;
@@ -365,6 +366,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('ir/ixarma/companies', 'API\IncidentReportingController@listIxarmaCompanies');
     Route::get('ir/ixarma/participants', 'API\IncidentReportingController@listIxarmaParticipants');
 
+    Route::get('ir/team_roles', 'API\IncidentReportingController@listTeamRoles');
+    Route::post('ir/team_role', 'API\IncidentReportingController@addTeamRole');
+    Route::put('ir/team_role/{id}', 'API\IncidentReportingController@editTeamRole');
+    Route::delete('ir/team_role/{id}', 'API\IncidentReportingController@deleteTeamRole');
+
     Route::get('ir/ab/{type_id}', [IncidentReportingController::class, 'listActionBoards']);
     Route::get('ir/ab/{type_id}/options', [IncidentReportingController::class, 'optionsActionBoards']);
     Route::post('ir/ab/{type_id}', [IncidentReportingController::class, 'storeActionBoard']);
@@ -395,5 +401,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('limit_group/client/{id}', [LimitationGroupController::class, 'removeLimitationModel']);
     Route::post('limit_group/employee', [LimitationGroupController::class, 'addCompanyUser']);
     Route::delete('limit_group/employee/{id}', [LimitationGroupController::class, 'removeCompanyUser']);
+
+    Route::post('activities', [ActivityController::class, 'store']);
+    Route::put('activities/{id}', [ActivityController::class, 'update']);
+    Route::delete('activities/{id}', [ActivityController::class, 'destroy']);
+    Route::get('activities/types', [ActivityController::class, 'getTypes']);
+    Route::delete('activities/types/{id}', [ActivityController::class, 'destroyType']);
+    Route::post('activities/types', [ActivityController::class, 'storeType']);
 });
 

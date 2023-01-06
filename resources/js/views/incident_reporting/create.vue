@@ -6,8 +6,8 @@
                     <v-col cols="12">
                         <h4 class="heading headline">
                             <v-text-field
-                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].name"
+                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                 class="mb-2"
                                 dense
                                 hide-details
@@ -27,8 +27,8 @@
                                     <v-row no-gutters>
                                         <v-col class="pr-2 pt-2" cols="6">
                                             <v-text-field
-                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].version"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 class="mb-2" dense hide-details outlined
                                                 placeholder="Version"/>
                                         </v-col>
@@ -42,9 +42,9 @@
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
                                                         :color="themeBgColor"
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
@@ -54,8 +54,8 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
-                                                    :color="themeBgColor"
                                                     v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
+                                                    :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @input="validTillPicker = false"
@@ -65,26 +65,26 @@
                                         <v-col class="text-right pt-2" cols="1">
                                             <v-btn
                                                 v-if="!$store.getters['IncidentReporting/getIsEditable']"
-                                                @click="setIsEditable"
                                                 :color="themeBgColor"
                                                 icon
+                                                @click="setIsEditable"
                                             >
                                                 <v-icon>mdi-pencil</v-icon>
                                             </v-btn>
                                             <v-btn
                                                 v-if="$store.getters['IncidentReporting/getIsEditable']"
-                                                @click="save"
                                                 :color="themeBgColor"
                                                 icon
+                                                @click="save"
                                             >
                                                 <v-icon>mdi-check</v-icon>
                                             </v-btn>
                                         </v-col>
                                         <v-col cols="12">
                                             <v-select
-                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].stage_monitoring_id"
                                                 :color="themeBgColor"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 :item-color="themeBgColor"
                                                 :items="$store.getters['IncidentReporting/getIROptions'].stage_monitorings"
                                                 class=""
@@ -93,13 +93,13 @@
                                                 item-text="name"
                                                 item-value="id"
                                                 outlined
-                                                placeholder="Valid from Stage Monitoring"
+                                                :placeholder="langMap.ir.ab.stage_monitoring"
                                                 required
                                             ></v-select>
                                             <v-select
-                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].impact_potential_id"
                                                 :color="themeBgColor"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 :item-color="themeBgColor"
                                                 :items="$store.getters['IncidentReporting/getIROptions'].impact_potentials"
                                                 class=""
@@ -111,9 +111,9 @@
                                                 required
                                             ></v-select>
                                             <v-select
-                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].clients"
                                                 :color="themeBgColor"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 :item-color="themeBgColor"
                                                 :items="$store.getters['RiskRepository/getClients']"
                                                 class=""
@@ -127,17 +127,17 @@
                                                 required
                                             ></v-select>
                                             <v-checkbox
-                                                :aria-disabled="!$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].with_child_clients"
+                                                :aria-disabled="!$store.getters['IncidentReporting/getSelectedIR'].clients.length > 0"
                                                 :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 class="mt-0"
                                                 label="Include child organizations"
                                             >
                                             </v-checkbox>
                                             <v-select
-                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].priority_id"
                                                 :color="themeBgColor"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 :item-color="themeBgColor"
                                                 :items="$store.getters['IncidentReporting/getIROptions'].priorities"
                                                 class=""
@@ -150,6 +150,28 @@
                                                 required
                                             ></v-select>
                                             <br>
+                                            <v-select
+                                                :color="themeBgColor"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
+                                                :item-color="themeBgColor"
+                                                :items="$store.getters['IncidentReporting/getIR']"
+                                                class=""
+                                                dense
+                                                hide-details
+                                                outlined
+                                                placeholder="Scenarios"
+                                                required
+                                                @change="$store.commit('IncidentReporting/setRelatedIR', $event)"
+                                            >
+                                                <template v-slot:selection="{ attrs, item, parent, selected }">
+                                                    {{ item.name }}
+                                                </template>
+                                                <template v-slot:item="{ attrs, item, parent, selected }">
+                                                    {{ item.name }}
+                                                </template>
+                                            </v-select>
+                                            <br>
+
                                             <v-textarea
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].description"
                                                 :color="themeBgColor"
@@ -160,8 +182,8 @@
                                                 outlined
                                             ></v-textarea>
                                             <v-text-field
-                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 v-model="$store.getters['IncidentReporting/getSelectedIR'].source"
+                                                :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                 class="mb-2" dense hide-details outlined
                                                 placeholder="Source"/>
                                         </v-col>
@@ -175,9 +197,9 @@
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         v-model="$store.getters['IncidentReporting/getSelectedIR'].occurred_on"
                                                         :color="themeBgColor"
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
@@ -187,9 +209,9 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].occurred_on"
                                                     :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
-                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].occurred_on"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @input="occurredOnPicker = false"
@@ -206,9 +228,9 @@
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         v-model="$store.getters['IncidentReporting/getSelectedIR'].detected_on"
                                                         :color="themeBgColor"
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
@@ -218,9 +240,9 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].detected_on"
                                                     :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
-                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].detected_on"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @input="detectedOnPicker = false"
@@ -237,9 +259,9 @@
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
-                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         v-model="$store.getters['IncidentReporting/getSelectedIR'].reported_on"
                                                         :color="themeBgColor"
+                                                        :disabled="!$store.getters['IncidentReporting/getIsEditable']"
                                                         class="mb-2"
                                                         dense
                                                         hide-details
@@ -249,9 +271,9 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].reported_on"
                                                     :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
-                                                    v-model="$store.getters['IncidentReporting/getSelectedIR'].reported_on"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                                                     min="1950-01-01"
                                                     @input="reportedOnPicker = false"
@@ -269,12 +291,15 @@
 
             </v-col>
             <v-col cols="12" lg="4" md="6" style="border-right: 1px solid gray">
-                <h4 class="heading headline">Incident tasks</h4>
+                <h4 class="heading headline">Action boards</h4>
                 <v-row no-gutters>
                     <v-row>
-                        <v-col cols="12">
+                        <v-col
+                            cols="12"
+                            v-if="$store.getters['IncidentReporting/getRelatedIR']"
+                        >
                             <v-card
-                                v-for="(taskGroup, index) in $store.getters['IncidentReporting/getIR']"
+                                v-for="(taskGroup, index) in $store.getters['IncidentReporting/getRelatedIR'].action_boards"
                                 :key="index"
                                 class="d-inline-flex flex-column mr-2 mb-2"
                                 max-width="170"
@@ -284,9 +309,6 @@
                                 <v-list-item three-line>
                                     <v-list-item-content>
                                         <div class="">
-                                            <span v-if="taskGroup.type_id === 2" class="float-left">Scenario:</span>
-                                            <span v-if="taskGroup.type_id === 1" class="float-left">Action board:</span>
-                                            <br>
                                             <strong class="float-left">{{ taskGroup.name }}</strong>
                                         </div>
                                     </v-list-item-content>
@@ -302,10 +324,10 @@
                                         {{ 'show' }}
                                     </v-btn>
                                     <v-btn
+                                        icon
                                         outlined
                                         rounded
                                         text
-                                        icon
                                         @click="addToList(taskGroup)"
                                     >
                                         <v-icon>mdi-plus</v-icon>
@@ -322,7 +344,7 @@
                                 <v-col cols="4">Assigned to</v-col>
                                 <v-col cols="1"></v-col>
                             </v-row>
-                            <v-row no-gutters v-for="(task, index) in actionsList" :key="index"
+                            <v-row v-for="(task, index) in actionsList" :key="index" no-gutters
                                    style="border-bottom: 1px solid gray">
                                 <v-col cols="4">{{ task.name }}</v-col>
                                 <v-col cols="3">
@@ -338,15 +360,15 @@
                                         task.deadline_time_parameter
                                     }}
                                 </v-col>
-                                <v-col cols="4">{{ task.assignee ? task.assignee.user_data.email : '' }}</v-col>
+                                <v-col cols="4">{{ task.assignee ? task.assignee.name : '' }}</v-col>
                                 <v-col cols="1">
                                     <v-btn
+                                        icon
                                         outlined
                                         rounded
-                                        text
-                                        icon
-                                        @click="addToList(task)"
                                         style="margin-bottom: 12px;"
+                                        text
+                                        @click="addToList(task)"
                                     >
                                         <v-icon>mdi-plus</v-icon>
 
@@ -363,7 +385,7 @@
                                 <v-col cols="2">Version</v-col>
                                 <v-col cols="1"></v-col>
                             </v-row>
-                            <v-row no-gutters v-for="(task, index) in actionBoardsList" :key="index"
+                            <v-row v-for="(task, index) in actionBoardsList" :key="index" no-gutters
                                    style="border-bottom: 1px solid gray">
                                 <v-col cols="4">{{ task.name }}</v-col>
                                 <v-col cols="3">{{ task.status ? task.status.name : '' }}</v-col>
@@ -371,12 +393,12 @@
                                 <v-col cols="1">{{ task.version }}</v-col>
                                 <v-col cols="1">
                                     <v-btn
+                                        icon
                                         outlined
                                         rounded
-                                        text
-                                        icon
-                                        @click="addToList(task)"
                                         style="margin-bottom: 12px;"
+                                        text
+                                        @click="addToList(task)"
                                     >
                                         <v-icon>mdi-plus</v-icon>
 
@@ -385,6 +407,40 @@
                             </v-row>
                         </v-col>
                     </v-row>
+                </v-row>
+                <v-row no-gutters>
+                    <v-col cols="12">
+                        <h4 class="heading headline float-left">Selected Actions</h4>
+                        <v-spacer></v-spacer>
+                        <!--                        <v-menu-->
+                        <!--                            bottom-->
+                        <!--                            left-->
+                        <!--                        >-->
+                        <!--                            <template>-->
+                        <!--                                <v-btn-->
+                        <!--                                    :color="themeBgColor"-->
+                        <!--                                    class="float-right"-->
+                        <!--                                    dark-->
+                        <!--                                    icon-->
+                        <!--                                >-->
+                        <!--                                    <v-icon>mdi-dots-vertical</v-icon>-->
+                        <!--                                </v-btn>-->
+                        <!--                            </template>-->
+
+                        <!--                            <v-list>-->
+                        <!--                                <v-list-item>-->
+                        <!--                                    <v-list-item-title>Menu 1</v-list-item-title>-->
+                        <!--                                </v-list-item>-->
+                        <!--                                <v-list-item>-->
+                        <!--                                    <v-list-item-title>Menu 2</v-list-item-title>-->
+                        <!--                                </v-list-item>-->
+                        <!--                            </v-list>-->
+                        <!--                        </v-menu>-->
+                    </v-col>
+                </v-row>
+                <v-row v-for="(action, index) in this.$store.getters['IncidentReporting/getSelectedIR'].actions" :key="index" style="border-bottom: 1px solid gray">
+                    <v-col cols="8" lg="8" md="12" sm="12">{{ action.name }}</v-col>
+                    <!--                    <v-col cols="4" lg="4" md="12" sm="12">{{ action.date }}</v-col>-->
                 </v-row>
             </v-col>
             <v-col cols="12" lg="4" md="6">
@@ -418,9 +474,9 @@
                         <!--                        </v-menu>-->
                     </v-col>
                 </v-row>
-                <v-row v-for="(action, index) in finalList" :key="index" style="border-bottom: 1px solid gray">
-                    <v-col cols="8" lg="8" md="12" sm="12">{{ action.name }}</v-col>
-                    <!--                    <v-col cols="4" lg="4" md="12" sm="12">{{ action.date }}</v-col>-->
+                <v-row v-for="(action, index) in this.$store.getters['IncidentReporting/getSelectedIR'].logs" :key="index" style="border-bottom: 1px solid gray">
+                    <v-col cols="8" lg="8" md="12" sm="12">{{ action.log }}</v-col>
+                                        <v-col cols="4" lg="4" md="12" sm="12">{{ action.created_at }}</v-col>
                 </v-row>
             </v-col>
         </v-row>
@@ -471,7 +527,7 @@ export default {
         } else {
             this.$store.commit('IncidentReporting/setIsEditable', true);
         }
-        this.$store.commit('IncidentReporting/setIRType', -3);
+        this.$store.commit('IncidentReporting/setIRType', 2);
         this.$store.dispatch('IncidentReporting/callGetIR').then(() => {
             this.$store.dispatch('IncidentReporting/callSetSelectedIR', IR)
         });
@@ -493,9 +549,9 @@ export default {
             // this.$router.push(`/incident_reporting/list`)
         },
         showList(item) {
-            this.$store.commit('IncidentReporting/setRelatedIR', item)
-            this.actionsList = this.$store.getters['IncidentReporting/getRelatedIR'].actions
-            this.actionBoardsList = this.$store.getters['IncidentReporting/getRelatedIR'].action_boards
+            // this.$store.commit('IncidentReporting/setRelatedIR', item)
+            this.actionsList = item.actions ?? []
+            this.actionBoardsList = item.action_boards ?? []
         },
         addToList(item) {
             if (item.actions !== undefined && item.actions.length > 0) {
@@ -530,6 +586,7 @@ export default {
 .clearfix {
     clear: both;
 }
+
 .row {
     margin-bottom: 12px;
 }

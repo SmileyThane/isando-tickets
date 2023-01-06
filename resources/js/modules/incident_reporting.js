@@ -4,11 +4,14 @@ export default {
         selectedIR: {
             id: 0,
             with_child_clients: false,
-            version: '',
+            version: ' ',
             valid_till: '',
             updated_by: {
                 name: '',
                 surname: ''
+            },
+            state: {
+                name: ''
             },
             categories: [],
             clients: [],
@@ -33,7 +36,7 @@ export default {
         relatedIR: {
             id: 0,
             with_child_clients: false,
-            version: '',
+            version: ' ',
             valid_till: '',
             updated_by: {
                 name: '',
@@ -56,7 +59,10 @@ export default {
             source: '',
             reported_on: null,
             detected_on: null,
-            occurred_on: null
+            occurred_on: null,
+            state: {
+                name: ''
+            },
 
         },
         IRType: 1,
@@ -132,6 +138,7 @@ export default {
             }).then(({status, data: {data, success}}) => {
                 if (status === 200 && success) {
                     commit('setIRActions', data)
+
                     return Promise.resolve(data)
                 }
                 commit('setIRActions', [])
@@ -181,10 +188,10 @@ export default {
                     if (status === 200 && success) {
                         dispatch('callSetIsEditable', false)
                         dispatch('callSetSelectedIR', data)
+                        dispatch('callGetIR')
 
                         return Promise.resolve(data)
                     }
-                    dispatch('callGetIR')
 
                     return Promise.reject([])
                 });
@@ -221,7 +228,7 @@ export default {
             if (data === null) {
                 data = {
                     with_child_clients: false,
-                    version: '',
+                    version: ' ',
                     valid_till: '',
                     updated_by: {
                         name: '',
@@ -239,7 +246,10 @@ export default {
                     stage_monitoring: null,
                     status: {
                         name: ''
-                    }
+                    },
+                    state: {
+                        name: ''
+                    },
                 }
             }
             commit('setSelectedIR', data)
