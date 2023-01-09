@@ -119,118 +119,118 @@
 
 
 <script>
-    import EventBus from "../../components/EventBus";
+import EventBus from "../../components/EventBus";
 
-    export default {
+export default {
 
-        data() {
-            return {
-                clientId: 6,
-                snackbar: false,
-                actionColor: '',
-                themeFgColor: this.$store.state.themeFgColor,
-                themeBgColor: this.$store.state.themeBgColor,
-                snackbarMessage: '',
-                totalCompanies: 0,
-                lastPage: 0,
-                loading: this.themeBgColor,
-                langMap: this.$store.state.lang.lang_map,
-                expanded: [],
-                singleExpand: false,
-                options: {
-                    page: 1,
-                    sortDesc: [false],
-                    sortBy: ['name'],
-                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
+    data() {
+        return {
+            clientId: 6,
+            snackbar: false,
+            actionColor: '',
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            snackbarMessage: '',
+            totalCompanies: 0,
+            lastPage: 0,
+            loading: this.themeBgColor,
+            langMap: this.$store.state.lang.lang_map,
+            expanded: [],
+            singleExpand: false,
+            options: {
+                page: 1,
+                sortDesc: [false],
+                sortBy: ['name'],
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
+            },
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [10, 25, 50, 100],
+            },
+            headers: [
+                {text: '', value: 'data-table-expand'},
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'id',
                 },
-                footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [10, 25, 50, 100],
-                },
-                headers: [
-                    {text: '', value: 'data-table-expand'},
-                    {
-                        text: 'ID',
-                        align: 'start',
-                        sortable: false,
-                        value: 'id',
-                    },
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
-                    {text: `${this.$store.state.lang.lang_map.company.company_number}`, value: 'company_number'},
-                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
-                ],
-                companiesSearch: '',
-                companies: [],
-                removeCompanyDialog: false,
-                selectedCompanyId: null
-            }
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.company.company_number}`, value: 'company_number'},
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+            ],
+            companiesSearch: '',
+            companies: [],
+            removeCompanyDialog: false,
+            selectedCompanyId: null
+        }
+    },
+    mounted() {
+        this.getCompanies();
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+    },
+    created() {
+        this.debounceGetCompanies = _.debounce(this.getCompanies, 1000);
+    },
+    methods: {
+        getCompanies() {
+            axios.get('/api/company', {
+                params: {
+                    search: this.companiesSearch,
+                    sort_by: this.options.sortBy[0],
+                    sort_val: this.options.sortDesc[0],
+                    per_page: this.options.itemsPerPage,
+                    page: this.options.page
+                }
+            }).then(
+                response => {
+                    response = response.data
+                    this.companies = response.data.data
+                    this.totalCompanies = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.loading = false
+                });
         },
-        mounted() {
-            this.getCompanies();
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
+        showItem(item) {
+            let route = this.$store.state.roles.includes(this.clientId) ? '/customer' : '/company';
+            this.$router.push(`${route}/${item.id}`)
+        },
+        deleteProcess(item) {
+            this.selectedCompanyId = item.id
+            this.removeCompanyDialog = true
+        },
+        deleteCompany(id) {
+            axios.delete(`/api/company/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getCompanies()
+                    this.snackbarMessage = this.langMap.company.company_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeCompanyDialog = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
             });
         },
-        created() {
-            this.debounceGetCompanies = _.debounce(this.getCompanies, 1000);
+        updateItemsCount(value) {
+            this.options.itemsPerPage = value
+            localStorage.itemsPerPage = value;
+            this.options.page = 1
         },
-        methods: {
-            getCompanies() {
-                axios.get('/api/company', {
-                    params: {
-                        search: this.companiesSearch,
-                        sort_by: this.options.sortBy[0],
-                        sort_val: this.options.sortDesc[0],
-                        per_page: this.options.itemsPerPage,
-                        page: this.options.page
-                    }
-                }).then(
-                    response => {
-                        response = response.data
-                        this.companies = response.data.data
-                        this.totalCompanies = response.data.total
-                        this.lastPage = response.data.last_page
-                        this.loading = false
-                    });
+    },
+    watch: {
+        options: {
+            handler() {
+                this.getCompanies()
             },
-            showItem(item) {
-                let route = this.$store.state.roles.includes(this.clientId) ? '/customer' : '/company';
-                this.$router.push(`${route}/${item.id}`)
-            },
-            deleteProcess(item) {
-                this.selectedCompanyId = item.id
-                this.removeCompanyDialog = true
-            },
-            deleteCompany(id) {
-                axios.delete(`/api/company/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getCompanies()
-                        this.snackbarMessage = this.langMap.company.company_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.removeCompanyDialog = false
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateItemsCount(value) {
-                this.options.itemsPerPage = value
-                localStorage.itemsPerPage = value;
-                this.options.page = 1
-            },
-        },
-        watch: {
-            options: {
-                handler() {
-                    this.getCompanies()
-                },
-                deep: true,
-            }
+            deep: true,
         }
     }
+}
 </script>
