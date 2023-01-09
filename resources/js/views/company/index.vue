@@ -68,9 +68,9 @@
                                         <v-btn
                                             color="grey"
                                             dark
-                                            @click="showItem(item)"
                                             fab
                                             x-small
+                                            @click="showItem(item)"
                                         >
                                             <v-icon
                                             >
@@ -81,9 +81,9 @@
                                         <v-btn
                                             color="error"
                                             dark
-                                            @click="deleteProcess(item)"
                                             fab
                                             x-small
+                                            @click="deleteProcess(item)"
                                         >
                                             <v-icon>
                                                 mdi-delete
@@ -98,17 +98,17 @@
             </div>
         </div>
         <template>
-            <v-dialog v-model="removeCompanyDialog" persistent max-width="480">
+            <v-dialog v-model="removeCompanyDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                        {{langMap.main.delete_selected}} {{langMap.main.company}}?
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.main.delete_selected }} {{ langMap.main.company }}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeCompanyDialog = false">{{langMap.main.cancel}}
+                        <v-btn color="grey darken-1" text @click="removeCompanyDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn color="red darken-1" disabled text @click="deleteCompany(selectedCompanyId)">
-                            {{langMap.main.delete}}
+                            {{ langMap.main.delete }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
