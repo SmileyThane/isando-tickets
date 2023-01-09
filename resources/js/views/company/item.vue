@@ -2210,10 +2210,12 @@
                                             <v-list-item-group :color="themeBgColor">
                                                 <v-list-item v-for="(item, i) in company.employees" :key="item.id">
                                                     <v-list-item-action>
-                                                        <v-checkbox v-model="selectedGroupEmployees" :color="themeBgColor" :value="item.id"/>
+                                                        <v-checkbox v-model="selectedGroupEmployees"
+                                                                    :color="themeBgColor" :value="item.id"/>
                                                     </v-list-item-action>
                                                     <v-list-item-content>
-                                                        <v-list-item-title v-text="item.user_data.full_name"></v-list-item-title>
+                                                        <v-list-item-title
+                                                            v-text="item.user_data.full_name"></v-list-item-title>
                                                     </v-list-item-content>
                                                 </v-list-item>
                                             </v-list-item-group>
@@ -2767,8 +2769,8 @@ export default {
                 this.groupModelItems = this.company.products.map((i) => i.product_data);
             }
 
-            this.groupModelItems.sort((a,b) => (a.name.toLocaleUpperCase() > b.name.toLocaleUpperCase()) ? 1 : ((b.name.toLocaleUpperCase() > a.name.toLocaleUpperCase()) ? -1 : 0));
-            this.company.employees.sort((a,b) => (a.user_data.full_name.toLocaleUpperCase() > b.user_data.full_name.toLocaleUpperCase()) ? 1 : ((b.user_data.full_name.toLocaleUpperCase() > a.user_data.full_name.toLocaleUpperCase()) ? -1 : 0));
+            this.groupModelItems.sort((a, b) => (a.name.toLocaleUpperCase() > b.name.toLocaleUpperCase()) ? 1 : ((b.name.toLocaleUpperCase() > a.name.toLocaleUpperCase()) ? -1 : 0));
+            this.company.employees.sort((a, b) => (a.user_data.full_name.toLocaleUpperCase() > b.user_data.full_name.toLocaleUpperCase()) ? 1 : ((b.user_data.full_name.toLocaleUpperCase() > a.user_data.full_name.toLocaleUpperCase()) ? -1 : 0));
 
             if (item.limitation_models !== null) {
                 this.selectedGroupModelItems = item.limitation_models.map((i) => i.model_id);
