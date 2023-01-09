@@ -5,8 +5,6 @@
             :bottom="true"
             :color="actionColor"
             :right="true"
-            v-model="snackbar"
-            :color="actionColor"
         >
             {{ snackbarMessage }}
         </v-snackbar>
@@ -16,25 +14,26 @@
                     <div class="card-header"></div>
                     <div class="card-body">
                         <v-data-table
-                            show-expand
+                            :expanded.sync="expanded"
+                            :footer-props="footerProps"
                             :headers="headers"
                             :items="companies"
-                            :single-expand="singleExpand"
-                            :expanded.sync="expanded"
+                            :loading="loading"
+                            :loading-text="langMap.main.loading"
                             :options.sync="options"
                             :server-items-length="totalCompanies"
-                            :loading="loading"
-                            :footer-props="footerProps"
+                            :single-expand="singleExpand"
                             class="elevation-1"
                             hide-default-footer
-                            :loading-text="langMap.main.loading"
+                            show-expand
                             @click:row="showItem"
                         >
                             <template v-slot:top>
                                 <v-row>
-                                    <v-col sm="12" md="10">
-                                        <v-text-field @input="debounceGetCompanies" v-model="companiesSearch" :color="themeBgColor"
-                                                      :label="langMap.main.search" class="mx-4"></v-text-field>
+                                    <v-col md="10" sm="12">
+                                        <v-text-field v-model="companiesSearch" :color="themeBgColor"
+                                                      :label="langMap.main.search"
+                                                      class="mx-4" @input="debounceGetCompanies"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
