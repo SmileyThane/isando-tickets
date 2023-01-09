@@ -35,26 +35,26 @@
                                                       :label="langMap.main.search"
                                                       class="mx-4" @input="debounceGetCompanies"></v-text-field>
                                     </v-col>
-                                    <v-col sm="12" md="2">
+                                    <v-col md="2" sm="12">
                                         <v-select
-                                            class="mx-4"
+                                            v-model="options.itemsPerPage"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
-                                            v-model="options.itemsPerPage"
+                                            class="mx-4"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
                                 </v-row>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination :color="themeBgColor"
-                                              v-model="options.page"
+                                <v-pagination v-model="options.page"
+                                              :color="themeBgColor"
                                               :length="lastPage"
-                                              circle
                                               :page="options.page"
                                               :total-visible="5"
+                                              circle
                                 >
                                 </v-pagination>
 
