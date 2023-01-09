@@ -530,7 +530,8 @@
                                 <v-list-item v-for="(item, i) in company.billing" :key="item.id">
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.name"></v-list-item-title>
-                                        <v-list-item-subtitle v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
+                                        <v-list-item-subtitle
+                                            v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon small @click="editInternalBilling(item)">
@@ -1277,7 +1278,8 @@
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteLimitationGroupDlg(item)">
+                                        <v-btn v-bind="attrs" v-on="on" icon
+                                               @click="showDeleteLimitationGroupDlg(item)">
                                             <v-icon
                                                 small
                                             >
@@ -2169,7 +2171,8 @@
                                             <v-list-item-group :color="themeBgColor">
                                                 <v-list-item v-for="(item, i) in groupModelItems" :key="item.id">
                                                     <v-list-item-action>
-                                                        <v-checkbox v-model="selectedGroupModelItems" :color="themeBgColor" :value="item.id"/>
+                                                        <v-checkbox v-model="selectedGroupModelItems"
+                                                                    :color="themeBgColor" :value="item.id"/>
                                                     </v-list-item-action>
                                                     <v-list-item-content>
                                                         <v-list-item-title v-text="item.name"></v-list-item-title>
