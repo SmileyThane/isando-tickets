@@ -961,6 +961,8 @@ class LanguageSeeder extends Seeder
                         'unlink_step' => 'Unlink post',
                         'next_step' => 'Next step',
                         'new_knowledge_name' => 'New post',
+                        'add_knowledge_base' => 'Add post',
+                        'add_risk_repository' => 'Add risk',
                     ],
                     'ir' => [
                         'ab' => [
@@ -1913,6 +1915,8 @@ class LanguageSeeder extends Seeder
                             'unlink_step' => 'Schritt Post aufheben',
                             'next_step' => 'Nächster Schritt',
                             'new_knowledge_name' => 'Neues Post',
+                            'add_knowledge_base' => 'Add post',
+                            'add_risk_repository' => 'Add risk',
                         ],
                         'ir' => [
                             'ab' => [

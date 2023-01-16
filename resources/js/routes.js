@@ -33,7 +33,6 @@ import TrackingReports from './views/tracking/reports'
 import TrackingSettings from './views/tracking/settings'
 import ResetPassword from './views/auth/reset-password'
 import KnowledgeBase from './views/knowledge_base/initial'
-// import KnowledgeBase from './views/knowledge_base/index'
 import KnowledgeBaseArticle from './views/knowledge_base/item'
 import KnowledgeBaseCreate from './views/knowledge_base/create'
 import RoleManagement from './views/superadmin/roles'
@@ -402,14 +401,14 @@ export default [
         },
         component: CustomLicenses
     },
-    {
-        path: '/risk_repository',
-        name: 'risk_repository',
-        meta: {
-            requiresAuth: true,
-        },
-        component: RiskRepository
-    },
+    // {
+    //     path: '/risk_repository',
+    //     name: 'risk_repository',
+    //     meta: {
+    //         requiresAuth: true,
+    //     },
+    //     component: RiskRepository
+    // },
     {
         path: '/risk_repository/:categoryId',
         name: 'risk_repository_category',

@@ -64,9 +64,11 @@
                                         </v-list-item>
                                         <v-list-item link @click.prevent="createArticle">
                                             <v-list-item-title>
-                                                {{ langMap.main.create }}
-                                                {{ langMap.sidebar[$route.params.alias] }}
-                                                {{ langMap.kb.create_article }}
+                                                {{
+                                                    langMap.kb['add_'+$route.params.alias] ?
+                                                        langMap.kb['add_'+$route.params.alias] :
+                                                        langMap.kb['add_knowledge_base']
+                                                }}
                                             </v-list-item-title>
                                             <v-list-item-action>
                                                 <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
