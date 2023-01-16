@@ -49,7 +49,7 @@ export default [
     {
         path: '/',
         name: 'main',
-        component: Landing
+        component: Login
     },
     {
         path: '/login',

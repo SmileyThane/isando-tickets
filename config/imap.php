@@ -10,6 +10,10 @@
 *  -
 */
 
+use Webklex\PHPIMAP\IMAP;
+use Webklex\PHPIMAP\Support\Masks\AttachmentMask;
+use Webklex\PHPIMAP\Support\Masks\MessageMask;
+
 return [
 
     /*
@@ -116,7 +120,7 @@ return [
     */
     'options' => [
         'delimiter' => '/',
-        'fetch' => \Webklex\IMAP\IMAP::FT_UID,
+        'fetch' => IMAP::FT_UID,
         'fetch_body' => true,
         'fetch_attachment' => true,
         'fetch_flags' => true,
@@ -149,7 +153,7 @@ return [
     | The provided masks below are used as the default masks.
      */
     'masks' => [
-        'message' => \Webklex\IMAP\Support\Masks\MessageMask::class,
-        'attachment' => \Webklex\IMAP\Support\Masks\AttachmentMask::class
+        'message' => MessageMask::class,
+        'attachment' => AttachmentMask::class
     ]
 ];
