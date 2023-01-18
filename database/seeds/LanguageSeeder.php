@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeder;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -1918,6 +1920,7 @@ class LanguageSeeder extends Seeder
                             'add_knowledge_base' => 'Add post',
                             'add_risk_repository' => 'Add risk',
                         ],
+
                         'ir' => [
                             'ab' => [
                                 'title' => 'Action boards',
