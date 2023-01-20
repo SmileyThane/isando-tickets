@@ -145,7 +145,7 @@ class CompanyUserRepository
     {
         $result = false;
         $companyUser = CompanyUser::find($id);
-        if ($companyUser && $companyUser->hasPermissionId(Permission::EMPLOYEE_DELETE_ACCESS)) {
+        if ($companyUser) {
             User::where('id', $companyUser->user_id)->delete();
             ClientCompanyUser::where('company_user_id', $companyUser->id)->delete();
             $companyUser->delete();
