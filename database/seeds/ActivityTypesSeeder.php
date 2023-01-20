@@ -17,49 +17,49 @@ class ActivityTypesSeeder extends Seeder
     {
         $companies = Company::all();
         foreach ($companies as $company) {
-            DB::table('address_types')->updateOrInsert(
+            DB::table('activity_types')->updateOrInsert(
                 [
                     'company_id' => $company->id,
                     'name' => 'Call out'
                 ]
             );
-            DB::table('address_types')->updateOrInsert(
+            DB::table('activity_types')->updateOrInsert(
                 [
                     'company_id' => $company->id,
                     'name' => 'Call in'
                 ]
             );
-            DB::table('address_types')->updateOrInsert(
+            DB::table('activity_types')->updateOrInsert(
                 [
                     'company_id' => $company->id,
                     'name' => 'Email out'
                 ]
             );
-            DB::table('address_types')->updateOrInsert(
+            DB::table('activity_types')->updateOrInsert(
                 [
                     'company_id' => $company->id,
                     'name' => 'Email in'
                 ]
             );
-            DB::table('address_types')->updateOrInsert(
+            DB::table('activity_types')->updateOrInsert(
                 [
                     'company_id' => $company->id,
                     'name' => 'Note'
                 ]
             );
-            DB::table('address_types')->updateOrInsert(
+            DB::table('activity_types')->updateOrInsert(
                 [
                     'company_id' => $company->id,
                     'name' => 'Offer'
                 ]
             );
-            DB::table('address_types')->updateOrInsert(
+            DB::table('activity_types')->updateOrInsert(
                 [
                     'company_id' => $company->id,
                     'name' => 'Deal'
                 ]
             );
-            DB::table('address_types')->updateOrInsert(
+            DB::table('activity_types')->updateOrInsert(
                 [
                     'company_id' => $company->id,
                     'name' => 'Other'
