@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ActivityController extends Controller
 {
@@ -40,7 +41,11 @@ class ActivityController extends Controller
 
     public function getTypes()
     {
-        return self::showResponse(true, ActivityType::all());
+        $types = ActivityType::query()
+            ->where('company_id', '=', Auth::user()->employee->company_id)
+            ->get();
+
+        return self::showResponse(true, $types);
     }
 
     public function storeType(Request $request)
