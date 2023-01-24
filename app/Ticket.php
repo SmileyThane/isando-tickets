@@ -208,9 +208,10 @@ class Ticket extends Model
         if ($this->parent_id !== null && $this->unifier_id) {
             $translationsArray = Language::find($this->langId)->lang_map;
             $mergeComment = $translationsArray->ticket->ticket_merge_parent_msg;
+            $unifiedUserName = $this->unifier_id ? User::find($this->unifier_id)->full_name : '';
             $mergeComment = str_replace(
                 ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
-                [$this->number, $this->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
+                [$this->number, $this->original_name, $this->merged_at, $unifiedUserName],
                 $mergeComment
             );
             return $mergeComment;
