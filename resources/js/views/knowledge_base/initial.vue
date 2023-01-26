@@ -15,13 +15,14 @@ export default {
         component: null,
     }),
     created() {
-        switch (this.$route.params.alias) {
-            case 'risk_repository':
-                this.component = risk_repository;
-                break;
-            default:
-                this.component = knowledge_base
-        }
+        this.component = knowledge_base
+        // switch (this.$route.params.alias) {
+        //     case 'risk_repository':
+        //         this.component = risk_repository;
+        //         break;
+        //     default:
+        //         this.component = knowledge_base
+        // }
     },
 }
 </script>
