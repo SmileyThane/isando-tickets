@@ -27,8 +27,10 @@ class CompanyUser extends Model
             $roleName = $role->name;
             if (property_exists($translationsArray->roles, $roleName)) {
                 $result .= $translationsArray->roles->$roleName;
-                $result .= $key !== count($roles) - 1 ? ', ' : '';
+            } else {
+                $result .= $roleName;
             }
+            $result .= $key !== count($roles) - 1 ? ', ' : '';
         }
         return $result ?? $translationsArray->roles->contact;
     }
