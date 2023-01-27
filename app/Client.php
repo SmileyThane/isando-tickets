@@ -30,6 +30,11 @@ class Client extends Model
         return $this->morphTo();
     }
 
+    public function supplier()
+    {
+        return $this->morphTo('supplier');
+    }
+
     public function allClients(): MorphMany
     {
         return $this->clients()->with('allClients');
