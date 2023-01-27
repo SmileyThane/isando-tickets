@@ -189,16 +189,23 @@
                                                         :label="langMap.main.owner"
                                                         :color="themeBgColor"
                                                         :item-color="themeBgColor"
-                                                        item-text="employee.user_data.full_name"
-                                                        item-value="employee.id"
+                                                        item-text="user_data.full_name"
+                                                        item-value="id"
                                                         v-model="client.owner_id"
-                                                        :items="client.employees"
+                                                        :items="client.supplier.employees"
                                                     >
                                                         <template v-slot:item="props">
-                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                            {{props.item.user_data.full_name}}
+                                                            <span v-if="props.item.description">
+                                                                ({{props.item.description}})
+                                                            </span>
+
                                                         </template>
                                                         <template v-slot:selection="props">
-                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                            {{props.item.user_data.full_name}}
+                                                            <span v-if="props.item.description">
+                                                                ({{props.item.description}})
+                                                            </span>
                                                         </template>
                                                     </v-select>
                                                 </v-col>
