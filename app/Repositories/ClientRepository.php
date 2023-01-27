@@ -144,22 +144,33 @@ class ClientRepository
     {
         return Client::where('id', $id)
             ->with(
-                'teams',
-                'employees.employee.userData.phones.type',
-                'employees.employee.userData.addresses.type',
-                'employees.employee.userData.addresses.country',
-                'employees.employee.userData.emails.type',
-                'clients',
-                'products.productData',
-                'phones.type',
-                'addresses.type',
-                'billing',
-                'addresses.country',
-                'socials.type',
-                'emails.type',
-                'activities.type',
-                'activities.employee',
-                'owner.userData'
+                ['teams',
+                    'employees.employee.userData.phones.type',
+                    'employees.employee.userData.addresses.type',
+                    'employees.employee.userData.addresses.country',
+                    'employees.employee.userData.emails.type',
+                    'clients',
+                    'products.productData',
+                    'phones.type',
+                    'addresses.type',
+                    'billing',
+                    'addresses.country',
+                    'socials.type',
+                    'emails.type',
+                    'activities.type',
+                    'activities.employee',
+                    'owner.userData',
+                    'supplier',
+                    'supplier.employees' => function ($query) {
+                        $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
+                        if (Auth::user()->employee->hasPermissionId([
+                            Permission::EMPLOYEE_CLIENT_ACCESS,
+                            Permission::EMPLOYEE_USER_ACCESS
+                        ])) {
+                            $result->where('user_id', Auth::id());
+                        }
+                        return $result->get();
+                    }]
             )
             ->first();
     }
