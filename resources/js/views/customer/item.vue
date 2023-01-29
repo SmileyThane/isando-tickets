@@ -649,7 +649,7 @@
                     &nbsp;
                 </v-spacer>
 
-                <v-card>
+                <v-card v-if="$helpers.auth.checkPermissionByIds([105])">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -687,7 +687,7 @@
                             :search="activitySearch"
                             @update:options="updateItemsPerPage"
                         >
-                            <template v-slot:item.actions="{ item }">
+                            <template v-slot:item.actions="{ item }" v-if="$helpers.auth.checkPermissionByIds([106])">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn v-bind="attrs" v-on="on" icon @click="selectActivity(item)">
@@ -697,7 +697,7 @@
                                     <span>{{ langMap.main.update_activity }}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
+                                    <template v-slot:activator="{ on, attrs }" v-if="$helpers.auth.checkPermissionByIds([107])">
                                         <v-btn v-bind="attrs" v-on="on" icon @click="deleteActivity(item.id)">
                                             <v-icon small>mdi-trash-can</v-icon>
                                         </v-btn>
@@ -722,7 +722,7 @@
 
                         <v-spacer>&nbsp;</v-spacer>
 
-                        <v-expansion-panels v-model="activityFormPanel">
+                        <v-expansion-panels v-model="activityFormPanel" v-if="$helpers.auth.checkPermissionByIds([106])">
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.main.add_activity }}
