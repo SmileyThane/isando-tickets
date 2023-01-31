@@ -2383,12 +2383,12 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.suppliers = response.data
-                    this.progressBuffer = this.progressBuffer + 20;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 }
+                this.progressBuffer = this.progressBuffer + 20;
             });
         },
         getProducts() {
@@ -2396,13 +2396,12 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.products = response.data.data
-                    this.progressBuffer = this.progressBuffer + 10;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 }
-
+                this.progressBuffer = this.progressBuffer + 10;
             });
         },
         getPriorities() {
@@ -2410,12 +2409,12 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.priorities = response.data
-                    this.progressBuffer = this.progressBuffer + 10;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 }
+                this.progressBuffer = this.progressBuffer + 10;
 
             });
         },
@@ -2424,13 +2423,12 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.types = response.data
-                    this.progressBuffer = this.progressBuffer + 10;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 }
-
+                this.progressBuffer = this.progressBuffer + 10;
             });
         },
         getContacts(entityItem) {
@@ -2470,12 +2468,13 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.teams = response.data.data
-                    this.progressBuffer = this.progressBuffer + 10;
+
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 }
+                this.progressBuffer = this.progressBuffer + 10;
             });
         },
         selectTeam() {
