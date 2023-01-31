@@ -216,19 +216,25 @@ export default {
             state.settings.settings.customRounding.splice(index, 1);
         },
         SET_TRACKERS(state, trackers) {
-            state.trackers = trackers;
+            if(trackers) {
+                state.trackers = trackers;
+            }
         },
         ADD_TRACKERS(state, trackers) {
-            state.trackers = state.trackers.concat(trackers);
+            if (trackers) {
+                state.trackers = state.trackers.concat(trackers);
+            }
         },
         CLEAR_TRACKERS(state) {
             state.trackers = [];
         },
         UPDATE_TIME(state) {
-            state.trackers.filter(i => i.status === 0).forEach(tracker => {
-                const index = state.trackers.indexOf(tracker);
-                state.trackers[index].passed = helpers.time.getSecBetweenDates(tracker.date_from, moment(), true);
-            });
+            if (state.trackers) {
+                state.trackers.filter(i => i.status === 0).forEach(tracker => {
+                    const index = state.trackers.indexOf(tracker);
+                    state.trackers[index].passed = helpers.time.getSecBetweenDates(tracker.date_from, moment(), true);
+                });
+            }
         }
     },
     getters: {
@@ -239,7 +245,11 @@ export default {
             return state.reports;
         },
         getTrackers(state) {
-            return state.trackers.sort((a, b) => (moment(a.date_from).isAfter(b.date_from)));
+            if (state.trackers) {
+                return state.trackers.sort((a, b) => (moment(a.date_from).isAfter(b.date_from)));
+            }
+
+            return state.trackers
         }
     }
 }

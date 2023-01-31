@@ -508,7 +508,6 @@ export default {
         if (!this.$helpers.auth.checkPermissionByIds([1])) {
             this.$router.push('knowledge_base')
         }
-
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;

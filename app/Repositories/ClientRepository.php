@@ -128,10 +128,15 @@ class ClientRepository
                 ->orderBy('name', 'asc')
                 ->get();
         } else {
-            $clientsArray = ClientCompanyUser::query()->where('company_user_id', $employee->id)->first()->clients();
-            $clients = $clientsArray
-                ->orderBy('name', 'asc')
-                ->paginate($clientsArray->count());
+            $clients = [];
+            $clientCompanyUsers = ClientCompanyUser::query()->where('company_user_id', $employee->id)->first();
+
+            if ($clientCompanyUsers) {
+                $clientsArray = $clientCompanyUsers->clients();
+                $clients = $clientsArray
+                    ->orderBy('name', 'asc')
+                    ->paginate($clientsArray->count());
+            }
         }
         foreach ($clients as $client) {
             $suppliers[] = ['name' => $client->name, 'item' => [Client::class => $client->id]];
