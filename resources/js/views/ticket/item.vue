@@ -2443,15 +2443,12 @@ export default {
             // console.log(entityItem);
             axios.get(route).then(response => {
                 response = response.data
-                if (response.success === true) {
+                if (response.success === true && response.data !== null) {
                     response = response.data
-                    // console.log(response);
                     if (!response.hasOwnProperty('company_number')) {
                         response.employees.forEach(employeeItem => this.contacts.push(employeeItem.employee))
-                        // console.log('client');
                     } else {
                         this.contacts = response.employees
-                        // console.log('company');
                     }
                     // this.ticketForm.contact_company_user_id = this.employees[0].id
                 } else {
