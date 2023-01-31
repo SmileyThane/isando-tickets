@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -294,6 +296,30 @@ class PermissionSeeder extends Seeder
         );
 
         //custom permissions
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 107],
+            [
+                'name' => 'activity_delete_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 106],
+            [
+                'name' => 'activity_write_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 105],
+            [
+                'name' => 'activity_read_access',
+                'guard_name' => 'web'
+            ]
+        );
 
         DB::table('permissions')->updateOrInsert(
             ['id' => 104],

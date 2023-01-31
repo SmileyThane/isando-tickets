@@ -870,7 +870,7 @@
                                                 <v-text-field
                                                     v-model="activityForm.title"
                                                     :color="themeBgColor"
-                                                    :label="langMap.company.name"
+                                                    :label="langMap.main.subject"
                                                     dense
                                                     prepend-icon="mdi-book-account-outline"
                                                     required
@@ -881,7 +881,7 @@
                                                 <v-textarea
                                                     v-model="activityForm.content"
                                                     :color="themeBgColor"
-                                                    :label="langMap.company.description"
+                                                    :label="langMap.main.description"
                                                     dense
                                                     prepend-icon="mdi-book-account-outline"
                                                     required
@@ -1163,10 +1163,18 @@
                                 multiple
                             >
                                 <template slot="selection" slot-scope="data">
-                                    {{ langMap.roles[data.item.name] }}
+                                    {{
+                                        langMap.roles[data.item.name] ?
+                                            langMap.roles[data.item.name] :
+                                            data.item.name
+                                    }}
                                 </template>
                                 <template slot="item" slot-scope="data">
-                                    {{ langMap.roles[data.item.name] }}
+                                    {{
+                                        langMap.roles[data.item.name] ?
+                                            langMap.roles[data.item.name] :
+                                            data.item.name
+                                    }}
                                 </template>
                             </v-select>
                         </v-container>

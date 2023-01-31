@@ -96,7 +96,7 @@
                                 />
                                 <v-icon :color="category.icon_color" large left
                                         v-text="category.icon ? category.icon : 'mdi-help'"/>
-                                {{ category.id == $route.query.category ? category.full_name : category.name }}
+                                {{ category.full_name ? category.full_name : category.name }}
                                 <h6 class="subtitle-2 ml-2">
                                     {{ langMap.kb.articles }}: {{ category.articles_count }}
                                     {{ langMap.kb.categories }}: {{ category.categories_count }}
@@ -392,6 +392,45 @@ export default {
                 _active: []
             },
             categoryIcons: [
+                // menu icons
+                'mdi mdi-view-dashboard',
+                'mdi mdi-monitor',
+                'mdi mdi-gesture-double-tap',
+                'mdi mdi-launch',
+                'mdi mdi-table-alert',
+                'mdi mdi-bullhorn',
+                'mdi mdi-bell-alert',
+                'mdi mdi-account-plus',
+                'mdi mdi-map-marker',
+                'mdi mdi-tune',
+                'mdi mdi-refresh',
+                'mdi mdi-apps',
+                'mdi mdi-account-switch',
+                'mdi mdi-language-javascript',
+                'mdi mdi-text-box-check-outline',
+                'mdi mdi-paperclip',
+                'mdi mdi-account-cog',
+                'mdi mdi-account',
+                'mdi mdi-account-voice',
+                'mdi mdi-account-group',
+                'mdi mdi-phone-log',
+                'mdi mdi-card-account-phone',
+                'mdi mdi-card-account-phone-outline',
+                'mdi mdi-beach',
+                'mdi mdi-shield-account',
+                'mdi mdi-shield-lock',
+                'mdi mdi-factory',
+                'mdi mdi-poll',
+                'mdi mdi-clipboard-edit-outline',
+                'mdi mdi-clipboard-edit',
+                'mdi mdi-cog',
+                'mdi mdi-server',
+                'mdi mdi-leak',
+                'mdi mdi-apps',
+                'mdi mdi-swap-vertical',
+                'mdi mdi-shield-alert',
+
+
                 'mdi mdi-alert-outline',
                 'mdi mdi-bell-ring-outline',
                 'mdi mdi-alarm',

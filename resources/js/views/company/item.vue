@@ -1075,10 +1075,18 @@
                                                 item-value="id"
                                             >
                                                 <template slot="selection" slot-scope="data">
-                                                    {{ langMap.roles[data.item.name] }}
+                                                    {{
+                                                        langMap.roles[data.item.name] ?
+                                                            langMap.roles[data.item.name] :
+                                                            data.item.name
+                                                    }}
                                                 </template>
                                                 <template slot="item" slot-scope="data">
-                                                    {{ langMap.roles[data.item.name] }}
+                                                    {{
+                                                        langMap.roles[data.item.name] ?
+                                                            langMap.roles[data.item.name] :
+                                                            data.item.name
+                                                    }}
                                                 </template>
                                             </v-select>
                                             <v-select
@@ -1375,10 +1383,18 @@
                                 multiple
                             >
                                 <template slot="selection" slot-scope="data">
-                                    {{ langMap.roles[data.item.name] }}
+                                    {{
+                                        langMap.roles[data.item.name] ?
+                                            langMap.roles[data.item.name] :
+                                            data.item.name
+                                    }}
                                 </template>
                                 <template slot="item" slot-scope="data">
-                                    {{ langMap.roles[data.item.name] }}
+                                    {{
+                                        langMap.roles[data.item.name] ?
+                                            langMap.roles[data.item.name] :
+                                            data.item.name
+                                    }}
                                 </template>
                             </v-select>
                             <v-expansion-panels
