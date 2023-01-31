@@ -2826,7 +2826,7 @@ export default {
                 }
             })
                 .then(data => {
-                    if (data.length === 15) {
+                    if (data && data.length === 15) {
                         this.trackersLoadMoreBtn = true;
                     } else {
                         this.trackersLoadMoreBtn = false;
