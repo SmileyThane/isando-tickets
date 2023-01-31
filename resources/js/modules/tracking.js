@@ -216,10 +216,14 @@ export default {
             state.settings.settings.customRounding.splice(index, 1);
         },
         SET_TRACKERS(state, trackers) {
-            state.trackers = trackers;
+            if(trackers) {
+                state.trackers = trackers;
+            }
         },
         ADD_TRACKERS(state, trackers) {
-            state.trackers = state.trackers.concat(trackers);
+            if (trackers) {
+                state.trackers = state.trackers.concat(trackers);
+            }
         },
         CLEAR_TRACKERS(state) {
             state.trackers = [];
@@ -239,7 +243,11 @@ export default {
             return state.reports;
         },
         getTrackers(state) {
-            return state.trackers.sort((a, b) => (moment(a.date_from).isAfter(b.date_from)));
+            if (state.trackers) {
+                return state.trackers.sort((a, b) => (moment(a.date_from).isAfter(b.date_from)));
+            }
+
+            return state.trackers
         }
     }
 }
