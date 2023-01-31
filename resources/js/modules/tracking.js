@@ -229,10 +229,12 @@ export default {
             state.trackers = [];
         },
         UPDATE_TIME(state) {
-            state.trackers.filter(i => i.status === 0).forEach(tracker => {
-                const index = state.trackers.indexOf(tracker);
-                state.trackers[index].passed = helpers.time.getSecBetweenDates(tracker.date_from, moment(), true);
-            });
+            if (state.trackers) {
+                state.trackers.filter(i => i.status === 0).forEach(tracker => {
+                    const index = state.trackers.indexOf(tracker);
+                    state.trackers[index].passed = helpers.time.getSecBetweenDates(tracker.date_from, moment(), true);
+                });
+            }
         }
     },
     getters: {
