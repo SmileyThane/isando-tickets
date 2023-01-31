@@ -19,7 +19,6 @@ class ProductRepository
     {
         $params = [
             'product_name' => 'required',
-            'product_description' => 'required',
         ];
         $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {
