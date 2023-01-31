@@ -1281,6 +1281,17 @@
                                                     hide-details
                                                 />
                                             </div>
+                                            <div class="col-md-12">
+                                                <v-text-field
+                                                    v-model="employeeForm.description"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.main.description"
+                                                    dense
+                                                    reverse
+                                                    size="9"
+                                                >
+                                                </v-text-field>
+                                            </div>
                                             <v-btn
                                                 :color="themeBgColor"
                                                 bottom
