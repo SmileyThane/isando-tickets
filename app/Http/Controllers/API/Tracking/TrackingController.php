@@ -4,14 +4,21 @@
 namespace App\Http\Controllers\API\Tracking;
 
 use App\Tracking;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class TrackingController extends BaseController
 {
-    public function get(Request $request)
+    public function get(Request $request): JsonResponse
     {
-        $tracking = $this->trackingRepo->all($request);
-        return self::showResponse(true, $tracking);
+        try {
+            $tracking = $this->trackingRepo->all($request);
+
+            return self::showResponse(true, $tracking);
+        } catch (Throwable $throwable) {
+            return self::showResponse(false, $throwable->getMessage());
+        }
     }
 
     public function create(Request $request)
@@ -36,7 +43,7 @@ class TrackingController extends BaseController
         try {
             $this->trackingRepo->validate($request, false);
             $result = $this->trackingRepo->update($request, $tracking);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             dd($exception);
             return self::showResponse(false, $exception);
         }
