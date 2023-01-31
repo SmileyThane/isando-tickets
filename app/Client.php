@@ -30,6 +30,11 @@ class Client extends Model
         return $this->morphTo();
     }
 
+    public function supplier()
+    {
+        return $this->morphTo('supplier');
+    }
+
     public function allClients(): MorphMany
     {
         return $this->clients()->with('allClients');
@@ -77,11 +82,8 @@ class Client extends Model
 
     public function getSupplierNameAttribute()
     {
-        if ($this->supplier_type && $this->supplier_id) {
-            $supplier = $this->supplier_type::query()->find($this->supplier_id);
-            if ($supplier) {
+        if ($supplier = $this->supplier) {
                 return $supplier->name;
-            }
         }
 
         return null;

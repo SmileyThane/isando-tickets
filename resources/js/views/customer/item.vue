@@ -189,16 +189,23 @@
                                                         :label="langMap.main.owner"
                                                         :color="themeBgColor"
                                                         :item-color="themeBgColor"
-                                                        item-text="employee.user_data.full_name"
-                                                        item-value="employee.id"
+                                                        item-text="user_data.full_name"
+                                                        item-value="id"
                                                         v-model="client.owner_id"
-                                                        :items="client.employees"
+                                                        :items="client.supplier.employees"
                                                     >
                                                         <template v-slot:item="props">
-                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                            {{props.item.user_data.full_name}}
+                                                            <span v-if="props.item.description">
+                                                                ({{props.item.description}})
+                                                            </span>
+
                                                         </template>
                                                         <template v-slot:selection="props">
-                                                            {{props.item.employee.user_data.full_name}} ({{props.item.description}})
+                                                            {{props.item.user_data.full_name}}
+                                                            <span v-if="props.item.description">
+                                                                ({{props.item.description}})
+                                                            </span>
                                                         </template>
                                                     </v-select>
                                                 </v-col>
@@ -642,7 +649,7 @@
                     &nbsp;
                 </v-spacer>
 
-                <v-card>
+                <v-card v-if="$helpers.auth.checkPermissionByIds([105])">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -680,7 +687,7 @@
                             :search="activitySearch"
                             @update:options="updateItemsPerPage"
                         >
-                            <template v-slot:item.actions="{ item }">
+                            <template v-slot:item.actions="{ item }" v-if="$helpers.auth.checkPermissionByIds([106])">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn v-bind="attrs" v-on="on" icon @click="selectActivity(item)">
@@ -690,7 +697,7 @@
                                     <span>{{ langMap.main.update_activity }}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
+                                    <template v-slot:activator="{ on, attrs }" v-if="$helpers.auth.checkPermissionByIds([107])">
                                         <v-btn v-bind="attrs" v-on="on" icon @click="deleteActivity(item.id)">
                                             <v-icon small>mdi-trash-can</v-icon>
                                         </v-btn>
@@ -715,7 +722,7 @@
 
                         <v-spacer>&nbsp;</v-spacer>
 
-                        <v-expansion-panels v-model="activityFormPanel">
+                        <v-expansion-panels v-model="activityFormPanel" v-if="$helpers.auth.checkPermissionByIds([106])">
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.main.add_activity }}
@@ -731,7 +738,7 @@
                                                 <v-text-field
                                                     v-model="activityForm.title"
                                                     :color="themeBgColor"
-                                                    :label="langMap.company.name"
+                                                    :label="langMap.main.subject"
                                                     dense
                                                     prepend-icon="mdi-book-account-outline"
                                                     required
@@ -742,7 +749,7 @@
                                                 <v-textarea
                                                     v-model="activityForm.content"
                                                     :color="themeBgColor"
-                                                    :label="langMap.company.description"
+                                                    :label="langMap.main.description"
                                                     dense
                                                     prepend-icon="mdi-book-account-outline"
                                                     required
