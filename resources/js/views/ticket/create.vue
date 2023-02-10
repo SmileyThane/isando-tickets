@@ -25,7 +25,7 @@
                             <v-card-text>
                                 <div class="row">
                                     <div class="col-md-4 col-sm-12">
-                                        <v-select
+                                        <v-autocomplete
                                             label="Ticket is submitted by"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
