@@ -202,12 +202,16 @@
                             </template>
                             <template v-slot:item.user_data.is_active="{ item }">
                                 <v-icon v-if="item && item.deleted_at" @click="showItem(item)" color="red darken" :title="langMap.individuals.deleted">mdi-cancel</v-icon>
-                                <v-icon v-if="item && !item.deleted_at" @click="showItem(item)">
+                                <v-icon v-if="item && !item.deleted_at" @click="showItem(item)"
+                                        :style="item.user_data.is_active === 1 ?'color:#95C13D;' : 'color:red;'"
+                                >
                                     {{ item.user_data.is_active === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
                                 </v-icon>
                             </template>
                             <template v-slot:item.user_data.status="{ item }">
-                                <v-icon v-if="item" @click="showItem(item)">
+                                <v-icon v-if="item" @click="showItem(item)"
+                                :style="item.user_data.status === 1 ?'color:#95C13D;' : 'color:red;'"
+                                >
                                     {{item.user_data.status === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
                                 </v-icon>
                             </template>
