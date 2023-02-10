@@ -192,7 +192,7 @@
                                                         item-text="user_data.full_name"
                                                         item-value="id"
                                                         v-model="client.owner_id"
-                                                        :items="client.supplier.employees"
+                                                        :items="supplierEmployees"
                                                     >
                                                         <template v-slot:item="props">
                                                             {{props.item.user_data.full_name}}
@@ -2021,7 +2021,8 @@ export default {
             currency: {
                 symbol: ''
             },
-            activityTypes: []
+            activityTypes: [],
+            supplierEmployees: []
         }
     },
     mounted() {
@@ -2060,6 +2061,9 @@ export default {
                     this.client.supplier_object[this.client.supplier_type] = this.client.supplier_id
                     this.$store.state.pageName = this.client.client_name
                     this.activityForm.model_id = this.client.id
+                    this.supplierEmployees = this.client.supplier_type === 'App\\Client' ?
+                        this.client.supplier.employees_without_pivot :
+                        this.client.supplier.employees
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
