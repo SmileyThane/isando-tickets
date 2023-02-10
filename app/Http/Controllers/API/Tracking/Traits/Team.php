@@ -26,7 +26,10 @@ trait Team
                     Projects::class,
                 ])
                 ->thenReturn();
-            $coworkers = $coworkers->get();
+            $coworkers = $coworkers->get()
+                ->map(function ($user) {
+                    return $user->userData;
+                });
         } elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {
             $teams = $this->teamRepo->all($request);
             foreach ($teams as $team) {
