@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -53,6 +54,11 @@ class Client extends Model
     public function employees(): HasMany
     {
         return $this->hasMany(ClientCompanyUser::class, 'client_id', 'id');
+    }
+
+    public function employeesWithoutPivot(): BelongsToMany
+    {
+        return $this->belongsToMany(CompanyUser::class, 'client_company_users','client_id', 'company_user_id');
     }
 
     public function addresses(): MorphMany
