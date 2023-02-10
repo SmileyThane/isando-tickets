@@ -148,7 +148,9 @@
                                 </v-pagination>
                             </template>
                             <template v-slot:item.is_active="{ item }">
-                                <v-icon @click="showItem(item)" class="justify-center" v-if="item">
+                                <v-icon @click="showItem(item)" class="justify-center" v-if="item"
+                                        :style="item.is_active === 1 ?'color:#95C13D;' : 'color:red;'"
+                                >
                                     {{
                                     item.is_active === 1 ?
                                     'mdi-check-circle-outline' :
