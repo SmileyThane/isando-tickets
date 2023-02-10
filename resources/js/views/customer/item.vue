@@ -1287,7 +1287,6 @@
                                                     :color="themeBgColor"
                                                     :label="langMap.main.description"
                                                     dense
-                                                    reverse
                                                     size="9"
                                                 >
                                                 </v-text-field>
