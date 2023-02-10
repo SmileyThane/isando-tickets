@@ -192,7 +192,7 @@
                                                         item-text="user_data.full_name"
                                                         item-value="id"
                                                         v-model="client.owner_id"
-                                                        :items="client.supplier.employees"
+                                                        :items="supplierEmployees"
                                                     >
                                                         <template v-slot:item="props">
                                                             {{props.item.user_data.full_name}}
@@ -1287,7 +1287,6 @@
                                                     :color="themeBgColor"
                                                     :label="langMap.main.description"
                                                     dense
-                                                    reverse
                                                     size="9"
                                                 >
                                                 </v-text-field>
@@ -2021,7 +2020,8 @@ export default {
             currency: {
                 symbol: ''
             },
-            activityTypes: []
+            activityTypes: [],
+            supplierEmployees: []
         }
     },
     mounted() {
@@ -2038,7 +2038,7 @@ export default {
         this.getActivityTypes();
         this.employeeForm.client_id = parseInt(this.$route.params.id);
         this.$store.dispatch('getMainCompany');
-        // this.getEmployees();
+        this.getEmployees();
 
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
@@ -2060,6 +2060,9 @@ export default {
                     this.client.supplier_object[this.client.supplier_type] = this.client.supplier_id
                     this.$store.state.pageName = this.client.client_name
                     this.activityForm.model_id = this.client.id
+                    this.supplierEmployees = this.client.supplier_type === 'App\\Client' ?
+                        this.client.supplier.employees_without_pivot :
+                        this.client.supplier.employees
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -2135,20 +2138,20 @@ export default {
             this.contactInfoModal = true
 
         },
-        // getEmployees() {
-        //     axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
-        //         response => {
-        //             this.loading = false
-        //             response = response.data
-        //             if (response.success === true) {
-        //                 this.employees = response.data.data
-        //             } else {
-        //                 this.snackbarMessage = this.langMap.main.generic_error;
-        //                 this.errorType = 'error';
-        //                 this.snackbar = true;
-        //             }
-        //         });
-        // },
+        getEmployees() {
+            axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
+                response => {
+                    this.loading = false
+                    response = response.data
+                    if (response.success === true) {
+                        this.employees = response.data.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.snackbar = true;
+                    }
+                });
+        },
         addEmployee(update = false) {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data

@@ -28,7 +28,6 @@ trait Team
                 ->thenReturn();
             $coworkers = $coworkers->get()
                 ->map(function ($user) {
-                    $user->userData->name = $user->userData->name . ' ' . $user->userData->surname;
                     return $user->userData;
                 });
         } elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {

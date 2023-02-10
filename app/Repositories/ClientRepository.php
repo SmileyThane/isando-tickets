@@ -147,6 +147,7 @@ class ClientRepository
 
     public function find($id)
     {
+        $client = Client::query()->find($id);
         $with = ['teams',
             'employees.employee.userData.phones.type',
             'employees.employee.userData.addresses.type',
@@ -163,8 +164,14 @@ class ClientRepository
             'activities.type',
             'activities.employee',
             'owner.userData',
-            'supplier',
-            'supplier.employees' => function ($query) {
+            'supplier'];
+
+        if ($client->supplier_type === Client::class) {
+            $with = array_merge(['supplier.employeesWithoutPivot'], $with);
+        }
+
+        if ($client->supplier_type === Company::class) {
+            $with = array_merge(['supplier.employees' => function ($query) {
                 $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
                 if (Auth::user()->employee->hasPermissionId([
                     Permission::EMPLOYEE_CLIENT_ACCESS,
@@ -173,7 +180,8 @@ class ClientRepository
                     $result->where('user_id', Auth::id());
                 }
                 return $result->get();
-            }];
+            }], $with);
+        }
 
         if (Auth::user()->employee->hasPermissionId(Permission::ACTIVITY_READ_ACCESS)) {
             $with = array_merge(['activities.type', 'activities.employee'], $with);

@@ -66,7 +66,7 @@ class Ticket extends Model
 
     public function getFromAttribute()
     {
-        return $this->attributes['from_entity_type']::find($this->attributes['from_entity_id']);
+        return $this->attributes['from_entity_type']::where('id', $this->attributes['from_entity_id'])->withTrashed()->first();
     }
 
     public function getFromCompanyNameAttribute()
@@ -79,7 +79,7 @@ class Ticket extends Model
 
     public function getToAttribute()
     {
-        return $this->attributes['to_entity_type']::find($this->attributes['to_entity_id']);
+        return $this->attributes['to_entity_type']::where('id', $this->attributes['to_entity_id'])->withTrashed()->first();
     }
 
     public function getReplicatedToAttribute()

@@ -434,7 +434,7 @@ export default {
                 sortDesc: [true],
                 sortBy: ['id'],
                 withSpam: false,
-                onlyOpen: false,
+                onlyOpen: true,
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
             },
             footerProps: {
