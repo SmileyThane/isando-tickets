@@ -601,6 +601,63 @@
                     </v-card-text>
                 </v-card>
 
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.system_settings.kb_permissions
+                            }}
+                        </v-toolbar-title>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-select
+                            :label="langMap.system_settings.type"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
+                            item-text="name"
+                            item-value="id"
+                            :items="kbTypes"
+                            v-model="kbSelectedTypeId"
+                        ></v-select>
+                        <v-form v-if="selectedPermissions">
+                            <v-row>
+                                <v-col class="col-md-12 col-sm-12">
+                                    <v-row v-for="(item, index) in selectedPermissions"
+                                           :key="item.type">
+                                        <v-col class="col-md-3 col-sm-3">
+                                            <span>{{ item.type | capitalize }}</span>
+                                        </v-col>
+                                        <v-col class="col-md-9 col-sm-9">
+                                            <v-autocomplete
+                                                :label="langMap.system_settings.permission"
+                                                :color="themeBgColor"
+                                                :item-color="themeBgColor"
+                                                item-text="name"
+                                                item-value="id"
+                                                :items="permissions"
+                                                v-model="selectedPermissions[index].value"
+                                            >
+                                            </v-autocomplete>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col class="col-md-12 col-sm-12">
+                                    <v-btn :color="themeBgColor"
+                                           class="ma-2"
+                                           style="color: white;"
+                                           @click="updateKnowledgeBaseType"
+                                           v-text="langMap.system_settings.save"
+                                           :disabled="kbDisabledSubmitButton"
+                                    />
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -1515,6 +1572,7 @@
 <script>
 import EventBus from '../../components/EventBus';
 import _ from 'lodash';
+import store from "../../store";
 
 export default {
     data() {
@@ -1801,7 +1859,7 @@ export default {
                     name: '',
                     slug: '',
                     symbol: ''
-                }
+                },
             },
             colorMenuCreate: false,
             colorMenu: {},
@@ -1816,6 +1874,11 @@ export default {
             dialogTags: false,
             dialogServices: false,
             dialogCurrencies: false,
+            kbTypes: [],
+            kbSelectedTypeId: null,
+            kbDisabledSubmitButton: false,
+            permissions: [],
+            selectedPermissions: [],
         }
     },
     created() {
@@ -1843,6 +1906,8 @@ export default {
         this.getCompanyLanguages();
         this.getCompanySettings();
         this.getTimezones();
+        this.getKnowledgeBaseTypes();
+        this.getPermissions();
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1857,7 +1922,12 @@ export default {
             if (this.companyNewLogo !== null) {
                 this.companyLogo = URL.createObjectURL(this.companyNewLogo)
             }
-        }
+        },
+        kbSelectedTypeId(val) {
+            this.selectedPermissions = this.kbTypes.find(
+                type => type.id === Number(this.kbSelectedTypeId)
+            ).permissions;
+        },
     },
     methods: {
         __getLanguages() {
@@ -2682,6 +2752,58 @@ export default {
                 name: name ?? this.tagTranslateForm.name
             });
         },
-    }
+        getPermissions() {
+            axios.get(`/api/permissions`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.permissions = response.data;
+                } else {
+                    console.log('error get permissions');
+                }
+
+            });
+        },
+        getKnowledgeBaseTypes() {
+            axios.get(`/api/kb/types`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.kbTypes = response.data;
+                    this.kbSelectedTypeId = this.kbTypes[0].id;
+                } else {
+                    console.log('error get kb types');
+                }
+
+            });
+        },
+        updateKnowledgeBaseType() {
+            this.kbDisabledSubmitButton = true;
+            axios.put(`/api/kb/${this.kbSelectedTypeId}`, { permissions: this.selectedPermissions })
+                .then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.kbDisabledSubmitButton = false;
+                        const index = this.kbTypes.findIndex(
+                            type => type.id === Number(this.kbSelectedTypeId)
+                        );
+                        this.kbTypes[index] = response.data;
+
+                        this.snackbarMessage = this.langMap.main.success_update;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
+        },
+    },
+    filters: {
+        capitalize: function (value) {
+            if (!value) return '';
+            value = value.toString();
+            return value.charAt(0).toUpperCase() + value.slice(1);
+        }
+    },
 }
 </script>
