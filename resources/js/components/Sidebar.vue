@@ -69,12 +69,11 @@
                 </v-list-item>
             </v-list>
             <v-divider></v-divider>
-            <v-list
-                v-if="$helpers.auth.checkPermissionByIds([97])"
-                dense
-            >
+            <v-list id="kbList" dense>
+                <template v-for="(item, index) in getKbTypes">
                 <v-list-item
-                    v-for="(item, index) in kb"
+                    class="kb-list-item"
+                    v-if="$helpers.auth.checkKbPermissionsByType(item.alias, 'view')"
                     :key="index"
                     style="background-color: white;"
                     dense
@@ -89,10 +88,9 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                </template>
             </v-list>
-            <v-divider
-                v-if="$helpers.auth.checkPermissionByIds([97])"
-            ></v-divider>
+            <v-divider></v-divider>
             <v-list
                 v-if="$helpers.auth.checkPermissionByIds([100])"
                 dense
@@ -616,7 +614,6 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
-            kb: [],
             firstAlias: '',
             secondAlias: '',
             companyLogo: '',
@@ -631,6 +628,7 @@ export default {
             timeTracking: '',
             sidebarGroups: [],
             countTimesheetForApproval: 0,
+
         }
     },
     watch: {
@@ -645,7 +643,6 @@ export default {
         }
     },
     mounted() {
-        this.getKBTypes();
         this.getCompanyName();
         this.getCompanyLogo();
         this.getCompanySettings();
@@ -705,12 +702,6 @@ export default {
         getTrackingSettings() {
             return this.$store.dispatch('Tracking/getSettings');
         },
-        getKBTypes() {
-            axios.get(`/api/kb/types`)
-                .then(response => {
-                    this.kb = response.data.data
-                })
-        },
     },
     computed: {
         hasLicense() {
@@ -731,7 +722,10 @@ export default {
                 default:
                     return this.langMap.tracking.projects;
             }
-        }
+        },
+        getKbTypes() {
+            return this.$store.getters['getKnowledgeBaseTypes'];
+        },
     }
 }
 </script>

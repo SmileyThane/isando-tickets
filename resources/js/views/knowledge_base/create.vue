@@ -487,7 +487,7 @@ export default {
             if (this.article.id) {
                 formData.append('_method', 'PUT');
 
-                axios.post(`/api/kb/article/${this.article.id}`, formData, {'content-type': 'multipart/form-data'}).then(response => {
+                axios.post(`/api/kb/article/${this.article.id}?type=${this.$route.params.alias}`, formData, {'content-type': 'multipart/form-data'}).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.getArticles();
@@ -510,7 +510,7 @@ export default {
                     }
                 });
             } else {
-                axios.post('/api/kb/article', formData, {'content-type': 'multipart/form-data'}).then(response => {
+                axios.post(`/api/kb/article?type=${this.$route.params.alias}`, formData, {'content-type': 'multipart/form-data'}).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.getArticle();
@@ -591,7 +591,7 @@ export default {
         },
         getArticles() {
             if (this.$route.params.id) {
-                axios.get(`/api/kb/articles/all`).then(response => {
+                axios.get(`/api/kb/articles/all?type=${this.$route.params.alias}`).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.articles = Array.from(response.data);

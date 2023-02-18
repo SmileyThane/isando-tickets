@@ -618,7 +618,7 @@
                             :item-color="themeBgColor"
                             item-text="name"
                             item-value="id"
-                            :items="kbTypes"
+                            :items="getKbTypes"
                             v-model="kbSelectedTypeId"
                         ></v-select>
                         <v-form v-if="selectedPermissions">
@@ -626,10 +626,10 @@
                                 <v-col class="col-md-12 col-sm-12">
                                     <v-row v-for="(item, index) in selectedPermissions"
                                            :key="item.type">
-                                        <v-col class="col-md-3 col-sm-3">
-                                            <span>{{ item.type | capitalize }}</span>
+                                        <v-col class="col-md-2 col-sm-2 d-flex py-1">
+                                            <span class="align-self-center">{{ item.type | capitalize }}</span>
                                         </v-col>
-                                        <v-col class="col-md-9 col-sm-9">
+                                        <v-col class="col-md-10 col-sm-10 py-1">
                                             <v-autocomplete
                                                 :label="langMap.system_settings.permission"
                                                 :color="themeBgColor"
@@ -1906,7 +1906,6 @@ export default {
         this.getCompanyLanguages();
         this.getCompanySettings();
         this.getTimezones();
-        this.getKnowledgeBaseTypes();
         this.getPermissions();
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
@@ -1926,7 +1925,7 @@ export default {
         kbSelectedTypeId(val) {
             this.selectedPermissions = this.kbTypes.find(
                 type => type.id === Number(this.kbSelectedTypeId)
-            ).permissions;
+            )?.permissions;
         },
     },
     methods: {
@@ -2763,18 +2762,6 @@ export default {
 
             });
         },
-        getKnowledgeBaseTypes() {
-            axios.get(`/api/kb/types`).then(response => {
-                response = response.data;
-                if (response.success === true) {
-                    this.kbTypes = response.data;
-                    this.kbSelectedTypeId = this.kbTypes[0].id;
-                } else {
-                    console.log('error get kb types');
-                }
-
-            });
-        },
         updateKnowledgeBaseType() {
             this.kbDisabledSubmitButton = true;
             axios.put(`/api/kb/${this.kbSelectedTypeId}`, { permissions: this.selectedPermissions })
@@ -2805,5 +2792,12 @@ export default {
             return value.charAt(0).toUpperCase() + value.slice(1);
         }
     },
+    computed: {
+        getKbTypes() {
+            this.kbTypes = this.$store.getters['getKnowledgeBaseTypes'];
+            this.kbSelectedTypeId = this.kbTypes[0]?.id;
+            return this.kbTypes;
+        },
+    }
 }
 </script>

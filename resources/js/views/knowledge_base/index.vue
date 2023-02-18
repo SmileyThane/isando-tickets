@@ -44,7 +44,9 @@
                             </v-col>
                             <v-col class="text-right" cols="1">
                                 <v-menu
-                                    v-if="$helpers.auth.checkPermissionByIds([103])"
+                                    v-if="$helpers.auth.checkKbPermissionsByType(
+                                        getRouteAlias,
+                                        kbPermissionsTypes.create)"
                                     bottom
                                 >
                                     <template v-slot:activator="{ on }">
@@ -103,7 +105,6 @@
                                 </h6>
                                 <v-spacer></v-spacer>
                                 <v-menu
-                                    v-if="$helpers.auth.checkPermissionByIds([98])"
                                     bottom
                                 >
                                     <template v-slot:activator="{ on }">
@@ -113,7 +114,11 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link @click="editCategory(category)">
+                                        <v-list-item
+                                            v-if="$helpers.auth.checkKbPermissionsByType(
+                                                routeAlias,
+                                                kbPermissionsTypes.edit)"
+                                            link @click="editCategory(category)">
                                             <v-list-item-title>
                                                 {{
                                                     langMap.kb.edit
@@ -126,7 +131,9 @@
                                             </v-list-item-action>
                                         </v-list-item>
                                         <v-list-item
-                                            v-if="$helpers.auth.checkPermissionByIds([99])"
+                                            v-if="$helpers.auth.checkKbPermissionsByType(
+                                                routeAlias,
+                                                kbPermissionsTypes.delete)"
                                             link
                                             @click="deleteCategory(category)"
                                         >
@@ -165,7 +172,6 @@
                                 {{ $helpers.i18n.localized(article) }}
                                 <v-spacer></v-spacer>
                                 <v-menu
-                                    v-if="$helpers.auth.checkPermissionByIds([98])"
                                     bottom
                                 >
                                     <template v-slot:activator="{ on }">
@@ -175,7 +181,13 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link @click="editArticle(article.id)">
+                                        <v-list-item
+                                            v-if="$helpers.auth.checkKbPermissionsByType(
+                                                routeAlias,
+                                                kbPermissionsTypes.edit)"
+                                            link
+                                            @click="editArticle(article.id)"
+                                        >
                                             <v-list-item-title >
                                                 {{
                                                     langMap.kb.edit
@@ -186,7 +198,9 @@
                                             </v-list-item-action>
                                         </v-list-item>
                                         <v-list-item
-                                            v-if="$helpers.auth.checkPermissionByIds([99])"
+                                            v-if="$helpers.auth.checkKbPermissionsByType(
+                                                routeAlias,
+                                                kbPermissionsTypes.delete)"
                                             link
                                             @click="deleteArticle(article)"
                                         >
@@ -355,6 +369,7 @@
 <script>
 import EventBus from '../../components/EventBus';
 import * as _ from 'lodash';
+import {checkKbPermissionByType, checkKbPermissionsByType} from "../../helpers/auth";
 
 export default {
     data() {
@@ -549,13 +564,21 @@ export default {
                 id: null,
                 name: '',
                 name_de: ''
-            }
+            },
+            kbPermissionsTypes: {
+                view: 'view',
+                create: 'create',
+                edit: 'edit',
+                delete: 'delete',
+            },
+            routeAlias: this.$route.params.alias,
         }
     },
     watch: {
         $route(to, from) {
             this.getCategories();
             this.getArticles();
+            this.routeAlias = this.$route.params.alias;
         }
     },
     mounted() {
@@ -697,7 +720,7 @@ export default {
         },
         updateCategory() {
             if (this.categoryForm.id) {
-                axios.put(`/api/kb/category/${this.categoryForm.id}`, this.categoryForm).then(response => {
+                axios.put(`/api/kb/category/${this.categoryForm.id}?type=${this.$route.params.alias}`, this.categoryForm).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.updateCategoryDlg = false;
@@ -714,7 +737,7 @@ export default {
                     }
                 });
             } else {
-                axios.post('/api/kb/category', this.categoryForm).then(response => {
+                axios.post(`/api/kb/category?type=${this.$route.params.alias}`, this.categoryForm).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.updateCategoryDlg = false;
@@ -739,7 +762,7 @@ export default {
         removeCategory() {
             this.deleteCategoryDlg = false;
 
-            axios.delete(`/api/kb/category/${this.categoryForm.id}`).then(response => {
+            axios.delete(`/api/kb/category/${this.categoryForm.id}?type=${this.$route.params.alias}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.clearCategoryForm();
@@ -779,7 +802,7 @@ export default {
         removeArticle() {
             this.deleteArticleDlg = false;
 
-            axios.delete(`/api/kb/article/${this.selectedArticle.id}`).then(response => {
+            axios.delete(`/api/kb/article/${this.selectedArticle.id}?type=${this.$route.params.alias}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.clearSelectedArticle();
@@ -804,6 +827,11 @@ export default {
                 this.activeTags.splice(index, 1);
                 this.getArticles();
             }
+        }
+    },
+    computed: {
+        getRouteAlias() {
+            return this.$route.params.alias;
         }
     }
 }

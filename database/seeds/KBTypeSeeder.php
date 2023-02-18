@@ -44,8 +44,8 @@ class KBTypeSeeder extends Seeder
         DB::table('knowledge_base_types')->updateOrInsert(
             ['id' => 2],
             [
-                'name' => 'Incident repository',
-                'alias' => 'incident_repository',
+                'name' => 'Risk repository',
+                'alias' => 'risk_repository',
                 'permissions' => [
                     [
                         'type' => KnowledgeBasePermissionsTypesEnum::VIEW,

@@ -133,7 +133,7 @@ export default {
             return this.$helpers.color.invertColor(hex);
         },
         getArticle() {
-            axios.get(`/api/kb/article/${this.$route.params.id}`).then(response => {
+            axios.get(`/api/kb/article/${this.$route.params.id}?type=${this.$route.params.alias}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.article = response.data;
