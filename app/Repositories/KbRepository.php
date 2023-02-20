@@ -7,10 +7,12 @@ use App\Company;
 use App\KbArticle;
 use App\KbArticleClient;
 use App\KbCategory;
+use App\KnowledgeBaseType;
 use App\Language;
 use App\Permission;
 use App\Tag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class KbRepository
@@ -234,5 +236,28 @@ class KbRepository
         KbArticleClient::query()->where('kb_article_id', '=', $id)->delete();
         $article = KbArticle::find($id);
         return $article ? $article->delete() : false;
+    }
+
+    /**
+     * Find KnowledgeBaseType by alias
+     *
+     * @param string $alias
+     * @return Builder|Model
+     */
+    public function findByAlias(string $alias)
+    {
+        return KnowledgeBaseType::query()->where('alias', $alias)->firstOrFail();
+    }
+
+    /**
+     * Update KnowledgeBaseType entity
+     *
+     * @param KnowledgeBaseType $knowledgeBaseType
+     * @param array $data
+     * @return KnowledgeBaseType
+     */
+    public function update(KnowledgeBaseType $knowledgeBaseType, array $data): KnowledgeBaseType
+    {
+        return tap($knowledgeBaseType)->update($data);
     }
 }

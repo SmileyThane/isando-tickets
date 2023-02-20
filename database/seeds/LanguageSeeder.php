@@ -753,7 +753,8 @@ class LanguageSeeder extends Seeder
                             'delete_activity' => 'Delete Activity',
                             'activity_contact' => 'Linked contact',
                             'activity_company' => 'Linked company',
-                            'owner' => 'Owner'
+                            'owner' => 'Owner',
+                            'success_update' => 'Update successful',
                         ],
                     'system_settings' =>
                         [
@@ -826,6 +827,10 @@ class LanguageSeeder extends Seeder
                             'client_number_format_start' => 'Start number',
                             'client_number_format_size' => 'Digits count',
                             'client_number_example' => 'Example: ',
+                            'kb_permissions' => 'Knowledge base permissions',
+                            'permission' => 'Permission',
+                            'type' => 'Type',
+                            'save' => 'Save',
                         ],
                     'profile' =>
                         [
@@ -1714,7 +1719,8 @@ class LanguageSeeder extends Seeder
                             'delete_activity' => 'Delete Activity',
                             'activity_contact' => 'Linked contact',
                             'activity_company' => 'Linked company',
-                            'owner' => 'Owner'
+                            'owner' => 'Owner',
+                            'success_update' => 'Erfolgsaktualisierung',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
@@ -1785,6 +1791,10 @@ class LanguageSeeder extends Seeder
                             'client_number_format_start' => 'Startnummer',
                             'client_number_format_size' => 'Ziffern zählen',
                             'client_number_example' => 'Beispiel: ',
+                            'kb_permissions' => 'Berechtigungen für die Wissensdatenbank',
+                            'permission' => 'Erlaubnis',
+                            'type' => 'Typ',
+                            'save' => 'Speichern',
                         ],
                         'profile' => [
                             'user_theme_colors' => 'Persönliche Themenfarben',

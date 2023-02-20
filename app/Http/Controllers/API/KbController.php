@@ -3,7 +3,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enums\KnowledgeBase\KnowledgeBasePermissionsTypesEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\KnowledgeBase\UpdateKnowledgeBaseTypeRequest;
 use App\KbArticle;
 use App\KnowledgeBaseType;
 use App\Repositories\FileRepository;
@@ -165,4 +167,15 @@ class KbController extends Controller
         return self::showResponse(true, self::IMPORTANCE);
     }
 
+    /**
+     * Update KnowledgeBaseType entity
+     *
+     * @param UpdateKnowledgeBaseTypeRequest $request
+     * @param KnowledgeBaseType $knowledgeBaseType
+     * @return JsonResponse
+     */
+    public function update(UpdateKnowledgeBaseTypeRequest $request, KnowledgeBaseType $knowledgeBaseType): JsonResponse
+    {
+        return self::showResponse(true, $this->kbRepo->update($knowledgeBaseType, $request->validated()));
+    }
 }
