@@ -665,15 +665,15 @@ export default {
                     this.ticketForm.to_product_id = this.products[0].id
                 }
 
-                });
-            },
-            getPriorities() {
-                axios.get('/api/ticket_priorities').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.priorities = response.data
-                        this.ticketForm.priority_id = this.priorities[1].id
-                    }
+            });
+        },
+        getPriorities() {
+            axios.get('/api/ticket_priorities').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.priorities = response.data
+                    this.ticketForm.priority_id = this.priorities[1].id
+                }
 
             });
         },
@@ -684,14 +684,14 @@ export default {
                     this.types = response.data
                 }
 
-                });
-            },
-            getCategories() {
-                axios.get('/api/ticket_categories').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.categories = response.data
-                    }
+            });
+        },
+        getCategories() {
+            axios.get('/api/ticket_categories').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.categories = response.data
+                }
 
             });
         },
