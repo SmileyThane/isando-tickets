@@ -197,7 +197,7 @@
                                                                 v-on="on"
                                                             ></v-textarea>
                                                         </template>
-                                                        <span>{{langMap.ticket.ip_description}}</span>
+                                                        <span>{{ langMap.ticket.ip_description }}</span>
                                                     </v-tooltip>
                                                 </div>
                                                 <div class="col-md-6">
@@ -216,7 +216,7 @@
                                                                 v-on="on"
                                                             ></v-textarea>
                                                         </template>
-                                                        <span>{{langMap.ticket.access_description}}</span>
+                                                        <span>{{ langMap.ticket.access_description }}</span>
                                                     </v-tooltip>
                                                 </div>
                                                 <v-col cols="12">
@@ -235,7 +235,7 @@
                                                                 v-on="on"
                                                             ></v-textarea>
                                                         </template>
-                                                        <span>{{langMap.ticket.availability_description}}</span>
+                                                        <span>{{ langMap.ticket.availability_description }}</span>
                                                     </v-tooltip>
                                                 </v-col>
                                             </div>
@@ -291,12 +291,12 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field
-                                    v-model="createContactForm.description"
-                                    :color="themeBgColor"
-                                    :label="langMap.main.description"
-                                    name="description"
-                                    type="text"
-                                />
+                                        v-model="createContactForm.description"
+                                        :color="themeBgColor"
+                                        :label="langMap.main.description"
+                                        name="description"
+                                        type="text"
+                                    />
                                 </v-col>
                                 <v-col cols="4">
                                     <v-text-field
@@ -340,11 +340,14 @@
                                     />
                                 </v-col>
                                 <v-col cols="6">
-                                    <p v-for="(item, i) in createContactForm.phones"  :key="item.id" class="mb-2">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small left />
+                                    <p v-for="(item, i) in createContactForm.phones" :key="item.id" class="mb-2">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small left/>
                                         {{ item.phone }}
 
-                                        <v-icon small right :color="themeBgColor" :title="langMap.main.delete" @click="deletePhone(i)">mdi-trash-can</v-icon>
+                                        <v-icon small right :color="themeBgColor" :title="langMap.main.delete"
+                                                @click="deletePhone(i)">mdi-trash-can
+                                        </v-icon>
                                     </p>
 
                                     <v-expansion-panels accordion>
