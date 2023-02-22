@@ -617,53 +617,53 @@ export default {
         this.getPhoneTypes()
         this.getTeams()
 
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
-            });
-            this.loadSavedForm();
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+        this.loadSavedForm();
+    },
+    methods: {
+        onInput(val) {
+            this.steps = parseInt(val)
         },
-        methods: {
-            onInput(val) {
-                this.steps = parseInt(val)
-            },
-            nextStep(n) {
-                if (n === this.steps) {
-                    this.e1 = n
-                } else {
-                    this.e1 = n + 1
+        nextStep(n) {
+            if (n === this.steps) {
+                this.e1 = n
+            } else {
+                this.e1 = n + 1
+            }
+        },
+        previousStep(n) {
+            if (n === 1) {
+                this.e1 = 1
+            } else {
+                this.e1 = n - 1
+            }
+        },
+        getSuppliers() {
+            axios.get('/api/supplier').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.suppliers = response.data
+                    this.ticketForm.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1].item : this.suppliers[0].item;
+                    this.ticketForm.to = this.suppliers[0].item
+                    this.getContacts(this.ticketForm.from)
                 }
-            },
-            previousStep(n) {
-                if (n === 1) {
-                    this.e1 = 1
-                } else {
-                    this.e1 = n - 1
+            });
+        },
+        getProducts() {
+            axios.get('/api/product', {
+                params: {
+                    sort_by: 'full_name',
+                    sort_val: false
                 }
-            },
-            getSuppliers() {
-                axios.get('/api/supplier').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.suppliers = response.data
-                        this.ticketForm.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1].item : this.suppliers[0].item;
-                        this.ticketForm.to = this.suppliers[0].item
-                        this.getContacts(this.ticketForm.from)
-                    }
-                });
-            },
-            getProducts() {
-                axios.get('/api/product', {
-                    params: {
-                        sort_by: 'full_name',
-                        sort_val: false
-                    }
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.products = response.data.data
-                        this.ticketForm.to_product_id = this.products[0].id
-                    }
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.products = response.data.data
+                    this.ticketForm.to_product_id = this.products[0].id
+                }
 
                 });
             },
@@ -675,14 +675,14 @@ export default {
                         this.ticketForm.priority_id = this.priorities[1].id
                     }
 
-                });
-            },
-            getTypes() {
-                axios.get('/api/ticket_types').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.types = response.data
-                    }
+            });
+        },
+        getTypes() {
+            axios.get('/api/ticket_types').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.types = response.data
+                }
 
                 });
             },
@@ -693,69 +693,69 @@ export default {
                         this.categories = response.data
                     }
 
-                });
-            },
-            getContacts(entityItem) {
-                this.employees = []
-                let route = '';
+            });
+        },
+        getContacts(entityItem) {
+            this.employees = []
+            let route = '';
 
-                if (Object.keys(entityItem)[0] === 'App\\Company') {
-                    route = `/api/company/${Object.values(entityItem)[0]}`
-                    this.createContactForm.client_id = '';
-                } else {
-                    route = `/api/client/${Object.values(entityItem)[0]}`
-                    this.createContactForm.client_id = Object.values(entityItem)[0];
-                }
-                // console.log(entityItem);
-                axios.get(route).then(response => {
+            if (Object.keys(entityItem)[0] === 'App\\Company') {
+                route = `/api/company/${Object.values(entityItem)[0]}`
+                this.createContactForm.client_id = '';
+            } else {
+                route = `/api/client/${Object.values(entityItem)[0]}`
+                this.createContactForm.client_id = Object.values(entityItem)[0];
+            }
+            // console.log(entityItem);
+            axios.get(route).then(response => {
+                response = response.data
+                if (response.success === true) {
                     response = response.data
-                    if (response.success === true) {
-                        response = response.data
-                        // console.log(response);
-                        if (!response.hasOwnProperty('company_number')) {
-                            response.employees.forEach(employeeItem => this.employees.push(employeeItem.employee))
-                            // console.log('client');
-                        } else {
-                            this.employees = response.employees
-                            // console.log('company');
-                        }
-                        // this.ticketForm.contact_company_user_id = this.employees[0].id
+                    // console.log(response);
+                    if (!response.hasOwnProperty('company_number')) {
+                        response.employees.forEach(employeeItem => this.employees.push(employeeItem.employee))
+                        // console.log('client');
                     } else {
+                        this.employees = response.employees
+                        // console.log('company');
                     }
+                    // this.ticketForm.contact_company_user_id = this.employees[0].id
+                } else {
+                }
 
-                });
-            },
-            submit() {
-                if (!this.ticketForm.name) {
-                    return false;
-                }
-                this.overlay = true;
-                this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0]
-                this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0]
-                this.ticketForm.to_entity_type = Object.keys(this.ticketForm.to)[0]
-                this.ticketForm.to_entity_id = Object.values(this.ticketForm.to)[0]
-                this.addTicket()
-            },
-            addTicket() {
-                this.saveForLater();
-                const config = {
-                    headers: {'content-type': 'multipart/form-data'}
-                }
-                let formData = new FormData();
-                for (let key in this.ticketForm) {
-                    switch (key) {
-                        case 'to_team_id':
-                        case 'to_company_user_id':
-                            if (this.ticketForm[key]) {
-                                formData.append(key, this.ticketForm[key]);
-                            }
-                            break;
-                        case 'files':
-                            break;
-                        default:
+            });
+        },
+        submit() {
+            if (!this.ticketForm.name) {
+                return false;
+            }
+            this.overlay = true;
+            this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0]
+            this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0]
+            this.ticketForm.to_entity_type = Object.keys(this.ticketForm.to)[0]
+            this.ticketForm.to_entity_id = Object.values(this.ticketForm.to)[0]
+            this.addTicket()
+        },
+        addTicket() {
+            this.saveForLater();
+            const config = {
+                headers: {'content-type': 'multipart/form-data'}
+            }
+            let formData = new FormData();
+            for (let key in this.ticketForm) {
+                switch (key) {
+                    case 'to_team_id':
+                    case 'to_company_user_id':
+                        if (this.ticketForm[key]) {
                             formData.append(key, this.ticketForm[key]);
-                    }
+                        }
+                        break;
+                    case 'files':
+                        break;
+                    default:
+                        formData.append(key, this.ticketForm[key]);
                 }
+            }
 
                 Array.from(this.ticketForm.files).forEach(file => formData.append('files[]', file));
                 axios.post('/api/ticket', formData, config).then(response => {
@@ -797,108 +797,108 @@ export default {
                         this.snackbar = true;
                     }
 
-                });
-            },
-            getLanguages() {
-                axios.get('/api/lang').then(response => {
+            });
+        },
+        getLanguages() {
+            axios.get('/api/lang').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.languages = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getSupplierName() {
+            let index = this.suppliers.findIndex(supplier => supplier.item === this.ticketForm.from);
+            return index > -1 ? this.suppliers[index].name : '';
+        },
+        addPhone() {
+            if (this.phoneForm.phone_type) {
+                this.phoneForm.type = this.phoneTypes.find(x => x.id === this.phoneForm.phone_type);
+            }
+            this.createContactForm.phones.push(this.phoneForm);
+            this.phoneForm = {
+                phone: '',
+                phone_type: '',
+                type: null
+            }
+            this.$forceUpdate();
+        },
+        deletePhone(index) {
+            this.createContactForm.phones.splice(index, 1);
+        },
+        getPhoneTypes() {
+            axios.get(`/api/phone_types`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.phoneTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getTeams() {
+            axios.get(`/api/team`
+            ).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.tTeams = response.data.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        selectTeam() {
+            if (this.ticketForm.can_be_edited === false) {
+                this.selectionDisabled = true
+            }
+            if (this.ticketForm.to_team_id !== null) {
+                this.assignPanel = [0];
+                axios.get(`/api/team/${this.ticketForm.to_team_id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.languages = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
+                        this.tEmployees = response.data.employees
                     }
                 });
-            },
-            getSupplierName() {
-                let index = this.suppliers.findIndex(supplier => supplier.item === this.ticketForm.from);
-                return index > -1 ? this.suppliers[index].name : '';
-            },
-            addPhone() {
-                if (this.phoneForm.phone_type) {
-                    this.phoneForm.type = this.phoneTypes.find(x => x.id === this.phoneForm.phone_type);
+            }
+        },
+        saveForLater() {
+            if (this.ticketFormIsSaved === false) {
+                if (confirm('Do you want to save the content of the form for later?')) {
+                    this.savetoLS();
+                } else {
+                    localStorage.removeItem('ticketForm');
+                    this.ticketFormIsSaved = false;
                 }
-                this.createContactForm.phones.push(this.phoneForm);
-                this.phoneForm = {
-                    phone: '',
-                    phone_type: '',
-                    type: null
+            }
+        },
+        savetoLS() {
+            localStorage.setItem('ticketForm', JSON.stringify(this.ticketForm));
+            this.ticketFormIsSaved = true;
+            this.snackbarMessage = 'Form saved!'
+            this.actionColor = 'success'
+            this.snackbar = true;
+        },
+        loadSavedForm() {
+            try {
+                const json = localStorage.getItem('ticketForm');
+                if (json) {
+                    this.ticketForm = JSON.parse(json);
+                    this.snackbarMessage = 'The saved form is loaded!'
+                    this.actionColor = 'success'
+                    this.snackbar = true;
                 }
-                this.$forceUpdate();
-            },
-            deletePhone(index) {
-                this.createContactForm.phones.splice(index, 1);
-            },
-            getPhoneTypes() {
-                axios.get(`/api/phone_types`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.phoneTypes = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getTeams() {
-                axios.get(`/api/team`
-                ).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.tTeams = response.data.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            selectTeam() {
-                if (this.ticketForm.can_be_edited === false) {
-                    this.selectionDisabled = true
-                }
-                if (this.ticketForm.to_team_id !== null) {
-                    this.assignPanel = [0];
-                    axios.get(`/api/team/${this.ticketForm.to_team_id}`).then(response => {
-                        response = response.data
-                        if (response.success === true) {
-                            this.tEmployees = response.data.employees
-                        }
-                    });
-                }
-            },
-            saveForLater() {
-                if (this.ticketFormIsSaved === false) {
-                    if (confirm('Do you want to save the content of the form for later?')) {
-                        this.savetoLS();
-                    } else {
-                        localStorage.removeItem('ticketForm');
-                        this.ticketFormIsSaved = false;
-                    }
-                }
-            },
-            savetoLS() {
-                localStorage.setItem('ticketForm', JSON.stringify(this.ticketForm));
-                this.ticketFormIsSaved = true;
-                this.snackbarMessage = 'Form saved!'
-                this.actionColor = 'success'
-                this.snackbar = true;
-            },
-            loadSavedForm() {
-                try {
-                    const json = localStorage.getItem('ticketForm');
-                    if (json) {
-                        this.ticketForm = JSON.parse(json);
-                        this.snackbarMessage = 'The saved form is loaded!'
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    }
-                } catch (e) {
-                    console.log(e);
-                }
-            },
-        }
+            } catch (e) {
+                console.log(e);
+            }
+        },
     }
+}
 </script>
