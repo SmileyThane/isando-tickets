@@ -379,10 +379,12 @@
                                                                 item-value="id"
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
+                                                                    {{ $helpers.i18n.localized(data.item) }}
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
+                                                                    {{ $helpers.i18n.localized(data.item) }}
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
