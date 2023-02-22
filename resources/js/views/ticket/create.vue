@@ -16,7 +16,7 @@
             <v-container>
                 <v-row justify="space-around">
                     <v-col cols="12">
-                        <p class="title text-center">{{langMap.ticket.create_ticket}}</p>
+                        <p class="title text-center">{{ langMap.ticket.create_ticket }}</p>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -50,7 +50,8 @@
                                         >
                                             <template v-slot:append-outer>
                                                 <v-btn :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'"
-                                                       icon :color="themeBgColor" :title="langMap.individuals.add_new" @click="createContactDlg = true;">
+                                                       icon :color="themeBgColor" :title="langMap.individuals.add_new"
+                                                       @click="createContactDlg = true;">
                                                     <v-icon>mdi-plus</v-icon>
                                                 </v-btn>
                                             </template>
@@ -97,12 +98,6 @@
                                                             :items="priorities"
                                                             v-model="ticketForm.priority_id"
                                                         >
-                                                            <!--                                            <template slot="selection" slot-scope="data">-->
-                                                            <!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
-                                                            <!--                                            </template>-->
-                                                            <!--                                            <template slot="item" slot-scope="data">-->
-                                                            <!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
-                                                            <!--                                            </template>-->
                                                         </v-select>
                                                     </div>
                                                     <div class="col-md-4">
@@ -115,12 +110,6 @@
                                                             :items="types"
                                                             v-model="ticketForm.ticket_type_id"
                                                         >
-                                                            <!--                                            <template slot="selection" slot-scope="data">-->
-                                                            <!--                                                {{ langMap.ticket_types[data.item.name] }}-->
-                                                            <!--                                            </template>-->
-                                                            <!--                                            <template slot="item" slot-scope="data">-->
-                                                            <!--                                                {{ langMap.ticket_types[data.item.name] }}-->
-                                                            <!--                                            </template>-->
                                                         </v-select>
                                                     </div>
                                                     <div class="col-md-4">
@@ -158,7 +147,7 @@
                                                         ></v-textarea>
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <v-label>{{langMap.ticket.access_data}}:</v-label>
+                                                        <v-label>{{ langMap.ticket.access_data }}:</v-label>
                                                     </div>
                                                     <v-col cols="md-12">
                                                         <v-file-input
