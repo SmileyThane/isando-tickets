@@ -397,7 +397,9 @@
                                                             small
                                                             @click="addPhone"
                                                         >
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </v-row>
                                                 </v-form>
@@ -509,111 +511,111 @@
     </v-container>
 </template>
 <script>
-    import EventBus from "../../components/EventBus";
+import EventBus from "../../components/EventBus";
 
-    export default {
-        data() {
-            return {
-                clientId: 6,
-                overlay: false,
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                availabilityTooltip: false,
-                e1: 1,
-                steps: 2,
-                vertical: false,
-                altLabels: true,
-                editable: true,
-                langMap: this.$store.state.lang.lang_map,
-                themeFgColor: this.$store.state.themeFgColor,
-                themeBgColor: this.$store.state.themeBgColor,
-                ticketForm: {
-                    from: {
-                        name: ''
-                    },
-                    from_entity_type: '',
-                    from_entity_id: '',
-                    to: '',
-                    to_entity_type: '',
-                    to_entity_id: '',
-                    contact_company_user_id: '',
-                    to_product_id: '',
-                    priority_id: '',
-                    category_id: '',
-                    ticket_type_id:'',
-                    name: '',
-                    description: '',
-                    availability: '',
-                    connection_details: '',
-                    access_details: '',
-                    files: [],
-                    to_team_id: null,
-                    to_company_user_id: null,
-                    can_be_edited: true
+export default {
+    data() {
+        return {
+            clientId: 6,
+            overlay: false,
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            availabilityTooltip: false,
+            e1: 1,
+            steps: 2,
+            vertical: false,
+            altLabels: true,
+            editable: true,
+            langMap: this.$store.state.lang.lang_map,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            ticketForm: {
+                from: {
+                    name: ''
                 },
-                suppliers: [],
-                products: [],
-                priorities: [],
-                categories: [],
-                types: [],
-                employees: [],
-                onFileChange(form) {
-                    this[form].files = null;
-                    this[form].files = event.target.files;
-                },
-                createContactDlg: false,
-                createContactForm: {
-                    client_id: '',
-                    name: '',
-                    middle_name: '',
-                    surname: '',
-                    language_id: '',
-                    email: '',
-                    is_active: 0,
-                    description: '',
-                    phones: []
-                },
-                phoneForm: {
-                    phone: '',
-                    phone_type: '',
-                },
-                phoneTypes: [],
-                languages: [],
-                assignDlg: false,
-                selectionDisabled: false,
-                tTeams: [],
-                tEmployees: [],
-                ticketFormIsSaved: false,
+                from_entity_type: '',
+                from_entity_id: '',
+                to: '',
+                to_entity_type: '',
+                to_entity_id: '',
+                contact_company_user_id: '',
+                to_product_id: '',
+                priority_id: '',
+                category_id: '',
+                ticket_type_id: '',
+                name: '',
+                description: '',
+                availability: '',
+                connection_details: '',
+                access_details: '',
+                files: [],
+                to_team_id: null,
+                to_company_user_id: null,
+                can_be_edited: true
+            },
+            suppliers: [],
+            products: [],
+            priorities: [],
+            categories: [],
+            types: [],
+            employees: [],
+            onFileChange(form) {
+                this[form].files = null;
+                this[form].files = event.target.files;
+            },
+            createContactDlg: false,
+            createContactForm: {
+                client_id: '',
+                name: '',
+                middle_name: '',
+                surname: '',
+                language_id: '',
+                email: '',
+                is_active: 0,
+                description: '',
+                phones: []
+            },
+            phoneForm: {
+                phone: '',
+                phone_type: '',
+            },
+            phoneTypes: [],
+            languages: [],
+            assignDlg: false,
+            selectionDisabled: false,
+            tTeams: [],
+            tEmployees: [],
+            ticketFormIsSaved: false,
+        }
+    },
+    watch: {
+        steps(val) {
+            if (this.e1 > val) {
+                this.e1 = val
             }
         },
-        watch: {
-            steps(val) {
-                if (this.e1 > val) {
-                    this.e1 = val
-                }
-            },
-            vertical() {
-                this.e1 = 2
-                requestAnimationFrame(() => this.e1 = 1) // Workarounds
-            },
-            ticketForm() {
-                this.ticketFormIsSaved = false;
-            }
+        vertical() {
+            this.e1 = 2
+            requestAnimationFrame(() => this.e1 = 1) // Workarounds
         },
-        beforeDestroy() {
-            this.saveForLater()
-        },
-        mounted() {
-            this.getSuppliers()
-            this.getProducts()
-            this.getPriorities()
-            this.getTypes()
-            this.getCategories()
-            this.getLanguages()
-            // this.getCompany()
-            this.getPhoneTypes()
-            this.getTeams()
+        ticketForm() {
+            this.ticketFormIsSaved = false;
+        }
+    },
+    beforeDestroy() {
+        this.saveForLater()
+    },
+    mounted() {
+        this.getSuppliers()
+        this.getProducts()
+        this.getPriorities()
+        this.getTypes()
+        this.getCategories()
+        this.getLanguages()
+        // this.getCompany()
+        this.getPhoneTypes()
+        this.getTeams()
 
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
