@@ -757,45 +757,69 @@ export default {
                 }
             }
 
-                Array.from(this.ticketForm.files).forEach(file => formData.append('files[]', file));
-                axios.post('/api/ticket', formData, config).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        window.open('/ticket/' + response.data.id, '_self')
-                    } else {
-                        this.overlay = false;
-                        this.snackbarMessage = 'Check ticket problems and try again, please!'
-                        this.actionColor = 'error'
-                        this.snackbar = true;
+            Array.from(this.ticketForm.files).forEach(file => formData.append('files[]', file));
+            axios.post('/api/ticket', formData, config).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.ticketForm = {
+                        from: {
+                            name: ''
+                        },
+                        from_entity_type: '',
+                        from_entity_id: '',
+                        to: '',
+                        to_entity_type: '',
+                        to_entity_id: '',
+                        contact_company_user_id: '',
+                        to_product_id: '',
+                        priority_id: '',
+                        category_id: '',
+                        ticket_type_id: '',
+                        name: '',
+                        description: '',
+                        availability: '',
+                        connection_details: '',
+                        access_details: '',
+                        files: [],
+                        to_team_id: null,
+                        to_company_user_id: null,
+                        can_be_edited: true
                     }
-                });
-            },
-            addEmployee() {
-                axios.post(`/api/client/employee`, this.createContactForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.createContactDlg = false;
-                        this.ticketForm.contact_company_user_id = response.data.company_user_id;
-                        this.getContacts(this.ticketForm.from);
-                        this.createContactForm = {
-                            client_id: '',
-                            name: '',
-                            middle_name: '',
-                            surname: '',
-                            language_id: '',
-                            email: '',
-                            is_active: 0,
-                            phones: [],
-                            description: ''
-                        };
-                        this.snackbarMessage = this.langMap.company.employee_created;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
+                    window.open('/ticket/' + response.data.id, '_self')
+                } else {
+                    this.overlay = false;
+                    this.snackbarMessage = 'Check ticket problems and try again, please!'
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        addEmployee() {
+            axios.post(`/api/client/employee`, this.createContactForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.createContactDlg = false;
+                    this.ticketForm.contact_company_user_id = response.data.company_user_id;
+                    this.getContacts(this.ticketForm.from);
+                    this.createContactForm = {
+                        client_id: '',
+                        name: '',
+                        middle_name: '',
+                        surname: '',
+                        language_id: '',
+                        email: '',
+                        is_active: 0,
+                        phones: [],
+                        description: ''
+                    };
+                    this.snackbarMessage = this.langMap.company.employee_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
 
             });
         },
