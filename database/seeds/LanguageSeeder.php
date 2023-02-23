@@ -69,6 +69,7 @@ class LanguageSeeder extends Seeder
                             'incident_reporting_scenarios' => 'Scenarios',
                             'incident_reporting_action_boards' => 'Action boards',
                             'risk_repository' => 'Risk repository',
+                            'create_incident' => 'Create incident'
                         ],
                     'tracking' =>
                         [
@@ -1057,6 +1058,7 @@ class LanguageSeeder extends Seeder
                             'incident_reporting_scenarios' => 'Scenarios',
                             'incident_reporting_action_boards' => 'Action boards',
                             'risk_repository' => 'Risk repository',
+                            'create_incident' => 'Vorfall erstellen'
                         ],
                         'tracking' => [
                             'name' => 'Name',
