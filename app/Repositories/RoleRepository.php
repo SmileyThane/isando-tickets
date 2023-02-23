@@ -92,11 +92,18 @@ class RoleRepository
         return $this->getRolesWithPermissions();
     }
 
-    public function getRolesWithPermissions(): array
+    public function getRolesWithPermissions(array $data): array
     {
         $result = [];
         $roles = Role::query()->where(['company_id' => Auth::user()->employee->company_id])->get();
-        $permissions = Permission::all();
+
+        if (isset($data['search'])) {
+            $permissions = Permission::query()
+                ->where('name', 'like', '%' . $data['search'] . '%')
+                ->get();
+        } else {
+            $permissions = Permission::all();
+        }
 
         foreach ($permissions as $key => $permission) {
             $result[$key] = new stdClass();
@@ -106,5 +113,23 @@ class RoleRepository
             }
         }
         return $result;
+    }
+
+    /**
+     * Return all roles by user company id
+     *
+     * @param array $data
+     * @param int $companyId
+     * @return array
+     */
+    public function getAllByCompanyId(array $data, int $companyId): array
+    {
+        $roles = Role::query()->where('company_id', $companyId);
+
+        if (isset($data['search'])) {
+            $roles->where('name', 'like', '%' . $data['search'] . '%');
+        }
+
+        return $roles->get()->toArray();
     }
 }
