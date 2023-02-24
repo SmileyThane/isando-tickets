@@ -155,7 +155,8 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true" hide-overlay persistent content-class="draggable">
+            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true" hide-overlay persistent
+                      content-class="draggable">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ ticketAnswer.id ? langMap.ticket.edit_answer : langMap.ticket.create_answer }}
@@ -213,7 +214,8 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="answerDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer">{{ ticketAnswer.id ? langMap.main.update : langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer">
+                            {{ ticketAnswer.id ? langMap.main.update : langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -262,7 +264,8 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="descriptionDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="descriptionDialog = false; updateTicketDescription()">{{ langMap.main.update }}
+                        <v-btn :color="themeBgColor" dark @click="descriptionDialog = false; updateTicketDescription()">
+                            {{ langMap.main.update }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -305,7 +308,8 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="noteDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="addTicketNotice">{{ ticketNotice.id ? langMap.main.update : langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketNotice">
+                            {{ ticketNotice.id ? langMap.main.update : langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -569,7 +573,8 @@
                                 small
                             >
                                 <!--                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>-->
-                                <v-icon v-if="ticket.ticket_type.icon" small left :color="themeBgColor" v-text="ticket.ticket_type.icon"/>
+                                <v-icon v-if="ticket.ticket_type.icon" small left :color="themeBgColor"
+                                        v-text="ticket.ticket_type.icon"/>
                                 <strong>{{ ticket.ticket_type.name }}</strong>
 
                             </v-btn>
