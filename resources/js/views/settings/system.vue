@@ -651,11 +651,49 @@
                                            style="color: white;"
                                            @click="updateKnowledgeBaseType"
                                            v-text="langMap.system_settings.save"
-                                           :disabled="kbDisabledSubmitButton"
+                                           :disabled="kb.disabledSubmitButton"
+                                    />
+                                    <v-btn :color="themeBgColor"
+                                           class="ma-2"
+                                           style="color: white;"
+                                           @click="deleteKbType"
+                                           v-text="langMap.system_settings.delete"
+                                           :disabled="kb.disabledDeleteButton"
                                     />
                                 </v-col>
                             </v-row>
                         </v-form>
+                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.system_settings.new_kb_type }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                            mdi-plus
+                                        </v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col class="pa-1" cols="md-12">
+                                                <v-text-field v-model="kb.typeForm.name"
+                                                              :color="themeBgColor"
+                                                              :item-color="themeBgColor"
+                                                              :label="langMap.main.name"
+                                                              dense></v-text-field>
+                                            </v-col>
+                                            <v-btn :color="themeBgColor" bottom dark fab right small
+                                                   @click="submitNewData(kb.typeForm, 'addKbType')">
+                                                <v-icon :color="themeBgColor"
+                                                        :style="`color: ${themeFgColor};`">mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                     </v-card-text>
                 </v-card>
             </div>
@@ -1874,9 +1912,15 @@ export default {
             dialogTags: false,
             dialogServices: false,
             dialogCurrencies: false,
-            kbTypes: [],
+            kb: {
+                types: [],
+                disabledSubmitButton: false,
+                disabledDeleteButton: false,
+                typeForm: {
+                    name: '',
+                },
+            },
             kbSelectedTypeId: null,
-            kbDisabledSubmitButton: false,
             permissions: [],
             selectedPermissions: [],
         }
@@ -1923,7 +1967,7 @@ export default {
             }
         },
         kbSelectedTypeId(val) {
-            this.selectedPermissions = this.kbTypes.find(
+            this.selectedPermissions = this.kb.types.find(
                 type => type.id === Number(this.kbSelectedTypeId)
             )?.permissions;
         },
@@ -2733,6 +2777,9 @@ export default {
                 slug: '',
                 symbol: ''
             }
+            this.kb.typeForm = {
+                name: ''
+            }
         },
         closeDialog(id) {
             console.log(id);
@@ -2763,16 +2810,16 @@ export default {
             });
         },
         updateKnowledgeBaseType() {
-            this.kbDisabledSubmitButton = true;
+            this.kb.disabledSubmitButton = true;
             axios.put(`/api/kb/${this.kbSelectedTypeId}`, { permissions: this.selectedPermissions })
                 .then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        this.kbDisabledSubmitButton = false;
-                        const index = this.kbTypes.findIndex(
+                        this.kb.disabledSubmitButton = false;
+                        const index = this.kb.types.findIndex(
                             type => type.id === Number(this.kbSelectedTypeId)
                         );
-                        this.kbTypes[index] = response.data;
+                        this.kb.types[index] = response.data;
 
                         this.snackbarMessage = this.langMap.main.success_update;
                         this.actionColor = 'success';
@@ -2784,6 +2831,46 @@ export default {
                     }
                 });
         },
+        addKbType(form) {
+            axios.post('/api/kb', form).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.$store.dispatch('getKnowledgeBaseTypes');
+                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.kb_type_created}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                    this.resetForm();
+                } else {
+                    this.snackbarMessage = error.response.data.message;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+
+                }
+            }).catch(error => {
+                if (error.response.data.message) {
+                    this.snackbarMessage = error.response.data.message;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        deleteKbType() {
+            this.kb.disabledDeleteButton = true;
+            axios.delete(`/api/kb/${this.kbSelectedTypeId}`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.$store.dispatch('getKnowledgeBaseTypes');
+                    this.kb.disabledDeleteButton = false;
+                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.kb_type_deleted}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
     },
     filters: {
         capitalize: function (value) {
@@ -2794,9 +2881,9 @@ export default {
     },
     computed: {
         getKbTypes() {
-            this.kbTypes = this.$store.getters['getKnowledgeBaseTypes'];
-            this.kbSelectedTypeId = this.kbTypes[0]?.id;
-            return this.kbTypes;
+            this.kb.types = this.$store.getters['getKnowledgeBaseTypes'];
+            this.kbSelectedTypeId = this.kb.types[0]?.id;
+            return this.kb.types;
         },
     }
 }

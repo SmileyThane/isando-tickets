@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Enums\KnowledgeBase\KnowledgeBasePermissionsTypesEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\KnowledgeBase\CreateKnowledgeBaseTypeRequest;
 use App\Http\Requests\KnowledgeBase\UpdateKnowledgeBaseTypeRequest;
 use App\KbArticle;
 use App\KnowledgeBaseType;
@@ -168,6 +169,17 @@ class KbController extends Controller
     }
 
     /**
+     * Create new KnowledgeBaseType entity
+     *
+     * @param CreateKnowledgeBaseTypeRequest $request
+     * @return JsonResponse
+     */
+    public function create(CreateKnowledgeBaseTypeRequest $request): JsonResponse
+    {
+        return self::showResponse(true, $this->kbRepo->create($request->validated()));
+    }
+
+    /**
      * Update KnowledgeBaseType entity
      *
      * @param UpdateKnowledgeBaseTypeRequest $request
@@ -177,5 +189,18 @@ class KbController extends Controller
     public function update(UpdateKnowledgeBaseTypeRequest $request, KnowledgeBaseType $knowledgeBaseType): JsonResponse
     {
         return self::showResponse(true, $this->kbRepo->update($knowledgeBaseType, $request->validated()));
+    }
+
+    /**
+     * Delete KnowledgeBaseType entity
+     *
+     * @param KnowledgeBaseType $knowledgeBaseType
+     * @return JsonResponse
+     */
+    public function delete(KnowledgeBaseType $knowledgeBaseType): JsonResponse
+    {
+        $this->kbRepo->delete($knowledgeBaseType);
+
+        return self::showResponse(true);
     }
 }

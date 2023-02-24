@@ -12,6 +12,8 @@ class KnowledgeBaseType extends Model
      * @var array
      */
     protected $fillable = [
+        'name',
+        'alias',
         'permissions',
     ];
 

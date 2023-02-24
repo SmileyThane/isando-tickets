@@ -327,6 +327,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('kb/article/{id}', 'API\KbController@editArticle')->middleware('kb:edit');
     Route::delete('kb/article/{id}', 'API\KbController@deleteArticle')->middleware('kb:delete');
     Route::put('kb/{knowledgeBaseType}', 'API\KbController@update');
+    Route::post('kb', 'API\KbController@create');
+    Route::delete('kb/{knowledgeBaseType}', 'API\KbController@delete');
 
 
     // incident reporting

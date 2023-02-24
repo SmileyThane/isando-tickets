@@ -4,6 +4,7 @@
 namespace App\Repositories;
 
 use App\Company;
+use App\Enums\KnowledgeBase\KnowledgeBasePermissionsTypesEnum;
 use App\KbArticle;
 use App\KbArticleClient;
 use App\KbCategory;
@@ -250,6 +251,36 @@ class KbRepository
     }
 
     /**
+     * Create new KnowledgeBaseType entity
+     *
+     * @param array $data
+     * @return Model|KnowledgeBaseType
+     */
+    public function create(array $data): Model|KnowledgeBaseType
+    {
+        $data['alias'] = str_replace(' ', '_', strtolower($data['name']));
+        $data['permissions'] = [
+            [
+                'type' => KnowledgeBasePermissionsTypesEnum::VIEW,
+                'value' => Permission::KB_VIEW_ACCESS,
+            ],
+            [
+                'type' => KnowledgeBasePermissionsTypesEnum::CREATE,
+                'value'=> Permission::KB_CREATE_ACCESS,
+            ],
+            [
+                'type' => KnowledgeBasePermissionsTypesEnum::EDIT,
+                'value' => Permission::KB_EDIT_ACCESS,
+            ],
+            [
+                'type' => KnowledgeBasePermissionsTypesEnum::DELETE,
+                'value' => Permission::KB_DELETE_ACCESS,
+            ],
+        ];
+        return KnowledgeBaseType::query()->create($data);
+    }
+
+    /**
      * Update KnowledgeBaseType entity
      *
      * @param KnowledgeBaseType $knowledgeBaseType
@@ -259,5 +290,16 @@ class KbRepository
     public function update(KnowledgeBaseType $knowledgeBaseType, array $data): KnowledgeBaseType
     {
         return tap($knowledgeBaseType)->update($data);
+    }
+
+    /**
+     * Delete KnowledgeBaseType entity
+     *
+     * @param KnowledgeBaseType $knowledgeBaseType
+     * @return void
+     */
+    public function delete(KnowledgeBaseType $knowledgeBaseType): void
+    {
+        $knowledgeBaseType->delete();
     }
 }

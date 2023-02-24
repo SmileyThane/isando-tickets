@@ -831,6 +831,10 @@ class LanguageSeeder extends Seeder
                             'permission' => 'Permission',
                             'type' => 'Type',
                             'save' => 'Save',
+                            'delete' => 'Delete',
+                            'new_kb_type' => 'Add new knowledge base type',
+                            'kb_type_created' => 'Knowledge base type created',
+                            'kb_type_deleted' => 'knowledge base type deleted',
                         ],
                     'profile' =>
                         [
@@ -1795,6 +1799,10 @@ class LanguageSeeder extends Seeder
                             'permission' => 'Erlaubnis',
                             'type' => 'Typ',
                             'save' => 'Speichern',
+                            'delete' => 'Löschen',
+                            'new_kb_type' => 'Neuen Wissensdatenbanktyp hinzufügen',
+                            'kb_type_created' => 'Wissensdatenbanktyp erstellt',
+                            'kb_type_deleted' => 'Wissensdatenbanktyp gelöscht',
                         ],
                         'profile' => [
                             'user_theme_colors' => 'Persönliche Themenfarben',
