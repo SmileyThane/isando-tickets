@@ -1031,9 +1031,10 @@
                                     </span>
                                     </v-col>
 
-                                    <v-col v-if="currentUser.id == ticket.creator.user_data.id"  cols="1">
-                                        <v-btn right icon :color="themeBgColor" :title="langMap.main.edit" @click="descriptionDialog = true;">
-                                           <v-icon>mdi-pencil</v-icon>
+                                    <v-col v-if="currentUser.id == ticket.creator.user_data.id" cols="1">
+                                        <v-btn right icon :color="themeBgColor" :title="langMap.main.edit"
+                                               @click="descriptionDialog = true;">
+                                            <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
                                     </v-col>
                                     <div v-html="ticket.description"></div>
@@ -1223,8 +1224,8 @@
                                                 <span v-else-if="ticket.assigned_person.user_data.full_name"
                                                       class="white--text">
                                                     {{
-                                                                ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                                            }}
+                                                        ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                    }}
                                                  </span>
                                             </v-avatar>
                                             <span class="mt-2">{{ ticket.assigned_person.user_data.full_name }}</span>
@@ -1486,31 +1487,32 @@
                                 >
                                     <v-list-item three-line>
                                         <v-list-item-content class="custom-small-text">
-                                            <v-col :cols="index == 0 && currentUser.id == noticeItem.employee.user_data.id ? 11 : 12">
-                                            <strong>
-                                                <v-avatar
-                                                    v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
-                                                    class="mr-2 mb-2"
-                                                    color="grey darken-1"
-                                                    size="2em"
-                                                >
-                                                    <v-img v-if="noticeItem.employee.user_data.avatar_url"
-                                                           :src="noticeItem.employee.user_data.avatar_url"/>
-                                                    <span v-else-if="noticeItem.employee.user_data.full_name"
-                                                          class="white--text">
+                                            <v-col
+                                                :cols="index == 0 && currentUser.id == noticeItem.employee.user_data.id ? 11 : 12">
+                                                <strong>
+                                                    <v-avatar
+                                                        v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
+                                                        class="mr-2 mb-2"
+                                                        color="grey darken-1"
+                                                        size="2em"
+                                                    >
+                                                        <v-img v-if="noticeItem.employee.user_data.avatar_url"
+                                                               :src="noticeItem.employee.user_data.avatar_url"/>
+                                                        <span v-else-if="noticeItem.employee.user_data.full_name"
+                                                              class="white--text">
                                                         {{
-                                                            noticeItem.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                                        }}
+                                                                noticeItem.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                            }}
                                                     </span>
-                                                </v-avatar>
-                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
+                                                    </v-avatar>
+                                                    <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
-                                                {{ noticeItem.employee.user_data.full_name }}
+                                                    {{ noticeItem.employee.user_data.full_name }}
 
-                                                {{ noticeItem.created_at }}
-                                                {{ noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : ''}}
-                                                :
-                                            </strong>
+                                                    {{ noticeItem.created_at }}
+                                                    {{ noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : '' }}
+                                                    :
+                                                </strong>
                                             </v-col>
                                             <v-col v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id" cols="1">
                                                 <v-btn icon :color="themeBgColor" right @click="editNotice(noticeItem)" :title="langMap.ticket.edit_notice">
