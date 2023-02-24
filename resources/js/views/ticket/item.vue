@@ -1514,8 +1514,11 @@
                                                     :
                                                 </strong>
                                             </v-col>
-                                            <v-col v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id" cols="1">
-                                                <v-btn icon :color="themeBgColor" right @click="editNotice(noticeItem)" :title="langMap.ticket.edit_notice">
+                                            <v-col
+                                                v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id"
+                                                cols="1">
+                                                <v-btn icon :color="themeBgColor" right @click="editNotice(noticeItem)"
+                                                       :title="langMap.ticket.edit_notice">
                                                     <v-icon>mdi-pencil</v-icon>
                                                 </v-btn>
                                             </v-col>
@@ -1601,7 +1604,9 @@
                                                 {{ moment(item.date_from).format('DD.MM.YYYY HH:mm') }}
                                             </div>
                                             <div class="d-inline-flex flex-grow-1 text-center" style="width: 15%">
-                                                {{ $helpers.time.convertSecToTime(item.status === 0 ? $helpers.time.getSecBetweenDates(item.date_from, moment(), true) : item.passed, false) }}
+                                                {{
+                                                    $helpers.time.convertSecToTime(item.status === 0 ? $helpers.time.getSecBetweenDates(item.date_from, moment(), true) : item.passed, false)
+                                                }}
                                             </div>
                                             <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
                                                 {{ item.service ? item.service.name : '' }}
@@ -1623,7 +1628,9 @@
                                             </div>
                                         </v-list-item-title>
                                         <v-list-item-subtitle>
-                                            {{ item.description ? $helpers.string.shortenText(item.description, 100) : '' }}
+                                            {{
+                                                item.description ? $helpers.string.shortenText(item.description, 100) : ''
+                                            }}
                                         </v-list-item-subtitle>
                                         <hr>
                                     </v-list-item-content>
