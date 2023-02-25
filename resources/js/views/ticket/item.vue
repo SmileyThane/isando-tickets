@@ -2889,7 +2889,7 @@ export default {
                         this.getTrackers();
                     });
             } else {
-                this.updateTrack(this.trackerActive.id, 1 , moment().format(this.trackerDateTimeFormat))
+                this.updateTrack(this.trackerActive.id, 1, moment().format(this.trackerDateTimeFormat))
                     .then(() => {
                         this.trackerActive.id = null;
                         this.trackerActive.status = 1;
@@ -2906,7 +2906,7 @@ export default {
                 date_to: date_to ? moment(date_to).format(this.trackerDateTimeFormat) : null,
             };
             if (date_from) {
-                data = { ...data, date_from };
+                data = {...data, date_from};
             }
             return this.$store.dispatch('Tracking/updateTrack', data)
                 .then(() => this.getTrackers());
@@ -2922,7 +2922,7 @@ export default {
                 return this.updateTrack(id, 1, moment().format(this.trackerDateTimeFormat));
             } else {
                 return this.$store.dispatch('Tracking/duplicateTrack', id)
-                    .then(({ data, success }) => {
+                    .then(({data, success}) => {
                         if (success) {
                             if (id === this.trackerActive.id) {
                                 this.trackerActive.id = data.id;
