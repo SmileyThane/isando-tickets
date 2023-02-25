@@ -1642,7 +1642,8 @@
                                             x-small
                                             v-if="trackersLoadMoreBtn"
                                             @click="loadMoreTrackers"
-                                        >Load more</v-btn>
+                                        >Load more
+                                        </v-btn>
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list>
@@ -2324,7 +2325,7 @@ export default {
         window.history.pushState({ticket_id: ticketId}, this.langMap.sidebar.ticket, `/ticket/${ticketId}`);
         this.trackerActive.entity_id = ticketId;
         this.getTrackers()
-        this.$store.dispatch('Team/getCoworkers', { force: true });
+        this.$store.dispatch('Team/getCoworkers', {force: true});
     },
     methods: {
         selectSearchCategory(item) {
@@ -2547,7 +2548,7 @@ export default {
             let formData = new FormData();
             for (let key in this.ticketAnswer) {
                 if (key !== 'files' && key !== 'id') {
-                    if (key =='answer' && this.selectedSignature !== '') {
+                    if (key == 'answer' && this.selectedSignature !== '') {
                         this.ticketAnswer[key] += '<hr><br/>' + this.selectedSignature
                     }
                     formData.append(key, this.ticketAnswer[key]);
@@ -2643,7 +2644,7 @@ export default {
                 if (response.success === true) {
                     this.getTicket();
                     this.$forceUpdate();
-               } else {
+                } else {
                     this.overlay = false;
                     this.snackbarMessage = 'Check ticket problems and try again, please!'
                     this.actionColor = 'error'
