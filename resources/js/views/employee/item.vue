@@ -522,8 +522,9 @@
                                                     <v-icon v-text="item.type.icon" small dense/>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="item.social_link" />
-                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
+                                                    <v-list-item-title v-text="item.social_link"/>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
@@ -676,10 +677,14 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -692,7 +697,9 @@
                                                                     small
                                                                     @click="addSocial"
                                                                 >
-                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor"
+                                                                            :style="`color: ${themeFgColor};`">mdi-plus
+                                                                    </v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -817,7 +824,7 @@
                                     color="red"
                                     @click="deleteUser"
                                 >
-                                    {{ langMap.individuals.delete}}
+                                    {{ langMap.individuals.delete }}
                                 </v-btn>
                                 <v-btn
                                     v-if="userData.deleted_at"
@@ -825,7 +832,7 @@
                                     color="green darken"
                                     @click="restoreUser"
                                 >
-                                    {{ langMap.individuals.restore}}
+                                    {{ langMap.individuals.restore }}
                                 </v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn
