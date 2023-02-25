@@ -20,7 +20,10 @@
                         flat
                         :color="themeBgColor"
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.individuals.info }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.individuals.info
+                            }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-btn :color="themeBgColor" icon @click="enableToEdit = true" v-if="!enableToEdit">
                             <v-icon :color="themeFgColor" small dense>mdi-pencil</v-icon>
@@ -38,9 +41,11 @@
                                     v-if="userData.avatar_url || userData.full_name"
                                     size="80px"
                                 >
-                                    <v-img v-if="userData.avatar_url" :src="userData.avatar_url" size="80px" />
+                                    <v-img v-if="userData.avatar_url" :src="userData.avatar_url" size="80px"/>
                                     <div v-else-if="userData.full_name" class="white--text" size="80px">
-                                        {{ userData.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                        {{
+                                            userData.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                        }}
                                     </div>
                                 </v-avatar>
                                 <v-icon v-else size="80px">mdi-account-circle</v-icon>
@@ -51,38 +56,44 @@
                                 <h3 class="mb-3">{{ userData .title }} {{ userData.title_before_name}} {{ userData.full_name }}</h3>
 
                                 <div v-if="userData.emails && userData.emails.length > 0" class="mb-3">
-                                    <hr class="lighten" />
-                                    <p v-for="(item, i) in userData.emails"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                    <hr class="lighten"/>
+                                    <p v-for="(item, i) in userData.emails" :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small class="mr-2"/>
                                         {{ item.email }}
                                     </p>
                                 </div>
 
                                 <div v-if="userData.phones && userData.phones.length > 0">
-                                    <hr class="lighten" />
-                                    <p v-for="(item, i) in userData.phones"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                    <hr class="lighten"/>
+                                    <p v-for="(item, i) in userData.phones" :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small class="mr-2"/>
                                         {{ item.phone }}
                                     </p>
                                 </div>
                             </v-col>
                             <v-col cols="5">
                                 <div v-if="userData.addresses && userData.addresses.length > 0" class="mb-3">
-                                    <p v-for="(item, i) in userData.addresses"  :key="item.id" class="mb-1">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2 mb-2" />
+                                    <p v-for="(item, i) in userData.addresses" :key="item.id" class="mb-1">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small class="mr-2 mb-2"/>
 
                                         <span v-if="item.street">{{ item.street }}</span>
                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                         <br/>{{ item.postal_code }} {{ item.city }}
-                                        <br/><span v-if="item.country">{{ $helpers.i18n.localized(item.country) }}</span>
+                                        <br/><span v-if="item.country">{{
+                                            $helpers.i18n.localized(item.country)
+                                        }}</span>
                                     </p>
                                 </div>
 
                                 <div v-if="userData.socials && userData.socials.length > 0">
-                                    <hr class="lighten" />
-                                    <p v-for="(item, i) in userData.socials"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                    <hr class="lighten"/>
+                                    <p v-for="(item, i) in userData.socials" :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small class="mr-2"/>
                                         {{ item.social_link }}
                                     </p>
                                 </div>
@@ -90,10 +101,12 @@
                         </v-row>
                         <v-row>
                             <v-col cols="6">
-                                <hr class="lighten" />
+                                <hr class="lighten"/>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(101)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(101)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.new_assigned_to_me }}
                                 </p>
