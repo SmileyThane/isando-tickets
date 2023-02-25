@@ -311,12 +311,13 @@
                                             </p>
                                         </v-col>
                                         <v-col cols="12">
-                                            <v-btn text @click="resetPassword" :color="themeBgColor" v-text="langMap.company.reset_password" />
+                                            <v-btn text @click="resetPassword" :color="themeBgColor"
+                                                   v-text="langMap.company.reset_password"/>
                                         </v-col>
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr class="lighten" />
+                                    <hr class="lighten"/>
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <h3>{{ langMap.individuals.contact_info }}</h3>
@@ -324,11 +325,12 @@
                                         <v-col cols="6">
                                             <v-list-item v-for="(item, i) in userData.emails" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon" small dense />
+                                                    <v-icon v-text="item.type.icon" small dense/>
                                                 </v-list-item-icon>
                                                 <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.email"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editEmail(item)">mdi-pencil</v-icon>
@@ -344,11 +346,12 @@
                                         <v-col cols="6">
                                             <v-list-item v-for="(item, i) in userData.phones" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon" small dense />
+                                                    <v-icon v-text="item.type.icon" small dense/>
                                                 </v-list-item-icon>
                                                 <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editPhone(item)">mdi-pencil</v-icon>
@@ -366,7 +369,9 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.main.new_email }}
                                                         <template v-slot:actions>
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -393,7 +398,9 @@
                                                                             <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
 
                                                                     </v-select>
@@ -407,7 +414,9 @@
                                                                     small
                                                                     @click="addEmail"
                                                                 >
-                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor"
+                                                                            :style="`color: ${themeFgColor};`">mdi-plus
+                                                                    </v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -421,7 +430,9 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.main.new_phone }}
                                                         <template v-slot:actions>
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -445,10 +456,14 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -461,7 +476,9 @@
                                                                     small
                                                                     @click="addPhone"
                                                                 >
-                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor"
+                                                                            :style="`color: ${themeFgColor};`">mdi-plus
+                                                                    </v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -474,7 +491,7 @@
                                         <v-col cols="6">
                                             <v-list-item v-for="(item, i) in userData.addresses" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon" small dense />
+                                                    <v-icon v-text="item.type.icon" small dense/>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">
