@@ -395,7 +395,9 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
                                                                             <v-icon left small
@@ -499,9 +501,12 @@
                                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                                         <br/>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }}
-                                                        <br/><span v-if="item.country">{{ $helpers.i18n.localized(item.country) }}</span>
+                                                        <br/><span v-if="item.country">{{
+                                                            $helpers.i18n.localized(item.country)
+                                                        }}</span>
                                                     </v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
@@ -514,7 +519,7 @@
                                         <v-col cols="6">
                                             <v-list-item v-for="(item, i) in userData.socials" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon" small dense />
+                                                    <v-icon v-text="item.type.icon" small dense/>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.social_link" />
@@ -536,7 +541,9 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.main.new_address }}
                                                         <template v-slot:actions>
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -589,10 +596,12 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
+                                                                            ({{ data.item.iso_3166_2 }})
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
+                                                                            ({{ data.item.iso_3166_2 }})
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                     <v-select
@@ -605,10 +614,14 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -621,7 +634,9 @@
                                                                     small
                                                                     @click="addAddress"
                                                                 >
-                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor"
+                                                                            :style="`color: ${themeFgColor};`">mdi-plus
+                                                                    </v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -635,7 +650,9 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.company.new_social_item }}
                                                         <template v-slot:actions>
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
