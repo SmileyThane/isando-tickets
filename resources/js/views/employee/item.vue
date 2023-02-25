@@ -53,7 +53,8 @@
                             <v-col cols="5">
                                 <p v-if="userData.number" class="mb-3 font-weight-bold">{{ userData.number }}</p>
 
-                                <h3 class="mb-3">{{ userData .title }} {{ userData.title_before_name}} {{ userData.full_name }}</h3>
+                                <h3 class="mb-3">{{ userData.title }} {{ userData.title_before_name }}
+                                    {{ userData.full_name }}</h3>
 
                                 <div v-if="userData.emails && userData.emails.length > 0" class="mb-3">
                                     <hr class="lighten"/>
@@ -112,40 +113,52 @@
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(201)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(201)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.new_assigned_to_team }}
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(301)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(301)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.new_assigned_to_company }}
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(103)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(103)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.client_response_assigned_to_me }}
                                 </p>
                             </v-col>
                             <v-col cols="6">
-                                <hr class="lighten" />
+                                <hr class="lighten"/>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(102)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(102)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.update_assigned_to_me }}
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(202)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(202)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.update_assigned_to_team }}
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(302)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(302)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.update_assigned_to_company }}
                                 </p>
@@ -262,29 +275,37 @@
 
                                     <v-row>
                                         <v-col cols="6">
-                                            <hr class="lighten" />
+                                            <hr class="lighten"/>
 
                                             <p class="mb-0" v-if="langs && langs.length > 0 && userData">
-                                                <v-icon left small dense :color="themeBgColor" :title="langMap.main.language">mdi-web</v-icon>
+                                                <v-icon left small dense :color="themeBgColor"
+                                                        :title="langMap.main.language">mdi-web
+                                                </v-icon>
                                                 {{ langs[userData.language_id].name }}
                                             </p>
                                         </v-col>
                                         <v-col cols="6">
-                                            <hr class="lighten" />
+                                            <hr class="lighten"/>
 
                                             <p class="mb-0" v-if="userData.deleted_at">
-                                                <v-icon v-if="userData.deleted_at" small dense left color="red">mdi-cancel</v-icon>
+                                                <v-icon v-if="userData.deleted_at" small dense left color="red">
+                                                    mdi-cancel
+                                                </v-icon>
                                                 {{ langMap.individuals.deleted }}
                                             </p>
 
                                             <p class="mb-0" v-if="!userData.deleted_at">
-                                                <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
+                                                <v-icon v-if="userData.status" small dense left color="success">
+                                                    mdi-check-circle
+                                                </v-icon>
                                                 <v-icon v-else small dense left>mdi-cancel</v-icon>
                                                 {{ langMap.individuals.active }}
                                             </p>
 
                                             <p class="mb-0">
-                                                <v-icon v-if="userData.is_active" small dense left color="success">mdi-check-circle</v-icon>
+                                                <v-icon v-if="userData.is_active" small dense left color="success">
+                                                    mdi-check-circle
+                                                </v-icon>
                                                 <v-icon v-else small dense left>mdi-cancel</v-icon>
                                                 {{ langMap.main.give_access }}
                                             </p>
