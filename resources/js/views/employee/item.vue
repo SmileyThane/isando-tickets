@@ -703,7 +703,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr class="lighten" />
+                                    <hr class="lighten"/>
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <h3>{{ langMap.profile.notifications_settings }}</h3>
@@ -765,7 +765,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr class="lighten" />
+                                    <hr class="lighten"/>
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <v-row>
@@ -833,14 +833,14 @@
                                     color="grey darken"
                                     @click="cancelUpdateUser"
                                 >
-                                    {{ langMap.main.cancel}}
+                                    {{ langMap.main.cancel }}
                                 </v-btn>
                                 <v-btn
                                     text
                                     :color="themeBgColor"
                                     @click="updateUser"
                                 >
-                                    {{ langMap.main.save}}
+                                    {{ langMap.main.save }}
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
@@ -1147,7 +1147,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.individuals.new_customer }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -1185,7 +1186,8 @@
                                             small
                                             @click="addEmployee"
                                         >
-                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                            </v-icon>
                                         </v-btn>
                                     </v-form>
                                 </v-expansion-panel-content>
@@ -1261,7 +1263,9 @@
                         {{ langMap.company.update_info }}: {{ userData.full_name }}
                     </v-card-title>
                     <v-card-text>
-                        {{ userData.is_active === true ? langMap.individuals.give_access : langMap.individuals.remove_access }}
+                        {{
+                            userData.is_active === true ? langMap.individuals.give_access : langMap.individuals.remove_access
+                        }}
                         <v-select
                             v-model="primaryEmailId"
                             :color="themeBgColor"
@@ -1306,7 +1310,8 @@
                         <v-container>
                             <div class="row">
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-text-field v-model="phoneForm.phone" :color="themeBgColor" :item-color="themeBgColor"
+                                    <v-text-field v-model="phoneForm.phone" :color="themeBgColor"
+                                                  :item-color="themeBgColor"
                                                   :label="langMap.main.phone" dense></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
@@ -1497,11 +1502,13 @@
                         <v-container>
                             <div class="row">
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-text-field v-model="emailForm.email" :color="themeBgColor" :item-color="themeBgColor"
+                                    <v-text-field v-model="emailForm.email" :color="themeBgColor"
+                                                  :item-color="themeBgColor"
                                                   :label="langMap.main.email" dense></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-select v-if="emailForm.email_type === 1" v-model="emailForm.email_type" :color="themeBgColor"
+                                    <v-select v-if="emailForm.email_type === 1" v-model="emailForm.email_type"
+                                              :color="themeBgColor"
                                               :item-color="themeBgColor"
                                               :items="emailTypes" :label="langMap.main.type" dense
                                               item-value="id" readonly>
@@ -1563,8 +1570,8 @@ export default {
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
             },
             footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [10, 25, 50, 100],
+                showFirstLastPage: true,
+                itemsPerPageOptions: [10, 25, 50, 100],
             },
             langMap: this.$store.state.lang.lang_map,
             companies: [],
@@ -1688,7 +1695,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
             activitySearch: '',
-            activityFormPanel:[],
+            activityFormPanel: [],
             menuActivityDate: false,
             menuActivityTime: false,
             employees: []
@@ -1714,7 +1721,7 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
@@ -2006,19 +2013,19 @@ export default {
             });
         },
         restoreUser() {
-                axios.post('/api/user/restore', {id: this.userData.id}).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.individuals.restored;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
+            axios.post('/api/user/restore', {id: this.userData.id}).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.individuals.restored;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
         },
         deletePhone(id) {
             axios.delete(`/api/phone/${id}`).then(response => {
@@ -2412,16 +2419,16 @@ export default {
             if (this.activityForm.id) {
                 this.updateActivity()
             } else {
-            // console.log(this.activityForm);
+                // console.log(this.activityForm);
                 axios.post(`/api/activities`, this.activityForm).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.getUser();
-                    this.resetActivity();
-                } else {
-                    console.log('error')
-                }
-            });
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser();
+                        this.resetActivity();
+                    } else {
+                        console.log('error')
+                    }
+                });
             }
         },
         updateActivity() {
