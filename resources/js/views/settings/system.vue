@@ -606,64 +606,45 @@
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{
-                                langMap.system_settings.kb_permissions
+                                langMap.system_settings.kb_types
                             }}
                         </v-toolbar-title>
                     </v-toolbar>
 
                     <v-card-text>
-                        <v-select
-                            :label="langMap.system_settings.type"
-                            :color="themeBgColor"
-                            :item-color="themeBgColor"
-                            item-text="name"
-                            item-value="id"
-                            :items="getKbTypes"
-                            v-model="kbSelectedTypeId"
-                        ></v-select>
-                        <v-form v-if="selectedPermissions">
+                        <v-form>
                             <v-row>
-                                <v-col class="col-md-12 col-sm-12">
-                                    <v-row v-for="(item, index) in selectedPermissions"
-                                           :key="item.type">
-                                        <v-col class="col-md-2 col-sm-2 d-flex py-1">
-                                            <span class="align-self-center">{{ item.type | capitalize }}</span>
-                                        </v-col>
-                                        <v-col class="col-md-10 col-sm-10 py-1">
-                                            <v-autocomplete
-                                                :label="langMap.system_settings.permission"
-                                                :color="themeBgColor"
-                                                :item-color="themeBgColor"
-                                                item-text="name"
-                                                item-value="id"
-                                                :items="permissions"
-                                                v-model="selectedPermissions[index].value"
+                                <v-col class="col-md-12">
+                                    <v-list dense subheader>
+                                        <v-list-item-group :color="themeBgColor">
+                                            <v-list-item
+                                                v-for="(item, i) in kbTypes"
+                                                :key="item.id"
                                             >
-                                            </v-autocomplete>
-                                        </v-col>
-                                    </v-row>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col class="col-md-12 col-sm-12">
-                                    <v-btn :color="themeBgColor"
-                                           class="ma-2"
-                                           style="color: white;"
-                                           @click="updateKnowledgeBaseType"
-                                           v-text="langMap.system_settings.save"
-                                           :disabled="kb.disabledSubmitButton"
-                                    />
-                                    <v-btn :color="themeBgColor"
-                                           class="ma-2"
-                                           style="color: white;"
-                                           @click="deleteKbType"
-                                           v-text="langMap.system_settings.delete"
-                                           :disabled="kb.disabledDeleteButton"
-                                    />
+                                                <v-list-item-content>
+                                                    <v-list-item-title
+                                                        v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                </v-list-item-content>
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([98])">
+                                                    <v-icon small
+                                                            @click="showUpdateKbTypeDialog(item)">
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action
+                                                    v-if="$helpers.auth.checkPermissionByIds([99])">
+                                                    <v-icon small @click="showDeleteKbTypeDialog(item)">
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
                                 </v-col>
                             </v-row>
                         </v-form>
-                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
+                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([103])" multiple>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.system_settings.new_kb_type }}
@@ -676,15 +657,26 @@
                                 <v-expansion-panel-content>
                                     <v-form>
                                         <div class="row">
-                                            <v-col class="pa-1" cols="md-12">
-                                                <v-text-field v-model="kb.typeForm.name"
-                                                              :color="themeBgColor"
-                                                              :item-color="themeBgColor"
-                                                              :label="langMap.main.name"
-                                                              dense></v-text-field>
+                                            <v-col class="pa-1" cols="md-6">
+                                                <v-text-field
+                                                    v-model="kb.typeForm.name"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :label="langMap.main.name"
+                                                    dense
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col class="pa-1" cols="md-6">
+                                                <v-text-field
+                                                    v-model="kb.typeForm.name_de"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :label="langMap.main.name_de"
+                                                    dense
+                                                ></v-text-field>
                                             </v-col>
                                             <v-btn :color="themeBgColor" bottom dark fab right small
-                                                   @click="submitNewData(kb.typeForm, 'addKbType')">
+                                                   @click="createKbType(kb.typeForm)">
                                                 <v-icon :color="themeBgColor"
                                                         :style="`color: ${themeFgColor};`">mdi-plus
                                                 </v-icon>
@@ -1601,8 +1593,76 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-        </v-row>
 
+            <v-dialog v-model="kb.updateTypeDialog" max-width="600px" persistent>
+                <v-card dense outlined>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.system_settings.update_type_info }}
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="6">
+                                    <v-text-field v-model="kb.updateTypeForm.name" :color="themeBgColor"
+                                                  :item-color="themeBgColor" :label="langMap.main.name"
+                                                  dense/>
+                                </v-col>
+                                <v-col cols="6">
+                                    <v-text-field v-model="kb.updateTypeForm.name_de" :color="themeBgColor"
+                                                  :item-color="themeBgColor" :label="langMap.main.name_de"
+                                                  dense/>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col class="col-md-12 col-sm-12">
+                                    <v-row v-for="(item, index) in kb.updateTypeForm.permissions"
+                                           :key="item.type">
+                                        <v-col class="col-md-2 col-sm-2 d-flex py-1">
+                                            <span class="align-self-center">{{ item.type | capitalize }}</span>
+                                        </v-col>
+                                        <v-col class="col-md-10 col-sm-10 py-1">
+                                            <v-autocomplete
+                                                :label="langMap.system_settings.permission"
+                                                :color="themeBgColor"
+                                                :item-color="themeBgColor"
+                                                item-text="name"
+                                                item-value="id"
+                                                :items="permissions"
+                                                v-model="item.value"
+                                            >
+                                            </v-autocomplete>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="red" text @click="kb.updateTypeDialog=false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn :color="themeBgColor" text
+                               @click="kb.updateTypeDialog=false; updateKbType(kb.updateTypeForm)">
+                            {{ langMap.main.save }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog v-model="kb.deleteTypeDialog" persistent max-width="480">
+                <v-card>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.main.delete_selected }}? ({{ $helpers.i18n.localized(kb.selected) }})
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="kb.deleteTypeDialog = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="kb.deleteTypeDialog = false; deleteKbType(kb.selected.id)">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-row>
     </v-container>
 </template>
 
@@ -1913,12 +1973,23 @@ export default {
             dialogServices: false,
             dialogCurrencies: false,
             kb: {
-                types: [],
-                disabledSubmitButton: false,
-                disabledDeleteButton: false,
                 typeForm: {
                     name: '',
+                    name_de: '',
                 },
+                updateTypeForm: {
+                    id: null,
+                    name: '',
+                    name_de: '',
+                    permissions: [],
+                },
+                selected: {
+                    id: null,
+                    name: '',
+                    name_de: '',
+                },
+                updateTypeDialog: false,
+                deleteTypeDialog: false,
             },
             kbSelectedTypeId: null,
             permissions: [],
@@ -1965,11 +2036,6 @@ export default {
             if (this.companyNewLogo !== null) {
                 this.companyLogo = URL.createObjectURL(this.companyNewLogo)
             }
-        },
-        kbSelectedTypeId(val) {
-            this.selectedPermissions = this.kb.types.find(
-                type => type.id === Number(this.kbSelectedTypeId)
-            )?.permissions;
         },
     },
     methods: {
@@ -2778,7 +2844,8 @@ export default {
                 symbol: ''
             }
             this.kb.typeForm = {
-                name: ''
+                name: '',
+                name_de: '',
             }
         },
         closeDialog(id) {
@@ -2806,21 +2873,12 @@ export default {
                 } else {
                     console.log('error get permissions');
                 }
-
             });
         },
-        updateKnowledgeBaseType() {
-            this.kb.disabledSubmitButton = true;
-            axios.put(`/api/kb/${this.kbSelectedTypeId}`, { permissions: this.selectedPermissions })
-                .then(response => {
-                    response = response.data;
-                    if (response.success === true) {
-                        this.kb.disabledSubmitButton = false;
-                        const index = this.kb.types.findIndex(
-                            type => type.id === Number(this.kbSelectedTypeId)
-                        );
-                        this.kb.types[index] = response.data;
-
+        updateKbType(form) {
+            this.$store.dispatch('KbTypes/updateKbType', form)
+                .then(result => {
+                    if (result) {
                         this.snackbarMessage = this.langMap.main.success_update;
                         this.actionColor = 'success';
                         this.snackbar = true;
@@ -2829,48 +2887,65 @@ export default {
                         this.actionColor = 'error';
                         this.snackbar = true;
                     }
+                })
+                .catch(error => {
+                    if (error.response.data.message) {
+                        this.snackbarMessage = error.response.data.message;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
                 });
         },
-        addKbType(form) {
-            axios.post('/api/kb', form).then(response => {
-                response = response.data;
-                if (response.success === true) {
-                    this.$store.dispatch('getKnowledgeBaseTypes');
-                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.kb_type_created}`;
-                    this.actionColor = 'success';
-                    this.snackbar = true;
-                    this.resetForm();
-                } else {
-                    this.snackbarMessage = error.response.data.message;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
+        createKbType(form) {
+            this.$store.dispatch('KbTypes/createKbType', form)
+                .then(result => {
+                    if (result) {
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.kb_type_created}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                        this.resetForm();
+                    } else {
+                        this.snackbarMessage = error.response.data.message;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
 
-                }
-            }).catch(error => {
-                if (error.response.data.message) {
-                    this.snackbarMessage = error.response.data.message;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
-                }
-            });
+                    }
+                })
+                .catch(error => {
+                    if (error.response.data.message) {
+                        this.snackbarMessage = error.response.data.message;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
         },
-        deleteKbType() {
-            this.kb.disabledDeleteButton = true;
-            axios.delete(`/api/kb/${this.kbSelectedTypeId}`).then(response => {
-                response = response.data;
-                if (response.success === true) {
-                    this.$store.dispatch('getKnowledgeBaseTypes');
-                    this.kb.disabledDeleteButton = false;
-                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.kb_type_deleted}`;
-                    this.actionColor = 'success';
-                    this.snackbar = true;
-                } else {
-                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
-                }
-            });
+        deleteKbType(id) {
+            this.$store.dispatch('KbTypes/deleteKbType', id)
+                .then(result => {
+                    if (result) {
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.kb_type_deleted}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
         },
+        showUpdateKbTypeDialog(data) {
+            this.kb.updateTypeForm.id = data.id;
+            this.kb.updateTypeForm.name = data.name;
+            this.kb.updateTypeForm.name_de = data.name_de;
+            this.kb.updateTypeForm.permissions = data.permissions;
+            this.kb.updateTypeDialog = true;
+        },
+        showDeleteKbTypeDialog(data) {
+            this.kb.selected.id = data.id;
+            this.kb.selected.name = data.name;
+            this.kb.selected.name_de = data.name_de;
+            this.kb.deleteTypeDialog = true;
+        }
     },
     filters: {
         capitalize: function (value) {
@@ -2880,10 +2955,8 @@ export default {
         }
     },
     computed: {
-        getKbTypes() {
-            this.kb.types = this.$store.getters['getKnowledgeBaseTypes'];
-            this.kbSelectedTypeId = this.kb.types[0]?.id;
-            return this.kb.types;
+        kbTypes() {
+            return this.$store.getters['KbTypes/getKbTypes'];
         },
     }
 }

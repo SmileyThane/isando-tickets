@@ -24,7 +24,18 @@ class CreateKnowledgeBaseTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:knowledge_base_types'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:knowledge_base_types'
+            ],
+            'name_de' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:knowledge_base_types'
+            ],
         ];
     }
 }

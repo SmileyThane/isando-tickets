@@ -69,10 +69,9 @@
                 </v-list-item>
             </v-list>
             <v-divider></v-divider>
-            <v-list id="kbList" dense>
-                <template v-for="(item, index) in getKbTypes">
+            <v-list dense>
+                <template v-for="(item, index) in kbTypes">
                 <v-list-item
-                    class="kb-list-item"
                     v-if="$helpers.auth.checkKbPermissionsByType(item.alias, 'view')"
                     :key="index"
                     style="background-color: white;"
@@ -83,8 +82,9 @@
                         <v-icon>mdi-book-open-page-variant</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>
-                            {{ langMap.sidebar[item.alias] ? langMap.sidebar[item.alias] : item.name}}
+                        <v-list-item-title
+                            v-text="$helpers.i18n.localized(item)"
+                        >
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -723,8 +723,8 @@ export default {
                     return this.langMap.tracking.projects;
             }
         },
-        getKbTypes() {
-            return this.$store.getters['getKnowledgeBaseTypes'];
+        kbTypes() {
+            return this.$store.getters['KbTypes/getKbTypes'];
         },
     }
 }

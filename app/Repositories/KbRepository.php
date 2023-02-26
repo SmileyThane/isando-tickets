@@ -296,10 +296,10 @@ class KbRepository
      * Delete KnowledgeBaseType entity
      *
      * @param KnowledgeBaseType $knowledgeBaseType
-     * @return void
+     * @return bool
      */
-    public function delete(KnowledgeBaseType $knowledgeBaseType): void
+    public function delete(KnowledgeBaseType $knowledgeBaseType): bool
     {
-        $knowledgeBaseType->delete();
+        return $knowledgeBaseType->delete();
     }
 }

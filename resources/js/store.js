@@ -16,6 +16,7 @@ import {
     Tickets,
     Timesheet,
     Tracking,
+    KbTypes,
 } from './modules';
 
 Vue.use(Vuex);
@@ -36,6 +37,7 @@ export default new Vuex.Store({
         RiskRepository,
         IncidentReporting,
         SettingsIncident,
+        KbTypes,
     },
     state: {
         roles: {},
@@ -48,7 +50,6 @@ export default new Vuex.Store({
         mainCompany: null,
         userId: null,
         currentUser: null,
-        kbTypes: [],
     },
     getters: {
         roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion],
@@ -56,7 +57,6 @@ export default new Vuex.Store({
         getPermissions: state => state.permissions,
         getMainCompany: state => state.mainCompany,
         getCurrentUser: state => state.currentUser,
-        getKnowledgeBaseTypes: state => state.kbTypes,
     },
     mutations: {
         setMainCompany(state, mainCompany) {
@@ -87,9 +87,6 @@ export default new Vuex.Store({
         },
         setCurrentUser(state, user) {
             state.currentUser = user;
-        },
-        setKnowledgeBaseTypes(state, kbTypes) {
-            state.kbTypes = kbTypes;
         },
     },
     actions: {
@@ -207,16 +204,6 @@ export default new Vuex.Store({
                         commit('setCurrentUser', result.data.data);
                         resolve();
                     }
-                }).catch(error => {
-                    reject(error.response && error.response.data.message || 'Error.');
-                });
-            });
-        },
-        getKnowledgeBaseTypes({commit}) {
-            return new Promise((resolve, reject) => {
-                axios.get('/api/kb/types').then(result => {
-                    commit('setKnowledgeBaseTypes', result.data.data);
-                    resolve();
                 }).catch(error => {
                     reject(error.response && error.response.data.message || 'Error.');
                 });

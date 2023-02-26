@@ -25,7 +25,7 @@ export const checkPermissionByIds = (ids) => {
 export const checkKbPermissionsByType = (kbType, permissionType) => {
     let permissionExists = false;
     let permissions = store.getters['getPermissions'];
-    let kbTypes = store.getters['getKnowledgeBaseTypes'];
+    let kbTypes = store.getters['KbTypes/getKbTypes'];
 
     if (Array.isArray(permissions) && Array.isArray(kbTypes)) {
         if (permissionExists === false) {

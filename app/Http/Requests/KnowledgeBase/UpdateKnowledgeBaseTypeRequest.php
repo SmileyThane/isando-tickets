@@ -3,6 +3,7 @@
 namespace App\Http\Requests\KnowledgeBase;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateKnowledgeBaseTypeRequest extends FormRequest
 {
@@ -24,6 +25,18 @@ class UpdateKnowledgeBaseTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('knowledge_base_types')->ignore($this->id),
+            ],
+            'name_de' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('knowledge_base_types')->ignore($this->id),
+            ],
             'permissions' => [
                 'required',
                 'array',

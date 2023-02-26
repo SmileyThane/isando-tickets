@@ -834,7 +834,8 @@ class LanguageSeeder extends Seeder
                             'delete' => 'Delete',
                             'new_kb_type' => 'Add new knowledge base type',
                             'kb_type_created' => 'Knowledge base type created',
-                            'kb_type_deleted' => 'knowledge base type deleted',
+                            'kb_type_deleted' => 'Knowledge base type deleted',
+                            'kb_types' => 'Knowledge base types',
                         ],
                     'profile' =>
                         [
@@ -1803,6 +1804,7 @@ class LanguageSeeder extends Seeder
                             'new_kb_type' => 'Neuen Wissensdatenbanktyp hinzufügen',
                             'kb_type_created' => 'Wissensdatenbanktyp erstellt',
                             'kb_type_deleted' => 'Wissensdatenbanktyp gelöscht',
+                            'kb_types' => 'Arten von Wissensdatenbanken',
                         ],
                         'profile' => [
                             'user_theme_colors' => 'Persönliche Themenfarben',
