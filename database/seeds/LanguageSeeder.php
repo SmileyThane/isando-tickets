@@ -397,7 +397,9 @@ class LanguageSeeder extends Seeder
                             'regular_user' => 'Regular user',
                             'company_client' => 'Client',
                             'contact' => 'Contact',
-                            'contractor' => 'Contractor'
+                            'contractor' => 'Contractor',
+                            'search_by_permissions' => 'Search by permissions',
+                            'search_by_roles' => 'Search by roles',
                         ],
                     'company' =>
                         [
@@ -1385,7 +1387,9 @@ class LanguageSeeder extends Seeder
                             'regular_user' => 'Benutzer',
                             'company_client' => 'Kunde',
                             'contact' => 'Kontakt',
-                            'contractor' => 'Auftragnehmer'
+                            'contractor' => 'Auftragnehmer',
+                            'search_by_permissions' => 'Suche nach Berechtigungen',
+                            'search_by_roles' => 'Suche nach Rollen',
                         ],
                         'company' => [
                             'company_number' => 'Firmennummer',
