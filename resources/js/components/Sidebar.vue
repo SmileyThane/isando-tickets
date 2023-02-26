@@ -81,6 +81,8 @@
                     <v-tooltip right :disabled="!localDrawer">
                         <template v-slot:activator="{ on, attrs }">
                             <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
                                 v-if="$helpers.auth.checkKbPermissionsByType(item.alias, 'view')"
                                 :key="index"
                                 style="background-color: white;"
@@ -112,10 +114,20 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-alert-octagon"
                 >
                     <template
                         v-slot:activator>
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-alert-octagon</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ langMap.sidebar.incident_reporting }}</span>
+                        </v-tooltip>
                         <v-list-item-content>
                             <v-list-item-title>{{ langMap.sidebar.incident_reporting }}</v-list-item-title>
                         </v-list-item-content>
@@ -262,11 +274,20 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-badge-account-horizontal-outline"
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on">
+                                    <v-icon>mdi-badge-account-horizontal-outline</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ customers }} - CRM</span>
+                        </v-tooltip>
                         <v-list-item-content>
                             <v-list-item-title>{{ customers }} - CRM</v-list-item-title>
                         </v-list-item-content>
@@ -368,11 +389,21 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-ticket-account"
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-ticket-account</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ ticket }}</span>
+                        </v-tooltip>
                         <v-list-item-content>
                             <v-list-item-title>{{ ticket }}</v-list-item-title>
                         </v-list-item-content>
@@ -429,11 +460,21 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-alarm"
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-alarm</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ timeTracking }}</span>
+                        </v-tooltip>
                         <v-list-item-content>
                             <v-list-item-title>{{ timeTracking }}</v-list-item-title>
                         </v-list-item-content>
@@ -605,11 +646,21 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-email-alert-outline"
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-email-alert-outline</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ notifications }}</span>
+                        </v-tooltip>
                         <v-list-item-content>
                             <v-list-item-title>{{ notifications }}</v-list-item-title>
                         </v-list-item-content>
@@ -668,12 +719,21 @@
                     color="#757575"
                     multiple
                     v-if="$helpers.auth.checkPermissionByIds([13, 28, 31])"
-                    prepend-icon="mdi-cog"
-
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-cog</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ settings }}</span>
+                        </v-tooltip>
                         <v-list-item-content
                             :color="'white'"
                         >
@@ -915,8 +975,8 @@ export default {
                     return this.langMap.tracking.projects;
             }
         },
-        getKbTypes() {
-            return this.$store.getters['getKnowledgeBaseTypes'];
+        kbTypes() {
+            return this.$store.getters['KbTypes/getKbTypes'];
         },
     }
 }
