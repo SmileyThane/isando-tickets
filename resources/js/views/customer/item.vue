@@ -61,7 +61,7 @@
                                 <div v-if="client.owner">
                                     <hr class="lighten"/>
                                     <p class="mb-0">
-                                        {{langMap.main.owner}}: {{ client.owner.user_data.full_name }}
+                                        {{ langMap.main.owner }}: {{ client.owner.user_data.full_name }}
                                     </p>
                                 </div>
                             </v-col>
@@ -195,16 +195,16 @@
                                                         :items="supplierEmployees"
                                                     >
                                                         <template v-slot:item="props">
-                                                            {{props.item.user_data.full_name}}
+                                                            {{ props.item.user_data.full_name }}
                                                             <span v-if="props.item.description">
-                                                                ({{props.item.description}})
+                                                                ({{ props.item.description }})
                                                             </span>
 
                                                         </template>
                                                         <template v-slot:selection="props">
-                                                            {{props.item.user_data.full_name}}
+                                                            {{ props.item.user_data.full_name }}
                                                             <span v-if="props.item.description">
-                                                                ({{props.item.description}})
+                                                                ({{ props.item.description }})
                                                             </span>
                                                         </template>
                                                     </v-select>
