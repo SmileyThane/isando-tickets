@@ -17,9 +17,10 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{langMap.customer.add_new}}
+                                    {{ langMap.customer.add_new }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -78,7 +79,9 @@
                                                 :color="themeBgColor"
                                                 @click="addClient"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -104,7 +107,8 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="debounceGetClients" v-model="customersSearch" :color="themeBgColor"
+                                        <v-text-field @input="debounceGetClients" v-model="customersSearch"
+                                                      :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
@@ -121,19 +125,23 @@
                                 </v-row>
                             </template>
                             <template v-slot:item.logo="{ item }">
-                                <v-img :src="item.logo_url" style="max-width: 10em; max-height: 2em" />
+                                <v-img :src="item.logo_url" style="max-width: 10em; max-height: 2em"/>
                             </template>
                             <template v-slot:item.email="{item}">
                                 <span v-if="item.contact_email && item.contact_email.email">
-                                    <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="$helpers.i18n.localized(item.contact_email.type)"></v-icon>
-                                    {{item.contact_email.email}}
+                                    <v-icon v-if="item.contact_email.type" x-small dense
+                                            v-text="item.contact_email.type.icon"
+                                            :title="$helpers.i18n.localized(item.contact_email.type)"></v-icon>
+                                    {{ item.contact_email.email }}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.phone="{item}">
                                 <span v-if="item.contact_phone && item.contact_phone.phone">
-                                    <v-icon v-if="item.contact_phone.type" x-small dense v-text="item.contact_phone.type.icon" :title="$helpers.i18n.localized(item.contact_phone.type)"></v-icon>
-                                    {{item.contact_phone.phone}}
+                                    <v-icon v-if="item.contact_phone.type" x-small dense
+                                            v-text="item.contact_phone.type.icon"
+                                            :title="$helpers.i18n.localized(item.contact_phone.type)"></v-icon>
+                                    {{ item.contact_phone.phone }}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
@@ -152,9 +160,9 @@
                                         :style="item.is_active === 1 ?'color:#95C13D;' : 'color:red;'"
                                 >
                                     {{
-                                    item.is_active === 1 ?
-                                    'mdi-check-circle-outline' :
-                                    'mdi-cancel'
+                                        item.is_active === 1 ?
+                                            'mdi-check-circle-outline' :
+                                            'mdi-cancel'
                                     }}
                                 </v-icon>
                             </template>
