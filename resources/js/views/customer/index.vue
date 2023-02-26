@@ -269,7 +269,6 @@
                     },
                     {text: `${this.$store.state.lang.lang_map.company.logo}`, value: 'logo', align: 'center', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
-                    {text: `${this.$store.state.lang.lang_map.company.company_number}`, value: 'number'},
                     {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
                     {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
