@@ -3,11 +3,13 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Enums\KnowledgeBase\KnowledgeBasePermissionsTypesEnum;
+use App\Exceptions\Customs\CustomException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\KnowledgeBase\CreateKnowledgeBaseTypeRequest;
 use App\Http\Requests\KnowledgeBase\UpdateKnowledgeBaseTypeRequest;
 use App\KbArticle;
 use App\KnowledgeBaseType;
+use App\Permission;
 use App\Repositories\FileRepository;
 use App\Repositories\KbRepository;
 use Illuminate\Http\JsonResponse;
@@ -42,11 +44,13 @@ class KbController extends Controller
         return self::showResponse(true, KnowledgeBaseType::all());
     }
 
-    public function categoriesTree(Request $request) {
+    public function categoriesTree(Request $request)
+    {
         return self::showResponse(true, $this->kbRepo->getCategoriesTree($this->getTypeByAlias($request->type)));
     }
 
-    public function addCategory(Request $request) {
+    public function addCategory(Request $request)
+    {
         return self::showResponse(true, $this->kbRepo->createCategory(
             Auth::user()->employee->companyData->id,
             $request->parent_id,
@@ -60,7 +64,8 @@ class KbController extends Controller
         ));
     }
 
-    public function editCategory(Request $request, $id) {
+    public function editCategory(Request $request, $id)
+    {
         return self::showResponse(true, $this->kbRepo->updateCategory(
             $id,
             $request->parent_id,
@@ -73,24 +78,29 @@ class KbController extends Controller
         ));
     }
 
-    public function deleteCategory(Request $request, $id) {
+    public function deleteCategory(Request $request, $id)
+    {
         return self::showResponse($this->kbRepo->deleteCategory($id));
     }
 
-    public function listArticles(Request $request) {
+    public function listArticles(Request $request)
+    {
         return self::showResponse(true, $this->kbRepo->getArticles($this->getTypeByAlias($request->type), $request->category_id, $request->search, $request->search_in_text, $request->tags));
     }
 
-    public function allArticles(Request $request) {
+    public function allArticles(Request $request)
+    {
         return self::showResponse(true, $this->kbRepo->getAllArticles($this->getTypeByAlias($request->type)));
     }
 
 
-    public function getArticle(Request $request, $id) {
+    public function getArticle(Request $request, $id)
+    {
         return self::showResponse(true, $this->kbRepo->getArticle($id));
     }
 
-    public function addArticle(Request $request) {
+    public function addArticle(Request $request)
+    {
 
         $article = $this->kbRepo->createArticle(
             Auth::user()->employee->companyData->id,
@@ -124,11 +134,12 @@ class KbController extends Controller
         return self::showResponse(true, $article);
     }
 
-    public function editArticle(Request $request, $id) {
+    public function editArticle(Request $request, $id)
+    {
         $article = $this->kbRepo->updateArticle(
             $id,
             $request->categories ? json_decode($request->categories) : [],
-      $request->name ?? '',
+            $request->name ?? '',
             $request->name_de,
             $request->summary,
             $request->summary_de,
@@ -158,7 +169,8 @@ class KbController extends Controller
         return self::showResponse(true, $article);
     }
 
-    public function deleteArticle(Request $request, $id) {
+    public function deleteArticle(Request $request, $id)
+    {
         return self::showResponse($this->kbRepo->deleteArticle($id));
     }
 
@@ -168,14 +180,54 @@ class KbController extends Controller
     }
 
     /**
+     * Create new KnowledgeBaseType entity
+     *
+     * @param CreateKnowledgeBaseTypeRequest $request
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    public function create(CreateKnowledgeBaseTypeRequest $request): JsonResponse
+    {
+        throw_unless(
+            Auth::user()->employee->hasPermissionId(Permission::KB_CREATE_ACCESS),
+            CustomException::class,
+        );
+
+        return self::showResponse(true, $this->kbRepo->create($request->validated()));
+    }
+
+    /**
      * Update KnowledgeBaseType entity
      *
      * @param UpdateKnowledgeBaseTypeRequest $request
      * @param KnowledgeBaseType $knowledgeBaseType
      * @return JsonResponse
+     * @throws \Throwable
      */
     public function update(UpdateKnowledgeBaseTypeRequest $request, KnowledgeBaseType $knowledgeBaseType): JsonResponse
     {
+        throw_unless(
+            Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS),
+            CustomException::class,
+        );
+
         return self::showResponse(true, $this->kbRepo->update($knowledgeBaseType, $request->validated()));
+    }
+
+    /**
+     * Delete KnowledgeBaseType entity
+     *
+     * @param KnowledgeBaseType $knowledgeBaseType
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    public function delete(KnowledgeBaseType $knowledgeBaseType): JsonResponse
+    {
+        throw_unless(
+            Auth::user()->employee->hasPermissionId(Permission::KB_DELETE_ACCESS),
+            CustomException::class,
+        );
+
+        return self::showResponse($this->kbRepo->delete($knowledgeBaseType));
     }
 }

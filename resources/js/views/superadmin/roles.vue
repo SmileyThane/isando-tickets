@@ -48,6 +48,22 @@
                             class="elevation-1"
                             dense
                         >
+                            <template v-slot:top>
+                                <v-row>
+                                    <v-col sm="12" md="6">
+                                        <v-text-field @input="debounceGetFullRoles" v-model="permissionsSearch"
+                                                      :color="themeBgColor"
+                                                      :label="langMap.roles.search_by_permissions"
+                                                      class="mx-4"></v-text-field>
+                                    </v-col>
+                                    <v-col sm="12" md="6">
+                                        <v-text-field @input="debounceGetRoles" v-model="rolesSearch"
+                                                      :color="themeBgColor"
+                                                      :label="langMap.roles.search_by_roles"
+                                                      class="mx-4"></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </template>
                             <template v-slot:body="props">
                                 <tr v-for="index in props.items">
 
@@ -101,7 +117,9 @@ export default {
                 showFirstLastPage: true,
                 itemsPerPageOptions: [5, 10],
             },
-            canBeEdited: false
+            canBeEdited: false,
+            permissionsSearch: '',
+            rolesSearch: '',
         }
     },
     mounted() {
@@ -115,40 +133,50 @@ export default {
         this.getRoles()
         this.getFullRoles()
     },
+    created() {
+        this.debounceGetFullRoles = _.debounce(this.getFullRoles, 1000);
+        this.debounceGetRoles = _.debounce(this.getRoles, 1000);
+    },
     methods: {
         getFullRoles() {
             this.loading = this.themeBgColor
-            axios.get('/api/roles/full')
-                .then(response => {
-                    this.loading = false
-                    response = response.data
-                    if (response.success === true) {
-                        this.items = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
+            axios.get('/api/roles/full', {
+                params: {
+                    search: this.permissionsSearch,
+                }
+            }).then(response => {
+                this.loading = false
+                response = response.data
+                if (response.success === true) {
+                    this.items = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
         },
         getRoles() {
             this.loading = this.themeBgColor
             let defaultOption = [{'text': 'permissions', 'value': "0", sortable: false}];
-            axios.get('/api/roles')
-                .then(response => {
-                    this.loading = false
-                    response = response.data
-                    if (response.success === true) {
-                        let result = response.data.map((item) => {
-                            return {'text': item.name, 'value': `${item.id}`, sortable: false};
-                        })
-                        this.headers = defaultOption.concat(result)
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
+            axios.get('/api/roles', {
+                params: {
+                    search: this.rolesSearch,
+                }
+            }).then(response => {
+                this.loading = false
+                response = response.data
+                if (response.success === true) {
+                    let result = response.data.map((item) => {
+                        return {'text': item.name, 'value': `${item.id}`, sortable: false};
+                    })
+                    this.headers = defaultOption.concat(result)
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
         },
         updateRoles() {
             axios.put(`/api/roles/full`, {'data': this.items}).then(response => {

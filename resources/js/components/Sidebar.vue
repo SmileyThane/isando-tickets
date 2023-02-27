@@ -56,38 +56,52 @@
                         <v-list-item-title></v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item
-                    style="background-color: white;"
-                    dense
-                    link to="/home">
-                    <v-list-item-action>
-                        <v-icon>mdi-home</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>{{ langMap.sidebar.home }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                <v-tooltip right :disabled="!localDrawer">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-list-item
+                            v-bind="attrs"
+                            v-on="on"
+                            style="background-color: white;"
+                            dense
+                            link to="/home">
+                            <v-list-item-action>
+                                <v-icon>mdi-home</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>{{ langMap.sidebar.home }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                    <span>{{ langMap.sidebar.home }}</span>
+                </v-tooltip>
             </v-list>
             <v-divider></v-divider>
-            <v-list id="kbList" dense>
-                <template v-for="(item, index) in getKbTypes">
-                <v-list-item
-                    class="kb-list-item"
-                    v-if="$helpers.auth.checkKbPermissionsByType(item.alias, 'view')"
-                    :key="index"
-                    style="background-color: white;"
-                    dense
-                    link
-                    :to="`/${item.alias}`">
-                    <v-list-item-action>
-                        <v-icon>mdi-book-open-page-variant</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{ langMap.sidebar[item.alias] ? langMap.sidebar[item.alias] : item.name}}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+            <v-list dense>
+                <template v-for="(item, index) in kbTypes">
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkKbPermissionsByType(item.alias, 'view')"
+                                :key="index"
+                                style="background-color: white;"
+                                dense
+                                link
+                                :to="`/${item.alias}`">
+                                <v-list-item-action>
+                                    <v-icon>mdi-book-open-page-variant</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title
+                                        v-text="$helpers.i18n.localized(item)"
+                                    >
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ $helpers.i18n.localized(item) }}</span>
+                    </v-tooltip>
                 </template>
             </v-list>
             <v-divider></v-divider>
@@ -100,104 +114,155 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-alert-octagon"
                 >
                     <template
-                        v-slot:activator
-                    >
+                        v-slot:activator>
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-alert-octagon</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ langMap.sidebar.incident_reporting }}</span>
+                        </v-tooltip>
                         <v-list-item-content>
-                            <v-list-item-title>{{langMap.sidebar.incident_reporting}}</v-list-item-title>
+                            <v-list-item-title>{{ langMap.sidebar.incident_reporting }}</v-list-item-title>
                         </v-list-item-content>
                     </template>
-                    <v-list-item
-                        color="#757575" link
-                        style="background-color:white;"
-                        to="/incident_reporting/create"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-car-traction-control</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>
-                                Create incident
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        color="#757575" link
-                        style="background-color:white;"
-                        to="/incident_reporting/list"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-shape-rectangle-plus</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{langMap.sidebar.incident_reporting}}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        color="#757575" link
-                        style="background-color:white;"
-                        to="/incident_reporting/scenarios"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-shape-rectangle-plus</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{langMap.sidebar.incident_reporting_scenarios}}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        color="#757575" link
-                        style="background-color:white;"
-                        to="/incident_reporting/action_boards"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-gesture-double-tap</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{langMap.sidebar.incident_reporting_action_boards}}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                color="#757575" link
+                                style="background-color:white;"
+                                to="/incident_reporting/create"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-car-traction-control</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>
+                                        {{ langMap.sidebar.create_incident }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.create_incident }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                color="#757575" link
+                                style="background-color:white;"
+                                to="/incident_reporting/list"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-shape-rectangle-plus</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.incident_reporting }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.incident_reporting }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                color="#757575" link
+                                style="background-color:white;"
+                                to="/incident_reporting/scenarios"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-shape-rectangle-plus</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.incident_reporting_scenarios }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.incident_reporting_scenarios }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                color="#757575" link
+                                style="background-color:white;"
+                                to="/incident_reporting/action_boards"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-gesture-double-tap</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.incident_reporting_action_boards }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.incident_reporting_action_boards }}</span>
+                    </v-tooltip>
                 </v-list-group>
             </v-list>
             <v-divider
                 v-if="$helpers.auth.checkPermissionByIds([100])"
             ></v-divider>
             <v-list dense>
-                <v-list-item
-                    v-if="$helpers.auth.checkPermissionByIds([25])"
-                    style="background-color: white;"
-                    dense
-                    link
-                    to="/custom_license">
-                    <v-list-item-action>
-                        <v-icon>mdi-license</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{ langMap.sidebar.custom_licenses }}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item
-                    v-if="$helpers.auth.checkPermissionByIds([25])"
-                    style="background-color: white;"
-                    dense
-                    link
-                    to="/custom_license_unassigned">
-                    <v-list-item-action>
-                        <v-icon>mdi-cellphone-erase</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{ langMap.sidebar.custom_license_unassigned }}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                <v-tooltip right :disabled="!localDrawer">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-list-item
+                            v-bind="attrs"
+                            v-on="on"
+                            v-if="$helpers.auth.checkPermissionByIds([25])"
+                            style="background-color: white;"
+                            dense
+                            link
+                            to="/custom_license">
+                            <v-list-item-action>
+                                <v-icon>mdi-license</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>
+                                    {{ langMap.sidebar.custom_licenses }}
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                    <span>{{ langMap.sidebar.custom_licenses }}</span>
+                </v-tooltip>
+                <v-tooltip right :disabled="!localDrawer">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-list-item
+                            v-bind="attrs"
+                            v-on="on"
+                            v-if="$helpers.auth.checkPermissionByIds([25])"
+                            style="background-color: white;"
+                            dense
+                            link
+                            to="/custom_license_unassigned">
+                            <v-list-item-action>
+                                <v-icon>mdi-cellphone-erase</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>
+                                    {{ langMap.sidebar.custom_license_unassigned }}
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                    <span>{{ langMap.sidebar.custom_license_unassigned }}</span>
+                </v-tooltip>
             </v-list>
             <v-divider
                 v-if="$helpers.auth.checkPermissionByIds([25])"
@@ -209,71 +274,108 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-badge-account-horizontal-outline"
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on">
+                                    <v-icon>mdi-badge-account-horizontal-outline</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ customers }} - CRM</span>
+                        </v-tooltip>
                         <v-list-item-content>
                             <v-list-item-title>{{ customers }} - CRM</v-list-item-title>
                         </v-list-item-content>
                     </template>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([7, 10])"
-                        color="#757575"
-                        link
-                        style="background-color:white;"
-                        to="/all"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-contacts-outline</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.all }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([7])"
-                        color="#757575"
-                        link
-                        style="background-color:white;"
-                        to="/customer"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-factory</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.customers }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([10])"
-                        color="#757575"
-                        link
-                        style="background-color:white;"
-                        to="/employee"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-account</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.individuals }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([19])"
-                        color="#757575"
-                        link
-                        style="background-color:white;"
-                        to="/product"
-                    >
-                        <v-list-item-action>
-                            <v-icon> mdi-monitor-clean</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.products }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([7, 10])"
+                                color="#757575"
+                                link
+                                style="background-color:white;"
+                                to="/all"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-contacts-outline</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.all }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.all }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([7])"
+                                color="#757575"
+                                link
+                                style="background-color:white;"
+                                to="/customer"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-factory</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.customers }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.customers }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([10])"
+                                color="#757575"
+                                link
+                                style="background-color:white;"
+                                to="/employee"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-account</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.individuals }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.individuals }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([19])"
+                                color="#757575"
+                                link
+                                style="background-color:white;"
+                                to="/product"
+                            >
+                                <v-list-item-action>
+                                    <v-icon> mdi-monitor-clean</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.products }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.products }}</span>
+                    </v-tooltip>
                 </v-list-group>
             </v-list>
             <v-divider
@@ -287,44 +389,67 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-ticket-account"
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-ticket-account</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ ticket }}</span>
+                        </v-tooltip>
                         <v-list-item-content>
                             <v-list-item-title>{{ ticket }}</v-list-item-title>
                         </v-list-item-content>
                     </template>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([1])"
-                        color="#757575" link
-                        style="background-color:white;"
-                        to="/tickets"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-format-list-numbered</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.ticket_list }}
-                                {{ langMap.sidebar.list }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([2])"
-                        color="#757575" link
-                        style="background-color:white;"
-                        to="/ticket_create"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-shape-rectangle-plus</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.create_ticket }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([1])"
+                                color="#757575" link
+                                style="background-color:white;"
+                                to="/tickets"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-format-list-numbered</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.ticket_list }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.ticket_list }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([2])"
+                                color="#757575" link
+                                style="background-color:white;"
+                                to="/ticket_create"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-shape-rectangle-plus</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.create_ticket }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.create_ticket }}</span>
+                    </v-tooltip>
                 </v-list-group>
             </v-list>
             <v-divider></v-divider>
@@ -335,123 +460,182 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-alarm"
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-alarm</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ timeTracking }}</span>
+                        </v-tooltip>
                         <v-list-item-content>
                             <v-list-item-title>{{ timeTracking }}</v-list-item-title>
                         </v-list-item-content>
                     </template>
-                    <v-list-item
-                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([51])"
-                        link
-                        style="background-color:white;"
-                        to="/tracking/dashboard"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-view-dashboard-outline</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.tracking_dashboard }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([40,41,42])"
-                        link
-                        style="background-color:white;"
-                        to="/tracking/tracker"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-alarm</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.tracking_tracker }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="hasLicense && enableTimesheet"
-                        link
-                        style="background-color:white;"
-                        to="/tracking/timesheet"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-file-clock-outline</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>
-                                <v-badge
-                                    v-if="this.$store.getters['Timesheet/getCountTimesheetForApproval'] > 0"
-                                    :color="themeBgColor"
-                                    class="mt-0"
-                                    :content="this.$store.getters['Timesheet/getCountTimesheetForApproval']"
-                                    inline
-                                >
-                                    {{ langMap.sidebar.tracking_timesheet }}
-                                </v-badge>
-                                <span v-else>{{ langMap.sidebar.tracking_timesheet }}</span>
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([52])"
-                        link
-                        style="background-color:white;"
-                        to="/tracking/calendar"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-calendar</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.tracking_calendar }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([54,55])"
-                        link
-                        style="background-color:white;"
-                        to="/tracking/projects"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-folder-account-outline</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ getTrackingProjectLabel }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([61,66])"
-                        link
-                        style="background-color:white;"
-                        to="/tracking/reports"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-chart-areaspline</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.tracking_reports }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([75,79])"
-                        link
-                        style="background-color:white;"
-                        to="/tracking/settings"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-tune-vertical</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.tracking_settings }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="hasLicense && $helpers.auth.checkPermissionByIds([51])"
+                                link
+                                style="background-color:white;"
+                                to="/tracking/dashboard"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-view-dashboard-outline</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.tracking_dashboard }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.tracking_dashboard }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="hasLicense && $helpers.auth.checkPermissionByIds([40,41,42])"
+                                link
+                                style="background-color:white;"
+                                to="/tracking/tracker"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-alarm</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.tracking_tracker }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.tracking_tracker }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="hasLicense && enableTimesheet"
+                                link
+                                style="background-color:white;"
+                                to="/tracking/timesheet"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-file-clock-outline</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>
+                                        <v-badge
+                                            v-if="this.$store.getters['Timesheet/getCountTimesheetForApproval'] > 0"
+                                            :color="themeBgColor"
+                                            class="mt-0"
+                                            :content="this.$store.getters['Timesheet/getCountTimesheetForApproval']"
+                                            inline
+                                        >
+                                            {{ langMap.sidebar.tracking_timesheet }}
+                                        </v-badge>
+                                        <span v-else>{{ langMap.sidebar.tracking_timesheet }}</span>
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.tracking_timesheet }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="hasLicense && $helpers.auth.checkPermissionByIds([52])"
+                                link
+                                style="background-color:white;"
+                                to="/tracking/calendar"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-calendar</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.tracking_calendar }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.tracking_calendar }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="hasLicense && $helpers.auth.checkPermissionByIds([54,55])"
+                                link
+                                style="background-color:white;"
+                                to="/tracking/projects"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-folder-account-outline</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ getTrackingProjectLabel }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ getTrackingProjectLabel }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="hasLicense && $helpers.auth.checkPermissionByIds([61,66])"
+                                link
+                                style="background-color:white;"
+                                to="/tracking/reports"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-chart-areaspline</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.tracking_reports }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.tracking_reports }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="hasLicense && $helpers.auth.checkPermissionByIds([75,79])"
+                                link
+                                style="background-color:white;"
+                                to="/tracking/settings"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-tune-vertical</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.tracking_settings }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.tracking_settings }}</span>
+                    </v-tooltip>
                 </v-list-group>
             </v-list>
             <v-divider></v-divider>
@@ -462,42 +646,66 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
-                    prepend-icon="mdi-email-alert-outline"
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-email-alert-outline</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ notifications }}</span>
+                        </v-tooltip>
                         <v-list-item-content>
                             <v-list-item-title>{{ notifications }}</v-list-item-title>
                         </v-list-item-content>
                     </template>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([23])"
-                        link
-                        style="background-color:white;"
-                        to="/notify"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-email-send-outline</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.notify_customers }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        link
-                        style="background-color:white;"
-                        to="/notify_history"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-history</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.notifications_history }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([23])"
+                                link
+                                style="background-color:white;"
+                                to="/notify"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-email-send-outline</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.notify_customers }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.notify_customers }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                link
+                                style="background-color:white;"
+                                to="/notify_history"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-history</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.notifications_history }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.notifications_history }}</span>
+                    </v-tooltip>
                 </v-list-group>
             </v-list>
             <v-divider
@@ -511,85 +719,129 @@
                     color="#757575"
                     multiple
                     v-if="$helpers.auth.checkPermissionByIds([13, 28, 31])"
-                    prepend-icon="mdi-cog"
-
                 >
                     <template
                         v-slot:activator
                     >
+                        <v-tooltip right :disabled="!localDrawer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-list-item-action
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-cog</v-icon>
+                                </v-list-item-action>
+                            </template>
+                            <span>{{ settings }}</span>
+                        </v-tooltip>
                         <v-list-item-content
                             :color="'white'"
                         >
                             <v-list-item-title>{{ settings }}</v-list-item-title>
                         </v-list-item-content>
                     </template>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([13])"
-                        link
-                        style="background-color:white;"
-                        to="/company">
-                        <v-list-item-action>
-                            <v-icon>mdi-office-building</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.companies }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([31])"
-                        link
-                        style="background-color:white;"
-                        to="/team"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-account-box-multiple-outline</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.teams }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([28])"
-                        link
-                        style="background-color:white;"
-                        to="/settings/system"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-folder-cog-outline</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.system_settings }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([28])"
-                        link
-                        style="background-color:white;"
-                        to="/settings/incident"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-car-traction-control</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.incident_reporting }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([28])"
-                        link
-                        style="background-color:white;"
-                        to="/admin/roles"
-                    >
-                        <v-list-item-action>
-                            <v-icon>mdi-alpha-r-box</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ langMap.main.roles }}
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([13])"
+                                link
+                                style="background-color:white;"
+                                to="/company">
+                                <v-list-item-action>
+                                    <v-icon>mdi-office-building</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.companies }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.companies }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([31])"
+                                link
+                                style="background-color:white;"
+                                to="/team"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-account-box-multiple-outline</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.teams }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.teams }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([28])"
+                                link
+                                style="background-color:white;"
+                                to="/settings/system"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-folder-cog-outline</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.system_settings }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.system_settings }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([28])"
+                                link
+                                style="background-color:white;"
+                                to="/settings/incident"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-car-traction-control</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.incident_reporting }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.incident_reporting }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([28])"
+                                link
+                                style="background-color:white;"
+                                to="/admin/roles"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi-alpha-r-box</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.main.roles }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.main.roles }}</span>
+                    </v-tooltip>
                 </v-list-group>
             </v-list>
         </perfect-scrollbar>
@@ -723,8 +975,8 @@ export default {
                     return this.langMap.tracking.projects;
             }
         },
-        getKbTypes() {
-            return this.$store.getters['getKnowledgeBaseTypes'];
+        kbTypes() {
+            return this.$store.getters['KbTypes/getKbTypes'];
         },
     }
 }

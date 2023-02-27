@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Role\GetRolesRequest;
+use App\Http\Requests\Role\getRolesWithPermissionsRequest;
 use App\Permission;
 use App\Repositories\RoleRepository;
-use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,9 +19,11 @@ class RoleController extends Controller
         $this->roleRepo = $roleRepository;
     }
 
-    public function roles()
+    public function roles(GetRolesRequest $request)
     {
-        return self::showResponse(true, Role::where(['company_id' => Auth::user()->employee->company_id])->get());
+        $roles = $this->roleRepo->getAllByCompanyId($request->validated(), Auth::user()->employee->company_id);
+
+        return self::showResponse(true, $roles);
     }
 
     public function permissions()
@@ -28,10 +31,10 @@ class RoleController extends Controller
         return self::showResponse(true, Permission::all());
     }
 
-    public function getRolesWithPermissions()
+    public function getRolesWithPermissions(GetRolesWithPermissionsRequest $request)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::PERMISSION_READ_ACCESS)) {
-            return self::showResponse(true, $this->roleRepo->getRolesWithPermissions());
+            return self::showResponse(true, $this->roleRepo->getRolesWithPermissions($request->validated()));
         }
         return self::showResponse(false);
 
