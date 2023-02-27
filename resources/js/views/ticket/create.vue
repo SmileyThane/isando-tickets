@@ -16,7 +16,7 @@
             <v-container>
                 <v-row justify="space-around">
                     <v-col cols="12">
-                        <p class="title text-center">{{langMap.ticket.create_ticket}}</p>
+                        <p class="title text-center">{{ langMap.ticket.create_ticket }}</p>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -50,7 +50,8 @@
                                         >
                                             <template v-slot:append-outer>
                                                 <v-btn :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'"
-                                                       icon :color="themeBgColor" :title="langMap.individuals.add_new" @click="createContactDlg = true;">
+                                                       icon :color="themeBgColor" :title="langMap.individuals.add_new"
+                                                       @click="createContactDlg = true;">
                                                     <v-icon>mdi-plus</v-icon>
                                                 </v-btn>
                                             </template>
@@ -97,12 +98,6 @@
                                                             :items="priorities"
                                                             v-model="ticketForm.priority_id"
                                                         >
-                                                            <!--                                            <template slot="selection" slot-scope="data">-->
-                                                            <!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
-                                                            <!--                                            </template>-->
-                                                            <!--                                            <template slot="item" slot-scope="data">-->
-                                                            <!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
-                                                            <!--                                            </template>-->
                                                         </v-select>
                                                     </div>
                                                     <div class="col-md-4">
@@ -115,12 +110,6 @@
                                                             :items="types"
                                                             v-model="ticketForm.ticket_type_id"
                                                         >
-                                                            <!--                                            <template slot="selection" slot-scope="data">-->
-                                                            <!--                                                {{ langMap.ticket_types[data.item.name] }}-->
-                                                            <!--                                            </template>-->
-                                                            <!--                                            <template slot="item" slot-scope="data">-->
-                                                            <!--                                                {{ langMap.ticket_types[data.item.name] }}-->
-                                                            <!--                                            </template>-->
                                                         </v-select>
                                                     </div>
                                                     <div class="col-md-4">
@@ -158,7 +147,7 @@
                                                         ></v-textarea>
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <v-label>{{langMap.ticket.access_data}}:</v-label>
+                                                        <v-label>{{ langMap.ticket.access_data }}:</v-label>
                                                     </div>
                                                     <v-col cols="md-12">
                                                         <v-file-input
@@ -208,7 +197,7 @@
                                                                 v-on="on"
                                                             ></v-textarea>
                                                         </template>
-                                                        <span>{{langMap.ticket.ip_description}}</span>
+                                                        <span>{{ langMap.ticket.ip_description }}</span>
                                                     </v-tooltip>
                                                 </div>
                                                 <div class="col-md-6">
@@ -227,7 +216,7 @@
                                                                 v-on="on"
                                                             ></v-textarea>
                                                         </template>
-                                                        <span>{{langMap.ticket.access_description}}</span>
+                                                        <span>{{ langMap.ticket.access_description }}</span>
                                                     </v-tooltip>
                                                 </div>
                                                 <v-col cols="12">
@@ -246,7 +235,7 @@
                                                                 v-on="on"
                                                             ></v-textarea>
                                                         </template>
-                                                        <span>{{langMap.ticket.availability_description}}</span>
+                                                        <span>{{ langMap.ticket.availability_description }}</span>
                                                     </v-tooltip>
                                                 </v-col>
                                             </div>
@@ -302,12 +291,12 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field
-                                    v-model="createContactForm.description"
-                                    :color="themeBgColor"
-                                    :label="langMap.main.description"
-                                    name="description"
-                                    type="text"
-                                />
+                                        v-model="createContactForm.description"
+                                        :color="themeBgColor"
+                                        :label="langMap.main.description"
+                                        name="description"
+                                        type="text"
+                                    />
                                 </v-col>
                                 <v-col cols="4">
                                     <v-text-field
@@ -351,11 +340,14 @@
                                     />
                                 </v-col>
                                 <v-col cols="6">
-                                    <p v-for="(item, i) in createContactForm.phones"  :key="item.id" class="mb-2">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small left />
+                                    <p v-for="(item, i) in createContactForm.phones" :key="item.id" class="mb-2">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small left/>
                                         {{ item.phone }}
 
-                                        <v-icon small right :color="themeBgColor" :title="langMap.main.delete" @click="deletePhone(i)">mdi-trash-can</v-icon>
+                                        <v-icon small right :color="themeBgColor" :title="langMap.main.delete"
+                                                @click="deletePhone(i)">mdi-trash-can
+                                        </v-icon>
                                     </p>
 
                                     <v-expansion-panels accordion>
@@ -387,10 +379,12 @@
                                                                 item-value="id"
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
+                                                                    {{ $helpers.i18n.localized(data.item) }}
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
+                                                                    {{ $helpers.i18n.localized(data.item) }}
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
@@ -403,7 +397,9 @@
                                                             small
                                                             @click="addPhone"
                                                         >
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </v-btn>
                                                     </v-row>
                                                 </v-form>
@@ -515,394 +511,418 @@
     </v-container>
 </template>
 <script>
-    import EventBus from "../../components/EventBus";
+import EventBus from "../../components/EventBus";
 
-    export default {
-        data() {
-            return {
-                clientId: 6,
-                overlay: false,
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                availabilityTooltip: false,
-                e1: 1,
-                steps: 2,
-                vertical: false,
-                altLabels: true,
-                editable: true,
-                langMap: this.$store.state.lang.lang_map,
-                themeFgColor: this.$store.state.themeFgColor,
-                themeBgColor: this.$store.state.themeBgColor,
-                ticketForm: {
-                    from: {
-                        name: ''
-                    },
-                    from_entity_type: '',
-                    from_entity_id: '',
-                    to: '',
-                    to_entity_type: '',
-                    to_entity_id: '',
-                    contact_company_user_id: '',
-                    to_product_id: '',
-                    priority_id: '',
-                    category_id: '',
-                    ticket_type_id:'',
-                    name: '',
-                    description: '',
-                    availability: '',
-                    connection_details: '',
-                    access_details: '',
-                    files: [],
-                    to_team_id: null,
-                    to_company_user_id: null,
-                    can_be_edited: true
+export default {
+    data() {
+        return {
+            clientId: 6,
+            overlay: false,
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            availabilityTooltip: false,
+            e1: 1,
+            steps: 2,
+            vertical: false,
+            altLabels: true,
+            editable: true,
+            langMap: this.$store.state.lang.lang_map,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            ticketForm: {
+                from: {
+                    name: ''
                 },
-                suppliers: [],
-                products: [],
-                priorities: [],
-                categories: [],
-                types: [],
-                employees: [],
-                onFileChange(form) {
-                    this[form].files = null;
-                    this[form].files = event.target.files;
-                },
-                createContactDlg: false,
-                createContactForm: {
-                    client_id: '',
-                    name: '',
-                    middle_name: '',
-                    surname: '',
-                    language_id: '',
-                    email: '',
-                    is_active: 0,
-                    description: '',
-                    phones: []
-                },
-                phoneForm: {
-                    phone: '',
-                    phone_type: '',
-                },
-                phoneTypes: [],
-                languages: [],
-                assignDlg: false,
-                selectionDisabled: false,
-                tTeams: [],
-                tEmployees: [],
-                ticketFormIsSaved: false,
-            }
-        },
-        watch: {
-            steps(val) {
-                if (this.e1 > val) {
-                    this.e1 = val
-                }
+                from_entity_type: '',
+                from_entity_id: '',
+                to: '',
+                to_entity_type: '',
+                to_entity_id: '',
+                contact_company_user_id: '',
+                to_product_id: '',
+                priority_id: '',
+                category_id: '',
+                ticket_type_id: '',
+                name: '',
+                description: '',
+                availability: '',
+                connection_details: '',
+                access_details: '',
+                files: [],
+                to_team_id: null,
+                to_company_user_id: null,
+                can_be_edited: true
             },
-            vertical() {
-                this.e1 = 2
-                requestAnimationFrame(() => this.e1 = 1) // Workarounds
+            suppliers: [],
+            products: [],
+            priorities: [],
+            categories: [],
+            types: [],
+            employees: [],
+            onFileChange(form) {
+                this[form].files = null;
+                this[form].files = event.target.files;
             },
-            ticketForm() {
-                this.ticketFormIsSaved = false;
-            }
-        },
-        beforeDestroy() {
-            this.saveForLater()
-        },
-        mounted() {
-            this.getSuppliers()
-            this.getProducts()
-            this.getPriorities()
-            this.getTypes()
-            this.getCategories()
-            this.getLanguages()
-            // this.getCompany()
-            this.getPhoneTypes()
-            this.getTeams()
-
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
-            });
-            this.loadSavedForm();
-        },
-        methods: {
-            onInput(val) {
-                this.steps = parseInt(val)
+            createContactDlg: false,
+            createContactForm: {
+                client_id: '',
+                name: '',
+                middle_name: '',
+                surname: '',
+                language_id: '',
+                email: '',
+                is_active: 0,
+                description: '',
+                phones: []
             },
-            nextStep(n) {
-                if (n === this.steps) {
-                    this.e1 = n
-                } else {
-                    this.e1 = n + 1
-                }
+            phoneForm: {
+                phone: '',
+                phone_type: '',
             },
-            previousStep(n) {
-                if (n === 1) {
-                    this.e1 = 1
-                } else {
-                    this.e1 = n - 1
-                }
-            },
-            getSuppliers() {
-                axios.get('/api/supplier').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.suppliers = response.data
-                        this.ticketForm.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1].item : this.suppliers[0].item;
-                        this.ticketForm.to = this.suppliers[0].item
-                        this.getContacts(this.ticketForm.from)
-                    }
-                });
-            },
-            getProducts() {
-                axios.get('/api/product', {
-                    params: {
-                        sort_by: 'full_name',
-                        sort_val: false
-                    }
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.products = response.data.data
-                        this.ticketForm.to_product_id = this.products[0].id
-                    }
-
-                });
-            },
-            getPriorities() {
-                axios.get('/api/ticket_priorities').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.priorities = response.data
-                        this.ticketForm.priority_id = this.priorities[1].id
-                    }
-
-                });
-            },
-            getTypes() {
-                axios.get('/api/ticket_types').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.types = response.data
-                    }
-
-                });
-            },
-            getCategories() {
-                axios.get('/api/ticket_categories').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.categories = response.data
-                    }
-
-                });
-            },
-            getContacts(entityItem) {
-                this.employees = []
-                let route = '';
-
-                if (Object.keys(entityItem)[0] === 'App\\Company') {
-                    route = `/api/company/${Object.values(entityItem)[0]}`
-                    this.createContactForm.client_id = '';
-                } else {
-                    route = `/api/client/${Object.values(entityItem)[0]}`
-                    this.createContactForm.client_id = Object.values(entityItem)[0];
-                }
-                // console.log(entityItem);
-                axios.get(route).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        response = response.data
-                        // console.log(response);
-                        if (!response.hasOwnProperty('company_number')) {
-                            response.employees.forEach(employeeItem => this.employees.push(employeeItem.employee))
-                            // console.log('client');
-                        } else {
-                            this.employees = response.employees
-                            // console.log('company');
-                        }
-                        // this.ticketForm.contact_company_user_id = this.employees[0].id
-                    } else {
-                    }
-
-                });
-            },
-            submit() {
-                if (!this.ticketForm.name) {
-                    return false;
-                }
-                this.overlay = true;
-                this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0]
-                this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0]
-                this.ticketForm.to_entity_type = Object.keys(this.ticketForm.to)[0]
-                this.ticketForm.to_entity_id = Object.values(this.ticketForm.to)[0]
-                this.addTicket()
-            },
-            addTicket() {
-                this.saveForLater();
-                const config = {
-                    headers: {'content-type': 'multipart/form-data'}
-                }
-                let formData = new FormData();
-                for (let key in this.ticketForm) {
-                    switch (key) {
-                        case 'to_team_id':
-                        case 'to_company_user_id':
-                            if (this.ticketForm[key]) {
-                                formData.append(key, this.ticketForm[key]);
-                            }
-                            break;
-                        case 'files':
-                            break;
-                        default:
-                            formData.append(key, this.ticketForm[key]);
-                    }
-                }
-
-                Array.from(this.ticketForm.files).forEach(file => formData.append('files[]', file));
-                axios.post('/api/ticket', formData, config).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        window.open('/ticket/' + response.data.id, '_self')
-                    } else {
-                        this.overlay = false;
-                        this.snackbarMessage = 'Check ticket problems and try again, please!'
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            addEmployee() {
-                axios.post(`/api/client/employee`, this.createContactForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.createContactDlg = false;
-                        this.ticketForm.contact_company_user_id = response.data.company_user_id;
-                        this.getContacts(this.ticketForm.from);
-                        this.createContactForm = {
-                            client_id: '',
-                            name: '',
-                            middle_name: '',
-                            surname: '',
-                            language_id: '',
-                            email: '',
-                            is_active: 0,
-                            phones: [],
-                            description: ''
-                        };
-                        this.snackbarMessage = this.langMap.company.employee_created;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-
-                });
-            },
-            getLanguages() {
-                axios.get('/api/lang').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.languages = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getSupplierName() {
-                let index = this.suppliers.findIndex(supplier => supplier.item === this.ticketForm.from);
-                return index > -1 ? this.suppliers[index].name : '';
-            },
-            addPhone() {
-                if (this.phoneForm.phone_type) {
-                    this.phoneForm.type = this.phoneTypes.find(x => x.id === this.phoneForm.phone_type);
-                }
-                this.createContactForm.phones.push(this.phoneForm);
-                this.phoneForm = {
-                    phone: '',
-                    phone_type: '',
-                    type: null
-                }
-                this.$forceUpdate();
-            },
-            deletePhone(index) {
-                this.createContactForm.phones.splice(index, 1);
-            },
-            getPhoneTypes() {
-                axios.get(`/api/phone_types`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.phoneTypes = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getTeams() {
-                axios.get(`/api/team`
-                ).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.tTeams = response.data.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            selectTeam() {
-                if (this.ticketForm.can_be_edited === false) {
-                    this.selectionDisabled = true
-                }
-                if (this.ticketForm.to_team_id !== null) {
-                    this.assignPanel = [0];
-                    axios.get(`/api/team/${this.ticketForm.to_team_id}`).then(response => {
-                        response = response.data
-                        if (response.success === true) {
-                            this.tEmployees = response.data.employees
-                        }
-                    });
-                }
-            },
-            saveForLater() {
-                if (this.ticketFormIsSaved === false) {
-                    if (confirm('Do you want to save the content of the form for later?')) {
-                        this.savetoLS();
-                    } else {
-                        localStorage.removeItem('ticketForm');
-                        this.ticketFormIsSaved = false;
-                    }
-                }
-            },
-            savetoLS() {
-                localStorage.setItem('ticketForm', JSON.stringify(this.ticketForm));
-                this.ticketFormIsSaved = true;
-                this.snackbarMessage = 'Form saved!'
-                this.actionColor = 'success'
-                this.snackbar = true;
-            },
-            loadSavedForm() {
-                try {
-                    const json = localStorage.getItem('ticketForm');
-                    if (json) {
-                        this.ticketForm = JSON.parse(json);
-                        this.snackbarMessage = 'The saved form is loaded!'
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    }
-                } catch (e) {
-                    console.log(e);
-                }
-            },
+            phoneTypes: [],
+            languages: [],
+            assignDlg: false,
+            selectionDisabled: false,
+            tTeams: [],
+            tEmployees: [],
+            ticketFormIsSaved: false,
         }
+    },
+    watch: {
+        steps(val) {
+            if (this.e1 > val) {
+                this.e1 = val
+            }
+        },
+        vertical() {
+            this.e1 = 2
+            requestAnimationFrame(() => this.e1 = 1) // Workarounds
+        },
+        ticketForm() {
+            this.ticketFormIsSaved = false;
+        }
+    },
+    beforeDestroy() {
+        this.saveForLater()
+    },
+    mounted() {
+        this.getSuppliers()
+        this.getProducts()
+        this.getPriorities()
+        this.getTypes()
+        this.getCategories()
+        this.getLanguages()
+        // this.getCompany()
+        this.getPhoneTypes()
+        this.getTeams()
+
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+        this.loadSavedForm();
+    },
+    methods: {
+        onInput(val) {
+            this.steps = parseInt(val)
+        },
+        nextStep(n) {
+            if (n === this.steps) {
+                this.e1 = n
+            } else {
+                this.e1 = n + 1
+            }
+        },
+        previousStep(n) {
+            if (n === 1) {
+                this.e1 = 1
+            } else {
+                this.e1 = n - 1
+            }
+        },
+        getSuppliers() {
+            axios.get('/api/supplier').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.suppliers = response.data
+                    this.ticketForm.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1].item : this.suppliers[0].item;
+                    this.ticketForm.to = this.suppliers[0].item
+                    this.getContacts(this.ticketForm.from)
+                }
+            });
+        },
+        getProducts() {
+            axios.get('/api/product', {
+                params: {
+                    sort_by: 'full_name',
+                    sort_val: false
+                }
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.products = response.data.data
+                    this.ticketForm.to_product_id = this.products[0].id
+                }
+
+            });
+        },
+        getPriorities() {
+            axios.get('/api/ticket_priorities').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.priorities = response.data
+                    this.ticketForm.priority_id = this.priorities[1].id
+                }
+
+            });
+        },
+        getTypes() {
+            axios.get('/api/ticket_types').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.types = response.data
+                }
+
+            });
+        },
+        getCategories() {
+            axios.get('/api/ticket_categories').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.categories = response.data
+                }
+
+            });
+        },
+        getContacts(entityItem) {
+            this.employees = []
+            let route = '';
+
+            if (Object.keys(entityItem)[0] === 'App\\Company') {
+                route = `/api/company/${Object.values(entityItem)[0]}`
+                this.createContactForm.client_id = '';
+            } else {
+                route = `/api/client/${Object.values(entityItem)[0]}`
+                this.createContactForm.client_id = Object.values(entityItem)[0];
+            }
+            // console.log(entityItem);
+            axios.get(route).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    response = response.data
+                    // console.log(response);
+                    if (!response.hasOwnProperty('company_number')) {
+                        response.employees.forEach(employeeItem => this.employees.push(employeeItem.employee))
+                        // console.log('client');
+                    } else {
+                        this.employees = response.employees
+                        // console.log('company');
+                    }
+                    // this.ticketForm.contact_company_user_id = this.employees[0].id
+                } else {
+                }
+
+            });
+        },
+        submit() {
+            if (!this.ticketForm.name) {
+                return false;
+            }
+            this.overlay = true;
+            this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0]
+            this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0]
+            this.ticketForm.to_entity_type = Object.keys(this.ticketForm.to)[0]
+            this.ticketForm.to_entity_id = Object.values(this.ticketForm.to)[0]
+            this.addTicket()
+        },
+        addTicket() {
+            this.saveForLater();
+            const config = {
+                headers: {'content-type': 'multipart/form-data'}
+            }
+            let formData = new FormData();
+            for (let key in this.ticketForm) {
+                switch (key) {
+                    case 'to_team_id':
+                    case 'to_company_user_id':
+                        if (this.ticketForm[key]) {
+                            formData.append(key, this.ticketForm[key]);
+                        }
+                        break;
+                    case 'files':
+                        break;
+                    default:
+                        formData.append(key, this.ticketForm[key]);
+                }
+            }
+
+            Array.from(this.ticketForm.files).forEach(file => formData.append('files[]', file));
+            axios.post('/api/ticket', formData, config).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.ticketForm = {
+                        from: {
+                            name: ''
+                        },
+                        from_entity_type: '',
+                        from_entity_id: '',
+                        to: '',
+                        to_entity_type: '',
+                        to_entity_id: '',
+                        contact_company_user_id: '',
+                        to_product_id: '',
+                        priority_id: '',
+                        category_id: '',
+                        ticket_type_id: '',
+                        name: '',
+                        description: '',
+                        availability: '',
+                        connection_details: '',
+                        access_details: '',
+                        files: [],
+                        to_team_id: null,
+                        to_company_user_id: null,
+                        can_be_edited: true
+                    }
+                    window.open('/ticket/' + response.data.id, '_self')
+                } else {
+                    this.overlay = false;
+                    this.snackbarMessage = 'Check ticket problems and try again, please!'
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        addEmployee() {
+            axios.post(`/api/client/employee`, this.createContactForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.createContactDlg = false;
+                    this.ticketForm.contact_company_user_id = response.data.company_user_id;
+                    this.getContacts(this.ticketForm.from);
+                    this.createContactForm = {
+                        client_id: '',
+                        name: '',
+                        middle_name: '',
+                        surname: '',
+                        language_id: '',
+                        email: '',
+                        is_active: 0,
+                        phones: [],
+                        description: ''
+                    };
+                    this.snackbarMessage = this.langMap.company.employee_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+
+            });
+        },
+        getLanguages() {
+            axios.get('/api/lang').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.languages = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getSupplierName() {
+            let index = this.suppliers.findIndex(supplier => supplier.item === this.ticketForm.from);
+            return index > -1 ? this.suppliers[index].name : '';
+        },
+        addPhone() {
+            if (this.phoneForm.phone_type) {
+                this.phoneForm.type = this.phoneTypes.find(x => x.id === this.phoneForm.phone_type);
+            }
+            this.createContactForm.phones.push(this.phoneForm);
+            this.phoneForm = {
+                phone: '',
+                phone_type: '',
+                type: null
+            }
+            this.$forceUpdate();
+        },
+        deletePhone(index) {
+            this.createContactForm.phones.splice(index, 1);
+        },
+        getPhoneTypes() {
+            axios.get(`/api/phone_types`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.phoneTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getTeams() {
+            axios.get(`/api/team`
+            ).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.tTeams = response.data.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        selectTeam() {
+            if (this.ticketForm.can_be_edited === false) {
+                this.selectionDisabled = true
+            }
+            if (this.ticketForm.to_team_id !== null) {
+                this.assignPanel = [0];
+                axios.get(`/api/team/${this.ticketForm.to_team_id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.tEmployees = response.data.employees
+                    }
+                });
+            }
+        },
+        saveForLater() {
+            if (this.ticketFormIsSaved === false) {
+                if (confirm('Do you want to save the content of the form for later?')) {
+                    this.savetoLS();
+                } else {
+                    localStorage.removeItem('ticketForm');
+                    this.ticketFormIsSaved = false;
+                }
+            }
+        },
+        savetoLS() {
+            localStorage.setItem('ticketForm', JSON.stringify(this.ticketForm));
+            this.ticketFormIsSaved = true;
+            this.snackbarMessage = 'Form saved!'
+            this.actionColor = 'success'
+            this.snackbar = true;
+        },
+        loadSavedForm() {
+            try {
+                const json = localStorage.getItem('ticketForm');
+                if (json) {
+                    this.ticketForm = JSON.parse(json);
+                    this.snackbarMessage = 'The saved form is loaded!'
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        },
     }
+}
 </script>

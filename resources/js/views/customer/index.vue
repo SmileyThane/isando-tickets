@@ -17,9 +17,10 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{langMap.customer.add_new}}
+                                    {{ langMap.customer.add_new }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -78,7 +79,9 @@
                                                 :color="themeBgColor"
                                                 @click="addClient"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -104,7 +107,8 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="debounceGetClients" v-model="customersSearch" :color="themeBgColor"
+                                        <v-text-field @input="debounceGetClients" v-model="customersSearch"
+                                                      :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
@@ -121,19 +125,23 @@
                                 </v-row>
                             </template>
                             <template v-slot:item.logo="{ item }">
-                                <v-img :src="item.logo_url" style="max-width: 10em; max-height: 2em" />
+                                <v-img :src="item.logo_url" style="max-width: 10em; max-height: 2em"/>
                             </template>
                             <template v-slot:item.email="{item}">
                                 <span v-if="item.contact_email && item.contact_email.email">
-                                    <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="$helpers.i18n.localized(item.contact_email.type)"></v-icon>
-                                    {{item.contact_email.email}}
+                                    <v-icon v-if="item.contact_email.type" x-small dense
+                                            v-text="item.contact_email.type.icon"
+                                            :title="$helpers.i18n.localized(item.contact_email.type)"></v-icon>
+                                    {{ item.contact_email.email }}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.phone="{item}">
                                 <span v-if="item.contact_phone && item.contact_phone.phone">
-                                    <v-icon v-if="item.contact_phone.type" x-small dense v-text="item.contact_phone.type.icon" :title="$helpers.i18n.localized(item.contact_phone.type)"></v-icon>
-                                    {{item.contact_phone.phone}}
+                                    <v-icon v-if="item.contact_phone.type" x-small dense
+                                            v-text="item.contact_phone.type.icon"
+                                            :title="$helpers.i18n.localized(item.contact_phone.type)"></v-icon>
+                                    {{ item.contact_phone.phone }}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
@@ -152,9 +160,9 @@
                                         :style="item.is_active === 1 ?'color:#95C13D;' : 'color:red;'"
                                 >
                                     {{
-                                    item.is_active === 1 ?
-                                    'mdi-check-circle-outline' :
-                                    'mdi-cancel'
+                                        item.is_active === 1 ?
+                                            'mdi-check-circle-outline' :
+                                            'mdi-cancel'
                                     }}
                                 </v-icon>
                             </template>
@@ -163,7 +171,7 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <p><strong>{{langMap.main.actions}}:</strong></p>
+                                    <p><strong>{{ langMap.main.actions }}:</strong></p>
                                     <p>
                                         <v-btn
                                             color="grey"
@@ -201,15 +209,15 @@
             <v-dialog v-model="removeCustomerDialog" persistent max-width="480">
                 <v-card>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                        {{langMap.main.delete_selected}}?
+                        {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">
-                            {{langMap.main.cancel}}
+                            {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn color="red darken-1" text @click="deleteCustomer(selectedCustomerId)">
-                            {{langMap.main.delete}}
+                            {{ langMap.main.delete }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -232,33 +240,40 @@
 </style>
 
 <script>
-    import EventBus from "../../components/EventBus";
-    import _ from "lodash";
+import EventBus from "../../components/EventBus";
+import _ from "lodash";
 
-    export default {
+export default {
 
-        data() {
-            return {
-                snackbar: false,
-                actionColor: '',
-                themeFgColor: this.$store.state.themeFgColor,
-                themeBgColor: this.$store.state.themeBgColor,
-                snackbarMessage: '',
-                totalCustomers: 0,
-                lastPage: 0,
-                loading: this.themeBgColor,
-                langMap: this.$store.state.lang.lang_map,
-                expanded: [],
-                singleExpand: false,
-                options: {
-                    page: 1,
-                    sortDesc: [false],
-                    sortBy: ['name'],
-                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
-                },
-                footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [10, 25, 50, 100],
+    data() {
+        return {
+            snackbar: false,
+            actionColor: '',
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            snackbarMessage: '',
+            totalCustomers: 0,
+            lastPage: 0,
+            loading: this.themeBgColor,
+            langMap: this.$store.state.lang.lang_map,
+            expanded: [],
+            singleExpand: false,
+            options: {
+                page: 1,
+                sortDesc: [false],
+                sortBy: ['name'],
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
+            },
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [10, 25, 50, 100],
+            },
+            headers: [
+                {text: '', value: 'data-table-expand'},
+                {
+                    text: 'ID',
+                    align: 'start',
+                    value: 'id',
                 },
                 headers: [
                     {text: '', value: 'data-table-expand'},
@@ -267,142 +282,143 @@
                         align: 'start',
                         value: 'id',
                     },
-                    {text: `${this.$store.state.lang.lang_map.company.logo}`, value: 'logo', align: 'center', sortable: false},
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
-                    {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
-                    {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false},
-                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
-                    {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
-                    {text: `${this.$store.state.lang.lang_map.main.supplier}`, value: 'supplier_name'},
-                ],
-                customersSearch: '',
-                customers: [],
-                removeCustomerDialog: false,
-                selectedCustomerId: null,
-                clientForm: {
-                    client_name: '',
-                    client_description: '',
-                    supplier_object: '',
-                    supplier_type: '',
-                    supplier_id: ''
-                },
-                suppliers: [],
-                errors: {},
-                currency: {
-                    symbol: ''
-                }
+                {text: `${this.$store.state.lang.lang_map.company.logo}`, value: 'logo', align: 'center', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.company.company_number}`, value: 'number'},
+                {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
+                {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+                {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
+                {text: `${this.$store.state.lang.lang_map.main.supplier}`, value: 'supplier_name'},
+            ],
+            customersSearch: '',
+            customers: [],
+            removeCustomerDialog: false,
+            selectedCustomerId: null,
+            clientForm: {
+                client_name: '',
+                client_description: '',
+                supplier_object: '',
+                supplier_type: '',
+                supplier_id: ''
+            },
+            suppliers: [],
+            errors: {},
+            currency: {
+                symbol: ''
             }
-        },
-        created() {
-            this.debounceGetClients = _.debounce(this.getClients, 1000);
-        },
-        mounted() {
-            this.getSuppliers();
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
+        }
+    },
+    created() {
+        this.debounceGetClients = _.debounce(this.getClients, 1000);
+    },
+    mounted() {
+        this.getSuppliers();
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+    },
+    methods: {
+        getClients() {
+            this.loading = this.themeBgColor
+            if (this.options.sortDesc.length <= 0) {
+                this.options.sortBy[0] = 'id'
+                this.options.sortDesc[0] = false
+            }
+            if (this.totalCustomers < this.options.itemsPerPage) {
+                this.options.page = 1
+            }
+            axios.get('/api/client', {
+                params: {
+                    search: this.customersSearch,
+                    sort_by: this.options.sortBy[0],
+                    sort_val: this.options.sortDesc[0],
+                    per_page: this.options.itemsPerPage,
+                    page: this.options.page
+                }
+            }).then(response => {
+                this.loading = false
+                response = response.data
+                if (response.success === true) {
+                    this.customers = response.data.data
+                    this.totalCustomers = response.data.total
+                    this.lastPage = response.data.last_page
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
             });
         },
-        methods: {
-            getClients() {
-                this.loading = this.themeBgColor
-                if (this.options.sortDesc.length <= 0) {
-                    this.options.sortBy[0] = 'id'
-                    this.options.sortDesc[0] = false
+        addClient() {
+            // console.log(this.clientForm.supplier_object);
+            this.clientForm.supplier_type = Object.keys(this.clientForm.supplier_object).shift()
+            this.clientForm.supplier_id = Object.values(this.clientForm.supplier_object).shift()
+            axios.post('/api/client', this.clientForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClients()
+                    this.getSuppliers()
+                    this.clientForm = {}
+                } else {
+                    this.errors = response.error
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
-                if (this.totalCustomers < this.options.itemsPerPage) {
-                    this.options.page = 1
+            });
+            // console.log(this.clientForm);
+        },
+        getSuppliers() {
+            axios.get('/api/supplier').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.suppliers = response.data
+                    this.clientForm.supplier_object = this.suppliers[0].item
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
-                axios.get('/api/client', {
-                    params: {
-                        search: this.customersSearch,
-                        sort_by: this.options.sortBy[0],
-                        sort_val: this.options.sortDesc[0],
-                        per_page: this.options.itemsPerPage,
-                        page: this.options.page
-                    }
-                }).then(response => {
-                    this.loading = false
-                    response = response.data
-                    if (response.success === true) {
-                        this.customers = response.data.data
-                        this.totalCustomers = response.data.total
-                        this.lastPage = response.data.last_page
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            addClient() {
-                // console.log(this.clientForm.supplier_object);
-                this.clientForm.supplier_type = Object.keys(this.clientForm.supplier_object).shift()
-                this.clientForm.supplier_id = Object.values(this.clientForm.supplier_object).shift()
-                axios.post('/api/client', this.clientForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getClients()
-                        this.getSuppliers()
-                        this.clientForm = {}
-                    } else {
-                        this.errors = response.error
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-                // console.log(this.clientForm);
-            },
-            getSuppliers() {
-                axios.get('/api/supplier').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.suppliers = response.data
-                        this.clientForm.supplier_object = this.suppliers[0].item
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            showItem(item) {
-                this.$router.push(`/customer/${item.id}`)
-            },
-            deleteProcess(item) {
-                this.selectedCustomerId = item.id
-                this.removeCustomerDialog = true
-            },
-            deleteCustomer(id) {
-                axios.delete(`/api/client/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getClients()
-                        this.snackbarMessage = this.langMap.company.company_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.removeCustomerDialog = false
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateItemsCount(value) {
-                this.options.itemsPerPage = value
-                localStorage.itemsPerPage = value;
-                this.options.page = 1
-            },
+            });
         },
-        watch: {
-            options: {
-                handler() {
-                    this.getClients();
-                },
-                deep: true,
-            },
+        showItem(item) {
+            this.$router.push(`/customer/${item.id}`)
         },
-    }
+        deleteProcess(item) {
+            this.selectedCustomerId = item.id
+            this.removeCustomerDialog = true
+        },
+        deleteCustomer(id) {
+            axios.delete(`/api/client/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClients()
+                    this.snackbarMessage = this.langMap.company.company_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeCustomerDialog = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateItemsCount(value) {
+            this.options.itemsPerPage = value
+            localStorage.itemsPerPage = value;
+            this.options.page = 1
+        },
+    },
+    watch: {
+        options: {
+            handler() {
+                this.getClients();
+            },
+            deep: true,
+        },
+    },
+}
 </script>
