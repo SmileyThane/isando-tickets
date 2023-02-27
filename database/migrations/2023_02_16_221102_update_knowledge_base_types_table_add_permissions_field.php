@@ -19,7 +19,6 @@ return new class extends Migration
             $table->json('permissions')->nullable()->after('alias');
         });
 
-        Artisan::call('db:seed', ['class' => KBTypeSeeder::class]);
     }
 
     /**
