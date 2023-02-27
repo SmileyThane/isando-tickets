@@ -400,7 +400,7 @@ export default {
         },
         getArticle() {
             if (this.$route.params.id) {
-                axios.get(`/api/kb/article/${this.$route.params.id}`).then(response => {
+                axios.get(`/api/kb/article/${this.$route.params.id}?type=${this.$route.params.alias}`).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         let that = this;
