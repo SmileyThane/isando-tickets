@@ -4,13 +4,16 @@
 namespace App\Repositories;
 
 use App\Company;
+use App\Enums\KnowledgeBase\KnowledgeBasePermissionsTypesEnum;
 use App\KbArticle;
 use App\KbArticleClient;
 use App\KbCategory;
+use App\KnowledgeBaseType;
 use App\Language;
 use App\Permission;
 use App\Tag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class KbRepository
@@ -234,5 +237,69 @@ class KbRepository
         KbArticleClient::query()->where('kb_article_id', '=', $id)->delete();
         $article = KbArticle::find($id);
         return $article ? $article->delete() : false;
+    }
+
+    /**
+     * Find KnowledgeBaseType by alias
+     *
+     * @param string $alias
+     * @return Builder|Model
+     */
+    public function findByAlias(string $alias)
+    {
+        return KnowledgeBaseType::query()->where('alias', $alias)->firstOrFail();
+    }
+
+    /**
+     * Create new KnowledgeBaseType entity
+     *
+     * @param array $data
+     * @return Model|KnowledgeBaseType
+     */
+    public function create(array $data): Model|KnowledgeBaseType
+    {
+        $data['alias'] = str_replace(' ', '_', strtolower($data['name']));
+        $data['permissions'] = [
+            [
+                'type' => KnowledgeBasePermissionsTypesEnum::VIEW,
+                'value' => Permission::KB_VIEW_ACCESS,
+            ],
+            [
+                'type' => KnowledgeBasePermissionsTypesEnum::CREATE,
+                'value'=> Permission::KB_CREATE_ACCESS,
+            ],
+            [
+                'type' => KnowledgeBasePermissionsTypesEnum::EDIT,
+                'value' => Permission::KB_EDIT_ACCESS,
+            ],
+            [
+                'type' => KnowledgeBasePermissionsTypesEnum::DELETE,
+                'value' => Permission::KB_DELETE_ACCESS,
+            ],
+        ];
+        return KnowledgeBaseType::query()->create($data);
+    }
+
+    /**
+     * Update KnowledgeBaseType entity
+     *
+     * @param KnowledgeBaseType $knowledgeBaseType
+     * @param array $data
+     * @return KnowledgeBaseType
+     */
+    public function update(KnowledgeBaseType $knowledgeBaseType, array $data): KnowledgeBaseType
+    {
+        return tap($knowledgeBaseType)->update($data);
+    }
+
+    /**
+     * Delete KnowledgeBaseType entity
+     *
+     * @param KnowledgeBaseType $knowledgeBaseType
+     * @return bool
+     */
+    public function delete(KnowledgeBaseType $knowledgeBaseType): bool
+    {
+        return $knowledgeBaseType->delete();
     }
 }

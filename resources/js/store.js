@@ -16,6 +16,7 @@ import {
     Tickets,
     Timesheet,
     Tracking,
+    KbTypes,
 } from './modules';
 
 Vue.use(Vuex);
@@ -36,6 +37,7 @@ export default new Vuex.Store({
         RiskRepository,
         IncidentReporting,
         SettingsIncident,
+        KbTypes,
     },
     state: {
         roles: {},

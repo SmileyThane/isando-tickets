@@ -69,6 +69,7 @@ class LanguageSeeder extends Seeder
                             'incident_reporting_scenarios' => 'Scenarios',
                             'incident_reporting_action_boards' => 'Action boards',
                             'risk_repository' => 'Risk repository',
+                            'create_incident' => 'Create incident'
                         ],
                     'tracking' =>
                         [
@@ -397,7 +398,9 @@ class LanguageSeeder extends Seeder
                             'regular_user' => 'Regular user',
                             'company_client' => 'Client',
                             'contact' => 'Contact',
-                            'contractor' => 'Contractor'
+                            'contractor' => 'Contractor',
+                            'search_by_permissions' => 'Search by permissions',
+                            'search_by_roles' => 'Search by roles',
                         ],
                     'company' =>
                         [
@@ -753,7 +756,8 @@ class LanguageSeeder extends Seeder
                             'delete_activity' => 'Delete Activity',
                             'activity_contact' => 'Linked contact',
                             'activity_company' => 'Linked company',
-                            'owner' => 'Owner'
+                            'owner' => 'Owner',
+                            'success_update' => 'Update successful',
                         ],
                     'system_settings' =>
                         [
@@ -826,6 +830,15 @@ class LanguageSeeder extends Seeder
                             'client_number_format_start' => 'Start number',
                             'client_number_format_size' => 'Digits count',
                             'client_number_example' => 'Example: ',
+                            'kb_permissions' => 'Knowledge base permissions',
+                            'permission' => 'Permission',
+                            'type' => 'Type',
+                            'save' => 'Save',
+                            'delete' => 'Delete',
+                            'new_kb_type' => 'Add new knowledge base type',
+                            'kb_type_created' => 'Knowledge base type created',
+                            'kb_type_deleted' => 'Knowledge base type deleted',
+                            'kb_types' => 'Knowledge base types',
                         ],
                     'profile' =>
                         [
@@ -1052,6 +1065,7 @@ class LanguageSeeder extends Seeder
                             'incident_reporting_scenarios' => 'Scenarios',
                             'incident_reporting_action_boards' => 'Action boards',
                             'risk_repository' => 'Risk repository',
+                            'create_incident' => 'Vorfall erstellen'
                         ],
                         'tracking' => [
                             'name' => 'Name',
@@ -1375,7 +1389,9 @@ class LanguageSeeder extends Seeder
                             'regular_user' => 'Benutzer',
                             'company_client' => 'Kunde',
                             'contact' => 'Kontakt',
-                            'contractor' => 'Auftragnehmer'
+                            'contractor' => 'Auftragnehmer',
+                            'search_by_permissions' => 'Suche nach Berechtigungen',
+                            'search_by_roles' => 'Suche nach Rollen',
                         ],
                         'company' => [
                             'company_number' => 'Firmennummer',
@@ -1714,7 +1730,8 @@ class LanguageSeeder extends Seeder
                             'delete_activity' => 'Delete Activity',
                             'activity_contact' => 'Linked contact',
                             'activity_company' => 'Linked company',
-                            'owner' => 'Owner'
+                            'owner' => 'Owner',
+                            'success_update' => 'Erfolgsaktualisierung',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
@@ -1785,6 +1802,15 @@ class LanguageSeeder extends Seeder
                             'client_number_format_start' => 'Startnummer',
                             'client_number_format_size' => 'Ziffern zählen',
                             'client_number_example' => 'Beispiel: ',
+                            'kb_permissions' => 'Berechtigungen für die Wissensdatenbank',
+                            'permission' => 'Erlaubnis',
+                            'type' => 'Typ',
+                            'save' => 'Speichern',
+                            'delete' => 'Löschen',
+                            'new_kb_type' => 'Neuen Wissensdatenbanktyp hinzufügen',
+                            'kb_type_created' => 'Wissensdatenbanktyp erstellt',
+                            'kb_type_deleted' => 'Wissensdatenbanktyp gelöscht',
+                            'kb_types' => 'Arten von Wissensdatenbanken',
                         ],
                         'profile' => [
                             'user_theme_colors' => 'Persönliche Themenfarben',

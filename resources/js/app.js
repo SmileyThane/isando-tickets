@@ -87,5 +87,6 @@ const app = new Vue({
         store.dispatch('getThemeBgColor');
         store.dispatch('getAppVersion');
         store.dispatch('getMainCompany');
+        store.dispatch('KbTypes/getKbTypes');
     }
 });

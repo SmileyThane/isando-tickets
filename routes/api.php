@@ -315,17 +315,20 @@ Route::group(['middleware' => 'auth:api'], function () {
     // knowledge base
     Route::get('kb/types', 'API\KbController@listTypes');
     Route::get('kb/importance', 'API\KbController@importanceList');
-    Route::get('kb/categories', 'API\KbController@listCategories');
-    Route::get('kb/categories/tree', 'API\KbController@categoriesTree');
-    Route::post('kb/category', 'API\KbController@addCategory');
-    Route::put('kb/category/{id}', 'API\KbController@editCategory');
-    Route::delete('kb/category/{id}', 'API\KbController@deleteCategory');
-    Route::get('kb/articles', 'API\KbController@listArticles');
-    Route::get('kb/articles/all', 'API\KbController@allArticles');
-    Route::get('kb/article/{id}', 'API\KbController@getArticle');
-    Route::post('kb/article', 'API\KbController@addArticle');
-    Route::put('kb/article/{id}', 'API\KbController@editArticle');
-    Route::delete('kb/article/{id}', 'API\KbController@deleteArticle');
+    Route::get('kb/categories', 'API\KbController@listCategories')->middleware('kb:view');
+    Route::get('kb/categories/tree', 'API\KbController@categoriesTree')->middleware('kb:view');
+    Route::post('kb/category', 'API\KbController@addCategory')->middleware('kb:create');
+    Route::put('kb/category/{id}', 'API\KbController@editCategory')->middleware('kb:edit');
+    Route::delete('kb/category/{id}', 'API\KbController@deleteCategory')->middleware('kb:delete');
+    Route::get('kb/articles', 'API\KbController@listArticles')->middleware('kb:view');
+    Route::get('kb/articles/all', 'API\KbController@allArticles')->middleware('kb:view');
+    Route::get('kb/article/{id}', 'API\KbController@getArticle')->middleware('kb:view');
+    Route::post('kb/article', 'API\KbController@addArticle')->middleware('kb:create');
+    Route::put('kb/article/{id}', 'API\KbController@editArticle')->middleware('kb:edit');
+    Route::delete('kb/article/{id}', 'API\KbController@deleteArticle')->middleware('kb:delete');
+    Route::put('kb/{knowledgeBaseType}', 'API\KbController@update');
+    Route::post('kb', 'API\KbController@create');
+    Route::delete('kb/{knowledgeBaseType}', 'API\KbController@delete');
 
 
     // incident reporting

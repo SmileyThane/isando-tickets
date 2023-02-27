@@ -20,7 +20,10 @@
                         flat
                         :color="themeBgColor"
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.individuals.info }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.individuals.info
+                            }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-btn :color="themeBgColor" icon @click="enableToEdit = true" v-if="!enableToEdit">
                             <v-icon :color="themeFgColor" small dense>mdi-pencil</v-icon>
@@ -38,9 +41,11 @@
                                     v-if="userData.avatar_url || userData.full_name"
                                     size="80px"
                                 >
-                                    <v-img v-if="userData.avatar_url" :src="userData.avatar_url" size="80px" />
+                                    <v-img v-if="userData.avatar_url" :src="userData.avatar_url" size="80px"/>
                                     <div v-else-if="userData.full_name" class="white--text" size="80px">
-                                        {{ userData.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                        {{
+                                            userData.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                        }}
                                     </div>
                                 </v-avatar>
                                 <v-icon v-else size="80px">mdi-account-circle</v-icon>
@@ -48,41 +53,48 @@
                             <v-col cols="5">
                                 <p v-if="userData.number" class="mb-3 font-weight-bold">{{ userData.number }}</p>
 
-                                <h3 class="mb-3">{{ userData .title }} {{ userData.title_before_name}} {{ userData.full_name }}</h3>
+                                <h3 class="mb-3">{{ userData.title }} {{ userData.title_before_name }}
+                                    {{ userData.full_name }}</h3>
 
                                 <div v-if="userData.emails && userData.emails.length > 0" class="mb-3">
-                                    <hr class="lighten" />
-                                    <p v-for="(item, i) in userData.emails"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                    <hr class="lighten"/>
+                                    <p v-for="(item, i) in userData.emails" :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small class="mr-2"/>
                                         {{ item.email }}
                                     </p>
                                 </div>
 
                                 <div v-if="userData.phones && userData.phones.length > 0">
-                                    <hr class="lighten" />
-                                    <p v-for="(item, i) in userData.phones"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                    <hr class="lighten"/>
+                                    <p v-for="(item, i) in userData.phones" :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small class="mr-2"/>
                                         {{ item.phone }}
                                     </p>
                                 </div>
                             </v-col>
                             <v-col cols="5">
                                 <div v-if="userData.addresses && userData.addresses.length > 0" class="mb-3">
-                                    <p v-for="(item, i) in userData.addresses"  :key="item.id" class="mb-1">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2 mb-2" />
+                                    <p v-for="(item, i) in userData.addresses" :key="item.id" class="mb-1">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small class="mr-2 mb-2"/>
 
                                         <span v-if="item.street">{{ item.street }}</span>
                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                         <br/>{{ item.postal_code }} {{ item.city }}
-                                        <br/><span v-if="item.country">{{ $helpers.i18n.localized(item.country) }}</span>
+                                        <br/><span v-if="item.country">{{
+                                            $helpers.i18n.localized(item.country)
+                                        }}</span>
                                     </p>
                                 </div>
 
                                 <div v-if="userData.socials && userData.socials.length > 0">
-                                    <hr class="lighten" />
-                                    <p v-for="(item, i) in userData.socials"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                    <hr class="lighten"/>
+                                    <p v-for="(item, i) in userData.socials" :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
+                                                v-text="item.type.icon" dense small class="mr-2"/>
                                         {{ item.social_link }}
                                     </p>
                                 </div>
@@ -90,49 +102,63 @@
                         </v-row>
                         <v-row>
                             <v-col cols="6">
-                                <hr class="lighten" />
+                                <hr class="lighten"/>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(101)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(101)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.new_assigned_to_me }}
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(201)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(201)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.new_assigned_to_team }}
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(301)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(301)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.new_assigned_to_company }}
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(103)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(103)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.client_response_assigned_to_me }}
                                 </p>
                             </v-col>
                             <v-col cols="6">
-                                <hr class="lighten" />
+                                <hr class="lighten"/>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(102)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(102)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.update_assigned_to_me }}
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(202)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(202)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.update_assigned_to_team }}
                                 </p>
 
                                 <p class="mb-0">
-                                    <v-icon v-if="notificationStatuses.includes(302)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-if="notificationStatuses.includes(302)" small dense left color="success">
+                                        mdi-check-circle
+                                    </v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.profile.update_assigned_to_company }}
                                 </p>
@@ -249,40 +275,49 @@
 
                                     <v-row>
                                         <v-col cols="6">
-                                            <hr class="lighten" />
+                                            <hr class="lighten"/>
 
                                             <p class="mb-0" v-if="langs && langs.length > 0 && userData">
-                                                <v-icon left small dense :color="themeBgColor" :title="langMap.main.language">mdi-web</v-icon>
+                                                <v-icon left small dense :color="themeBgColor"
+                                                        :title="langMap.main.language">mdi-web
+                                                </v-icon>
                                                 {{ langs[userData.language_id].name }}
                                             </p>
                                         </v-col>
                                         <v-col cols="6">
-                                            <hr class="lighten" />
+                                            <hr class="lighten"/>
 
                                             <p class="mb-0" v-if="userData.deleted_at">
-                                                <v-icon v-if="userData.deleted_at" small dense left color="red">mdi-cancel</v-icon>
+                                                <v-icon v-if="userData.deleted_at" small dense left color="red">
+                                                    mdi-cancel
+                                                </v-icon>
                                                 {{ langMap.individuals.deleted }}
                                             </p>
 
                                             <p class="mb-0" v-if="!userData.deleted_at">
-                                                <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
+                                                <v-icon v-if="userData.status" small dense left color="success">
+                                                    mdi-check-circle
+                                                </v-icon>
                                                 <v-icon v-else small dense left>mdi-cancel</v-icon>
                                                 {{ langMap.individuals.active }}
                                             </p>
 
                                             <p class="mb-0">
-                                                <v-icon v-if="userData.is_active" small dense left color="success">mdi-check-circle</v-icon>
+                                                <v-icon v-if="userData.is_active" small dense left color="success">
+                                                    mdi-check-circle
+                                                </v-icon>
                                                 <v-icon v-else small dense left>mdi-cancel</v-icon>
                                                 {{ langMap.main.give_access }}
                                             </p>
                                         </v-col>
                                         <v-col cols="12">
-                                            <v-btn text @click="resetPassword" :color="themeBgColor" v-text="langMap.company.reset_password" />
+                                            <v-btn text @click="resetPassword" :color="themeBgColor"
+                                                   v-text="langMap.company.reset_password"/>
                                         </v-col>
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr class="lighten" />
+                                    <hr class="lighten"/>
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <h3>{{ langMap.individuals.contact_info }}</h3>
@@ -290,11 +325,12 @@
                                         <v-col cols="6">
                                             <v-list-item v-for="(item, i) in userData.emails" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon" small dense />
+                                                    <v-icon v-text="item.type.icon" small dense/>
                                                 </v-list-item-icon>
                                                 <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.email"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editEmail(item)">mdi-pencil</v-icon>
@@ -310,11 +346,12 @@
                                         <v-col cols="6">
                                             <v-list-item v-for="(item, i) in userData.phones" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon" small dense />
+                                                    <v-icon v-text="item.type.icon" small dense/>
                                                 </v-list-item-icon>
                                                 <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editPhone(item)">mdi-pencil</v-icon>
@@ -332,7 +369,9 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.main.new_email }}
                                                         <template v-slot:actions>
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -356,10 +395,14 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
 
                                                                     </v-select>
@@ -373,7 +416,9 @@
                                                                     small
                                                                     @click="addEmail"
                                                                 >
-                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor"
+                                                                            :style="`color: ${themeFgColor};`">mdi-plus
+                                                                    </v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -387,7 +432,9 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.main.new_phone }}
                                                         <template v-slot:actions>
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -411,10 +458,14 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -427,7 +478,9 @@
                                                                     small
                                                                     @click="addPhone"
                                                                 >
-                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor"
+                                                                            :style="`color: ${themeFgColor};`">mdi-plus
+                                                                    </v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -440,7 +493,7 @@
                                         <v-col cols="6">
                                             <v-list-item v-for="(item, i) in userData.addresses" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon" small dense />
+                                                    <v-icon v-text="item.type.icon" small dense/>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">
@@ -448,9 +501,12 @@
                                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                                         <br/>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }}
-                                                        <br/><span v-if="item.country">{{ $helpers.i18n.localized(item.country) }}</span>
+                                                        <br/><span v-if="item.country">{{
+                                                            $helpers.i18n.localized(item.country)
+                                                        }}</span>
                                                     </v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
@@ -463,11 +519,12 @@
                                         <v-col cols="6">
                                             <v-list-item v-for="(item, i) in userData.socials" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon" small dense />
+                                                    <v-icon v-text="item.type.icon" small dense/>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="item.social_link" />
-                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
+                                                    <v-list-item-title v-text="item.social_link"/>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
@@ -485,7 +542,9 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.main.new_address }}
                                                         <template v-slot:actions>
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -538,10 +597,12 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
+                                                                            ({{ data.item.iso_3166_2 }})
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
+                                                                            ({{ data.item.iso_3166_2 }})
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                     <v-select
@@ -554,10 +615,14 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -570,7 +635,9 @@
                                                                     small
                                                                     @click="addAddress"
                                                                 >
-                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor"
+                                                                            :style="`color: ${themeFgColor};`">mdi-plus
+                                                                    </v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -584,7 +651,9 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.company.new_social_item }}
                                                         <template v-slot:actions>
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -608,10 +677,14 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                            <v-icon left small
+                                                                                    v-text="data.item.icon"></v-icon>
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -624,7 +697,9 @@
                                                                     small
                                                                     @click="addSocial"
                                                                 >
-                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor"
+                                                                            :style="`color: ${themeFgColor};`">mdi-plus
+                                                                    </v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -635,7 +710,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr class="lighten" />
+                                    <hr class="lighten"/>
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <h3>{{ langMap.profile.notifications_settings }}</h3>
@@ -697,7 +772,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr class="lighten" />
+                                    <hr class="lighten"/>
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <v-row>
@@ -749,7 +824,7 @@
                                     color="red"
                                     @click="deleteUser"
                                 >
-                                    {{ langMap.individuals.delete}}
+                                    {{ langMap.individuals.delete }}
                                 </v-btn>
                                 <v-btn
                                     v-if="userData.deleted_at"
@@ -757,7 +832,7 @@
                                     color="green darken"
                                     @click="restoreUser"
                                 >
-                                    {{ langMap.individuals.restore}}
+                                    {{ langMap.individuals.restore }}
                                 </v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn
@@ -765,14 +840,14 @@
                                     color="grey darken"
                                     @click="cancelUpdateUser"
                                 >
-                                    {{ langMap.main.cancel}}
+                                    {{ langMap.main.cancel }}
                                 </v-btn>
                                 <v-btn
                                     text
                                     :color="themeBgColor"
                                     @click="updateUser"
                                 >
-                                    {{ langMap.main.save}}
+                                    {{ langMap.main.save }}
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
@@ -1079,7 +1154,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.individuals.new_customer }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -1117,7 +1193,8 @@
                                             small
                                             @click="addEmployee"
                                         >
-                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                            </v-icon>
                                         </v-btn>
                                     </v-form>
                                 </v-expansion-panel-content>
@@ -1193,7 +1270,9 @@
                         {{ langMap.company.update_info }}: {{ userData.full_name }}
                     </v-card-title>
                     <v-card-text>
-                        {{ userData.is_active === true ? langMap.individuals.give_access : langMap.individuals.remove_access }}
+                        {{
+                            userData.is_active === true ? langMap.individuals.give_access : langMap.individuals.remove_access
+                        }}
                         <v-select
                             v-model="primaryEmailId"
                             :color="themeBgColor"
@@ -1238,7 +1317,8 @@
                         <v-container>
                             <div class="row">
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-text-field v-model="phoneForm.phone" :color="themeBgColor" :item-color="themeBgColor"
+                                    <v-text-field v-model="phoneForm.phone" :color="themeBgColor"
+                                                  :item-color="themeBgColor"
                                                   :label="langMap.main.phone" dense></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
@@ -1429,11 +1509,13 @@
                         <v-container>
                             <div class="row">
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-text-field v-model="emailForm.email" :color="themeBgColor" :item-color="themeBgColor"
+                                    <v-text-field v-model="emailForm.email" :color="themeBgColor"
+                                                  :item-color="themeBgColor"
                                                   :label="langMap.main.email" dense></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-select v-if="emailForm.email_type === 1" v-model="emailForm.email_type" :color="themeBgColor"
+                                    <v-select v-if="emailForm.email_type === 1" v-model="emailForm.email_type"
+                                              :color="themeBgColor"
                                               :item-color="themeBgColor"
                                               :items="emailTypes" :label="langMap.main.type" dense
                                               item-value="id" readonly>
@@ -1495,8 +1577,8 @@ export default {
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
             },
             footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [10, 25, 50, 100],
+                showFirstLastPage: true,
+                itemsPerPageOptions: [10, 25, 50, 100],
             },
             langMap: this.$store.state.lang.lang_map,
             companies: [],
@@ -1620,7 +1702,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
             activitySearch: '',
-            activityFormPanel:[],
+            activityFormPanel: [],
             menuActivityDate: false,
             menuActivityTime: false,
             employees: []
@@ -1646,7 +1728,7 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
@@ -1938,19 +2020,19 @@ export default {
             });
         },
         restoreUser() {
-                axios.post('/api/user/restore', {id: this.userData.id}).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.individuals.restored;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
+            axios.post('/api/user/restore', {id: this.userData.id}).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.individuals.restored;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
         },
         deletePhone(id) {
             axios.delete(`/api/phone/${id}`).then(response => {
@@ -2344,16 +2426,16 @@ export default {
             if (this.activityForm.id) {
                 this.updateActivity()
             } else {
-            // console.log(this.activityForm);
+                // console.log(this.activityForm);
                 axios.post(`/api/activities`, this.activityForm).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.getUser();
-                    this.resetActivity();
-                } else {
-                    console.log('error')
-                }
-            });
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser();
+                        this.resetActivity();
+                    } else {
+                        console.log('error')
+                    }
+                });
             }
         },
         updateActivity() {

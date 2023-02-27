@@ -155,7 +155,8 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true" hide-overlay persistent content-class="draggable">
+            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true" hide-overlay persistent
+                      content-class="draggable">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ ticketAnswer.id ? langMap.ticket.edit_answer : langMap.ticket.create_answer }}
@@ -213,7 +214,8 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="answerDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer">{{ ticketAnswer.id ? langMap.main.update : langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer">
+                            {{ ticketAnswer.id ? langMap.main.update : langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -262,7 +264,8 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="descriptionDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="descriptionDialog = false; updateTicketDescription()">{{ langMap.main.update }}
+                        <v-btn :color="themeBgColor" dark @click="descriptionDialog = false; updateTicketDescription()">
+                            {{ langMap.main.update }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -305,7 +308,8 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="noteDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="addTicketNotice">{{ ticketNotice.id ? langMap.main.update : langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketNotice">
+                            {{ ticketNotice.id ? langMap.main.update : langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -569,7 +573,8 @@
                                 small
                             >
                                 <!--                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>-->
-                                <v-icon v-if="ticket.ticket_type.icon" small left :color="themeBgColor" v-text="ticket.ticket_type.icon"/>
+                                <v-icon v-if="ticket.ticket_type.icon" small left :color="themeBgColor"
+                                        v-text="ticket.ticket_type.icon"/>
                                 <strong>{{ ticket.ticket_type.name }}</strong>
 
                             </v-btn>
@@ -585,7 +590,7 @@
                             >
 
                                 <v-list-item-title>
-                                    <v-icon v-if="type.icon" x-small left  v-text="type.icon"/>
+                                    <v-icon v-if="type.icon" x-small left v-text="type.icon"/>
                                     <!--                                    <strong>{{ langMap.ticket_types[type.name] }}</strong>-->
                                     <strong>{{ type.name }}</strong>
                                 </v-list-item-title>
@@ -929,7 +934,8 @@
                             >
                                 <v-list-item>
                                     <v-list-item-content>
-                                        <v-col :cols="index == 0 && currentUser.id == answer.employee.user_data.id ? 11 : 12">
+                                        <v-col
+                                            :cols="index == 0 && currentUser.id == answer.employee.user_data.id ? 11 : 12">
                                         <span class="text-left" style="font-weight: bold;">
                                             <v-avatar
                                                 v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
@@ -937,23 +943,33 @@
                                                 color="grey darken-1"
                                                 size="2em"
                                             >
-                                                    <v-img v-if="answer.employee.user_data.avatar_url" :src="answer.employee.user_data.avatar_url"/>
-                                                    <span v-else-if="answer.employee.user_data.full_name" class="white--text">
-                                                        {{answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase() }}
+                                                    <v-img v-if="answer.employee.user_data.avatar_url"
+                                                           :src="answer.employee.user_data.avatar_url"/>
+                                                    <span v-else-if="answer.employee.user_data.full_name"
+                                                          class="white--text">
+                                                        {{
+                                                            answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                        }}
                                                     </span>
                                             </v-avatar>
                                             <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
                                             {{ answer.employee.user_data.full_name }}
-                                            {{ answer.created_at_time !== '' ? answer.created_at_time : answer.created_at }}
-                                            {{ answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? answer.updated_at_time : answer.updated_at) : '' }}
+                                            {{
+                                                answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
+                                            }}
+                                            {{
+                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? answer.updated_at_time : answer.updated_at) : ''
+                                            }}
                                             :
                                         </span>
                                         </v-col>
-                                        <v-col v-if="index == 0 && currentUser.id == answer.employee.user_data.id"  cols="1">
-                                        <v-btn right icon :color="themeBgColor" :title="langMap.ticket.edit_answer" @click="editAnswer(answer)">
-                                            <v-icon>mdi-pencil</v-icon>
-                                        </v-btn>
+                                        <v-col v-if="index == 0 && currentUser.id == answer.employee.user_data.id"
+                                               cols="1">
+                                            <v-btn right icon :color="themeBgColor" :title="langMap.ticket.edit_answer"
+                                                   @click="editAnswer(answer)">
+                                                <v-icon>mdi-pencil</v-icon>
+                                            </v-btn>
                                         </v-col>
                                         <div v-html="answer.answer"></div>
                                         <v-col v-if="answer.attachments.length > 0 " cols="12">
@@ -1015,9 +1031,10 @@
                                     </span>
                                     </v-col>
 
-                                    <v-col v-if="currentUser.id == ticket.creator.user_data.id"  cols="1">
-                                        <v-btn right icon :color="themeBgColor" :title="langMap.main.edit" @click="descriptionDialog = true;">
-                                           <v-icon>mdi-pencil</v-icon>
+                                    <v-col v-if="currentUser.id == ticket.creator.user_data.id" cols="1">
+                                        <v-btn right icon :color="themeBgColor" :title="langMap.main.edit"
+                                               @click="descriptionDialog = true;">
+                                            <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
                                     </v-col>
                                     <div v-html="ticket.description"></div>
@@ -1207,8 +1224,8 @@
                                                 <span v-else-if="ticket.assigned_person.user_data.full_name"
                                                       class="white--text">
                                                     {{
-                                                                ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                                            }}
+                                                        ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                    }}
                                                  </span>
                                             </v-avatar>
                                             <span class="mt-2">{{ ticket.assigned_person.user_data.full_name }}</span>
@@ -1470,34 +1487,38 @@
                                 >
                                     <v-list-item three-line>
                                         <v-list-item-content class="custom-small-text">
-                                            <v-col :cols="index == 0 && currentUser.id == noticeItem.employee.user_data.id ? 11 : 12">
-                                            <strong>
-                                                <v-avatar
-                                                    v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
-                                                    class="mr-2 mb-2"
-                                                    color="grey darken-1"
-                                                    size="2em"
-                                                >
-                                                    <v-img v-if="noticeItem.employee.user_data.avatar_url"
-                                                           :src="noticeItem.employee.user_data.avatar_url"/>
-                                                    <span v-else-if="noticeItem.employee.user_data.full_name"
-                                                          class="white--text">
+                                            <v-col
+                                                :cols="index == 0 && currentUser.id == noticeItem.employee.user_data.id ? 11 : 12">
+                                                <strong>
+                                                    <v-avatar
+                                                        v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
+                                                        class="mr-2 mb-2"
+                                                        color="grey darken-1"
+                                                        size="2em"
+                                                    >
+                                                        <v-img v-if="noticeItem.employee.user_data.avatar_url"
+                                                               :src="noticeItem.employee.user_data.avatar_url"/>
+                                                        <span v-else-if="noticeItem.employee.user_data.full_name"
+                                                              class="white--text">
                                                         {{
-                                                            noticeItem.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                                        }}
+                                                                noticeItem.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                            }}
                                                     </span>
-                                                </v-avatar>
-                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
+                                                    </v-avatar>
+                                                    <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
-                                                {{ noticeItem.employee.user_data.full_name }}
+                                                    {{ noticeItem.employee.user_data.full_name }}
 
-                                                {{ noticeItem.created_at }}
-                                                {{ noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : ''}}
-                                                :
-                                            </strong>
+                                                    {{ noticeItem.created_at }}
+                                                    {{ noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : '' }}
+                                                    :
+                                                </strong>
                                             </v-col>
-                                            <v-col v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id" cols="1">
-                                                <v-btn icon :color="themeBgColor" right @click="editNotice(noticeItem)" :title="langMap.ticket.edit_notice">
+                                            <v-col
+                                                v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id"
+                                                cols="1">
+                                                <v-btn icon :color="themeBgColor" right @click="editNotice(noticeItem)"
+                                                       :title="langMap.ticket.edit_notice">
                                                     <v-icon>mdi-pencil</v-icon>
                                                 </v-btn>
                                             </v-col>
@@ -1583,7 +1604,9 @@
                                                 {{ moment(item.date_from).format('DD.MM.YYYY HH:mm') }}
                                             </div>
                                             <div class="d-inline-flex flex-grow-1 text-center" style="width: 15%">
-                                                {{ $helpers.time.convertSecToTime(item.status === 0 ? $helpers.time.getSecBetweenDates(item.date_from, moment(), true) : item.passed, false) }}
+                                                {{
+                                                    $helpers.time.convertSecToTime(item.status === 0 ? $helpers.time.getSecBetweenDates(item.date_from, moment(), true) : item.passed, false)
+                                                }}
                                             </div>
                                             <div class="d-inline-flex flex-grow-1 text-center" style="width: 20%">
                                                 {{ item.service ? item.service.name : '' }}
@@ -1605,7 +1628,9 @@
                                             </div>
                                         </v-list-item-title>
                                         <v-list-item-subtitle>
-                                            {{ item.description ? $helpers.string.shortenText(item.description, 100) : '' }}
+                                            {{
+                                                item.description ? $helpers.string.shortenText(item.description, 100) : ''
+                                            }}
                                         </v-list-item-subtitle>
                                         <hr>
                                     </v-list-item-content>
@@ -1617,7 +1642,8 @@
                                             x-small
                                             v-if="trackersLoadMoreBtn"
                                             @click="loadMoreTrackers"
-                                        >Load more</v-btn>
+                                        >Load more
+                                        </v-btn>
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list>
@@ -2299,7 +2325,7 @@ export default {
         window.history.pushState({ticket_id: ticketId}, this.langMap.sidebar.ticket, `/ticket/${ticketId}`);
         this.trackerActive.entity_id = ticketId;
         this.getTrackers()
-        this.$store.dispatch('Team/getCoworkers', { force: true });
+        this.$store.dispatch('Team/getCoworkers', {force: true});
     },
     methods: {
         selectSearchCategory(item) {
@@ -2522,7 +2548,7 @@ export default {
             let formData = new FormData();
             for (let key in this.ticketAnswer) {
                 if (key !== 'files' && key !== 'id') {
-                    if (key =='answer' && this.selectedSignature !== '') {
+                    if (key == 'answer' && this.selectedSignature !== '') {
                         this.ticketAnswer[key] += '<hr><br/>' + this.selectedSignature
                     }
                     formData.append(key, this.ticketAnswer[key]);
@@ -2618,7 +2644,7 @@ export default {
                 if (response.success === true) {
                     this.getTicket();
                     this.$forceUpdate();
-               } else {
+                } else {
                     this.overlay = false;
                     this.snackbarMessage = 'Check ticket problems and try again, please!'
                     this.actionColor = 'error'
@@ -2863,7 +2889,7 @@ export default {
                         this.getTrackers();
                     });
             } else {
-                this.updateTrack(this.trackerActive.id, 1 , moment().format(this.trackerDateTimeFormat))
+                this.updateTrack(this.trackerActive.id, 1, moment().format(this.trackerDateTimeFormat))
                     .then(() => {
                         this.trackerActive.id = null;
                         this.trackerActive.status = 1;
@@ -2880,7 +2906,7 @@ export default {
                 date_to: date_to ? moment(date_to).format(this.trackerDateTimeFormat) : null,
             };
             if (date_from) {
-                data = { ...data, date_from };
+                data = {...data, date_from};
             }
             return this.$store.dispatch('Tracking/updateTrack', data)
                 .then(() => this.getTrackers());
@@ -2896,7 +2922,7 @@ export default {
                 return this.updateTrack(id, 1, moment().format(this.trackerDateTimeFormat));
             } else {
                 return this.$store.dispatch('Tracking/duplicateTrack', id)
-                    .then(({ data, success }) => {
+                    .then(({data, success}) => {
                         if (success) {
                             if (id === this.trackerActive.id) {
                                 this.trackerActive.id = data.id;

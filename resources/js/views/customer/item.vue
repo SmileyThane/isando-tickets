@@ -61,7 +61,7 @@
                                 <div v-if="client.owner">
                                     <hr class="lighten"/>
                                     <p class="mb-0">
-                                        {{langMap.main.owner}}: {{ client.owner.user_data.full_name }}
+                                        {{ langMap.main.owner }}: {{ client.owner.user_data.full_name }}
                                     </p>
                                 </div>
                             </v-col>
@@ -195,16 +195,16 @@
                                                         :items="supplierEmployees"
                                                     >
                                                         <template v-slot:item="props">
-                                                            {{props.item.user_data.full_name}}
+                                                            {{ props.item.user_data.full_name }}
                                                             <span v-if="props.item.description">
-                                                                ({{props.item.description}})
+                                                                ({{ props.item.description }})
                                                             </span>
 
                                                         </template>
                                                         <template v-slot:selection="props">
-                                                            {{props.item.user_data.full_name}}
+                                                            {{ props.item.user_data.full_name }}
                                                             <span v-if="props.item.description">
-                                                                ({{props.item.description}})
+                                                                ({{ props.item.description }})
                                                             </span>
                                                         </template>
                                                     </v-select>
@@ -697,7 +697,8 @@
                                     <span>{{ langMap.main.update_activity }}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }" v-if="$helpers.auth.checkPermissionByIds([107])">
+                                    <template v-slot:activator="{ on, attrs }"
+                                              v-if="$helpers.auth.checkPermissionByIds([107])">
                                         <v-btn v-bind="attrs" v-on="on" icon @click="deleteActivity(item.id)">
                                             <v-icon small>mdi-trash-can</v-icon>
                                         </v-btn>
@@ -722,7 +723,8 @@
 
                         <v-spacer>&nbsp;</v-spacer>
 
-                        <v-expansion-panels v-model="activityFormPanel" v-if="$helpers.auth.checkPermissionByIds([106])">
+                        <v-expansion-panels v-model="activityFormPanel"
+                                            v-if="$helpers.auth.checkPermissionByIds([106])">
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.main.add_activity }}
@@ -1871,7 +1873,10 @@ export default {
                     value: 'id',
                 },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'title'},
-                {text: `${this.$store.state.lang.lang_map.individuals.new_employee}`, value: 'employee.user_data.full_name'},
+                {
+                    text: `${this.$store.state.lang.lang_map.individuals.new_employee}`,
+                    value: 'employee.user_data.full_name'
+                },
                 {text: `${this.$store.state.lang.lang_map.tracking.tracker.date}`, value: 'datetime'},
                 {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.name'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
@@ -1995,7 +2000,7 @@ export default {
                 date: null,
                 time: null,
             },
-            activityFormPanel:[],
+            activityFormPanel: [],
             activitySearch: '',
             menuActivityDate: false,
             menuActivityTime: false,
