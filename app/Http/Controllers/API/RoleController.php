@@ -33,7 +33,7 @@ class RoleController extends Controller
     public function getRolesWithPermissions(Request $request)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::PERMISSION_READ_ACCESS)) {
-            return self::showResponse(true, $this->roleRepo->getRolesWithPermissions($request->validated()));
+            return self::showResponse(true, $this->roleRepo->getRolesWithPermissions($request->all()));
         }
         return self::showResponse(false);
 
