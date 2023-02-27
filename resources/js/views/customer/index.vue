@@ -275,13 +275,6 @@ export default {
                     align: 'start',
                     value: 'id',
                 },
-                headers: [
-                    {text: '', value: 'data-table-expand'},
-                    {
-                        text: 'ID',
-                        align: 'start',
-                        value: 'id',
-                    },
                 {text: `${this.$store.state.lang.lang_map.company.logo}`, value: 'logo', align: 'center', sortable: false},
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
                 {text: `${this.$store.state.lang.lang_map.company.company_number}`, value: 'number'},
