@@ -758,6 +758,9 @@ class LanguageSeeder extends Seeder
                             'activity_company' => 'Linked company',
                             'owner' => 'Owner',
                             'success_update' => 'Update successful',
+                            'deleted_activity' => 'Activity was deleted',
+                            'created_activity' => 'Activity was created',
+                            'updated_activity' => 'Activity was updated',
                         ],
                     'system_settings' =>
                         [
@@ -1732,6 +1735,9 @@ class LanguageSeeder extends Seeder
                             'activity_company' => 'Linked company',
                             'owner' => 'Owner',
                             'success_update' => 'Erfolgsaktualisierung',
+                            'deleted_activity' => 'Aktivität wurde gelöscht',
+                            'created_activity' => 'Aktivität wurde erstellt',
+                            'updated_activity' => 'Aktivität wurde aktualisiert',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',

@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Activity extends Model
 {
+    protected $with = [
+        'attachments',
+    ];
 
     protected $fillable = ['title', 'content', 'model_id', 'model_type', 'type_id', 'client_id', 'company_user_id', 'datetime'];
 
@@ -24,5 +27,10 @@ class Activity extends Model
     public function client(): HasOne
     {
         return $this->hasOne(Client::class, 'id', 'client_id');
+    }
+
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(File::class, 'model');
     }
 }
