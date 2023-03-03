@@ -1072,6 +1072,47 @@
                                                     ></v-time-picker>
                                                 </v-menu>
                                             </v-col>
+                                            <v-col cols="md-12">
+                                                <v-file-input
+                                                    chips
+                                                    multiple
+                                                    v-model="activityForm.files"
+                                                    :label="langMap.main.attachments"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    prepend-icon="mdi-paperclip"
+                                                    :show-size="1000"
+                                                >
+                                                    <template v-slot:selection="{ index, text }">
+                                                        <v-chip
+                                                            :color="themeBgColor"
+                                                            class="ma-2"
+                                                            :text-color="themeFgColor"
+                                                        >
+                                                            {{ text }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-file-input>
+                                            </v-col>
+                                            <v-col
+                                                v-if="activityForm.attachments && activityForm.attachments.length > 0"
+                                                cols="12">
+                                                <h4>{{ langMap.main.attachments }}</h4>
+                                                <div
+                                                    v-for="attachment in activityForm.attachments"
+                                                >
+                                                    <v-chip
+                                                        :color="themeBgColor"
+                                                        :href="attachment.link"
+                                                        :text-color="themeFgColor"
+                                                        class="ma-2"
+                                                        close
+                                                        @click:close="removeAttachment(attachment.id)"
+                                                    >
+                                                        {{ attachment.name }}
+                                                    </v-chip>
+                                                </div>
+                                            </v-col>
                                             <v-btn
                                                 :color="themeBgColor"
                                                 bottom
@@ -1685,6 +1726,7 @@ export default {
                 model_type: 'App\\CompanyUser',
                 date: null,
                 time: null,
+                files: null,
             },
             activityTypes: [],
             activityExpanded: [],
@@ -2423,31 +2465,39 @@ export default {
             });
         },
         addActivity() {
-            if (this.activityForm.id) {
-                this.updateActivity()
-            } else {
-                // console.log(this.activityForm);
-                axios.post(`/api/activities`, this.activityForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser();
-                        this.resetActivity();
-                    } else {
-                        console.log('error')
-                    }
-                });
+            const config = {
+                headers: {'content-type': 'multipart/form-data'}
             }
-        },
-        updateActivity() {
-            console.log(this.activityForm);
-            axios.put(`/api/activities/${this.activityForm.id}`, this.activityForm).then(response => {
+            let formData = new FormData();
+            for (let key in this.activityForm) {
+                if (this.activityForm[key]) {
+                    formData.append(key, this.activityForm[key]);
+                }
+            }
+            if (this.activityForm.id) {
+                formData.append('_method', 'put');
+            }
+            if (this.activityForm.files) {
+                Array.from(this.activityForm.files).forEach(file => formData.append('files[]', file));
+            }
+
+            axios.post(`/api/activities/${this.activityForm.id ?? ''}`, formData, config).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.activityFormPanel = []
+                    this.selectedProductId = null;
+                    this.snackbarMessage = this.activityForm.id ?
+                        this.langMap.main.updated_activity :
+                        this.langMap.main.created_activity;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
                     this.getUser();
                     this.resetActivity();
                     this.activityFormPanel = []
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
                 }
             });
         },
@@ -2461,7 +2511,7 @@ export default {
                 if (response.success === true) {
                     this.getUser()
                     this.selectedProductId = null;
-                    this.snackbarMessage = ''
+                    this.snackbarMessage = this.langMap.main.deleted_activity
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -2477,6 +2527,7 @@ export default {
                 model_type: 'App\\CompanyUser',
                 date: null,
                 time: null,
+                files: null,
             }
         },
         getActivityTypes() {
@@ -2488,6 +2539,24 @@ export default {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
                     this.snackbar = true;
+                }
+            });
+        },
+        removeAttachment(id) {
+            axios.delete(`/api/file/${id}`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.activityForm.attachments.splice(
+                        this.activityForm.attachments.findIndex(item => item.id === id),
+                        1
+                    );
+                    this.snackbarMessage = this.langMap.kb.attachment_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
                 }
             });
         },
