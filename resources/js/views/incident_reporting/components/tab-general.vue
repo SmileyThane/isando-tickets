@@ -103,10 +103,7 @@
                     </v-chip>
                 </span>
             </v-col>
-            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients > 0"
-                   cols="12" lg="6" md="6" sm="12" xl="6">
-            </v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
+            <v-col class="pb-0" cols="12">
                 <label>
                     {{ langMap.ir.ab.stage_monitoring }}:
                 </label>
@@ -145,10 +142,9 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].state_id"
-                   cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
+            <v-col class="pb-0"
+                   cols="12"
+                   >
                 <label>
                     {{ langMap.ir.ab.impact_potentials }}:
                 </label>
@@ -192,9 +188,7 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
+            <v-col class="pb-0" cols="12">
                 <label>{{ langMap.ir.ab.importance }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -235,8 +229,6 @@
                         }}
                     </v-chip>
                 </div>
-            </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="6">
             </v-col>
             <v-col class="pb-0" cols="8" lg="8" md="8" sm="12" xl="6">
                 <label>Description:</label>
