@@ -2,9 +2,10 @@
     <v-card class="my-2">
         <v-row v-if="$store.getters['IncidentReporting/getSelectedIR']">
             <v-col
-                v-if="$store.getters['IncidentReporting/getIsEditable']" class="pb-0" cols="6" lg="6" md="6"
-                sm="12"
-                xl="6">
+                v-if="$store.getters['IncidentReporting/getIsEditable']"
+                class="pb-0"
+                cols="12"
+                >
                 <label>
                     {{langMap.main.name}}:
                 </label>
@@ -19,11 +20,9 @@
                 ></v-text-field>
             </v-col>
             <v-col
-                v-if="$store.getters['IncidentReporting/getIsEditable']"
-                cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
-            <v-col
-                class="pb-0" cols="6" lg="12" md="12" sm="12" xl="6">
+                class="pb-0"
+                cols="12"
+                >
                 <label>{{ langMap.ir.ab.categories }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -58,10 +57,8 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].categories" cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                   class="pb-0" cols="6" lg="12" md="12" sm="12" xl="6">
+                   class="pb-0" cols="12">
                 <label>
                     {{ langMap.ir.ab.clients }}:
                 </label>
