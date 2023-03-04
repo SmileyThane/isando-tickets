@@ -106,8 +106,8 @@
                     </v-chip>
                 </span>
             </v-col>
-            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                   cols="6" lg="6" md="6" sm="12" xl="6">
+            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients > 0"
+                   cols="12" lg="6" md="6" sm="12" xl="6">
             </v-col>
             <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
                 <label>
@@ -148,7 +148,8 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="6">
+            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].state_id"
+                   cols="6" lg="6" md="6" sm="12" xl="6">
             </v-col>
             <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
                 <label>
