@@ -279,8 +279,6 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col
-                cols="6" lg="6" md="6" sm="12" xl="6"></v-col>
         </v-row>
         <div v-else>
             <h3>No data</h3>
