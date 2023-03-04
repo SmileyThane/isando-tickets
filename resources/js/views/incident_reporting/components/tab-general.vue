@@ -242,10 +242,8 @@
                     outlined
                 ></v-textarea>
             </v-col>
-            <v-col cols="4" lg="4" md="4" sm="0" xl="6">
-            </v-col>
             <v-col
-                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
+                class="pb-0" cols="12">
                 <label>{{ langMap.ir.ab.access }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
