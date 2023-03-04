@@ -5,28 +5,27 @@ namespace App\Http\Controllers\API;
 use App\Activity;
 use App\ActivityType;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
+use App\Repositories\ActivityRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ActivityController extends Controller
 {
-    public function store(Request $request)
+    public function __construct(
+        protected ActivityRepository $activityRepository,
+    )
     {
-        $request['datetime'] = Carbon::parse($request->date . ' ' . $request->time);
-        $activity = Activity::query()->create($request->all());
+    }
 
-        return self::showResponse(true, $activity);
+    public function store(Request $request): JsonResponse
+    {
+        return self::showResponse(true, $this->activityRepository->create($request->all()));
     }
 
     public function update(Request $request, $id)
     {
-        $request['datetime'] = Carbon::parse($request->date . ' ' . $request->time);
-
-        $activity = Activity::query()->find($id)->update($request->all());
-
-        return self::showResponse(true, $activity);
+        return self::showResponse(true, $this->activityRepository->update($request->all(), $id));
     }
 
     public function destroy($id)

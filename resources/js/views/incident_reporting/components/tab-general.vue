@@ -2,9 +2,10 @@
     <v-card class="my-2">
         <v-row v-if="$store.getters['IncidentReporting/getSelectedIR']">
             <v-col
-                v-if="$store.getters['IncidentReporting/getIsEditable']" class="pb-0" cols="6" lg="6" md="6"
-                sm="12"
-                xl="6">
+                v-if="$store.getters['IncidentReporting/getIsEditable']"
+                class="pb-0"
+                cols="12"
+                >
                 <label>
                     {{langMap.main.name}}:
                 </label>
@@ -19,11 +20,9 @@
                 ></v-text-field>
             </v-col>
             <v-col
-                v-if="$store.getters['IncidentReporting/getIsEditable']"
-                cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
-            <v-col
-                class="pb-0" cols="6" lg="12" md="12" sm="12" xl="6">
+                class="pb-0"
+                cols="12"
+                >
                 <label>{{ langMap.ir.ab.categories }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -58,10 +57,8 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].categories" cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
             <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                   class="pb-0" cols="6" lg="12" md="12" sm="12" xl="6">
+                   class="pb-0" cols="12">
                 <label>
                     {{ langMap.ir.ab.clients }}:
                 </label>
@@ -106,10 +103,7 @@
                     </v-chip>
                 </span>
             </v-col>
-            <v-col v-if="$store.getters['IncidentReporting/getSelectedIR'].clients"
-                   cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
+            <v-col class="pb-0" cols="12">
                 <label>
                     {{ langMap.ir.ab.stage_monitoring }}:
                 </label>
@@ -148,9 +142,9 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
+            <v-col class="pb-0"
+                   cols="12"
+                   >
                 <label>
                     {{ langMap.ir.ab.impact_potentials }}:
                 </label>
@@ -194,9 +188,7 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
-            <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
+            <v-col class="pb-0" cols="12">
                 <label>{{ langMap.ir.ab.importance }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -238,8 +230,6 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col cols="6" lg="6" md="6" sm="12" xl="6">
-            </v-col>
             <v-col class="pb-0" cols="8" lg="8" md="8" sm="12" xl="6">
                 <label>Description:</label>
                 <v-textarea
@@ -252,10 +242,8 @@
                     outlined
                 ></v-textarea>
             </v-col>
-            <v-col cols="4" lg="4" md="4" sm="0" xl="6">
-            </v-col>
             <v-col
-                class="pb-0" cols="6" lg="6" md="6" sm="12" xl="6">
+                class="pb-0" cols="12">
                 <label>{{ langMap.ir.ab.access }}:</label>
                 <v-select
                     v-if="$store.getters['IncidentReporting/getIsEditable']"
@@ -291,8 +279,6 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col
-                cols="6" lg="6" md="6" sm="12" xl="6"></v-col>
         </v-row>
         <div v-else>
             <h3>No data</h3>
