@@ -247,7 +247,7 @@
                     </v-chip>
                 </div>
             </v-col>
-            <v-col class="pb-0" cols="8" lg="8" md="8" sm="12" xl="6"
+            <v-col class="pb-0" cols="12"
                    v-if="$store.getters['IncidentReporting/getSelectedIR'].type_id === 3"
             >
                 <label>{{ langMap.ir.ab.scenarios }}:</label>
