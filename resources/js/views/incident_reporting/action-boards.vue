@@ -21,15 +21,7 @@
                 />
             </v-col>
             <v-col cols="8">
-                <v-btn
-                    v-if="$store.getters['IncidentReporting/getIRType'] === 3"
-                    outlined
-                    rounded
-                    text
-                    @click="show">
-                    {{ $store.getters['IncidentReporting/getSelectedIR'].name }}
-                </v-btn>
-                <div v-else class="text-h6">
+                <div class="text-h6">
                     {{ $store.getters['IncidentReporting/getSelectedIR'].name }}
 
                     <v-menu v-if="!$store.getters['IncidentReporting/getIsEditable']" bottom>
@@ -40,7 +32,7 @@
                         </template>
 
                         <v-list>
-                            <v-list-item link @click.prevent="setIsEditable">
+                            <v-list-item link @click.prevent="$store.getters['IncidentReporting/getIRType'] === 3 ? show() : setIsEditable()">
                                 <v-list-item-title>{{ langMap.main.edit }}</v-list-item-title>
                                 <v-list-item-action>
                                     <v-icon :color="themeBgColor">mdi-pencil</v-icon>
@@ -96,7 +88,9 @@
                                 langMap.ir.ab.title
                         }}
                     </v-tab>
-                    <v-tab>{{ langMap.ir.ab.version }}</v-tab>
+                    <v-tab v-if="$store.getters['IncidentReporting/getIRType'] !== 3">{{ langMap.ir.ab.version }}</v-tab>
+                    <v-tab v-if="$store.getters['IncidentReporting/getIRType'] === 3">{{ langMap.ir.ab.actions }}</v-tab>
+                    <v-tab v-if="$store.getters['IncidentReporting/getIRType'] === 3">{{ langMap.ir.ab.logs }}</v-tab>
                 </v-tabs>
                 <v-tabs-items v-model="tab">
                     <v-tab-item>
@@ -105,8 +99,14 @@
                     <v-tab-item v-if="$store.getters['IncidentReporting/getIRType'] !== 3">
                         <IncidentTabActionBoards/>
                     </v-tab-item>
-                    <v-tab-item>
+                    <v-tab-item v-if="$store.getters['IncidentReporting/getIRType'] !== 3">
                         <IncidentTabVersion/>
+                    </v-tab-item>
+                    <v-tab-item v-if="$store.getters['IncidentReporting/getIRType'] === 3">
+                        <IncidentTabActions/>
+                    </v-tab-item>
+                    <v-tab-item v-if="$store.getters['IncidentReporting/getIRType'] === 3">
+                        <IncidentTabLogs/>
                     </v-tab-item>
                 </v-tabs-items>
             </v-col>
@@ -229,6 +229,8 @@ import IncidentSearch from './components/search'
 import IncidentTabGeneral from './components/tab-general'
 import IncidentTabActionBoards from './components/tab-action-boards'
 import IncidentTabVersion from './components/tab-version'
+import IncidentTabLogs from './components/tab-logs.vue'
+import IncidentTabActions from './components/tab-actions.vue'
 import EventBus from "../../components/EventBus";
 
 export default {
@@ -239,6 +241,8 @@ export default {
         IncidentTabGeneral,
         IncidentTabActionBoards,
         IncidentTabVersion,
+        IncidentTabLogs,
+        IncidentTabActions,
     },
     data() {
         return {
@@ -311,8 +315,6 @@ export default {
             let id = this.$store.getters['IncidentReporting/getSelectedIR'].id
             this.$router.push(`/incident_reporting/list/${id}`)
         }
-
-
     }
 }
 </script>
@@ -325,15 +327,6 @@ export default {
     font-size: 12px;
 }
 
-.heading {
-    font-size: 16px;
-}
-
-.clearfix {
-    clear: both;
-}
-
->>> .v-text-field,
 >>> input {
     padding: 0 5px 10px 5px !important;
 }

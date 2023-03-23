@@ -56,7 +56,7 @@
                         </template>
                     </v-select>
                 </v-col>
-                <v-col class="text-right" cols="1">
+                <v-col class="text-right" cols="1" v-if="$store.getters['IncidentReporting/getIRType'] !== 3">
                     <v-menu bottom>
                         <template v-slot:activator="{ on }">
                             <v-btn icon v-on="on">

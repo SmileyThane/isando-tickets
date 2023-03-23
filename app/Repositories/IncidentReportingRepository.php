@@ -238,28 +238,36 @@ class IncidentReportingRepository
         return $this->_delete(StakeholderType::class, $id);
     }
 
-    public function syncActionBoardRelations(Request $request, IncidentReportingActionBoard $board)
+    public function syncActionBoardRelations(
+        Request                      $request,
+        IncidentReportingActionBoard $board,
+        bool                         $created = false
+    )
     {
         if ((int)$board->type_id === IncidentReportingActionBoard::IR) {
-            $this->logActionBoard($board->id, 'incident_actions_updated');
+            if (!$created) {
+                $this->logActionBoard($board->id, 'incident_actions_updated');
+            }
             $board->actions()->sync([]);
             $actionIds = $this->prepareRelationToSync($request->actions);
 
-            foreach ($actionIds as $key => $actionId) {
-                $action = IncidentReportingAction::query()->find($actionId);
-                $clonedAction = $action->replicate();
-                $clonedAction->related_to_ir_ab_id = $board->id;
-                $clonedAction->save();
-                if ($action->related_to_ir_ab_id !== null) {
-                    $action->delete();
-                }
+            if ($actionIds) {
+                foreach ($actionIds as $key => $actionId) {
+                    $action = IncidentReportingAction::query()->find($actionId);
+                    $clonedAction = $action->replicate();
+                    $clonedAction->related_to_ir_ab_id = $board->id;
+                    $clonedAction->save();
+                    if ($action->related_to_ir_ab_id !== null) {
+                        $action->delete();
+                    }
 
-                IncidentReportingActionBoardHasAction::query()->create([
-                    'action_board_id' => $board->id,
-                    'action_id' => $clonedAction->id,
-                    'action_type' => IncidentReportingAction::class,
-                    'order' => $key
-                ]);
+                    IncidentReportingActionBoardHasAction::query()->create([
+                        'action_board_id' => $board->id,
+                        'action_id' => $clonedAction->id,
+                        'action_type' => IncidentReportingAction::class,
+                        'order' => $key
+                    ]);
+                }
             }
         } else {
             $board->actions()->sync($this->prepareRelationToSync($request->actions));
