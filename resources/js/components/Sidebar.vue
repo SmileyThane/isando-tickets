@@ -142,7 +142,7 @@
                                 to="/incident_reporting/create"
                             >
                                 <v-list-item-action>
-                                    <v-icon>mdi-car-traction-control</v-icon>
+                                    <v-icon>mdi-shape-rectangle-plus</v-icon>
                                 </v-list-item-action>
                                 <v-list-item-content>
                                     <v-list-item-title>
@@ -163,7 +163,7 @@
                                 to="/incident_reporting/list"
                             >
                                 <v-list-item-action>
-                                    <v-icon>mdi-shape-rectangle-plus</v-icon>
+                                    <v-icon>mdi-access-point-check</v-icon>
                                 </v-list-item-action>
                                 <v-list-item-content>
                                     <v-list-item-title>{{ langMap.sidebar.incident_reporting }}
@@ -183,7 +183,7 @@
                                 to="/incident_reporting/scenarios"
                             >
                                 <v-list-item-action>
-                                    <v-icon>mdi-shape-rectangle-plus</v-icon>
+                                    <v-icon>mdi-access-point-plus</v-icon>
                                 </v-list-item-action>
                                 <v-list-item-content>
                                     <v-list-item-title>{{ langMap.sidebar.incident_reporting_scenarios }}
