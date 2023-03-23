@@ -4,7 +4,7 @@ export default {
         selectedIR: {
             id: 0,
             with_child_clients: false,
-            version: ' ',
+            version: '',
             valid_till: '',
             updated_by: {
                 name: '',
@@ -17,6 +17,7 @@ export default {
             clients: [],
             actions: [],
             action_boards: [],
+            logs: [],
             child_versions: [],
             priority_id: null,
             impact_potential_id: null,
@@ -30,13 +31,12 @@ export default {
             source: '',
             reported_on: null,
             detected_on: null,
-            occurred_on: null
-
-        },
+            occurred_on: null,
+            },
         relatedIR: {
             id: 0,
             with_child_clients: false,
-            version: ' ',
+            version: '',
             valid_till: '',
             updated_by: {
                 name: '',
@@ -107,7 +107,7 @@ export default {
                     commit('setIR', data)
                     if (data.length > 0) {
                         const item = state.selectedIR.id ?
-                            data.find(element => element.id = state.selectedIR.id) :
+                            (data.find(element => element.id === state.selectedIR.id) ?? state.selectedIR) :
                             data[0]
                         commit('setSelectedIR', item)
                     }
@@ -164,6 +164,7 @@ export default {
                 params: {}
             }).then(({status, data: {data, success}}) => {
                 if (status === 200 && success) {
+                    dispatch('callSetSelectedIR', null);
                     dispatch('callGetIR')
                 }
                 commit('setIR', [])
@@ -182,13 +183,14 @@ export default {
                     url += '/clone'
                 }
             }
-
             return axios({method, url, data: state.selectedIR})
                 .then(({status, data: {data, success}}) => {
                     if (status === 200 && success) {
                         dispatch('callSetIsEditable', false)
                         dispatch('callSetSelectedIR', data)
-                        dispatch('callGetIR')
+                        if (state.IRType !== 3) {
+                            dispatch('callGetIR')
+                        }
 
                         return Promise.resolve(data)
                     }
@@ -224,16 +226,18 @@ export default {
                 });
 
         },
-        callSetSelectedIR({commit}, data) {
+        callSetSelectedIR({commit, state}, data) {
             if (data === null) {
                 data = {
                     with_child_clients: false,
-                    version: ' ',
+                    version: '',
                     valid_till: '',
                     updated_by: {
                         name: '',
                         surname: ''
                     },
+                    action_boards: [],
+                    logs: [],
                     categories: [],
                     clients: [],
                     actions: [],
@@ -263,7 +267,6 @@ export default {
         callSetIRType({commit, dispatch}, data) {
             commit('setIRType', data)
             dispatch('callGetIR')
-
         }
     },
     mutations: {

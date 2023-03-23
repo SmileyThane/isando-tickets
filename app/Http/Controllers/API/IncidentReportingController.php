@@ -422,14 +422,13 @@ class IncidentReportingController extends Controller
     public function storeActionBoard(Request $request, $typeId): JsonResponse
     {
         if (is_null($request['version'])) {
-
             $request['version'] = '0';
         }
         $request['updated_by'] = Auth::id();
         $request['type_id'] = $typeId;
         $board = IncidentReportingActionBoard::create($request->all());
         $this->incidentRepo->logActionBoard($board->id, 'created');
-        $this->incidentRepo->syncActionBoardRelations($request, $board);
+        $this->incidentRepo->syncActionBoardRelations($request, $board, true);
 
         $result = IncidentReportingActionBoard::query()->where('id', '=', $board->id)
             ->with([
