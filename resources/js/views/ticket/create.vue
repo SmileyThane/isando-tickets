@@ -506,6 +506,22 @@
                     </v-card-text>
                 </v-card>
             </v-dialog>
+            <v-dialog v-model="saveForLaterDialog" max-width="580" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.ticket.save_for_later }}
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="saveForLaterFlag = false; saveForLater()">
+                            {{ langMap.main.no }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="saveForLaterFlag = true; saveForLater()">
+                            {{ langMap.main.yes }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-row>
 
     </v-container>
@@ -587,6 +603,10 @@ export default {
             tTeams: [],
             tEmployees: [],
             ticketFormIsSaved: false,
+            saveForLaterDialog: false,
+            saveForLaterFlag: false,
+            canBeRedirected: false,
+            redirectRoute: ''
         }
     },
     watch: {
@@ -603,8 +623,12 @@ export default {
             this.ticketFormIsSaved = false;
         }
     },
-    beforeDestroy() {
-        this.saveForLater()
+    beforeRouteLeave(to, from, next) {
+        this.redirectRoute = to
+        this.initSaveForLater()
+        if (this.canBeRedirected) {
+            next()
+        }
     },
     mounted() {
         this.getSuppliers()
@@ -893,15 +917,25 @@ export default {
                 });
             }
         },
+        initSaveForLater()
+        {
+            if (this.ticketFormIsSaved === false) {
+                this.saveForLaterDialog = true
+            } else {
+                this.canBeRedirected = true
+            }
+        },
         saveForLater() {
             if (this.ticketFormIsSaved === false) {
-                if (confirm('Do you want to save the content of the form for later?')) {
+                if (this.saveForLaterFlag) {
                     this.savetoLS();
                 } else {
                     localStorage.removeItem('ticketForm');
                     this.ticketFormIsSaved = false;
                 }
             }
+            this.canBeRedirected = true
+            this.$router.push(this.redirectRoute)
         },
         savetoLS() {
             localStorage.setItem('ticketForm', JSON.stringify(this.ticketForm));

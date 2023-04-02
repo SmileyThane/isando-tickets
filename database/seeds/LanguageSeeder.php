@@ -606,6 +606,7 @@ class LanguageSeeder extends Seeder
                             'clear_agent' => 'Unassign agent',
                             'create_and_assign' => 'Create and assign',
                             'followers' => 'Followers',
+                            'save_for_later' => 'Do you want to save the content of the form for later?'
                         ],
                     'main' =>
                         [
@@ -761,6 +762,8 @@ class LanguageSeeder extends Seeder
                             'deleted_activity' => 'Activity was deleted',
                             'created_activity' => 'Activity was created',
                             'updated_activity' => 'Activity was updated',
+                            'yes' => 'Yes',
+                            'no' => 'No'
                         ],
                     'system_settings' =>
                         [
@@ -1601,6 +1604,7 @@ class LanguageSeeder extends Seeder
                             'clear_agent' => 'Agent abmelden',
                             'create_and_assign' => 'Erstellen und zuordnen',
                             'followers' => 'Followers',
+                            'save_for_later' => 'Möchten Sie den Inhalt des Formulars für später speichern?'
                         ],
                         'main' => [
                             'create' => 'erstellen',
@@ -1751,6 +1755,8 @@ class LanguageSeeder extends Seeder
                             'deleted_activity' => 'Aktivität wurde gelöscht',
                             'created_activity' => 'Aktivität wurde erstellt',
                             'updated_activity' => 'Aktivität wurde aktualisiert',
+                            'yes' => 'Ja',
+                            'no' => 'Nein'
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',

@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
-use Webklex\IMAP\Client as IMAPClient;
+use Webklex\IMAP\Facades\Client as IMAPClient;
 
 class EmailReceiverRepository
 {
@@ -34,7 +34,7 @@ class EmailReceiverRepository
     {
         Log::info('mail receiving process was started.');
         try {
-            $oClient = new IMAPClient();
+            $oClient = IMAPClient::account('default');
             $oClient->connect();
             Log::info('IMAP cennected.');
             $aFolder = $oClient->getFolder('INBOX');
