@@ -31,7 +31,7 @@ class ReceiveSystemMail implements ShouldQueue
      */
     public function handle()
     {
-        $request = Request::create(route('receiveEmail'), 'GET');
+        $request = Request::create(route('receiveEmail'));
         app()->handle($request);
         Log::info('email cache was checked - ' . now());
     }
