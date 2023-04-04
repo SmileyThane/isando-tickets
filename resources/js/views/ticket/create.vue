@@ -33,26 +33,24 @@
                                             hide-details
                                             item-text="name"
                                             item-value="item"
-                                            :items="suppliers"
-                                            v-model="ticketForm.from"
+                                            label="Ticket is submitted by"
                                             @input="getContacts"
-                                            hide-details
                                         />
                                     </div>
                                     <v-col class="col-md-4 col-sm-12">
                                         <v-autocomplete
+                                            v-model="ticketForm.contact_company_user_id"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
+                                            :items="employees"
+                                            hide-details
                                             item-text="user_data.full_name"
                                             item-value="id"
-                                            v-model="ticketForm.contact_company_user_id"
-                                            :items="employees"
                                             label="Contact person"
-                                            hide-details
                                         >
                                             <template v-slot:append-outer>
-                                                <v-btn :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'"
-                                                       icon :color="themeBgColor" :title="langMap.individuals.add_new"
+                                                <v-btn :color="themeBgColor"
+                                                       :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'" :title="langMap.individuals.add_new" icon
                                                        @click="createContactDlg = true;">
                                                     <v-icon>mdi-plus</v-icon>
                                                 </v-btn>
@@ -61,14 +59,14 @@
                                     </v-col>
                                     <v-col class="col-md-4 mb-4">
                                         <v-autocomplete
+                                            v-model="ticketForm.to"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
-                                            item-text="name"
-                                            item-value="item"
-                                            v-model="ticketForm.to"
                                             :items="suppliers"
                                             :label="langMap.ticket.company_to"
                                             hide-details
+                                            item-text="name"
+                                            item-value="item"
                                         ></v-autocomplete>
 
                                     </v-col>
