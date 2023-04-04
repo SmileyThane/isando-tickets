@@ -4,10 +4,10 @@
             <v-progress-circular indeterminate size="64"></v-progress-circular>
         </v-overlay>
         <v-snackbar
-            :bottom="true"
-            :right="true"
             v-model="snackbar"
+            :bottom="true"
             :color="actionColor"
+            :right="true"
         >
             {{ snackbarMessage }}
         </v-snackbar>
@@ -20,15 +20,17 @@
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col offset-lg="1" offset-xl="2" sm="12" md="12" lg="10" xl="8">
+                    <v-col lg="10" md="12" offset-lg="1" offset-xl="2" sm="12" xl="8">
                         <v-card class="pa-2">
                             <v-card-text>
                                 <div class="row">
                                     <div class="col-md-4 col-sm-12">
                                         <v-autocomplete
-                                            label="Ticket is submitted by"
+                                            v-model="ticketForm.from"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
+                                            :items="suppliers"
+                                            hide-details
                                             item-text="name"
                                             item-value="item"
                                             :items="suppliers"
