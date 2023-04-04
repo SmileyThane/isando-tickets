@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,7 +17,7 @@ class KbCategory extends Model
 
     protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'company_id', 'parent_id', 'type_id'];
 
-    protected $appends = ['articles_count', 'categories_count', 'full_name'];
+    protected $appends = ['articles_count', 'categories_count', 'full_name', 'has_sub_categories'];
 
     public function company(): BelongsTo
     {
@@ -45,6 +46,13 @@ class KbCategory extends Model
         } else {
             return $this->getTranslatedName();
         }
+    }
+
+    protected function hasSubCategories(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->children()->exists()
+        );
     }
 
     private function getTranslatedName()

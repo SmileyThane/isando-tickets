@@ -5,22 +5,21 @@
         </v-snackbar>
 
         <v-row>
-            <v-col cols="12">
+            <v-col cols="12" class="pt-2 pb-1">
                 <v-card outlined>
-                    <v-card-text style="padding: 5px 15px;">
+                    <v-card-text style="padding: 5px 15px 0 15px">
                         <v-row>
-                            <v-col cols="4">
+                            <v-col cols="4" class="pb-0">
                                 <v-text-field v-model="search" :color="themeBgColor" :label="langMap.main.search"
                                               append-icon="mdi-magnify" hide-details
-                                              v-on:keyup="openCategory($route.query.category)"/>
+                                              v-on:keyup="debounceOpenCategory"/>
                             </v-col>
-                            <v-col cols="4">
+                            <v-col cols="4" class="pb-0">
                                 <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
-                                          hide-details
                                           item-text="name" item-value="id" label="Search in" multiple
-                                          v-on:change="openCategory($route.query.category)"/>
+                                          v-on:change="debounceOpenCategory"/>
                             </v-col>
-                            <v-col cols="3">
+                            <v-col cols="3" class="pb-0">
                                 <v-select v-model="activeTags" :color="themeBgColor"
                                           :items="$store.getters['Tags/getTags']"
                                           :label="langMap.kb.tags" append-icon="mdi-tag-multiple-outline" hide-selected
@@ -42,7 +41,7 @@
                                     </template>
                                 </v-select>
                             </v-col>
-                            <v-col class="text-right" cols="1">
+                            <v-col class="text-right pb-0" cols="1">
                                 <v-menu
                                     v-if="$helpers.auth.checkKbPermissionsByType(
                                         getRouteAlias,
@@ -67,8 +66,8 @@
                                         <v-list-item link @click.prevent="createArticle">
                                             <v-list-item-title>
                                                 {{
-                                                    langMap.kb['add_'+$route.params.alias] ?
-                                                        langMap.kb['add_'+$route.params.alias] :
+                                                    langMap.kb['add_' + $route.params.alias] ?
+                                                        langMap.kb['add_' + $route.params.alias] :
                                                         langMap.kb['add_knowledge_base']
                                                 }}
                                             </v-list-item-title>
@@ -86,91 +85,121 @@
         </v-row>
 
         <v-row>
-            <v-col cols="4">
+            <v-col class="col-md-4">
                 <v-row>
-                    <v-col v-for="category in categories" :key="'c'+category.id" cols="12">
-                        <v-card :class="category.id == $route.query.category ? 'parent' : ''" outlined>
-                            <v-card-title style="cursor: pointer;" @click="openCategory(category.id)">
-                                <v-icon :color="themeBgColor" large left
-                                        v-if="category.id == $route.query.category"
-                                        @click.prevent.stop="openCategory(category.parent_id)"
-                                        v-text="'mdi-arrow-left'"
-                                />
-                                <v-icon :color="category.icon_color" large left
-                                        v-text="category.icon ? category.icon : 'mdi-help'"/>
-                                {{ category.full_name ? category.full_name : category.name }}
-                                <h6 class="subtitle-2 ml-2">
-                                    {{ langMap.kb.articles }}: {{ category.articles_count }}
-                                    {{ langMap.kb.categories }}: {{ category.categories_count }}
-                                </h6>
-                                <v-spacer></v-spacer>
-                                <v-menu
-                                    bottom
-                                >
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn icon v-on="on">
-                                            <v-icon>mdi-dots-vertical</v-icon>
+                    <v-col v-for="category in categories" :key="'c'+category.id" cols="12" class="pb-1 pt-1">
+                        <v-hover v-slot="{ hover }">
+                            <v-card
+                                outlined
+                                :color="getCategoryBackgroundColor(category.id)"
+                                v-on:click.native="openCategory(category.id, category.parent_id, category.has_sub_categories)"
+                                :style="hover ? `outline: 2px solid ${themeBgColor}` : ''"
+                                style="cursor: pointer"
+                            >
+                                <p v-if="getParentCategoryName &&
+                                category.parent_id === parseInt($route.query.parent_category)"
+                                   class="parent-category-title">
+                                    {{ getParentCategoryName }} >
+                                </p>
+                                <div class="d-flex justify-space-between">
+                                    <v-avatar size="60">
+                                        <v-icon :color="category.icon_color" size="45"
+                                                v-text="category.icon ? category.icon : 'mdi-help'"/>
+                                    </v-avatar>
+                                    <div class="flex-grow-1">
+                                        <v-card-title class="category-card-title">
+                                            {{ category.name }}
+                                        </v-card-title>
+                                        <v-card-text class="category-card-description">
+                                            <p class="category-description"
+                                               v-if="$helpers.i18n.localized(category, 'description')">
+                                                {{ $helpers.i18n.localized(category, 'description') }}
+                                            </p>
+                                        </v-card-text>
+                                    </div>
+                                    <div style="min-width: 60px">
+                                        <v-btn icon height="30" width="30"
+                                               v-if="category.id == $route.query.parent_category"
+                                               @click.prevent.stop="openCategory(category.parent_id)">
+                                            <v-icon :color="themeBgColor">
+                                                mdi-arrow-u-left-top
+                                            </v-icon>
                                         </v-btn>
-                                    </template>
-
-                                    <v-list>
-                                        <v-list-item
-                                            v-if="$helpers.auth.checkKbPermissionsByType(
-                                                routeAlias,
-                                                kbPermissionsTypes.edit)"
-                                            link @click="editCategory(category)">
-                                            <v-list-item-title>
-                                                {{
-                                                    langMap.kb.edit
-                                                }}
-                                            </v-list-item-title>
-                                            <v-list-item-action>
-                                                <v-icon :color="themeBgColor">
-                                                    mdi-folder-edit-outline
-                                                </v-icon>
-                                            </v-list-item-action>
-                                        </v-list-item>
-                                        <v-list-item
-                                            v-if="$helpers.auth.checkKbPermissionsByType(
-                                                routeAlias,
-                                                kbPermissionsTypes.delete)"
-                                            link
-                                            @click="deleteCategory(category)"
+                                        <v-menu
+                                            bottom
                                         >
-                                            <v-list-item-title>
-                                                {{
-                                                    langMap.kb.delete
-                                                }}
-                                            </v-list-item-title>
-                                            <v-list-item-action>
-                                                <v-icon :color="themeBgColor">mdi-folder-remove-outline</v-icon>
-                                            </v-list-item-action>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-menu>
-                            </v-card-title>
-                            <v-card-text>
-                                <p v-if="$helpers.i18n.localized(category, 'description')"
-                                   :tooltip="$helpers.i18n.localized(category, 'description')" class="lim">
-                                    {{ $helpers.i18n.localized(category, 'description') }}</p>
-                            </v-card-text>
-<!--                            <v-card-actions>-->
-<!--                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text-->
-<!--                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>-->
-<!--                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"-->
-<!--                                       v-text="langMap.kb.open_category"/>-->
-<!--                            </v-card-actions>-->
-                        </v-card>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn icon v-on="on" height="30" width="30" style="float: right">
+                                                    <v-icon>mdi-dots-vertical</v-icon>
+                                                </v-btn>
+                                            </template>
+
+                                            <v-list>
+                                                <v-list-item
+                                                    v-if="$helpers.auth.checkKbPermissionsByType(
+                                                getRouteAlias,
+                                                kbPermissionsTypes.edit)"
+                                                    link @click="editCategory(category)">
+                                                    <v-list-item-title>
+                                                        {{
+                                                            langMap.kb.edit
+                                                        }}
+                                                    </v-list-item-title>
+                                                    <v-list-item-action>
+                                                        <v-icon :color="themeBgColor">
+                                                            mdi-folder-edit-outline
+                                                        </v-icon>
+                                                    </v-list-item-action>
+                                                </v-list-item>
+                                                <v-list-item
+                                                    v-if="$helpers.auth.checkKbPermissionsByType(
+                                                getRouteAlias,
+                                                kbPermissionsTypes.delete)"
+                                                    link
+                                                    @click="deleteCategory(category)"
+                                                >
+                                                    <v-list-item-title>
+                                                        {{
+                                                            langMap.kb.delete
+                                                        }}
+                                                    </v-list-item-title>
+                                                    <v-list-item-action>
+                                                        <v-icon :color="themeBgColor">mdi-folder-remove-outline
+                                                        </v-icon>
+                                                    </v-list-item-action>
+                                                </v-list-item>
+                                            </v-list>
+                                        </v-menu>
+                                    </div>
+                                    <!--                            <v-card-actions>-->
+                                    <!--                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text-->
+                                    <!--                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>-->
+                                    <!--                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"-->
+                                    <!--                                       v-text="langMap.kb.open_category"/>-->
+                                    <!--                            </v-card-actions>-->
+                                </div>
+                            </v-card>
+                        </v-hover>
                     </v-col>
                 </v-row>
             </v-col>
-            <v-col cols="8">
+            <v-col class="col-md-8">
                 <v-row>
-                    <v-col v-for="article in articles" :key="'a'+article.id" cols="6">
-                        <v-card :style="`background-color: ${article.featured_color};`" outlined>
-                            <v-card-title style="cursor: pointer" @click="readArticle(article.id)">
-                                {{ $helpers.i18n.localized(article) }}
-                                <v-spacer></v-spacer>
+                    <v-col v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
+                        <v-card :style="`background-color: ${article.featured_color};`" outlined
+                                style="cursor: pointer"
+                                v-on:click.native="readArticle(article.id)"
+                        >
+                            <div class="d-flex justify-space-between">
+                                <div class="flex-grow-1 pl-3">
+                                    <v-card-title class="article-card-title">
+                                        {{ $helpers.i18n.localized(article) }}
+                                    </v-card-title>
+                                    <v-card-text class="article-card-description">
+                                        <p class="mb-2 mt-2" v-if="$helpers.i18n.localized(article, 'summary')">
+                                            {{ $helpers.i18n.localized(article, 'summary') }}</p>
+                                    </v-card-text>
+                                </div>
                                 <v-menu
                                     bottom
                                 >
@@ -183,12 +212,12 @@
                                     <v-list>
                                         <v-list-item
                                             v-if="$helpers.auth.checkKbPermissionsByType(
-                                                routeAlias,
+                                                getRouteAlias,
                                                 kbPermissionsTypes.edit)"
                                             link
                                             @click="editArticle(article.id)"
                                         >
-                                            <v-list-item-title >
+                                            <v-list-item-title>
                                                 {{
                                                     langMap.kb.edit
                                                 }}
@@ -199,7 +228,7 @@
                                         </v-list-item>
                                         <v-list-item
                                             v-if="$helpers.auth.checkKbPermissionsByType(
-                                                routeAlias,
+                                                getRouteAlias,
                                                 kbPermissionsTypes.delete)"
                                             link
                                             @click="deleteArticle(article)"
@@ -215,7 +244,7 @@
                                         </v-list-item>
                                     </v-list>
                                 </v-menu>
-                            </v-card-title>
+                            </div>
                             <!--                            <v-card-text style="height: 6em;">-->
                             <!--                                <v-chip-group v-if="article.tags">-->
                             <!--                                    <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>-->
@@ -267,11 +296,11 @@
                                           v-on:change="getArticles();">
                                     <template v-slot:selection="{ attrs, item, parent, selected }">
                                         <i :class="item"></i>&nbsp;
-                                        {{item.replace(/mdi/g,'').replace(/-/g,' ')}}
+                                        {{ item.replace(/mdi/g, '').replace(/-/g, ' ') }}
                                     </template>
                                     <template v-slot:item="{ attrs, item, parent, selected }">
                                         <i :class="item"></i>&nbsp;
-                                        {{item.replace(/mdi/g,'').replace(/-/g,' ')}}
+                                        {{ item.replace(/mdi/g, '').replace(/-/g, ' ') }}
                                     </template>
                                 </v-select>
 
@@ -352,13 +381,45 @@
 </template>
 
 <style scoped>
->>> .parent {
-    background: #ededf0 !important;
+.category-description {
+    font-size: 12px;
+    line-height: 14px;
+    color: #969696;
+    max-height: 28px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin: 2px 0 2px 0;
 }
 
->>> .lim {
-    max-height: 1.5em;
+.category-card-title, .article-card-title {
+    font-size: 1rem;
+    line-height: 1.2rem;
+    padding: 8px 0 0 0;
+}
+
+.category-card-description, .article-card-description {
+    padding: 0;
+}
+
+.article-card-description {
+    font-size: 12px;
+    line-height: 14px;
+}
+
+.parent-category-title {
+    position: absolute;
+    margin: 0;
+    font-size: 8px;
+    color: #969696;
+    left: 5px;
+    max-width: 70%;
     overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 10px;
+    white-space: nowrap;
 }
 
 >>> .ps {
@@ -369,7 +430,6 @@
 <script>
 import EventBus from '../../components/EventBus';
 import * as _ from 'lodash';
-import {checkKbPermissionByType, checkKbPermissionsByType} from "../../helpers/auth";
 
 export default {
     data() {
@@ -397,7 +457,9 @@ export default {
             categoryForm: {
                 type: this.$route.params.alias,
                 id: null,
-                parent_id: this.$route.query.category ? this.$route.query.category : null,
+                parent_id: this.$route.query.category ?
+                    this.$route.query.category :
+                    (this.$route.query.parent_category ? this.$route.query.parent_category : null),
                 name: '',
                 name_de: '',
                 description: '',
@@ -571,15 +633,25 @@ export default {
                 edit: 'edit',
                 delete: 'delete',
             },
-            routeAlias: this.$route.params.alias,
+            activeCategoryColor: '#ebebeb',
         }
     },
     watch: {
         $route(to, from) {
-            this.getCategories();
-            this.getArticles();
-            this.routeAlias = this.$route.params.alias;
+            if (_.isEmpty(this.$route.query)) {
+                this.getCategories();
+                this.getArticles();
+                this.getCategoriesTree();
+                this.getTags();
+            }
+            this.categoryForm.parent_id = this.getCategoryIdFromQuery;
         }
+    },
+    created() {
+        this.debounceOpenCategory = _.debounce(
+            () => this.openCategory(this.$route.query.parent_category),
+            1000
+        );
     },
     mounted() {
         let that = this;
@@ -590,12 +662,10 @@ export default {
             that.themeBgColor = color;
         });
 
-        this.openCategory(this.$route.query.category);
+        this.getCategories();
+        this.getArticles();
         this.getCategoriesTree();
-        this.getTags()
-    },
-    created() {
-
+        this.getTags();
     },
     methods: {
         limitTo(str, count = 50) {
@@ -613,7 +683,7 @@ export default {
             axios.get(`/api/kb/categories?type=${this.$route.params.alias}`, {
                 params: {
                     search: this.searchWhere.includes(1) ? this.search : '',
-                    category_id: this.$route.query && this.$route.query.category ? this.$route.query.category : null
+                    category_id: this.$route.query.parent_category ? this.$route.query.parent_category : null
                 }
             }).then(response => {
                 response = response.data;
@@ -643,7 +713,7 @@ export default {
                 params: {
                     search: this.searchWhere.includes(2) || this.searchWhere.includes(3) ? this.search : '',
                     search_in_text: this.searchWhere.includes(3),
-                    category_id: this.$route.query.category ? this.$route.query.category : null,
+                    category_id: this.getCategoryIdFromQuery,
                     tags: this.activeTags
                 }
             }).then(response => {
@@ -657,35 +727,33 @@ export default {
                 }
             });
         },
-        openCategory(id) {
-            // console.log(id);
-            // localStorage.setItem('kb_category', id ? id : null);
-
-            // let query = Object.assign({}, this.$route.query);
-            if (parseInt(id)) {
-                this.$router.push(`/${this.$route.params.alias}?category=${id}`, () => {
+        openCategory(id, parent_id = null, subCategories = true) {
+            let query = '';
+            if (id && parent_id && !subCategories) {
+                query = `parent_category=${parent_id}&category=${id}`
+            } else if (id && subCategories) {
+                query = `parent_category=${id}`;
+            } else if (id) {
+                query = `category=${id}`;
+            }
+            if (query) {
+                this.$router.push(`/${this.$route.params.alias}?${query}`, () => {
                 })
-                // query.category = id;
             } else if (this.$router.app.$route.fullPath !== this.$router.app.$route.path) {
                 this.$router.push(`/${this.$route.params.alias}`, () => {
-                })
-                // delete query.category;
+                });
             }
-            // if (this.$route.query !== {})
-            // {
-            //     console.log(query);
-            //     this.$router.replace({ query });
-            //
-            // }
-
-            this.getCategories();
+            if (subCategories) {
+                this.getCategories();
+            }
             this.getArticles();
+
         },
         clearCategoryForm() {
             this.categoryForm = {
                 id: null,
                 type: this.$route.params.alias,
-                parent_id: this.$route.query.category ? this.$route.query.category : null,
+                parent_id: this.getCategoryIdFromQuery,
                 name: '',
                 name_de: '',
                 description: '',
@@ -827,11 +895,30 @@ export default {
                 this.activeTags.splice(index, 1);
                 this.getArticles();
             }
-        }
+        },
+        getCategoryBackgroundColor(id) {
+            switch (id) {
+                case parseInt(this.$route.query.parent_category):
+                    return this.$helpers.color.lightenColor(this.themeBgColor, 50);
+                case parseInt(this.$route.query.category):
+                    return this.activeCategoryColor;
+                default:
+                    return '';
+            }
+        },
     },
     computed: {
         getRouteAlias() {
             return this.$route.params.alias;
+        },
+        getParentCategoryName() {
+            const parentCategory = this.$route.query.parent_category;
+            return parentCategory ? this.categories.find((item) => item.id === parseInt(parentCategory)).name : '';
+        },
+        getCategoryIdFromQuery() {
+            return this.$route.query.category ?
+                this.$route.query.category :
+                (this.$route.query.parent_category ? this.$route.query.parent_category : null)
         }
     }
 }
