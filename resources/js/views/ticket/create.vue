@@ -97,20 +97,18 @@
                                                             :label="langMap.ticket.priority"
                                                             item-text="name"
                                                             item-value="id"
-                                                            :items="priorities"
-                                                            v-model="ticketForm.priority_id"
                                                         >
                                                         </v-select>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <v-select
-                                                            :label="langMap.main.type"
+                                                            v-model="ticketForm.ticket_type_id"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
+                                                            :items="types"
+                                                            :label="langMap.main.type"
                                                             item-text="name"
                                                             item-value="id"
-                                                            :items="types"
-                                                            v-model="ticketForm.ticket_type_id"
                                                         >
                                                         </v-select>
                                                     </div>
