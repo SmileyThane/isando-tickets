@@ -136,14 +136,14 @@
                                                     </div>
                                                     <div class="col-md-12">
                                                         <v-textarea
-                                                            :label="langMap.main.description"
+                                                            v-model="ticketForm.description"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
+                                                            :label="langMap.main.description"
                                                             auto-grow
                                                             outlined
-                                                            rows="3"
                                                             row-height="25"
-                                                            v-model="ticketForm.description"
+                                                            rows="3"
                                                         ></v-textarea>
                                                     </div>
                                                     <div class="col-md-12">
@@ -151,20 +151,20 @@
                                                     </div>
                                                     <v-col cols="md-12">
                                                         <v-file-input
-                                                            chips
-                                                            multiple
-                                                            :label="langMap.main.attachments"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
-                                                            prepend-icon="mdi-paperclip"
+                                                            :label="langMap.main.attachments"
                                                             :show-size="1000"
+                                                            chips
+                                                            multiple
+                                                            prepend-icon="mdi-paperclip"
                                                             v-on:change="onFileChange('ticketForm')"
                                                         >
                                                             <template v-slot:selection="{ index, text }">
                                                                 <v-chip
                                                                     :color="themeBgColor"
-                                                                    class="ma-2"
                                                                     :text-color="themeFgColor"
+                                                                    class="ma-2"
                                                                 >
                                                                     {{ text }}
                                                                 </v-chip>
@@ -185,9 +185,10 @@
                                                     <v-tooltip bottom>
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-textarea
-                                                                :label="langMap.ticket.ip_address"
+                                                                v-model="ticketForm.connection_details"
                                                                 :color="themeBgColor"
                                                                 :item-color="themeBgColor"
+                                                                :label="langMap.ticket.ip_address"
                                                                 auto-grow
                                                                 outlined
                                                                 rows="3"
