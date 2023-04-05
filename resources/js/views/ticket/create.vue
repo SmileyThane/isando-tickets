@@ -191,9 +191,8 @@
                                                                 :label="langMap.ticket.ip_address"
                                                                 auto-grow
                                                                 outlined
-                                                                rows="3"
                                                                 row-height="25"
-                                                                v-model="ticketForm.connection_details"
+                                                                rows="3"
                                                                 v-bind="attrs"
                                                                 v-on="on"
                                                             ></v-textarea>
@@ -205,14 +204,14 @@
                                                     <v-tooltip bottom>
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-textarea
-                                                                :label="langMap.ticket.access_details"
+                                                                v-model="ticketForm.access_details"
                                                                 :color="themeBgColor"
                                                                 :item-color="themeBgColor"
+                                                                :label="langMap.ticket.access_details"
                                                                 auto-grow
                                                                 outlined
-                                                                rows="3"
                                                                 row-height="25"
-                                                                v-model="ticketForm.access_details"
+                                                                rows="3"
                                                                 v-bind="attrs"
                                                                 v-on="on"
                                                             ></v-textarea>
@@ -224,14 +223,14 @@
                                                     <v-tooltip v-model="availabilityTooltip" bottom>
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-textarea
-                                                                label="Availability of the contact person for callback – e.g. add working hours…"
+                                                                v-model="ticketForm.availability"
                                                                 :color="themeBgColor"
                                                                 :item-color="themeBgColor"
                                                                 auto-grow
+                                                                label="Availability of the contact person for callback – e.g. add working hours…"
                                                                 outlined
-                                                                rows="1"
                                                                 row-height="25"
-                                                                v-model="ticketForm.availability"
+                                                                rows="1"
                                                                 v-bind="attrs"
                                                                 v-on="on"
                                                             ></v-textarea>
