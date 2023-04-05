@@ -114,24 +114,24 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <v-select
-                                                            :label="langMap.main.category"
+                                                            v-model="ticketForm.category_id"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
+                                                            :items="categories"
+                                                            :label="langMap.main.category"
                                                             item-text="name"
                                                             item-value="id"
-                                                            :items="categories"
-                                                            v-model="ticketForm.category_id"
                                                         />
                                                     </div>
                                                     <div class="col-md-12">
                                                         <v-select
-                                                            :label="langMap.ticket.product_name"
+                                                            v-model="ticketForm.to_product_id"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
+                                                            :items="products"
+                                                            :label="langMap.ticket.product_name"
                                                             item-text="full_name"
                                                             item-value="id"
-                                                            :items="products"
-                                                            v-model="ticketForm.to_product_id"
                                                         />
                                                     </div>
                                                     <div class="col-md-12">
