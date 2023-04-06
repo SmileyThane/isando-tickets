@@ -490,11 +490,11 @@
                             <v-btn :color="themeBgColor"
                                    :disabled="!ticketForm.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                    class="ma-2"
-                                   small
                                    color="grey"
+                                   small
                                    style="color: white;"
-                                   @click.native.stop="ticketForm.to_company_user_id = null"
                                    v-text="langMap.ticket.clear_agent"
+                                   @click.native.stop="ticketForm.to_company_user_id = null"
                             />
                             <v-btn class="ma-2"
                                    color="white" small
@@ -917,8 +917,7 @@ export default {
                 });
             }
         },
-        initSaveForLater()
-        {
+        initSaveForLater() {
             if (this.ticketFormIsSaved === false) {
                 this.saveForLaterDialog = true
             } else {
