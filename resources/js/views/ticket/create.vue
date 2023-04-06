@@ -245,8 +245,8 @@
                             </v-card-text>
                             <v-card-actions>
                                 <v-btn
-                                    style="color: white;"
                                     color="#4caf50"
+                                    style="color: white;"
                                     @click="submit()"
                                     v-text="langMap.main.create"
                                 >
@@ -254,16 +254,16 @@
 
                                 <v-btn
                                     class="ml-2"
-                                    style="color: white;"
                                     color="#4caf50"
+                                    style="color: white;"
                                     @click="assignDlg = true"
                                     v-text="langMap.ticket.create_and_assign"
                                 />
 
                                 <v-btn
                                     class="ml-2"
-                                    style="color: white;"
                                     color="#4caf50"
+                                    style="color: white;"
                                     @click="savetoLS()"
                                 >
                                     Save for later
@@ -279,7 +279,7 @@
         <v-row justify="center">
             <v-dialog v-model="createContactDlg" max-width="600px" persistent>
                 <v-card dense outlined>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.individuals.add_new }}
                     </v-card-title>
                     <v-card-text>
@@ -342,10 +342,10 @@
                                 <v-col cols="6">
                                     <p v-for="(item, i) in createContactForm.phones" :key="item.id" class="mb-2">
                                         <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
-                                                v-text="item.type.icon" dense small left/>
+                                                dense left small v-text="item.type.icon"/>
                                         {{ item.phone }}
 
-                                        <v-icon small right :color="themeBgColor" :title="langMap.main.delete"
+                                        <v-icon :color="themeBgColor" :title="langMap.main.delete" right small
                                                 @click="deletePhone(i)">mdi-trash-can
                                         </v-icon>
                                     </p>
@@ -484,8 +484,8 @@
                                    class="ma-2"
                                    small
                                    style="color: white;"
-                                   @click.native.stop="assignDlg = false; submit()"
                                    v-text="langMap.ticket.create_and_assign"
+                                   @click.native.stop="assignDlg = false; submit()"
                             />
                             <v-btn :color="themeBgColor"
                                    :disabled="!ticketForm.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
