@@ -1859,11 +1859,11 @@
                                                         <v-tooltip top>
                                                             <template v-slot:activator="{ on, attrs }">
 
-                                                                <v-icon v-on="on"
-                                                                        color="red"
+                                                                <v-icon color="red"
                                                                         small
                                                                         style="float: right"
                                                                         @click="mergeTicketForm.parent_ticket_id === item.id ? null: removeMerge(item.id)"
+                                                                        v-on="on"
                                                                 >
                                                                     {{
                                                                         mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel'
@@ -1889,9 +1889,9 @@
                                                 >
                                                     <template v-slot:activator="{ on: menu, attrs }">
                                                         <v-btn
+                                                            text
                                                             v-bind="attrs"
                                                             v-on="{...menu}"
-                                                            text
                                                         >
                                                 <span v-if="searchLabel !== ''">
                                                     {{ searchLabel }}
@@ -1958,12 +1958,12 @@
                                                 </v-tooltip>
                                                 <v-tooltip top>
                                                     <template v-slot:activator="{ on, attrs }">
-                                                        <v-icon v-on="on"
-                                                                :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeBgColor"
+                                                        <v-icon :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeBgColor"
                                                                 :disabled="!mergeTicketForm.child_ticket_id.includes(item.id)"
                                                                 dark
                                                                 style="float: right"
                                                                 @click="mergeTicketForm.parent_ticket_id = item.id"
+                                                                v-on="on"
                                                         >
                                                             mdi-medal-outline
                                                         </v-icon>
