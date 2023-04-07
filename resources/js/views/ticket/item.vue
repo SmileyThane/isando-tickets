@@ -490,10 +490,10 @@
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                v-bind="attrs"
-                                v-on="{...menu}"
                                 class="ma-2 float-md-right"
                                 small
+                                v-bind="attrs"
+                                v-on="{...menu}"
                             >
                                 <v-badge
                                     :color="ticket.status.color"
@@ -524,10 +524,10 @@
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                v-bind="attrs"
-                                v-on="{...menu}"
                                 class="ma-2 float-md-right"
                                 small
+                                v-bind="attrs"
+                                v-on="{...menu}"
                             >
                                 <v-badge
                                     :color="ticket.priority.color"
@@ -567,13 +567,13 @@
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                v-bind="attrs"
-                                v-on="{...menu}"
                                 class="ma-2 float-md-right"
                                 small
+                                v-bind="attrs"
+                                v-on="{...menu}"
                             >
                                 <!--                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>-->
-                                <v-icon v-if="ticket.ticket_type.icon" small left :color="themeBgColor"
+                                <v-icon v-if="ticket.ticket_type.icon" :color="themeBgColor" left small
                                         v-text="ticket.ticket_type.icon"/>
                                 <strong>{{ ticket.ticket_type.name }}</strong>
 
@@ -590,7 +590,7 @@
                             >
 
                                 <v-list-item-title>
-                                    <v-icon v-if="type.icon" x-small left v-text="type.icon"/>
+                                    <v-icon v-if="type.icon" left x-small v-text="type.icon"/>
                                     <!--                                    <strong>{{ langMap.ticket_types[type.name] }}</strong>-->
                                     <strong>{{ type.name }}</strong>
                                 </v-list-item-title>
