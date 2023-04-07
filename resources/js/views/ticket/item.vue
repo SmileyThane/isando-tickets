@@ -1342,22 +1342,22 @@
                                     v-if="assignFormToggle === 'followers'"
                                     v-model="ticket.followers"
                                     :items="$store.getters['Team/getCoworkers']"
-                                    item-value="id"
-                                    item-text="full_name"
-                                    return-object
-                                    dense
                                     chips
-                                    label="Followers"
-                                    prepend-icon="mdi-eye"
-                                    multiple
                                     clearable
+                                    dense
                                     hide-details
+                                    item-text="full_name"
+                                    item-value="id"
+                                    label="Followers"
+                                    multiple
+                                    prepend-icon="mdi-eye"
+                                    return-object
                                     @blur="updateTicket(assignFormToggle === 'followers' ? 0 : [])"
                                 >
                                     <template v-slot:selection="{ item, index }">
                                         <v-chip
-                                            small
                                             close
+                                            small
                                             @click:close="ticket.followers.splice(ticket.followers.findIndex(i => i.id === item.id), 1)"
                                         >
                                             <v-avatar
@@ -1379,8 +1379,8 @@
                                         </v-chip>
                                     </template>
                                 </v-select>
-                                <v-btn :color="themeBgColor"
-                                       v-if="assignFormToggle === 'team'"
+                                <v-btn v-if="assignFormToggle === 'team'"
+                                       :color="themeBgColor"
                                        :disabled="selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                        class="ma-2"
                                        small
@@ -1394,8 +1394,8 @@
                                     :color="themeBgColor"
                                     :disabled="!ticket.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                     class="ma-2"
-                                    small
                                     color="grey"
+                                    small
                                     style="color: white;"
                                     @click.native.stop="ticket.to_company_user_id = null; updateTicket()"
                                 >
@@ -1510,7 +1510,9 @@
                                                     {{ noticeItem.employee.user_data.full_name }}
 
                                                     {{ noticeItem.created_at }}
-                                                    {{ noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : '' }}
+                                                    {{
+                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : ''
+                                                    }}
                                                     :
                                                 </strong>
                                             </v-col>
