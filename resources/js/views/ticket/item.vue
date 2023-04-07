@@ -1640,9 +1640,9 @@
                                 <v-list-item>
                                     <v-list-item-content class="text-center">
                                         <v-btn
+                                            v-if="trackersLoadMoreBtn"
                                             :loading="trackersLoading"
                                             x-small
-                                            v-if="trackersLoadMoreBtn"
                                             @click="loadMoreTrackers"
                                         >Load more
                                         </v-btn>
@@ -1697,9 +1697,9 @@
                                                 >
                                                     <template v-slot:activator="{ on: menu, attrs }">
                                                         <v-btn
+                                                            text
                                                             v-bind="attrs"
                                                             v-on="{...menu}"
-                                                            text
                                                         >
                                                 <span v-if="searchLabel !== ''">
                                                     {{ searchLabel }}
