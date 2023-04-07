@@ -1519,8 +1519,8 @@
                                             <v-col
                                                 v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id"
                                                 cols="1">
-                                                <v-btn icon :color="themeBgColor" right @click="editNotice(noticeItem)"
-                                                       :title="langMap.ticket.edit_notice">
+                                                <v-btn :color="themeBgColor" :title="langMap.ticket.edit_notice" icon right
+                                                       @click="editNotice(noticeItem)">
                                                     <v-icon>mdi-pencil</v-icon>
                                                 </v-btn>
                                             </v-col>
@@ -1570,9 +1570,9 @@
                                     </v-list-item-content>
                                 </v-list-item>
                                 <v-list-item
+                                    v-if="!$store.getters['Tracking/getTrackers'].length && trackersLoading"
                                     :key="-5"
                                     class="mx-0 px-0"
-                                    v-if="!$store.getters['Tracking/getTrackers'].length && trackersLoading"
                                 >
                                     <v-list-item-content>
                                         <v-list-item-title class="d-flex flex-row">
@@ -1583,9 +1583,9 @@
                                     </v-list-item-content>
                                 </v-list-item>
                                 <v-list-item
+                                    v-if="!$store.getters['Tracking/getTrackers'].length && !trackersLoading"
                                     :key="0"
                                     class="mx-0 px-0"
-                                    v-if="!$store.getters['Tracking/getTrackers'].length && !trackersLoading"
                                 >
                                     <v-list-item-content>
                                         <v-list-item-title class="d-flex flex-row">
@@ -1619,9 +1619,9 @@
                                             <div class="d-inline-flex flex-grow-1 text-center mt-n1" style="width: 10%">
                                                 <v-btn
                                                     :color="item.status === 0 ? 'error' : 'default'"
-                                                    small
-                                                    icon
                                                     :disabled="item.readonly"
+                                                    icon
+                                                    small
                                                     @click="startStopExistsTrackers(item.id, item.status)"
                                                 >
                                                     <v-icon v-if="item.status === 0">mdi-pause</v-icon>
