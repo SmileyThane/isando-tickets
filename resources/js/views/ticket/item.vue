@@ -603,11 +603,11 @@
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                v-bind="attrs"
-                                v-on="{...menu }"
                                 class="ma-2 d-sm-flex d-md-none"
                                 color="#f2f2f2"
                                 small
+                                v-bind="attrs"
+                                v-on="{...menu }"
                             >
                                 <v-icon small>mdi-dots-vertical</v-icon>
                             </v-btn>
@@ -966,7 +966,7 @@
                                         </v-col>
                                         <v-col v-if="index == 0 && currentUser.id == answer.employee.user_data.id"
                                                cols="1">
-                                            <v-btn right icon :color="themeBgColor" :title="langMap.ticket.edit_answer"
+                                            <v-btn :color="themeBgColor" :title="langMap.ticket.edit_answer" icon right
                                                    @click="editAnswer(answer)">
                                                 <v-icon>mdi-pencil</v-icon>
                                             </v-btn>
@@ -1032,7 +1032,7 @@
                                     </v-col>
 
                                     <v-col v-if="currentUser.id == ticket.creator.user_data.id" cols="1">
-                                        <v-btn right icon :color="themeBgColor" :title="langMap.main.edit"
+                                        <v-btn :color="themeBgColor" :title="langMap.main.edit" icon right
                                                @click="descriptionDialog = true;">
                                             <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
@@ -1198,7 +1198,7 @@
                                         <div class="d-inline-flex my-2">
                                             <strong>{{ langMap.sidebar.team }}: </strong>
                                         </div>
-                                        <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
+                                        <div v-if="ticket.assigned_person !== null" class="d-inline-flex my-2">
                                             <strong>{{ langMap.team.members }}: </strong>
                                         </div>
                                         <div class="d-inline-flex mb-2 mt-6">
@@ -1212,7 +1212,7 @@
                                             <span v-if="ticket.team !== null">{{ ticket.team.name }}</span>
                                             <span v-else>{{ langMap.ticket.no_assigned }}</span>
                                         </div>
-                                        <div class="d-inline-flex my-0" v-if="ticket.assigned_person !== null">
+                                        <div v-if="ticket.assigned_person !== null" class="d-inline-flex my-0">
                                             <v-avatar
                                                 v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
                                                 class="mr-2 mb-2"
@@ -1235,8 +1235,8 @@
                                                 v-if="ticket.followers.length"
                                             >
                                                 <div
-                                                    class="float-left mr-2"
                                                     v-for="follower in ticket.followers.slice(0, 5)"
+                                                    class="float-left mr-2"
                                                 >
                                                     <div class="d-flex flex-row">
                                                         <v-avatar
@@ -1261,7 +1261,7 @@
                                                 </div>
                                             </template>
                                             <div v-else class="float-left mr-2 mt-2">No followers</div>
-                                            <div class="float-left mr-2 mt-2" v-if="ticket.followers.length > 5">
+                                            <div v-if="ticket.followers.length > 5" class="float-left mr-2 mt-2">
                                                 (+{{ ticket.followers.length - 5 }} others)
                                             </div>
                                         </div>
@@ -1279,7 +1279,7 @@
                                                 {{ langMap.main.edit }}
                                             </v-btn>
                                         </div>
-                                        <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
+                                        <div v-if="ticket.assigned_person !== null" class="d-inline-flex my-2">
                                             &nbsp;
                                         </div>
                                         <div class="d-inline-flex mb-2 mt-5">
@@ -1311,10 +1311,10 @@
                                     :item-color="themeBgColor"
                                     :items="teams"
                                     :label="langMap.sidebar.team"
-                                    prepend-icon="mdi-account-group-outline"
                                     dense
                                     item-text="name"
                                     item-value="id"
+                                    prepend-icon="mdi-account-group-outline"
                                     @change="selectTeam(); ticket.to_company_user_id = null;"
                                 ></v-autocomplete>
                                 <v-autocomplete
@@ -1325,9 +1325,9 @@
                                     :item-color="themeBgColor"
                                     :items="employees"
                                     :label="langMap.team.members"
-                                    prepend-icon="mdi-account-outline"
                                     dense
                                     item-value="employee.id"
+                                    prepend-icon="mdi-account-outline"
                                 >
                                     <template v-slot:selection="data">
                                         {{ data.item.employee.user_data.full_name }}
