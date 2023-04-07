@@ -48,9 +48,9 @@
                                 >
                                     <template v-slot:activator="{ on: menu, attrs }">
                                         <v-btn
+                                            text
                                             v-bind="attrs"
                                             v-on="{...menu}"
-                                            text
                                         >
                                                 <span v-if="searchLabel !== ''">
                                                     {{ searchLabel }}
@@ -97,12 +97,12 @@
                             :items="filters"
                             :label="langMap.filter.saved_filters"
                             class="ma-2"
+                            clearable
                             dense
                             hide-details
                             item-text="name"
                             item-value="id"
                             prepend-icon="mdi-filter"
-                            clearable
                             @change="getTickets"
                         >
                             <template v-slot:append-outer>
@@ -140,7 +140,7 @@
                             {{ langMap.main.save }}
                         </v-btn>
                     </v-col>
-                    <v-col md="2" class="pt-0">
+                    <v-col class="pt-0" md="2">
                         <v-checkbox
                             v-model="options.withSpam"
                             :color="themeBgColor"
