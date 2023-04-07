@@ -155,8 +155,8 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true" hide-overlay persistent
-                      content-class="draggable">
+            <v-dialog v-model="answerDialog" :eager="true" :retain-focus="false" content-class="draggable" hide-overlay max-width="50%"
+                      persistent>
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ ticketAnswer.id ? langMap.ticket.edit_answer : langMap.ticket.create_answer }}
@@ -222,7 +222,7 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="descriptionDialog" max-width="50%" :retain-focus="false" :eager="true">
+            <v-dialog v-model="descriptionDialog" :eager="true" :retain-focus="false" max-width="50%">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.main.edit }}
@@ -272,7 +272,7 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="noteDialog" max-width="50%" :retain-focus="false" :eager="true">
+            <v-dialog v-model="noteDialog" :eager="true" :retain-focus="false" max-width="50%">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ ticketNotice.id ? langMap.ticket.edit_internal_note : langMap.ticket.add_internal_note }}
@@ -440,8 +440,8 @@
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
-                                class="ma-2"
                                 :color="trackerActive.id ? 'red' : '#f2f2f2'"
+                                class="ma-2"
                                 small
                                 v-bind="attrs"
                                 v-on="on"
@@ -457,8 +457,8 @@
 
                             <v-card-text v-if="!trackerActive.id">
                                 <v-text-field
-                                    label="Description"
                                     v-model="trackerActive.description"
+                                    label="Description"
                                 ></v-text-field>
                             </v-card-text>
 
