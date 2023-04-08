@@ -113,7 +113,7 @@
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
-                    multiple
+                    no-action
                 >
                     <template
                         v-slot:activator>
@@ -273,7 +273,7 @@
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
-                    multiple
+                    no-action
                 >
                     <template
                         v-slot:activator
@@ -388,7 +388,7 @@
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
-                    multiple
+                    no-action
                 >
                     <template
                         v-slot:activator
@@ -459,7 +459,7 @@
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
-                    multiple
+                    no-action
                 >
                     <template
                         v-slot:activator
@@ -645,7 +645,7 @@
                     v-if="$helpers.auth.checkPermissionByIds([22])"
                     :value="sidebarGroups"
                     color="#757575"
-                    multiple
+                    no-action
                 >
                     <template
                         v-slot:activator
@@ -717,7 +717,7 @@
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
-                    multiple
+                    no-action
                     v-if="$helpers.auth.checkPermissionByIds([13, 28, 31])"
                 >
                     <template
@@ -852,6 +852,18 @@
 >>> .v-navigation-drawer__content {
     overflow-y: hidden !important;
 }
+>>> .v-navigation-drawer__content .v-list-item__action {
+    margin: 10px 12px 10px 0 !important;
+}
+>>> .v-navigation-drawer__content .v-list-group__items > .v-list-item {
+    padding-left: 50px !important;
+}
+>>> .v-navigation-drawer__content .v-list-item__title {
+    font-weight: 400 !important;
+}
+>>> .v-navigation-drawer__content .v-list {
+    padding: 0 !important;
+}
 </style>
 
 
@@ -878,7 +890,7 @@ export default {
             settings: '',
             notifications: '',
             timeTracking: '',
-            sidebarGroups: [],
+            sidebarGroups: false,
             countTimesheetForApproval: 0,
 
         }
