@@ -155,8 +155,8 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true" hide-overlay persistent
-                      content-class="draggable">
+            <v-dialog v-model="answerDialog" :eager="true" :retain-focus="false" content-class="draggable" hide-overlay max-width="50%"
+                      persistent>
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ ticketAnswer.id ? langMap.ticket.edit_answer : langMap.ticket.create_answer }}
@@ -222,7 +222,7 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="descriptionDialog" max-width="50%" :retain-focus="false" :eager="true">
+            <v-dialog v-model="descriptionDialog" :eager="true" :retain-focus="false" max-width="50%">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.main.edit }}
@@ -272,7 +272,7 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="noteDialog" max-width="50%" :retain-focus="false" :eager="true">
+            <v-dialog v-model="noteDialog" :eager="true" :retain-focus="false" max-width="50%">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ ticketNotice.id ? langMap.ticket.edit_internal_note : langMap.ticket.add_internal_note }}
@@ -440,8 +440,8 @@
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
-                                class="ma-2"
                                 :color="trackerActive.id ? 'red' : '#f2f2f2'"
+                                class="ma-2"
                                 small
                                 v-bind="attrs"
                                 v-on="on"
@@ -457,8 +457,8 @@
 
                             <v-card-text v-if="!trackerActive.id">
                                 <v-text-field
-                                    label="Description"
                                     v-model="trackerActive.description"
+                                    label="Description"
                                 ></v-text-field>
                             </v-card-text>
 
@@ -490,10 +490,10 @@
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                v-bind="attrs"
-                                v-on="{...menu}"
                                 class="ma-2 float-md-right"
                                 small
+                                v-bind="attrs"
+                                v-on="{...menu}"
                             >
                                 <v-badge
                                     :color="ticket.status.color"
@@ -524,10 +524,10 @@
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                v-bind="attrs"
-                                v-on="{...menu}"
                                 class="ma-2 float-md-right"
                                 small
+                                v-bind="attrs"
+                                v-on="{...menu}"
                             >
                                 <v-badge
                                     :color="ticket.priority.color"
@@ -567,13 +567,13 @@
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                v-bind="attrs"
-                                v-on="{...menu}"
                                 class="ma-2 float-md-right"
                                 small
+                                v-bind="attrs"
+                                v-on="{...menu}"
                             >
                                 <!--                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>-->
-                                <v-icon v-if="ticket.ticket_type.icon" small left :color="themeBgColor"
+                                <v-icon v-if="ticket.ticket_type.icon" :color="themeBgColor" left small
                                         v-text="ticket.ticket_type.icon"/>
                                 <strong>{{ ticket.ticket_type.name }}</strong>
 
@@ -590,7 +590,7 @@
                             >
 
                                 <v-list-item-title>
-                                    <v-icon v-if="type.icon" x-small left v-text="type.icon"/>
+                                    <v-icon v-if="type.icon" left x-small v-text="type.icon"/>
                                     <!--                                    <strong>{{ langMap.ticket_types[type.name] }}</strong>-->
                                     <strong>{{ type.name }}</strong>
                                 </v-list-item-title>
@@ -603,11 +603,11 @@
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                v-bind="attrs"
-                                v-on="{...menu }"
                                 class="ma-2 d-sm-flex d-md-none"
                                 color="#f2f2f2"
                                 small
+                                v-bind="attrs"
+                                v-on="{...menu }"
                             >
                                 <v-icon small>mdi-dots-vertical</v-icon>
                             </v-btn>
@@ -966,7 +966,7 @@
                                         </v-col>
                                         <v-col v-if="index == 0 && currentUser.id == answer.employee.user_data.id"
                                                cols="1">
-                                            <v-btn right icon :color="themeBgColor" :title="langMap.ticket.edit_answer"
+                                            <v-btn :color="themeBgColor" :title="langMap.ticket.edit_answer" icon right
                                                    @click="editAnswer(answer)">
                                                 <v-icon>mdi-pencil</v-icon>
                                             </v-btn>
@@ -1032,7 +1032,7 @@
                                     </v-col>
 
                                     <v-col v-if="currentUser.id == ticket.creator.user_data.id" cols="1">
-                                        <v-btn right icon :color="themeBgColor" :title="langMap.main.edit"
+                                        <v-btn :color="themeBgColor" :title="langMap.main.edit" icon right
                                                @click="descriptionDialog = true;">
                                             <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
@@ -1198,7 +1198,7 @@
                                         <div class="d-inline-flex my-2">
                                             <strong>{{ langMap.sidebar.team }}: </strong>
                                         </div>
-                                        <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
+                                        <div v-if="ticket.assigned_person !== null" class="d-inline-flex my-2">
                                             <strong>{{ langMap.team.members }}: </strong>
                                         </div>
                                         <div class="d-inline-flex mb-2 mt-6">
@@ -1212,7 +1212,7 @@
                                             <span v-if="ticket.team !== null">{{ ticket.team.name }}</span>
                                             <span v-else>{{ langMap.ticket.no_assigned }}</span>
                                         </div>
-                                        <div class="d-inline-flex my-0" v-if="ticket.assigned_person !== null">
+                                        <div v-if="ticket.assigned_person !== null" class="d-inline-flex my-0">
                                             <v-avatar
                                                 v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
                                                 class="mr-2 mb-2"
@@ -1235,8 +1235,8 @@
                                                 v-if="ticket.followers.length"
                                             >
                                                 <div
-                                                    class="float-left mr-2"
                                                     v-for="follower in ticket.followers.slice(0, 5)"
+                                                    class="float-left mr-2"
                                                 >
                                                     <div class="d-flex flex-row">
                                                         <v-avatar
@@ -1261,7 +1261,7 @@
                                                 </div>
                                             </template>
                                             <div v-else class="float-left mr-2 mt-2">No followers</div>
-                                            <div class="float-left mr-2 mt-2" v-if="ticket.followers.length > 5">
+                                            <div v-if="ticket.followers.length > 5" class="float-left mr-2 mt-2">
                                                 (+{{ ticket.followers.length - 5 }} others)
                                             </div>
                                         </div>
@@ -1279,7 +1279,7 @@
                                                 {{ langMap.main.edit }}
                                             </v-btn>
                                         </div>
-                                        <div class="d-inline-flex my-2" v-if="ticket.assigned_person !== null">
+                                        <div v-if="ticket.assigned_person !== null" class="d-inline-flex my-2">
                                             &nbsp;
                                         </div>
                                         <div class="d-inline-flex mb-2 mt-5">
@@ -1311,10 +1311,10 @@
                                     :item-color="themeBgColor"
                                     :items="teams"
                                     :label="langMap.sidebar.team"
-                                    prepend-icon="mdi-account-group-outline"
                                     dense
                                     item-text="name"
                                     item-value="id"
+                                    prepend-icon="mdi-account-group-outline"
                                     @change="selectTeam(); ticket.to_company_user_id = null;"
                                 ></v-autocomplete>
                                 <v-autocomplete
@@ -1325,9 +1325,9 @@
                                     :item-color="themeBgColor"
                                     :items="employees"
                                     :label="langMap.team.members"
-                                    prepend-icon="mdi-account-outline"
                                     dense
                                     item-value="employee.id"
+                                    prepend-icon="mdi-account-outline"
                                 >
                                     <template v-slot:selection="data">
                                         {{ data.item.employee.user_data.full_name }}
@@ -1342,22 +1342,22 @@
                                     v-if="assignFormToggle === 'followers'"
                                     v-model="ticket.followers"
                                     :items="$store.getters['Team/getCoworkers']"
-                                    item-value="id"
-                                    item-text="full_name"
-                                    return-object
-                                    dense
                                     chips
-                                    label="Followers"
-                                    prepend-icon="mdi-eye"
-                                    multiple
                                     clearable
+                                    dense
                                     hide-details
+                                    item-text="full_name"
+                                    item-value="id"
+                                    label="Followers"
+                                    multiple
+                                    prepend-icon="mdi-eye"
+                                    return-object
                                     @blur="updateTicket(assignFormToggle === 'followers' ? 0 : [])"
                                 >
                                     <template v-slot:selection="{ item, index }">
                                         <v-chip
-                                            small
                                             close
+                                            small
                                             @click:close="ticket.followers.splice(ticket.followers.findIndex(i => i.id === item.id), 1)"
                                         >
                                             <v-avatar
@@ -1379,8 +1379,8 @@
                                         </v-chip>
                                     </template>
                                 </v-select>
-                                <v-btn :color="themeBgColor"
-                                       v-if="assignFormToggle === 'team'"
+                                <v-btn v-if="assignFormToggle === 'team'"
+                                       :color="themeBgColor"
                                        :disabled="selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                        class="ma-2"
                                        small
@@ -1394,8 +1394,8 @@
                                     :color="themeBgColor"
                                     :disabled="!ticket.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                     class="ma-2"
-                                    small
                                     color="grey"
+                                    small
                                     style="color: white;"
                                     @click.native.stop="ticket.to_company_user_id = null; updateTicket()"
                                 >
@@ -1510,15 +1510,17 @@
                                                     {{ noticeItem.employee.user_data.full_name }}
 
                                                     {{ noticeItem.created_at }}
-                                                    {{ noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : '' }}
+                                                    {{
+                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : ''
+                                                    }}
                                                     :
                                                 </strong>
                                             </v-col>
                                             <v-col
                                                 v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id"
                                                 cols="1">
-                                                <v-btn icon :color="themeBgColor" right @click="editNotice(noticeItem)"
-                                                       :title="langMap.ticket.edit_notice">
+                                                <v-btn :color="themeBgColor" :title="langMap.ticket.edit_notice" icon right
+                                                       @click="editNotice(noticeItem)">
                                                     <v-icon>mdi-pencil</v-icon>
                                                 </v-btn>
                                             </v-col>
@@ -1568,9 +1570,9 @@
                                     </v-list-item-content>
                                 </v-list-item>
                                 <v-list-item
+                                    v-if="!$store.getters['Tracking/getTrackers'].length && trackersLoading"
                                     :key="-5"
                                     class="mx-0 px-0"
-                                    v-if="!$store.getters['Tracking/getTrackers'].length && trackersLoading"
                                 >
                                     <v-list-item-content>
                                         <v-list-item-title class="d-flex flex-row">
@@ -1581,9 +1583,9 @@
                                     </v-list-item-content>
                                 </v-list-item>
                                 <v-list-item
+                                    v-if="!$store.getters['Tracking/getTrackers'].length && !trackersLoading"
                                     :key="0"
                                     class="mx-0 px-0"
-                                    v-if="!$store.getters['Tracking/getTrackers'].length && !trackersLoading"
                                 >
                                     <v-list-item-content>
                                         <v-list-item-title class="d-flex flex-row">
@@ -1617,9 +1619,9 @@
                                             <div class="d-inline-flex flex-grow-1 text-center mt-n1" style="width: 10%">
                                                 <v-btn
                                                     :color="item.status === 0 ? 'error' : 'default'"
-                                                    small
-                                                    icon
                                                     :disabled="item.readonly"
+                                                    icon
+                                                    small
                                                     @click="startStopExistsTrackers(item.id, item.status)"
                                                 >
                                                     <v-icon v-if="item.status === 0">mdi-pause</v-icon>
@@ -1638,9 +1640,9 @@
                                 <v-list-item>
                                     <v-list-item-content class="text-center">
                                         <v-btn
+                                            v-if="trackersLoadMoreBtn"
                                             :loading="trackersLoading"
                                             x-small
-                                            v-if="trackersLoadMoreBtn"
                                             @click="loadMoreTrackers"
                                         >Load more
                                         </v-btn>
@@ -1695,9 +1697,9 @@
                                                 >
                                                     <template v-slot:activator="{ on: menu, attrs }">
                                                         <v-btn
+                                                            text
                                                             v-bind="attrs"
                                                             v-on="{...menu}"
-                                                            text
                                                         >
                                                 <span v-if="searchLabel !== ''">
                                                     {{ searchLabel }}
@@ -1857,11 +1859,11 @@
                                                         <v-tooltip top>
                                                             <template v-slot:activator="{ on, attrs }">
 
-                                                                <v-icon v-on="on"
-                                                                        color="red"
+                                                                <v-icon color="red"
                                                                         small
                                                                         style="float: right"
                                                                         @click="mergeTicketForm.parent_ticket_id === item.id ? null: removeMerge(item.id)"
+                                                                        v-on="on"
                                                                 >
                                                                     {{
                                                                         mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel'
@@ -1887,9 +1889,9 @@
                                                 >
                                                     <template v-slot:activator="{ on: menu, attrs }">
                                                         <v-btn
+                                                            text
                                                             v-bind="attrs"
                                                             v-on="{...menu}"
-                                                            text
                                                         >
                                                 <span v-if="searchLabel !== ''">
                                                     {{ searchLabel }}
@@ -1956,12 +1958,12 @@
                                                 </v-tooltip>
                                                 <v-tooltip top>
                                                     <template v-slot:activator="{ on, attrs }">
-                                                        <v-icon v-on="on"
-                                                                :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeBgColor"
+                                                        <v-icon :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeBgColor"
                                                                 :disabled="!mergeTicketForm.child_ticket_id.includes(item.id)"
                                                                 dark
                                                                 style="float: right"
                                                                 @click="mergeTicketForm.parent_ticket_id = item.id"
+                                                                v-on="on"
                                                         >
                                                             mdi-medal-outline
                                                         </v-icon>

@@ -48,9 +48,9 @@
                                 >
                                     <template v-slot:activator="{ on: menu, attrs }">
                                         <v-btn
+                                            text
                                             v-bind="attrs"
                                             v-on="{...menu}"
-                                            text
                                         >
                                                 <span v-if="searchLabel !== ''">
                                                     {{ searchLabel }}
@@ -97,12 +97,12 @@
                             :items="filters"
                             :label="langMap.filter.saved_filters"
                             class="ma-2"
+                            clearable
                             dense
                             hide-details
                             item-text="name"
                             item-value="id"
                             prepend-icon="mdi-filter"
-                            clearable
                             @change="getTickets"
                         >
                             <template v-slot:append-outer>
@@ -140,7 +140,7 @@
                             {{ langMap.main.save }}
                         </v-btn>
                     </v-col>
-                    <v-col md="2" class="pt-0">
+                    <v-col class="pt-0" md="2">
                         <v-checkbox
                             v-model="options.withSpam"
                             :color="themeBgColor"
@@ -236,9 +236,9 @@
                 </v-pagination>
             </template>
             <template v-slot:item.ticket_type_id="{ item }">
-                <v-icon v-if="item.ticket_type.icon" small :title="$helpers.i18n.localized(item.ticket_type)"
+                <v-icon v-if="item.ticket_type.icon" :title="$helpers.i18n.localized(item.ticket_type)" small
                         v-text="item.ticket_type.icon"/>
-                <v-icon v-else small :title="$helpers.i18n.localized(item.ticket_type)">mdi-alert</v-icon>
+                <v-icon v-else :title="$helpers.i18n.localized(item.ticket_type)" small>mdi-alert</v-icon>
             </template>
             <template v-slot:item.status.name="{ item }">
                 <v-badge :color="item.status.color" dot inline @click="showItem(item)">

@@ -4,10 +4,10 @@
             <v-progress-circular indeterminate size="64"></v-progress-circular>
         </v-overlay>
         <v-snackbar
-            :bottom="true"
-            :right="true"
             v-model="snackbar"
+            :bottom="true"
             :color="actionColor"
+            :right="true"
         >
             {{ snackbarMessage }}
         </v-snackbar>
@@ -20,37 +20,37 @@
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col offset-lg="1" offset-xl="2" sm="12" md="12" lg="10" xl="8">
+                    <v-col lg="10" md="12" offset-lg="1" offset-xl="2" sm="12" xl="8">
                         <v-card class="pa-2">
                             <v-card-text>
                                 <div class="row">
                                     <div class="col-md-4 col-sm-12">
                                         <v-autocomplete
-                                            label="Ticket is submitted by"
+                                            v-model="ticketForm.from"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
+                                            :items="suppliers"
+                                            hide-details
                                             item-text="name"
                                             item-value="item"
-                                            :items="suppliers"
-                                            v-model="ticketForm.from"
+                                            label="Ticket is submitted by"
                                             @input="getContacts"
-                                            hide-details
                                         />
                                     </div>
                                     <v-col class="col-md-4 col-sm-12">
                                         <v-autocomplete
+                                            v-model="ticketForm.contact_company_user_id"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
+                                            :items="employees"
+                                            hide-details
                                             item-text="user_data.full_name"
                                             item-value="id"
-                                            v-model="ticketForm.contact_company_user_id"
-                                            :items="employees"
                                             label="Contact person"
-                                            hide-details
                                         >
                                             <template v-slot:append-outer>
-                                                <v-btn :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'"
-                                                       icon :color="themeBgColor" :title="langMap.individuals.add_new"
+                                                <v-btn :color="themeBgColor"
+                                                       :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'" :title="langMap.individuals.add_new" icon
                                                        @click="createContactDlg = true;">
                                                     <v-icon>mdi-plus</v-icon>
                                                 </v-btn>
@@ -59,14 +59,14 @@
                                     </v-col>
                                     <v-col class="col-md-4 mb-4">
                                         <v-autocomplete
+                                            v-model="ticketForm.to"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
-                                            item-text="name"
-                                            item-value="item"
-                                            v-model="ticketForm.to"
                                             :items="suppliers"
                                             :label="langMap.ticket.company_to"
                                             hide-details
+                                            item-text="name"
+                                            item-value="item"
                                         ></v-autocomplete>
 
                                     </v-col>
@@ -81,69 +81,69 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <v-text-field
+                                                            v-model="ticketForm.name"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
                                                             :label="langMap.ticket.subject"
-                                                            v-model="ticketForm.name"
                                                             hide-details
                                                         ></v-text-field>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <v-select
-                                                            :label="langMap.ticket.priority"
-                                                            :color="themeBgColor"
-                                                            :item-color="themeBgColor"
-                                                            item-text="name"
-                                                            item-value="id"
-                                                            :items="priorities"
                                                             v-model="ticketForm.priority_id"
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :items="priorities"
+                                                            :label="langMap.ticket.priority"
+                                                            item-text="name"
+                                                            item-value="id"
                                                         >
                                                         </v-select>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <v-select
-                                                            :label="langMap.main.type"
-                                                            :color="themeBgColor"
-                                                            :item-color="themeBgColor"
-                                                            item-text="name"
-                                                            item-value="id"
-                                                            :items="types"
                                                             v-model="ticketForm.ticket_type_id"
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :items="types"
+                                                            :label="langMap.main.type"
+                                                            item-text="name"
+                                                            item-value="id"
                                                         >
                                                         </v-select>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <v-select
-                                                            :label="langMap.main.category"
+                                                            v-model="ticketForm.category_id"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
+                                                            :items="categories"
+                                                            :label="langMap.main.category"
                                                             item-text="name"
                                                             item-value="id"
-                                                            :items="categories"
-                                                            v-model="ticketForm.category_id"
                                                         />
                                                     </div>
                                                     <div class="col-md-12">
                                                         <v-select
-                                                            :label="langMap.ticket.product_name"
+                                                            v-model="ticketForm.to_product_id"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
+                                                            :items="products"
+                                                            :label="langMap.ticket.product_name"
                                                             item-text="full_name"
                                                             item-value="id"
-                                                            :items="products"
-                                                            v-model="ticketForm.to_product_id"
                                                         />
                                                     </div>
                                                     <div class="col-md-12">
                                                         <v-textarea
-                                                            :label="langMap.main.description"
+                                                            v-model="ticketForm.description"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
+                                                            :label="langMap.main.description"
                                                             auto-grow
                                                             outlined
-                                                            rows="3"
                                                             row-height="25"
-                                                            v-model="ticketForm.description"
+                                                            rows="3"
                                                         ></v-textarea>
                                                     </div>
                                                     <div class="col-md-12">
@@ -151,20 +151,20 @@
                                                     </div>
                                                     <v-col cols="md-12">
                                                         <v-file-input
-                                                            chips
-                                                            multiple
-                                                            :label="langMap.main.attachments"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
-                                                            prepend-icon="mdi-paperclip"
+                                                            :label="langMap.main.attachments"
                                                             :show-size="1000"
+                                                            chips
+                                                            multiple
+                                                            prepend-icon="mdi-paperclip"
                                                             v-on:change="onFileChange('ticketForm')"
                                                         >
                                                             <template v-slot:selection="{ index, text }">
                                                                 <v-chip
                                                                     :color="themeBgColor"
-                                                                    class="ma-2"
                                                                     :text-color="themeFgColor"
+                                                                    class="ma-2"
                                                                 >
                                                                     {{ text }}
                                                                 </v-chip>
@@ -185,14 +185,14 @@
                                                     <v-tooltip bottom>
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-textarea
-                                                                :label="langMap.ticket.ip_address"
+                                                                v-model="ticketForm.connection_details"
                                                                 :color="themeBgColor"
                                                                 :item-color="themeBgColor"
+                                                                :label="langMap.ticket.ip_address"
                                                                 auto-grow
                                                                 outlined
-                                                                rows="3"
                                                                 row-height="25"
-                                                                v-model="ticketForm.connection_details"
+                                                                rows="3"
                                                                 v-bind="attrs"
                                                                 v-on="on"
                                                             ></v-textarea>
@@ -204,14 +204,14 @@
                                                     <v-tooltip bottom>
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-textarea
-                                                                :label="langMap.ticket.access_details"
+                                                                v-model="ticketForm.access_details"
                                                                 :color="themeBgColor"
                                                                 :item-color="themeBgColor"
+                                                                :label="langMap.ticket.access_details"
                                                                 auto-grow
                                                                 outlined
-                                                                rows="3"
                                                                 row-height="25"
-                                                                v-model="ticketForm.access_details"
+                                                                rows="3"
                                                                 v-bind="attrs"
                                                                 v-on="on"
                                                             ></v-textarea>
@@ -223,14 +223,14 @@
                                                     <v-tooltip v-model="availabilityTooltip" bottom>
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-textarea
-                                                                label="Availability of the contact person for callback – e.g. add working hours…"
+                                                                v-model="ticketForm.availability"
                                                                 :color="themeBgColor"
                                                                 :item-color="themeBgColor"
                                                                 auto-grow
+                                                                label="Availability of the contact person for callback – e.g. add working hours…"
                                                                 outlined
-                                                                rows="1"
                                                                 row-height="25"
-                                                                v-model="ticketForm.availability"
+                                                                rows="1"
                                                                 v-bind="attrs"
                                                                 v-on="on"
                                                             ></v-textarea>
@@ -245,8 +245,8 @@
                             </v-card-text>
                             <v-card-actions>
                                 <v-btn
-                                    style="color: white;"
                                     color="#4caf50"
+                                    style="color: white;"
                                     @click="submit()"
                                     v-text="langMap.main.create"
                                 >
@@ -254,16 +254,16 @@
 
                                 <v-btn
                                     class="ml-2"
-                                    style="color: white;"
                                     color="#4caf50"
+                                    style="color: white;"
                                     @click="assignDlg = true"
                                     v-text="langMap.ticket.create_and_assign"
                                 />
 
                                 <v-btn
                                     class="ml-2"
-                                    style="color: white;"
                                     color="#4caf50"
+                                    style="color: white;"
                                     @click="savetoLS()"
                                 >
                                     Save for later
@@ -279,7 +279,7 @@
         <v-row justify="center">
             <v-dialog v-model="createContactDlg" max-width="600px" persistent>
                 <v-card dense outlined>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.individuals.add_new }}
                     </v-card-title>
                     <v-card-text>
@@ -342,10 +342,10 @@
                                 <v-col cols="6">
                                     <p v-for="(item, i) in createContactForm.phones" :key="item.id" class="mb-2">
                                         <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
-                                                v-text="item.type.icon" dense small left/>
+                                                dense left small v-text="item.type.icon"/>
                                         {{ item.phone }}
 
-                                        <v-icon small right :color="themeBgColor" :title="langMap.main.delete"
+                                        <v-icon :color="themeBgColor" :title="langMap.main.delete" right small
                                                 @click="deletePhone(i)">mdi-trash-can
                                         </v-icon>
                                     </p>
@@ -484,17 +484,17 @@
                                    class="ma-2"
                                    small
                                    style="color: white;"
-                                   @click.native.stop="assignDlg = false; submit()"
                                    v-text="langMap.ticket.create_and_assign"
+                                   @click.native.stop="assignDlg = false; submit()"
                             />
                             <v-btn :color="themeBgColor"
                                    :disabled="!ticketForm.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                    class="ma-2"
-                                   small
                                    color="grey"
+                                   small
                                    style="color: white;"
-                                   @click.native.stop="ticketForm.to_company_user_id = null"
                                    v-text="langMap.ticket.clear_agent"
+                                   @click.native.stop="ticketForm.to_company_user_id = null"
                             />
                             <v-btn class="ma-2"
                                    color="white" small
@@ -917,8 +917,7 @@ export default {
                 });
             }
         },
-        initSaveForLater()
-        {
+        initSaveForLater() {
             if (this.ticketFormIsSaved === false) {
                 this.saveForLaterDialog = true
             } else {
