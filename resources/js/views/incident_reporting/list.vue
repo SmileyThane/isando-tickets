@@ -46,6 +46,7 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    first-day-of-week="1"
                                                     :active-picker.sync="activePicker"
                                                     :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
@@ -97,6 +98,7 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    first-day-of-week="1"
                                                     :active-picker.sync="activePicker"
                                                     :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
@@ -125,6 +127,7 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    first-day-of-week="1"
                                                     :active-picker.sync="activePicker"
                                                     :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
@@ -153,6 +156,7 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    first-day-of-week="1"
                                                     :active-picker.sync="activePicker"
                                                     :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"

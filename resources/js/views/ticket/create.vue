@@ -135,16 +135,10 @@
                                                         />
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <v-textarea
+                                                        <Tinymce
                                                             v-model="ticketForm.description"
-                                                            :color="themeBgColor"
-                                                            :item-color="themeBgColor"
-                                                            :label="langMap.main.description"
-                                                            auto-grow
-                                                            outlined
-                                                            row-height="25"
-                                                            rows="3"
-                                                        ></v-textarea>
+                                                            :placeholder="langMap.main.description"
+                                                        />
                                                     </div>
                                                     <div class="col-md-12">
                                                         <v-label>{{ langMap.ticket.access_data }}:</v-label>
@@ -753,6 +747,7 @@ export default {
             if (!this.ticketForm.name) {
                 return false;
             }
+            this.canBeRedirected = true
             this.overlay = true;
             this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0]
             this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0]

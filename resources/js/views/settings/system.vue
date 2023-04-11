@@ -606,6 +606,92 @@
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.main.activities
+                            }} ({{langMap.main.type}})
+                        </v-toolbar-title>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-data-table
+                            :headers="headers.activityTypes"
+                            :items="$store.getters['ActivityTypes/getActivityTypes']"
+                            :items-per-page="15"
+                            class="elevation-1"
+                            dense
+                        >
+                            <template v-slot:item.id="props">
+                                {{ props.item.id }}
+                            </template>
+                            <template v-slot:item.name="props">
+                                <v-edit-dialog
+                                    @cancel="saveActivityType(props.item)"
+                                    @close="saveActivityType(props.item)"
+                                    @open="saveActivityType(props.item)"
+                                    @save="saveActivityType(props.item)"
+                                >
+                                    {{ props.item.name }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.name"
+                                            :hint="langMap.tracking.settings.name"
+                                            :label="langMap.tracking.settings.name"
+                                            counter
+                                            single-line
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.actions="props">
+                                <v-btn
+                                    :color="themeBgColor"
+                                    icon
+                                    @click="removeActivityType(props.item.id)"
+                                >
+                                    <v-icon>mdi-delete</v-icon>
+                                </v-btn>
+                            </template>
+                        </v-data-table>
+                        <v-expansion-panels multiple>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.tracking.settings.add }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col class="pa-1" cols="md-12">
+                                                <v-text-field
+                                                    v-model="forms.activityType.name"
+                                                    :label="langMap.tracking.settings.name"
+                                                    required
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom dark fab right small
+                                                @click="createActivityType(); dialogCurrencies = false"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
                                 langMap.system_settings.kb_types
                             }}
                         </v-toolbar-title>
@@ -1943,6 +2029,25 @@ export default {
                         sortable: false,
                         value: 'actions',
                     }
+                ],
+                activityTypes: [
+                    {
+                        text: 'ID',
+                        align: 'start',
+                        sortable: false,
+                        value: 'id',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.main.name,
+                        align: 'start',
+                        sortable: false,
+                        value: 'name',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
                 ]
             },
             forms: {
@@ -1958,6 +2063,9 @@ export default {
                     slug: '',
                     symbol: ''
                 },
+                activityType: {
+                    name: ''
+                }
             },
             colorMenuCreate: false,
             colorMenu: {},
@@ -2000,6 +2108,7 @@ export default {
         this.debounceGetTags = _.debounce(this.__getTags, 1000);
         this.debounceGetServices = _.debounce(this.__getServices, 1000);
         this.debounceGetCurrencies = _.debounce(this.__getCurrencies, 1000);
+        this.debounceGetActivityTypes = _.debounce(this.__getActivityTypes, 1000);
         this.debounceGetLanguages = _.debounce(this.__getLanguages, 1000);
     },
     mounted() {
@@ -2007,6 +2116,7 @@ export default {
         this.debounceGetTags();
         this.debounceGetServices();
         this.debounceGetCurrencies();
+        this.debounceGetActivityTypes();
         this.getCompany();
         this.getCompanyLogo();
         this.getPhoneTypes();
@@ -2053,6 +2163,9 @@ export default {
         },
         __getCurrencies() {
             this.$store.dispatch('Currencies/getCurrencyList', {search: this.searchCurrency});
+        },
+        __getActivityTypes() {
+            this.$store.dispatch('ActivityTypes/getActivityTypes');
         },
         getCompany() {
             axios.get(`/api/main_company/name`).then(response => {
@@ -2768,6 +2881,17 @@ export default {
                     }
                 });
         },
+        createActivityType() {
+            this.$store.dispatch('ActivityTypes/createActivityType', this.forms.activityType)
+                .then(currency => {
+                if (currency) {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.activity_type_created_successfully;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetForm();
+                }
+            });
+        },
         getLangName(code) {
             const languages = this.$store.getters['Languages/getLanguages'];
             const foundLang = languages.find(i => i.locale === code);
@@ -2781,6 +2905,9 @@ export default {
         },
         saveCurrency(item) {
             this.$store.dispatch('Currencies/updateCurrency', item);
+        },
+        saveActivityType(item) {
+            this.$store.dispatch('ActivityTypes/updateActivityType', item);
         },
         removeTag(tagId) {
             this.$store.dispatch('Tags/deleteTag', tagId)
@@ -2821,6 +2948,16 @@ export default {
                     } else {
                         this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_removal_error;
                         this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        removeActivityType(id) {
+            this.$store.dispatch('ActivityTypes/deleteActivityType', id)
+                .then(result => {
+                    if (result) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.activity_type_deleted_successfully;
+                        this.actionColor = 'success'
                         this.snackbar = true;
                     }
                 });

@@ -54,6 +54,7 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    first-day-of-week="1"
                                                     v-model="$store.getters['IncidentReporting/getSelectedIR'].valid_till"
                                                     :color="themeBgColor"
                                                     :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
@@ -208,6 +209,7 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    first-day-of-week="1"
                                                     v-model="$store.getters['IncidentReporting/getSelectedIR'].occurred_on"
                                                     :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
@@ -239,6 +241,7 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    first-day-of-week="1"
                                                     v-model="$store.getters['IncidentReporting/getSelectedIR'].detected_on"
                                                     :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"
@@ -270,6 +273,7 @@
                                                     ></v-text-field>
                                                 </template>
                                                 <v-date-picker
+                                                    first-day-of-week="1"
                                                     v-model="$store.getters['IncidentReporting/getSelectedIR'].reported_on"
                                                     :active-picker.sync="validTillPicker"
                                                     :color="themeBgColor"

@@ -4,6 +4,7 @@ import EventBus from "./components/EventBus";
 import {
     Clients,
     Currencies,
+    ActivityTypes,
     IncidentReporting,
     Languages,
     Products,
@@ -32,6 +33,7 @@ export default new Vuex.Store({
         Team,
         Tickets,
         Currencies,
+        ActivityTypes,
         Languages,
         Timesheet,
         RiskRepository,
