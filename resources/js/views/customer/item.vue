@@ -965,14 +965,11 @@
                                     v-for="clientEmployee in client.employees"
                                     :key="clientEmployee.id"
                                     :cols="clientEmployee.flex"
-                                    class="ma-2"
+                                    class="ma-2 col-3"
                                     color="lightgrey"
 
                                 >
                                     <v-card
-                                        height="100"
-                                        max-width="200"
-                                        min-width="200"
                                         @click="showUser(clientEmployee)"
                                     >
                                         <v-card-text style="padding: 5px 10px;">
@@ -999,17 +996,45 @@
                                                         </v-avatar>
                                                         <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
                                                         {{ clientEmployee.employee.user_data.full_name }}
-                                                        <p class="caption mt-2"
-                                                           style="
+                                                        <br/>
+                                                    </span>
+                                                    <span style="height: 50px; display: block;">
+                                                        <span
+                                                            v-if="clientEmployee.employee.user_data.contact_phone"
+                                                            class="caption mt-2"
+                                                            style="
                                                             color: darkgrey;
                                                             margin: 0;
                                                             width: 180px;
                                                             text-overflow: ellipsis;
                                                             overflow: hidden;
-                                                            white-space: nowrap;">{{
-                                                                clientEmployee.description ? clientEmployee.description : '&nbsp;'
-                                                            }}</p>
+                                                            white-space: nowrap;"
+                                                        >
+                                                            {{
+                                                                clientEmployee.employee.user_data.contact_phone.type.name
+                                                            }}:
+                                                            {{
+                                                                clientEmployee.employee.user_data.contact_phone.phone
+                                                            }}
+                                                            <br/>
+                                                        </span>
+                                                    <span
+                                                        class="caption mt-2"
+                                                        style="
+                                                            color: darkgrey;
+                                                            margin: 0;
+                                                            width: 180px;
+                                                            text-overflow: ellipsis;
+                                                            overflow: hidden;
+                                                            white-space: nowrap;"
+                                                    >
+                                                            {{
+                                                            clientEmployee.description ? clientEmployee.description : '&nbsp;'
+                                                        }}
+                                                        </span>
+                                                    <br/>
                                                     </span>
+
                                                 </template>
                                                 <span>
                                                     {{ langMap.company.user }}:
@@ -1965,6 +1990,7 @@ export default {
                             company_id: '',
                             roles: [],
                             user_data: {
+                                contact_phone: {},
                                 phones: [],
                                 addresses: [],
                             }
