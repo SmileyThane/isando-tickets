@@ -747,6 +747,7 @@ export default {
             if (!this.ticketForm.name) {
                 return false;
             }
+            this.canBeRedirected = true
             this.overlay = true;
             this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0]
             this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0]
