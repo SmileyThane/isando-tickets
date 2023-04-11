@@ -13,3 +13,4 @@ export {default as RiskRepository} from './risk_repository';
 export {default as IncidentReporting} from './incident_reporting';
 export {default as SettingsIncident} from './settings_incident';
 export {default as KbTypes} from './kb_types';
+export {default as ActivityTypes} from './activity_types';
