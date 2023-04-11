@@ -856,7 +856,7 @@
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
-                <v-card>
+                <v-card v-if="$helpers.auth.checkPermissionByIds([105])">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
