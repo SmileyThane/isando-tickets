@@ -40,9 +40,12 @@ class EmailReceiverRepository
             $aFolder = $oClient->getFolder('INBOX');
             $mailCache = MailCache::latest()->first();
             Log::info('mail cache checked.');
-            $since = $mailCache ? $mailCache->created_at : Carbon::now()->subDays(2);
+            Log::info('mail cache last connection at: ' . $mailCache->created_at);
+            $since = //$mailCache ? $mailCache->created_at :
+                Carbon::now()->subDays(10);
             $messages = $aFolder->query()->since($since)->get();
             Log::info('messages are requested.');
+            Log::info('count: ' . count($messages));
             $this->handleEmailMessages($messages, $type);
             Log::info('mail receiving process was finished.');
             return ['success' => true];
@@ -56,9 +59,15 @@ class EmailReceiverRepository
     {
         $responseBody = null;
         foreach ($messages as $key => $message) {
-            $senderObject = $message->getSender()[0];
+
+            if ($message->getFrom()) {
+                $senderObject = $message->getFrom()[0];
+                $senderEmail = $senderObject->mail;
+            } else {
+                continue;
+            }
+
             $rawSubject = $message->getSubject();
-            $senderEmail = $senderObject->mail;
             $userGlobal = null;
             $email = Email::where(['email' => $senderEmail, 'entity_type' => User::class])->first();
             if ($email) {
