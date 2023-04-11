@@ -41,8 +41,7 @@ class EmailReceiverRepository
             $mailCache = MailCache::latest()->first();
             Log::info('mail cache checked.');
             Log::info('mail cache last connection at: ' . $mailCache->created_at);
-            $since = //$mailCache ? $mailCache->created_at :
-                Carbon::now()->subDays(10);
+            $since = $mailCache ? $mailCache->created_at : Carbon::now()->subDays(10);
             $messages = $aFolder->query()->since($since)->get();
             Log::info('messages are requested.');
             Log::info('count: ' . count($messages));
