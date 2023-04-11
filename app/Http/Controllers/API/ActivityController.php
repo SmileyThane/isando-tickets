@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ActivityController extends Controller
 {
-    public function __construct(
-        protected ActivityRepository $activityRepository,
-    )
+    protected $activityRepository;
+
+    public function __construct(ActivityRepository $activityRepository)
     {
+        $this->activityRepository = $activityRepository;
     }
 
     public function store(Request $request): JsonResponse
@@ -49,6 +50,7 @@ class ActivityController extends Controller
 
     public function storeType(Request $request)
     {
+        $request['company_id'] = Auth::user()->employee->companyData->id;
         $activityType = ActivityType::query()->create($request->all());
 
         return self::showResponse(true, $activityType);
@@ -56,6 +58,7 @@ class ActivityController extends Controller
 
     public function updateType(Request $request, $id)
     {
+        $request['company_id'] = Auth::user()->employee->companyData->id;
         $activityType = ActivityType::query()->find($id)->update($request->all());
 
         return self::showResponse(true, $activityType);
