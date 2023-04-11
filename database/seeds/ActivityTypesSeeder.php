@@ -65,6 +65,12 @@ class ActivityTypesSeeder extends Seeder
                     'name' => 'Other'
                 ]
             );
+            DB::table('activity_types')->updateOrInsert(
+                [
+                    'company_id' => $company->id,
+                    'name' => 'Meeting'
+                ]
+            );
         }
 
     }
