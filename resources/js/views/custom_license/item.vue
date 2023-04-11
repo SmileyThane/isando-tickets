@@ -587,6 +587,7 @@
             width="290px"
         >
             <v-date-picker
+                first-day-of-week="1"
                 v-model="tempExpDate"
                 :color="themeBgColor"
                 :locale="calendarLocale"

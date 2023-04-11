@@ -98,6 +98,7 @@
                                     ></v-text-field>
                                 </template>
                                 <v-date-picker
+                                    first-day-of-week="1"
                                     v-model="company.registration_date"
                                     :color="themeBgColor"
                                 ></v-date-picker>

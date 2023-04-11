@@ -1017,6 +1017,7 @@
                                                         ></v-text-field>
                                                     </template>
                                                     <v-date-picker
+                                                        first-day-of-week="1"
                                                         v-model="activityForm.date"
                                                         no-title
                                                         :color="themeBgColor"
