@@ -1958,6 +1958,9 @@ export default {
                     slug: '',
                     symbol: ''
                 },
+                activityType: {
+                    name: ''
+                }
             },
             colorMenuCreate: false,
             colorMenu: {},
@@ -2000,6 +2003,7 @@ export default {
         this.debounceGetTags = _.debounce(this.__getTags, 1000);
         this.debounceGetServices = _.debounce(this.__getServices, 1000);
         this.debounceGetCurrencies = _.debounce(this.__getCurrencies, 1000);
+        this.debounceGetActivityTypes = _.debounce(this.__getActivityTypes, 1000);
         this.debounceGetLanguages = _.debounce(this.__getLanguages, 1000);
     },
     mounted() {
@@ -2007,6 +2011,7 @@ export default {
         this.debounceGetTags();
         this.debounceGetServices();
         this.debounceGetCurrencies();
+        this.debounceGetActivityTypes();
         this.getCompany();
         this.getCompanyLogo();
         this.getPhoneTypes();
@@ -2053,6 +2058,9 @@ export default {
         },
         __getCurrencies() {
             this.$store.dispatch('Currencies/getCurrencyList', {search: this.searchCurrency});
+        },
+        __getActivityTypes() {
+            this.$store.dispatch('ActivityTypes/getActivityTypes');
         },
         getCompany() {
             axios.get(`/api/main_company/name`).then(response => {
@@ -2768,6 +2776,17 @@ export default {
                     }
                 });
         },
+        createActivityType() {
+            this.$store.dispatch('ActivityTypes/createActivityType', this.forms.activityType)
+                .then(currency => {
+                if (currency) {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.activity_type_created_successfully;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetForm();
+                }
+            });
+        },
         getLangName(code) {
             const languages = this.$store.getters['Languages/getLanguages'];
             const foundLang = languages.find(i => i.locale === code);
@@ -2781,6 +2800,9 @@ export default {
         },
         saveCurrency(item) {
             this.$store.dispatch('Currencies/updateCurrency', item);
+        },
+        saveActivityType(item) {
+            this.$store.dispatch('ActivityTypes/updateActivityType', item);
         },
         removeTag(tagId) {
             this.$store.dispatch('Tags/deleteTag', tagId)
@@ -2821,6 +2843,16 @@ export default {
                     } else {
                         this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_removal_error;
                         this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        removeActivityType(id) {
+            this.$store.dispatch('ActivityTypes/deleteActivityType', id)
+                .then(result => {
+                    if (result) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.activity_type_deleted_successfully;
+                        this.actionColor = 'success'
                         this.snackbar = true;
                     }
                 });
