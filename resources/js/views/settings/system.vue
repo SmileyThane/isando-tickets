@@ -606,6 +606,92 @@
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.main.activities
+                            }} ({{langMap.main.type}})
+                        </v-toolbar-title>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-data-table
+                            :headers="headers.activityTypes"
+                            :items="$store.getters['ActivityTypes/getActivityTypes']"
+                            :items-per-page="15"
+                            class="elevation-1"
+                            dense
+                        >
+                            <template v-slot:item.id="props">
+                                {{ props.item.id }}
+                            </template>
+                            <template v-slot:item.name="props">
+                                <v-edit-dialog
+                                    @cancel="saveActivityType(props.item)"
+                                    @close="saveActivityType(props.item)"
+                                    @open="saveActivityType(props.item)"
+                                    @save="saveActivityType(props.item)"
+                                >
+                                    {{ props.item.name }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.name"
+                                            :hint="langMap.tracking.settings.name"
+                                            :label="langMap.tracking.settings.name"
+                                            counter
+                                            single-line
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.actions="props">
+                                <v-btn
+                                    :color="themeBgColor"
+                                    icon
+                                    @click="removeActivityType(props.item.id)"
+                                >
+                                    <v-icon>mdi-delete</v-icon>
+                                </v-btn>
+                            </template>
+                        </v-data-table>
+                        <v-expansion-panels multiple>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.tracking.settings.add }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col class="pa-1" cols="md-12">
+                                                <v-text-field
+                                                    v-model="forms.activityType.name"
+                                                    :label="langMap.tracking.settings.name"
+                                                    required
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom dark fab right small
+                                                @click="createActivityType(); dialogCurrencies = false"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
                                 langMap.system_settings.kb_types
                             }}
                         </v-toolbar-title>
@@ -1937,6 +2023,25 @@ export default {
                         align: 'start',
                         sortable: true,
                         value: 'symbol',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
+                ],
+                activityTypes: [
+                    {
+                        text: 'ID',
+                        align: 'start',
+                        sortable: false,
+                        value: 'id',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.main.name,
+                        align: 'start',
+                        sortable: false,
+                        value: 'name',
                     },
                     {
                         text: this.$store.state.lang.lang_map.tracking.settings.actions,
