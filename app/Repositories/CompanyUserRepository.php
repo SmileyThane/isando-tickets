@@ -53,24 +53,39 @@ class CompanyUserRepository
                     ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
                     ->get();
             }
-            $clientIds = Client::query()
-                ->whereIn('id', $assignedClients->pluck('model_id')->toArray())
-                ->get()
+            $clientIdsQuery = Client::query()
+                ->whereIn('id', $assignedClients->pluck('model_id')->toArray());
+            if ($request->with_trashed) {
+                $clientIdsQuery->withTrashed();
+            }
+            $clientIds = $clientIdsQuery->get()
                 ->pluck('id')
                 ->toArray();
             $freeCompanyUsers = [];
         } elseif (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
-            $clientIds = Client::where([
+            $clientIdsQuery = Client::where([
                 'supplier_type' => Company::class,
                 'supplier_id' => $employee->company_id
-            ])->get()->pluck('id')->toArray();
-            $freeCompanyUsers = CompanyUser::where([
+            ]);
+            if ($request->with_trashed) {
+                $clientIdsQuery->withTrashed();
+            }
+            $clientIds = $clientIdsQuery->get()->pluck('id')->toArray();
+            $freeCompanyUsersQuery = CompanyUser::where([
                 ['company_id', $employee->company_id],
                 ['is_clientable', true]
-            ])->withTrashed($request->with_trashed)->get()->pluck('id')->toArray();
+            ]);
+            if($request->with_trashed) {
+                $freeCompanyUsersQuery->withTrashed();
+            }
+
+            $freeCompanyUsers = $freeCompanyUsersQuery->get()->pluck('id')->toArray();
         }
 
-        $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds)->withTrashed($request->with_trashed);
+        $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds);
+            if($request->with_trashed) {
+                $clientCompanyUsers->withTrashed();
+            }
         $companyUsers = CompanyUser::whereIn(
             'id',
             array_merge(
@@ -80,10 +95,14 @@ class CompanyUserRepository
         )
             ->has('userData')
             ->with(['userData' => function ($query) use ($request) {
-                $query->withTrashed($request->with_trashed);
-            }, 'assignedToClients.clients', 'userData.emails.type'])
-            ->withTrashed($request->with_trashed);
+                if ($request->with_trashed) {
+                    $query->withTrashed();
+                }
+            }, 'assignedToClients.clients', 'userData.emails.type']);
 
+            if ($request->with_trashed) {
+                $companyUsers->withTrashed();
+            }
 
         if ($request->search) {
             $request['page'] = 1;
@@ -91,8 +110,10 @@ class CompanyUserRepository
                 'userData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('surname', 'like', '%' . $request->search . '%')
-                        ->withTrashed($request->with_trashed);
+                        ->orWhere('surname', 'like', '%' . $request->search . '%');
+                    if($request->with_trashed) {
+                        $query->withTrashed();
+                    }
                 }
             );
         }
