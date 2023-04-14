@@ -1000,7 +1000,6 @@
                                                     </span>
                                                     <span style="height: 50px; display: block;">
                                                         <span
-                                                            v-if="clientEmployee.employee.user_data.contact_phone"
                                                             class="caption mt-2"
                                                             style="
                                                             color: darkgrey;
@@ -1011,27 +1010,30 @@
                                                             white-space: nowrap;"
                                                         >
                                                             {{
-                                                                clientEmployee.employee.user_data.contact_phone.type.name
-                                                            }}:
-                                                            {{
-                                                                clientEmployee.employee.user_data.contact_phone.phone
+                                                                clientEmployee.description ? clientEmployee.description : '&nbsp;'
                                                             }}
-                                                            <br/>
                                                         </span>
-                                                    <span
-                                                        class="caption mt-2"
-                                                        style="
+                                                        <span
+                                                            v-if="clientEmployee.employee.user_data.contact_phone"
+                                                            class="caption mt-2"
+                                                            style="
                                                             color: darkgrey;
                                                             margin: 0;
                                                             width: 180px;
                                                             text-overflow: ellipsis;
                                                             overflow: hidden;
                                                             white-space: nowrap;"
-                                                    >
+                                                        >
+                                                            <span v-if="clientEmployee.employee.user_data.contact_phone.type">{{
+                                                                clientEmployee.employee.user_data.contact_phone.type.name
+                                                            }}:
+                                                            </span>
                                                             {{
-                                                            clientEmployee.description ? clientEmployee.description : '&nbsp;'
-                                                        }}
+                                                                clientEmployee.employee.user_data.contact_phone.phone
+                                                            }}
+                                                            <br/>
                                                         </span>
+
                                                     <br/>
                                                     </span>
 
