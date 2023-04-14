@@ -10,7 +10,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="item in $store.getters[`SettingsIncident/${entity}/getItems`]">
-                    <td>{{ item.name }}</td>
+                    <td :style="`color: ${item.color || '#000'}`">{{ item.name }}</td>
                     <td>
                         <v-btn icon @click="open(item.id)">
                             <v-icon>mdi-pencil</v-icon>

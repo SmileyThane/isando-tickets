@@ -282,6 +282,8 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
                 {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
                 {text: `${this.$store.state.lang.lang_map.main.supplier}`, value: 'supplier_name'},
+                {text: `${this.$store.state.lang.lang_map.main.last_activity}`, value: 'last_activity'},
+
             ],
             customersSearch: '',
             customers: [],
