@@ -35,7 +35,7 @@
                             </v-col>
                             <v-col :cols="client.logo_url ? 4 : 6">
                                 <h3 class="mb-0">{{ client.client_name }}</h3>
-                                <h5 class="mb-3">{{ client.supplier_name }}</h5>
+                                <h5 class="mb-3" style="cursor: pointer;" @click="showSupplier">{{ client.supplier_name }}</h5>
                                 <h4 class="mb-3">{{ client.number }}</h4>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
@@ -2650,6 +2650,10 @@ export default {
         },
         showProduct(item) {
             this.$router.push(`/product/${item.id}`)
+        },
+        showSupplier() {
+            let to = this.client.supplier_type ===  'App\\Client' ? 'customer' : 'company';
+            this.$router.push(`/${to}/${this.client.supplier_id}`)
         },
         changeIsActive(item) {
             let request = {}
