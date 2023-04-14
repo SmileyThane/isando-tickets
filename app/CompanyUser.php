@@ -96,12 +96,12 @@ class CompanyUser extends Model
 
     public function assignedToClients(): HasMany
     {
-        return $this->hasMany(ClientCompanyUser::class, 'company_user_id', 'id');
+        return $this->hasMany(ClientCompanyUser::class, 'company_user_id', 'id')->withTrashed();
     }
 
     public function userData(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
     }
 
     public function companyData(): HasOne
