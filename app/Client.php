@@ -18,7 +18,7 @@ class Client extends Model
     protected $fillable = ['name', 'short_name', 'description', 'photo', 'city', 'country_id', 'is_active', 'company_external_id', 'logo_url'];
 
     protected $appends = [
-        'contact_phone', 'contact_email', 'supplier_name'
+        'contact_phone', 'contact_email', 'supplier_name', 'last_activity'
     ];
 
     public function activities(): MorphMany
@@ -128,5 +128,12 @@ class Client extends Model
     public function owner(): HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'owner_id');
+    }
+
+    public function getLastActivityAttribute()
+    {
+        $activity = $this->activities()->latest()->first();
+
+        return $activity ? $activity->title : '';
     }
 }
