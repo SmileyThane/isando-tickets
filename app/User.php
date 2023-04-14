@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function employee(): HasOne
     {
-        return $this->hasOne(CompanyUser::class, 'user_id', 'id');
+        return $this->hasOne(CompanyUser::class, 'user_id', 'id')->withTrashed();
     }
 
     public function phoneTypes(): MorphMany
