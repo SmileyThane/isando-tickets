@@ -18,6 +18,13 @@ class CompanyUser extends Model
 
     protected $appends = ['roles', 'role_names', 'color'];
 
+    protected $fillable = [
+        'user_id',
+        'company_id',
+        'description',
+        'is_clientable',
+    ];
+
     public function getRoleNamesAttribute()
     {
         $result = null;
