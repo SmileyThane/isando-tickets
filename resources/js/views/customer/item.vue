@@ -1902,6 +1902,28 @@
 
         </v-row>
 
+        <template>
+            <v-dialog v-model="emailTrashed" max-width="480" persistent>
+                <v-card>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.company.email_exist }} ? ({{ employeeForm.email }})
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" text @click="createOrRestoreEmployee('create')">
+                            {{ langMap.main.create }}
+                        </v-btn>
+                        <v-btn color="blue darken-1" text @click="createOrRestoreEmployee('restore')">
+                            {{ langMap.individuals.restore }}
+                        </v-btn>
+                        <v-btn color="grey darken-1" text  @click="emailTrashed = false">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
+
     </v-container>
 </template>
 
@@ -2097,7 +2119,8 @@ export default {
                 symbol: ''
             },
             activityTypes: [],
-            supplierEmployees: []
+            supplierEmployees: [],
+            emailTrashed: false,
         }
     },
     mounted() {
@@ -2237,12 +2260,21 @@ export default {
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
+                    if (response.error.email_trashed) {
+                        this.emailTrashed = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
                 }
 
             });
+        },
+        createOrRestoreEmployee(action) {
+            this.emailTrashed = false;
+            this.employeeForm.action = action;
+            this.addEmployee();
         },
         editContactInfo() {
             if (this.contactInfoEditBtn === true) {

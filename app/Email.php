@@ -23,4 +23,10 @@ class Email extends Model
     {
         return $this->hasOne(EmailType::class, 'id', 'email_type');
     }
+
+    public function editExistingEmail(): void
+    {
+        $this->email = "$this->email#edited#" . date('Y-m-d#H-i-s');
+        $this->save();
+    }
 }

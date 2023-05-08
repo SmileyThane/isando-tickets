@@ -27,7 +27,8 @@ class Company extends Model
     public function employees(): HasMany
     {
         return $this->hasMany(CompanyUser::class, 'company_id', 'id')
-            ->has('userData');
+            ->has('userData')
+            ->with(['userData.notificationStatuses']);
     }
 
     public function products(): HasMany

@@ -15,6 +15,10 @@ class Ticket extends Model
 {
     use SoftDeletes;
 
+    const ACTION_NEW_TICKET = 'new_ticket';
+    const ACTION_UPDATE_TICKET = 'update_ticket';
+    const ACTION_ATTACH_TEAM_TO_TICKET = 'attach_team_to_ticket';
+
     protected $fillable = [
         'id', 'number', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
         'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment',

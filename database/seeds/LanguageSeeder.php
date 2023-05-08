@@ -473,6 +473,7 @@ class LanguageSeeder extends Seeder
                             'role_updated' => 'Role updated',
                             'role_deleted' => 'Role deleted',
                             'delete_employee_msg' => 'Are you sure that you want to delete this user? All information relating to this user will be lost after you confirm the deletion.',
+                            'email_exist' => 'This email address has been used by the system and was deleted. Would you like restore to the deleted account or enter a new individual?'
                         ],
                     'customer' =>
                         [
@@ -1479,6 +1480,7 @@ class LanguageSeeder extends Seeder
                             'role_updated' => 'Rolle aktualisiert',
                             'role_deleted' => 'Rolle gelöscht',
                             'delete_employee_msg' => 'Sind Sie sicher, dass Sie diesen Benutzer löschen möchten? Alle Informationen zu diesem Benutzer gehen verloren, wenn Sie die Löschung bestätigen.',
+                            'email_exist' => 'Diese E-Mail-Adresse wurde vom System verwendet und wurde gelöscht. Möchten Sie das gelöschte Konto wiederherstellen oder eine neue Person eingeben?'
                         ],
                         'customer' => [
                             'customer' => 'Firma',

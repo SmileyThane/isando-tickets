@@ -140,7 +140,7 @@ class UserRepository
 //            UserNotificationStatus::withTrashed()->where('user_id', $id)->restore();
 
             ClientCompanyUser::withTrashed()->whereIn('company_user_id', CompanyUser::where('user_id', $id)->pluck('id')->toArray())->restore();
-            CompanyUser::withTrashed()->where('user_id', $id)->delete();
+            CompanyUser::withTrashed()->where('user_id', $id)->restore();
 
             $user->restore();
             $result = true;
