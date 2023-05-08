@@ -1647,7 +1647,9 @@ export default {
             }
         },
         mainCompany() {
-            this.currency = this.$store.state.mainCompany.currency;
+            if (this.$store.state.mainCompany.currency) {
+                this.currency = this.$store.state.mainCompany.currency;
+            }
         },
     },
     methods: {

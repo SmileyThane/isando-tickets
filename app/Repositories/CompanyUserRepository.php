@@ -178,12 +178,33 @@ class CompanyUserRepository
     public function invite(Request $request)
     {
         $isClientable = $request['is_clientable'] ?? false;
-        $isNew = false;
+        $isNew = $isRestored = false;
         $request['password'] = Controller::getRandomString();
         $request['password_confirmation'] = $request['password'];
-        $email = Email::where('entity_type', User::class)->where('email', $request['email'])->first();
+        $email = Email::withTrashed()->where('entity_type', User::class)->where('email', $request['email'])->first();
         if ($email) {
-            $user = User::find($email->entity_id);
+            if ($email->trashed()) {
+                switch ($request['action']) {
+                    case User::ACTION_RESTORE:
+                        $user = User::withTrashed()->find($email->entity_id);
+                        $this->userRepo->restoreDeleted($user->id);
+                        $isRestored = true;
+                        break;
+                    case User::ACTION_CREATE:
+                        $email->editExistingEmail();
+                        $isValid = $this->userRepo->validate($request, $new = true);
+                        if ($isValid !== true) {
+                            return Controller::showResponse(false, $isValid);
+                        }
+                        $user = $this->userRepo->create($request);
+                        $isNew = true;
+                        break;
+                    default:
+                        return ['email_trashed' => true];
+                }
+            } else {
+                $user = User::find($email->entity_id);
+            }
         } else {
             $isValid = $this->userRepo->validate($request, $new = true);
             if ($isValid !== true) {
@@ -193,7 +214,7 @@ class CompanyUserRepository
             $isNew = true;
         }
         $request['user_id'] = $user->id;
-        $isValid = $this->validate($request);
+        $isValid = $this->validate($request, $isRestored);
         if ($isValid === true) {
             $companySettings = Settings::firstOrCreate([
                 'entity_id' => $request['company_id'],
@@ -205,7 +226,14 @@ class CompanyUserRepository
                 $user->timezone_id = $companySettings->data['timezone'];
                 $user->save();
             }
-            $companyUser = $this->create($request['company_id'], $request['user_id'], $isClientable, $request['description']);
+            $companyUser = CompanyUser::firstOrCreate([
+                'user_id' => $request['user_id'],
+                'company_id' => $request['company_id'],
+            ],
+                [
+                    'is_clientable' => $isClientable,
+                    'description' => $request['description'],
+                ]);
             if ($user->is_active) {
                 $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
                 if ($isNew === true) {
@@ -244,16 +272,17 @@ class CompanyUserRepository
         return $isValid;
     }
 
-    public function validate($request)
+    public function validate($request, bool $isRestored = true)
     {
         $validator = Validator::make($request->all(), [
             'company_id' => 'required',
             'user_id' => [
                 'required',
-                Rule::unique('company_users')->where(function ($query) use ($request) {
-                    return $query->where('company_id', $request['company_id'])
-                        ->where('user_id', $request['user_id']);
-                }),
+                $isRestored ? '' : Rule::unique('company_users')
+                    ->where(function ($query) use ($request) {
+                        return $query->where('company_id', $request['company_id'])
+                            ->where('user_id', $request['user_id']);
+                    }),
             ],
         ]);
 
