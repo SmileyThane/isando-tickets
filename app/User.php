@@ -15,6 +15,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, SoftDeletes;
 
+    const ACTION_CREATE = 'create';
+    const ACTION_RESTORE = 'restore';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -227,5 +230,14 @@ class User extends Authenticatable
     public function ixarmaLink(): HasOne
     {
         return $this->hasOne(IxarmaLink::class, 'user_id', 'id');
+    }
+
+    /**
+     * @param int $status
+     * @return bool
+     */
+    public function hasNotificationStatus(int $status): bool
+    {
+        return $this->notificationStatuses->containsStrict('status', $status);
     }
 }

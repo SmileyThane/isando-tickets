@@ -17,6 +17,7 @@ use App\TicketFilter;
 use App\TicketMerge;
 use App\TicketNotice;
 use App\TicketStatus;
+use App\UserNotificationStatus;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -306,6 +307,7 @@ class TicketRepository
     public function update(Request $request, $id)
     {
         $ticket = Ticket::with('followers')->find($id);
+        $request['ticket_action'] = Ticket::ACTION_UPDATE_TICKET;
         if ($request->status_id !== $ticket->status_id) {
             $this->updateStatus($request, $id);
         } else {
@@ -354,9 +356,9 @@ class TicketRepository
         $ticket->status_id = $request->status_id;
         $ticket->save();
         $this->emailEmployees(
-            [$ticket->creator, $ticket->contact, $ticket->assigned_person],
+            $this->filterEmailRecipients($ticket->to->employees, $ticket, $request->ticket_action ?? ''),
             $ticket,
-            ChangedTicketStatus::class
+            ChangedTicketStatus::class,
         );
         // Notify followers
         $followers = $ticket->followers()->get()->all();
@@ -672,5 +674,51 @@ class TicketRepository
         $ticket->save();
 
         return true;
+    }
+
+    public function filterEmailRecipients($employees, Ticket $ticket, string $notificationType): array
+    {
+        $recipients = [];
+        foreach ($employees as $employee) {
+            $user = $employee->userData;
+            if ($user->notificationStatuses->isEmpty()) {
+                $recipients[] = $employee;
+            } else {
+                switch ($notificationType) {
+                    case Ticket::ACTION_NEW_TICKET:
+                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_COMPANY)
+                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_ME)
+                                && $user->id === $ticket->assignedPerson->user_id)
+                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_TEAM)
+                                && $ticket->team->employees->contains('company_user_id', $employee->id))
+                        ) {
+                            $recipients[] = $employee;
+                        }
+                        break;
+                    case Ticket::ACTION_UPDATE_TICKET:
+                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_COMPANY)
+                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_ME)
+                                && $user->id === $ticket->assignedPerson->id)
+                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_TEAM)
+                                && $ticket->team->employees->contains('company_user_id', $employee->id))
+                        ) {
+                            $recipients[] = $employee;
+                        }
+                        break;
+                    case Ticket::ACTION_ATTACH_TEAM_TO_TICKET:
+                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_TEAM)) {
+                            $recipients[] = $employee;
+                        }
+                        break;
+                    default:
+                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_CLIENT_RESPONSE_ASSIGNED_TO_ME)
+                            && $user->id === $ticket->assignedPerson->user_id) {
+                            $recipients[] = $employee;
+                        }
+                }
+            }
+        }
+
+        return $recipients;
     }
 }

@@ -120,7 +120,11 @@ class TicketController extends Controller
 
         if ($result && $hasAccess) {
             $result = $this->ticketRepo->create($request);
-            $this->ticketRepo->emailEmployees($result->to->employees, $result, NewTicket::class);
+            $this->ticketRepo->emailEmployees(
+                $this->ticketRepo->filterEmailRecipients($result->to->employees, $result, Ticket::ACTION_NEW_TICKET),
+                $result,
+                NewTicket::class,
+            );
             $success = true;
         }
 
@@ -174,7 +178,11 @@ class TicketController extends Controller
             $result = $this->ticketRepo->attachTeam($request, $id);
             $employees = Team::find($request->team_id)->employees;
             $ticket = Ticket::find($id);
-            $this->ticketRepo->emailEmployees($employees, $ticket, NewTicket::class);
+            $this->ticketRepo->emailEmployees(
+                $this->ticketRepo->filterEmailRecipients($employees, $ticket, Ticket::ACTION_ATTACH_TEAM_TO_TICKET),
+                $ticket,
+                NewTicket::class
+            );
         }
 
         return self::showResponse($result);
