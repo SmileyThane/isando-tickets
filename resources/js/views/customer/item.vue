@@ -2867,7 +2867,14 @@ export default {
                 Array.from(this.activityForm.files).forEach(file => formData.append('files[]', file));
             }
 
-            axios.post(`/api/activities/${this.activityForm.id ?? ''}`, formData, config).then(response => {
+            let request
+            if(this.activityForm.id) {
+                request = axios.put(`/api/activities/${this.activityForm.id}`, formData, config)
+            } else {
+                request = axios.post(`/api/activities`, formData, config)
+            }
+
+            request.then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.activityFormPanel = []
