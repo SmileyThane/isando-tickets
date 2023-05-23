@@ -2482,7 +2482,7 @@ export default {
                 Array.from(this.activityForm.files).forEach(file => formData.append('files[]', file));
             }
 
-            let id = this.activityForm.id `/${this.activityForm.id}` ?? ''
+            let id = this.activityForm.id ? `/${this.activityForm.id}` : ''
             axios.post(`/api/activities${id}`, formData, config).then(response => {
                 response = response.data
                 if (response.success === true) {
