@@ -42,8 +42,7 @@ class ActivityRepository
     public function update(array $data, int $id): Activity
     {
         $data['datetime'] = Carbon::parse(($data['date'] ?? null) . ' ' . ($data['time'] ?? null));
-
-        $activity = tap(Activity::query()->find($id))->update($data);
+        $activity = Activity::query()->find($id)->update($data);
 
         $this->saveAttachments($data['files'] ?? [], $activity->id);
 
