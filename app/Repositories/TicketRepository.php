@@ -692,6 +692,7 @@ class TicketRepository
                     case Ticket::ACTION_NEW_TICKET:
                         if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_COMPANY)
                             || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_ME)
+                                && $ticket->assignedPerson
                                 && $user->id === $ticket->assignedPerson->user_id)
                             || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_TEAM)
                                 && $ticket->team->employees->contains('company_user_id', $employee->id))
@@ -702,6 +703,7 @@ class TicketRepository
                     case Ticket::ACTION_UPDATE_TICKET:
                         if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_COMPANY)
                             || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_ME)
+                                && $ticket->assignedPerson
                                 && $user->id === $ticket->assignedPerson->id)
                             || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_TEAM)
                                 && $ticket->team->employees->contains('company_user_id', $employee->id))
@@ -716,6 +718,7 @@ class TicketRepository
                         break;
                     default:
                         if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_CLIENT_RESPONSE_ASSIGNED_TO_ME)
+                            && $ticket->assignedPerson
                             && $user->id === $ticket->assignedPerson->user_id) {
                             $recipients[] = $employee;
                         }
