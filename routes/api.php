@@ -406,7 +406,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('limit_group/employee/{id}', [LimitationGroupController::class, 'removeCompanyUser']);
 
     Route::post('activities', [ActivityController::class, 'store']);
-    Route::put('activities/{id}', [ActivityController::class, 'update']);
+    Route::patch('activities/{id}', [ActivityController::class, 'update']);
     Route::delete('activities/{id}', [ActivityController::class, 'destroy']);
     Route::get('activities/types', [ActivityController::class, 'getTypes']);
     Route::delete('activities/types/{id}', [ActivityController::class, 'destroyType']);

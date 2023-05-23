@@ -10,10 +10,9 @@ class ActivityRepository
     /**
      * @param FileRepository $fileRepository
      */
-    public function __construct(
-        protected FileRepository $fileRepository,
-    )
+    public function __construct(protected FileRepository $fileRepository)
     {
+
     }
 
     /**
@@ -42,9 +41,7 @@ class ActivityRepository
     public function update(array $data, int $id): Activity
     {
         $data['datetime'] = Carbon::parse(($data['date'] ?? null) . ' ' . ($data['time'] ?? null));
-
         $activity = tap(Activity::query()->find($id))->update($data);
-
         $this->saveAttachments($data['files'] ?? [], $activity->id);
 
         return $activity->load('attachments');
