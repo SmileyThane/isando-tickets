@@ -717,6 +717,24 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
+                                    <v-col
+                                        v-if="item.attachments && item.attachments.length > 0"
+                                        cols="12">
+                                        <h4>{{ langMap.main.attachments }}</h4>
+                                        <div
+                                            v-for="attachment in item.attachments"
+                                        >
+                                            <v-chip
+                                                :color="themeBgColor"
+                                                :href="attachment.link"
+                                                :text-color="themeFgColor"
+                                                class="ma-2"
+
+                                            >
+                                                {{ attachment.name }}
+                                            </v-chip>
+                                        </div>
+                                    </v-col>
                                 </td>
                             </template>
                         </v-data-table>
