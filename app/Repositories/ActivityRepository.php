@@ -7,13 +7,16 @@ use Carbon\Carbon;
 
 class ActivityRepository
 {
+    protected $fileRepository;
+
     /**
      * @param FileRepository $fileRepository
      */
     public function __construct(
-        protected FileRepository $fileRepository,
+        FileRepository $fileRepository,
     )
     {
+        $this->fileRepository = $fileRepository;
     }
 
     /**
