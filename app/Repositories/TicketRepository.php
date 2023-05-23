@@ -681,6 +681,10 @@ class TicketRepository
         $recipients = [];
         foreach ($employees as $employee) {
             $user = $employee->userData;
+            if (!$user) {
+                continue;
+            }
+
             if ($user->notificationStatuses->isEmpty()) {
                 $recipients[] = $employee;
             } else {
