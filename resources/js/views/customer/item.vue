@@ -2893,7 +2893,7 @@ export default {
                 }
             }
             if (this.activityForm.id) {
-                formData.append('_method', 'put');
+                formData.append('_method', 'patch');
             }
             if (this.activityForm.files) {
                 Array.from(this.activityForm.files).forEach(file => formData.append('files[]', file));
