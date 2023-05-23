@@ -2484,7 +2484,7 @@ export default {
 
             let request
             if(this.activityForm.id) {
-                request = axios.put(`/api/activities/${this.activityForm.id}`, formData, config)
+                request = axios.patch(`/api/activities/${this.activityForm.id}`, formData, config)
             } else {
                 request = axios.post(`/api/activities`, formData, config)
             }
