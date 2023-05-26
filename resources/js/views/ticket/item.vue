@@ -258,6 +258,25 @@
                                         </template>
                                     </v-file-input>
                                 </div>
+                                <v-col
+                                    v-if="ticket.attachments && ticket.attachments.length > 0"
+                                    cols="12">
+                                    <h4>{{ langMap.main.attachments }}</h4>
+                                    <div
+                                        v-for="attachment in ticket.attachments"
+                                    >
+                                        <v-chip
+                                            :color="themeBgColor"
+                                            :href="attachment.link"
+                                            :text-color="themeFgColor"
+                                            class="ma-2"
+                                            close
+                                            @click:close="removeAttachment(attachment.id)"
+                                        >
+                                            {{ attachment.name }}
+                                        </v-chip>
+                                    </div>
+                                </v-col>
                             </div>
                         </v-form>
                     </v-card-text>
@@ -2941,6 +2960,24 @@ export default {
                 this.globalTimer = moment();
                 this.__globalTimer();
             }, 1000);
+        },
+        removeAttachment(id) {
+            axios.delete(`/api/file/${id}`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.ticket.attachments.splice(
+                        this.ticket.attachments.findIndex(item => item.id === id),
+                        1
+                    );
+                    this.snackbarMessage = this.langMap.kb.attachment_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
         },
     },
     computed: {
