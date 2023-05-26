@@ -83,7 +83,7 @@ class KbRepository
             $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
                 $query->where('category_id', $category_id);
             });
-        } elseif (empty($search)) {
+        } elseif (empty($search) && empty($tags)) {
             $articles = $articles->whereDoesntHave('categories');
         }
 
