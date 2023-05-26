@@ -1199,10 +1199,10 @@
                                             v-on="on"
                                             icon
                                             @click.native.stop="removeEmployeeProcess(item)">
-                                            <v-icon small>mdi-delete</v-icon>
+                                            <v-icon small>mdi-link-off</v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{ langMap.company.delete_contact }}</span>
+                                    <span>{{ langMap.company.unlink_contact }}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
@@ -1278,7 +1278,7 @@
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
-                            {{ langMap.main.delete }}
+                            {{ langMap.main.unlink }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1849,7 +1849,8 @@ export default {
                 if (response.success === true) {
                     this.userData = response.data
                     this.primaryEmailId = this.userData.email_id
-                    this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
+                    const employeeCompanies = this.userData.employee.assigned_to_clients.filter(item => item.deleted_at === null)
+                    this.companies = employeeCompanies.length > 0 ? employeeCompanies : this.userData.employee.companies
                     // console.log(this.companies);
                     this.employeeForm.company_user_id = this.userData.employee.id
                     this.activityForm.model_id = this.userData.employee.id
@@ -2308,7 +2309,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = this.langMap.company.employee_added;
+                    this.snackbarMessage = this.langMap.company.employee_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
