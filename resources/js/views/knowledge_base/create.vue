@@ -405,9 +405,6 @@ export default {
                     if (response.success === true) {
                         let that = this;
                         this.article = response.data;
-                        Array.from(this.article.categories).forEach(function (category) {
-                            that.categories.push(category.id);
-                        });
                         this.featured = this.article.featured_image ? this.article.featured_image.link : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
                         if (this.$refs.fileupload) {
                             this.$refs.fileupload.reset();
@@ -415,6 +412,9 @@ export default {
                         if (this.$refs.fileupload_de) {
                             this.$refs.fileupload_de.reset();
                         }
+                        setTimeout(() => Array.from(this.article.categories).forEach(function (category) {
+                            that.categories.push(category.id);
+                        }), 2000);
                         this.$forceUpdate();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
