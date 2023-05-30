@@ -88,11 +88,11 @@ class EmailReceiverRepository
                         })->first();
                     $attachments = $this->handleEmailAttachments($message->getAttachments());
                     if ($ticket !== null && $cachedCount === 0 &&
-                        !in_array($senderEmail, env('CACHE_CONTACT_FORM_ADDRESSES') ?? MailCache::CONTACT_FORM_ADDRESSES, true)
+                        !in_array($senderEmail, config('mail.contact_form_addresses'), true)
                     ) {
                         Log::info('system starts creating answer for ticket ' . $ticket->id);
                         $responseBody = $this->ticketAnswerFromEmail($senderEmail, $ticket, $message, $attachments);
-                    } elseif ((in_array($senderEmail, env('CACHE_CONTACT_FORM_ADDRESSES') ?? MailCache::CONTACT_FORM_ADDRESSES, true) || $ticket === null)
+                    } elseif ((in_array($senderEmail, config('mail.contact_form_addresses'), true) || $ticket === null)
                         && $cachedCount === 0) {
                         Log::info('system starts creating new ticket');
                         $responseBody = $this->createTicketFromEmail($senderEmail, $message, $ticketSubject, $attachments);
@@ -100,7 +100,7 @@ class EmailReceiverRepository
                 } catch (Throwable $th) {
                     Log::info('connection was broken' . $th);
                 }
-            } elseif (in_array($senderEmail, env('CACHE_CONTACT_FORM_ADDRESSES') ?? MailCache::CONTACT_FORM_ADDRESSES, true)) {
+            } elseif (in_array($senderEmail, config('mail.contact_form_addresses'), true)) {
                 $ticketSubject = trim(str_replace(["Re:", "Fwd:"], "", $rawSubject));
                 Log::info("subject is $ticketSubject");
                 $cachedCount = MailCache::where('message_key', $key)->count();
