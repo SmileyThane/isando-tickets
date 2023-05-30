@@ -107,4 +107,15 @@ return [
         ],
     ],
 
+    'contact_form_addresses' =>
+        env('CACHE_CONTACT_FORM_ADDRESSES') ?
+            explode(',', env('CACHE_CONTACT_FORM_ADDRESSES')) :
+            [
+                'email@inax247.ch',
+                'contactforms@inax247.com',
+                'contactforms@inax.ch',
+                'contactforms@inax247.ch',
+                'support@inax247.com'
+            ]
+
 ];

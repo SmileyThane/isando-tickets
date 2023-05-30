@@ -39,7 +39,6 @@ class EmailReceiver extends Command
     public function handle()
     {
         ReceiveSystemMail::dispatch();
-
     }
 
 }
