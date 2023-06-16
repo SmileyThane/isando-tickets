@@ -196,8 +196,12 @@
                                         {{ $helpers.i18n.localized(article) }}
                                     </v-card-title>
                                     <v-card-text class="article-card-description">
-                                        <p class="mb-2 mt-2" v-if="$helpers.i18n.localized(article, 'summary')">
-                                            {{ $helpers.i18n.localized(article, 'summary') }}</p>
+                                        <p class="mb-2 mt-2">
+                                            {{
+                                                $helpers.i18n.localized(article, 'summary') !== 'summary' ?
+                                                    $helpers.i18n.localized(article, 'summary') : '&nbsp;'
+                                            }}
+                                        </p>
                                     </v-card-text>
                                 </div>
                                 <v-menu
