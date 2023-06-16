@@ -65,6 +65,20 @@
                         </v-chip>
                     </v-chip-group>
                 </div>
+                <br>
+                <div>
+                    <p>{{ langMap.main.useful_links }}</p>
+                    <v-btn :color="themeBgColor"
+                           v-if="article.next.length > 0"
+                           v-for="item in article.next"
+                           key="id"
+                           text
+                           @click="next(item.id)"
+                    >
+                        {{ item.name }}
+                    </v-btn>
+
+                </div>
             </v-card-text>
             <v-card-actions>
                 <v-btn :color="themeBgColor"
@@ -72,15 +86,7 @@
                        @click="back()"
                        v-text="langMap.kb.back_to_category"
                 />
-                <v-btn :color="themeBgColor"
-                       v-if="article.next.length > 0"
-                       v-for="item in article.next"
-                       key="id"
-                       text
-                       @click="next(item.id)"
-                >
-                    {{langMap.kb.next_step}}({{item.name}})
-                </v-btn>
+
 
             </v-card-actions>
         </v-card>
