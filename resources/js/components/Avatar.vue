@@ -30,7 +30,7 @@
                 </v-icon>
             </v-avatar>
         </template>
-        <span>{{user.full_name}}</span>
+        <span>{{ user.full_name }}</span>
     </v-tooltip>
 </template>
 
@@ -50,8 +50,10 @@ export default {
     data() {
         return {}
     },
-    created () {},
-    mounted () {},
+    created() {
+    },
+    mounted() {
+    },
     computed: {
         getColor() {
             if (this.color) {
