@@ -44,7 +44,7 @@ export const genRandomColor = () => {
 export const lightenColor = (hex, percent) => {
     hex = convertHex(hex);
 
-    let num = parseInt(hex,16),
+    let num = parseInt(hex, 16),
         amt = Math.round(2.55 * percent),
         R = (num >> 16) + amt,
         B = (num >> 8 & 0x00FF) + amt,
