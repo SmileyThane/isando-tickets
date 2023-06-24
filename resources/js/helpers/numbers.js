@@ -24,18 +24,18 @@ export const numberFormat = (number, decimals = 2, dec_point = ".", thousands_se
     if (isNaN(decimals = Math.abs(decimals))) {
         decimals = 2;
     }
-    if( dec_point == undefined ){
+    if (dec_point == undefined) {
         dec_point = ".";
     }
-    if( thousands_sep == undefined ){
+    if (thousands_sep == undefined) {
         thousands_sep = ",";
     }
 
     i = parseInt(number = (+number || 0).toFixed(decimals)) + "";
 
-    if( (j = i.length) > 3 ){
+    if ((j = i.length) > 3) {
         j = j % 3;
-    } else{
+    } else {
         j = 0;
     }
 
