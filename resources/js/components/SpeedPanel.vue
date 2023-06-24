@@ -29,7 +29,10 @@
                     <v-btn dark icon @click="dialog = false">
                         <v-icon :color="themeFgColor">mdi-close</v-icon>
                     </v-btn>
-                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.profile.user_theme_colors }}</v-toolbar-title>
+                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                            langMap.profile.user_theme_colors
+                        }}
+                    </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn :color="themeFgColor" :style="`color: ${themeBgColor};`" @click="updateUserSettings">
                         {{ langMap.main.update }}
