@@ -21,7 +21,7 @@ export const addZeroBefore = (str, len = 2) => {
 export const numberFormat = (number, decimals = 2, dec_point = ".", thousands_sep = ",") => {
     let i, j, kw, kd, km;
 
-    if( isNaN(decimals = Math.abs(decimals)) ){
+    if (isNaN(decimals = Math.abs(decimals))) {
         decimals = 2;
     }
     if( dec_point == undefined ){

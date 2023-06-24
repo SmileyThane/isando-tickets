@@ -32,7 +32,7 @@ export const message = (msg, params = {}) => {
         return msg;
     }
     for (const [key, value] of Object.entries(params)) {
-        msg = msg.replaceAll('%{'+key+'}', value);
+        msg = msg.replaceAll('%{' + key + '}', value);
     }
     return msg;
 }
