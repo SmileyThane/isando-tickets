@@ -84,7 +84,7 @@ export default {
         return {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
-	        themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             themeColorDlg: localStorage.themeColorDlg,
             dialog: false
         }
@@ -109,9 +109,9 @@ export default {
         updateUserSettings() {
             this.dialog = false;
             axios.post('/api/user/settings', {
-		        theme_fg_color: this.themeFgColor,
-		        theme_bg_color: this.themeBgColor
-	        }).then(response => {
+                theme_fg_color: this.themeFgColor,
+                theme_bg_color: this.themeBgColor
+            }).then(response => {
                 response = response.data;
 
                 if (response.success === true) {
