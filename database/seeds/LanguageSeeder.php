@@ -770,6 +770,7 @@ class LanguageSeeder extends Seeder
                             'yes' => 'Yes',
                             'no' => 'No',
                             'unlink' => 'Unlink',
+                            'useful_links' => 'Useful links'
                         ],
                     'system_settings' =>
                         [
@@ -1769,6 +1770,7 @@ class LanguageSeeder extends Seeder
                             'yes' => 'Ja',
                             'no' => 'Nein',
                             'unlink' => 'Verknüpfung aufheben',
+                            'useful_links' => 'Nützliche Links'
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',

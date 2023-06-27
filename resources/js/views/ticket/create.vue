@@ -124,7 +124,7 @@
                                                         />
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <v-select
+                                                        <v-autocomplete
                                                             v-model="ticketForm.to_product_id"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
