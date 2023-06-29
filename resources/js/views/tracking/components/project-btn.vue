@@ -24,7 +24,7 @@
                 </span>
                 <span v-if="selectedProject">
                     <v-btn
-                        v-if="selectedProject && selectedProject.from">
+                        v-if="selectedProject && selectedProject.from"
                         text
                         small
                         :to="`/ticket/${selectedProject.id}`"
