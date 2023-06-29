@@ -1747,6 +1747,43 @@
                                             dense
                                         >
                                             <v-list-item-group :color="themeBgColor">
+                                                <!--                                <v-subheader>Child</v-subheader>-->
+                                                <v-list-item
+                                                    v-for="(item, i) in ticket.merged_child"
+                                                    :key="item.id"
+                                                    link
+                                                    @click="showTicket(item.child_ticket_data.id)"
+                                                >
+                                                    <v-tooltip bottom>
+                                                        <template v-slot:activator="{ on, attrs }">
+                                                            <v-list-item-title v-on="on">
+                                            <span>
+                                                    {{ item.child_ticket_data.number }} | {{
+                                                    item.child_ticket_data.name
+                                                }}
+                                            </span>
+                                                                <br/>
+                                                                <span style="font-weight: lighter;">
+                                                    {{
+                                                                        item.child_ticket_data.creator !== null && item.child_ticket_data.creator.user_data !== null ? item.child_ticket_data.creator.user_data.full_name : ''
+                                                                    }},
+                                                    {{
+                                                                        item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : ''
+                                                                    }}
+                                            </span>
+                                                                <br/>
+                                                                <span style="font-weight: lighter;">
+                                                    {{ item.child_ticket_data.last_update }}
+                                            </span>
+                                                            </v-list-item-title>
+                                                        </template>
+                                                        <span>
+                                                {{ item.child_ticket_data.number }} | {{ item.child_ticket_data.name }}
+                                            </span>
+                                                    </v-tooltip>
+
+                                                </v-list-item>
+
                                                 <!--                                <v-subheader>Parent</v-subheader>-->
                                                 <v-list-item
                                                     v-for="(item, i) in ticket.merged_parent"
@@ -1784,42 +1821,6 @@
                                                             }}
                                             </span>
                                                     </v-tooltip>
-                                                </v-list-item>
-                                                <!--                                <v-subheader>Child</v-subheader>-->
-                                                <v-list-item
-                                                    v-for="(item, i) in ticket.merged_child"
-                                                    :key="item.id"
-                                                    link
-                                                    @click="showTicket(item.child_ticket_data.id)"
-                                                >
-                                                    <v-tooltip bottom>
-                                                        <template v-slot:activator="{ on, attrs }">
-                                                            <v-list-item-title v-on="on">
-                                            <span>
-                                                    {{ item.child_ticket_data.number }} | {{
-                                                    item.child_ticket_data.name
-                                                }}
-                                            </span>
-                                                                <br/>
-                                                                <span style="font-weight: lighter;">
-                                                    {{
-                                                                        item.child_ticket_data.creator !== null && item.child_ticket_data.creator.user_data !== null ? item.child_ticket_data.creator.user_data.full_name : ''
-                                                                    }},
-                                                    {{
-                                                                        item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : ''
-                                                                    }}
-                                            </span>
-                                                                <br/>
-                                                                <span style="font-weight: lighter;">
-                                                    {{ item.child_ticket_data.last_update }}
-                                            </span>
-                                                            </v-list-item-title>
-                                                        </template>
-                                                        <span>
-                                                {{ item.child_ticket_data.number }} | {{ item.child_ticket_data.name }}
-                                            </span>
-                                                    </v-tooltip>
-
                                                 </v-list-item>
                                             </v-list-item-group>
                                         </v-list>
