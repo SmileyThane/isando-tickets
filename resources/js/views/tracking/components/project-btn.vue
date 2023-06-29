@@ -23,19 +23,23 @@
                     &nbsp;{{getTrackingProjectLabel}}/{{langMap.tracking.project_btn.ticket}}
                 </span>
                 <span v-if="selectedProject">
-                    <v-btn
-                        v-if="selectedProject && selectedProject.from"
-                        text
-                        small
-                        :to="`/ticket/${selectedProject.id}`"
-                        >
-                    Ticket: {{ $helpers.string.shortenText(selectedProject.number, 15) }}.<br>
+                    <span
+                        v-if="selectedProject && selectedProject.from">
+                        Ticket: {{ $helpers.string.shortenText(selectedProject.number, 15) }}.<br>
                         {{ $helpers.string.shortenText(selectedProject.name, 20) }}
-                    </v-btn>
+                    </span>
                     <span v-else>
                         {{getTrackingProjectLabel}}:<br>{{ $helpers.string.shortenText(selectedProject.name, 35) }}
                     </span>
                 </span>
+            </v-btn>
+            <v-btn
+                v-if="selectedProject && selectedProject.from"
+                text
+                small
+                :to="`/ticket/${selectedProject.id}`"
+            >
+                <v-icon>mdi-arrow-right</v-icon>
             </v-btn>
         </template>
         <v-card
