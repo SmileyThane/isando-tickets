@@ -735,13 +735,18 @@
                                 {{ langMap.main.edit }}
                             </v-btn>
                             <span>
+                                <span v-if="ticket.contact !== null">
                                     <v-label>
                                         {{ langMap.ticket.contact_email }}:
                                     </v-label>
-                                <span v-if="ticket.contact !== null">
                                     {{ ticket.contact.user_data.email }}
+
+                                    <v-label>
+                                        {{ langMap.ticket.contact_phone }}:
+                                    </v-label>
+                                    {{ ticket.contact.user_data.phone }}
                                 </span>
-                                </span>
+                            </span>
                             <br/>
                             <span v-if="ticket.product !== null">
                                 <v-label>
@@ -1136,13 +1141,18 @@
                                 {{ langMap.main.edit }}
                             </v-btn>
                             <span>
+                                <span v-if="ticket.contact !== null">
                                     <v-label>
                                         {{ langMap.ticket.contact_email }}:
                                     </v-label>
-                                <span v-if="ticket.contact !== null">
                                     {{ ticket.contact.user_data.email }}
+
+                                    <v-label>
+                                        {{ langMap.ticket.contact_phone }}:
+                                    </v-label>
+                                    {{ ticket.contact.user_data.phone }}
                                 </span>
-                                </span>
+                            </span>
                             <br/>
                             <v-label v-if="ticket.availability">
                                 {{ langMap.ticket.availability }}:
