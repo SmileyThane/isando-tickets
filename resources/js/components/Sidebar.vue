@@ -852,6 +852,7 @@
 >>> .v-navigation-drawer__content {
     overflow-y: hidden !important;
 }
+
 >>> .v-navigation-drawer__content .v-list-item__action {
     margin: 10px 12px 10px 0 !important;
 }
