@@ -266,7 +266,7 @@ class KbRepository
             ],
             [
                 'type' => KnowledgeBasePermissionsTypesEnum::CREATE,
-                'value'=> Permission::KB_CREATE_ACCESS,
+                'value' => Permission::KB_CREATE_ACCESS,
             ],
             [
                 'type' => KnowledgeBasePermissionsTypesEnum::EDIT,
