@@ -856,12 +856,15 @@
 >>> .v-navigation-drawer__content .v-list-item__action {
     margin: 10px 12px 10px 0 !important;
 }
+
 >>> .v-navigation-drawer__content .v-list-group__items > .v-list-item {
     padding-left: 50px !important;
 }
+
 >>> .v-navigation-drawer__content .v-list-item__title {
     font-weight: 400 !important;
 }
+
 >>> .v-navigation-drawer__content .v-list {
     padding: 0 !important;
 }
