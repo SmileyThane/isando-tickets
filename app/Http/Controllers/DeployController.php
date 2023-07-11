@@ -12,7 +12,10 @@ class DeployController extends Controller
     {
         $githubPayload = json_decode($request->getContent());
 
-        if ($githubPayload->ref == 'refs/heads/' . config('deploy.branch') && $githubPayload->repository->full_name == config('deploy.repository')) {
+        if (
+            $githubPayload->ref == 'refs/heads/' . config('deploy.branch')
+            && $githubPayload->repository->full_name == config('deploy.repository')
+        ) {
             $root_path = base_path();
             $process = new Process(['./deploy.sh'], $root_path);
             $process->run(function ($type, $buffer) {
