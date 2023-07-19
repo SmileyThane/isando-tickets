@@ -780,6 +780,77 @@
                     outlined
                 >
                     <v-card-text>
+                        <div v-for="(answer, index) in ticket.answers"
+                             :key="answer.id"
+                             class="ticket--answer"
+                        >
+                            <v-card
+                                class="mx-auto"
+                                dense
+                                outlined
+                            >
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <v-col
+                                            :cols="index == 0 && currentUser.id == answer.employee.user_data.id ? 11 : 12">
+                                        <span class="text-left" style="font-weight: bold;">
+                                            <v-avatar
+                                                v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
+                                                class="mr-2 mb-2"
+                                                color="grey darken-1"
+                                                size="2em"
+                                            >
+                                                    <v-img v-if="answer.employee.user_data.avatar_url"
+                                                           :src="answer.employee.user_data.avatar_url"/>
+                                                    <span v-else-if="answer.employee.user_data.full_name"
+                                                          class="white--text">
+                                                        {{
+                                                            answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                        }}
+                                                    </span>
+                                            </v-avatar>
+                                            <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
+
+                                            {{ answer.employee.user_data.full_name }}
+                                            {{
+                                                answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
+                                            }}
+                                            {{
+                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? answer.updated_at_time : answer.updated_at) : ''
+                                            }}
+                                            :
+                                        </span>
+                                        </v-col>
+                                        <v-col v-if="index == 0 && currentUser.id == answer.employee.user_data.id"
+                                               cols="1">
+                                            <v-btn :color="themeBgColor" :title="langMap.ticket.edit_answer" icon right
+                                                   @click="editAnswer(answer)">
+                                                <v-icon>mdi-pencil</v-icon>
+                                            </v-btn>
+                                        </v-col>
+                                        <div v-html="answer.answer"></div>
+                                        <v-col v-if="answer.attachments.length > 0 " cols="12">
+                                            <h4>{{ langMap.main.attachments }}</h4>
+                                            <div
+                                                v-for="attachment in answer.attachments"
+                                            >
+                                                <v-chip
+                                                    :color="themeBgColor"
+                                                    :href="attachment.link"
+                                                    :text-color="themeFgColor"
+                                                    class="ma-2"
+                                                >
+                                                    {{ attachment.name }}
+                                                </v-chip>
+                                            </div>
+                                        </v-col>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-card>
+                            <v-spacer>
+                                &nbsp;
+                            </v-spacer>
+                        </div>
                         <div v-for="child_ticket in ticket.child_tickets"
                              v-if="ticket.child_tickets"
                              :key="child_ticket.id"
@@ -946,77 +1017,6 @@
                                 </v-list-item>
                             </v-card>
 
-                            <v-spacer>
-                                &nbsp;
-                            </v-spacer>
-                        </div>
-                        <div v-for="(answer, index) in ticket.answers"
-                             :key="answer.id"
-                             class="ticket--answer"
-                        >
-                            <v-card
-                                class="mx-auto"
-                                dense
-                                outlined
-                            >
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-col
-                                            :cols="index == 0 && currentUser.id == answer.employee.user_data.id ? 11 : 12">
-                                        <span class="text-left" style="font-weight: bold;">
-                                            <v-avatar
-                                                v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
-                                                class="mr-2 mb-2"
-                                                color="grey darken-1"
-                                                size="2em"
-                                            >
-                                                    <v-img v-if="answer.employee.user_data.avatar_url"
-                                                           :src="answer.employee.user_data.avatar_url"/>
-                                                    <span v-else-if="answer.employee.user_data.full_name"
-                                                          class="white--text">
-                                                        {{
-                                                            answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                                        }}
-                                                    </span>
-                                            </v-avatar>
-                                            <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
-
-                                            {{ answer.employee.user_data.full_name }}
-                                            {{
-                                                answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
-                                            }}
-                                            {{
-                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? answer.updated_at_time : answer.updated_at) : ''
-                                            }}
-                                            :
-                                        </span>
-                                        </v-col>
-                                        <v-col v-if="index == 0 && currentUser.id == answer.employee.user_data.id"
-                                               cols="1">
-                                            <v-btn :color="themeBgColor" :title="langMap.ticket.edit_answer" icon right
-                                                   @click="editAnswer(answer)">
-                                                <v-icon>mdi-pencil</v-icon>
-                                            </v-btn>
-                                        </v-col>
-                                        <div v-html="answer.answer"></div>
-                                        <v-col v-if="answer.attachments.length > 0 " cols="12">
-                                            <h4>{{ langMap.main.attachments }}</h4>
-                                            <div
-                                                v-for="attachment in answer.attachments"
-                                            >
-                                                <v-chip
-                                                    :color="themeBgColor"
-                                                    :href="attachment.link"
-                                                    :text-color="themeFgColor"
-                                                    class="ma-2"
-                                                >
-                                                    {{ attachment.name }}
-                                                </v-chip>
-                                            </div>
-                                        </v-col>
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-card>
                             <v-spacer>
                                 &nbsp;
                             </v-spacer>
