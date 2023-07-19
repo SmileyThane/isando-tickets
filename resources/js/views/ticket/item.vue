@@ -740,7 +740,7 @@
                                         {{ langMap.ticket.contact_email }}:
                                     </v-label>
                                     {{ ticket.contact.user_data.email }}
-
+                                    <br>
                                     <v-label>
                                         {{ langMap.ticket.contact_phone }}:
                                     </v-label>
@@ -1146,7 +1146,7 @@
                                         {{ langMap.ticket.contact_email }}:
                                     </v-label>
                                     {{ ticket.contact.user_data.email }}
-
+                                    <br>
                                     <v-label>
                                         {{ langMap.ticket.contact_phone }}:
                                     </v-label>
