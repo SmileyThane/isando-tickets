@@ -338,6 +338,8 @@
                                 </v-expansion-panels>
                             </v-col>
                         </v-row>
+                        <v-switch v-model="categoryForm.is_internal" :color="themeBgColor"
+                                  :label="langMap.kb.is_internal" :value="1"/>
                     </v-card-text>
                     <v-card-actions>
                         <v-btn left text @click="updateCategoryDlg=false; clearCategoryForm();"
@@ -470,7 +472,8 @@ export default {
                 description_de: '',
                 icon: '',
                 icon_color: this.$store.state.themeBgColor,
-                _active: []
+                _active: [],
+                is_internal: 0
             },
             categoryIcons: [
                 // menu icons

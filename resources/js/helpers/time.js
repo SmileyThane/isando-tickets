@@ -14,9 +14,9 @@ export const convertSecToTime = (seconds, withSeconds = true) => {
     const h = Math.floor(seconds / 60 / 60);
     const m = Math.floor((seconds - h * 60 * 60) / 60);
     const s = seconds - (m * 60) - (h * 60 * 60);
-    let time = `${numbers.addZeroBefore(h,2)}:${numbers.addZeroBefore(m,2)}`;
+    let time = `${numbers.addZeroBefore(h, 2)}:${numbers.addZeroBefore(m, 2)}`;
     if (withSeconds) {
-        time += `:${numbers.addZeroBefore(s,2)}`;
+        time += `:${numbers.addZeroBefore(s, 2)}`;
     }
     return time;
 }

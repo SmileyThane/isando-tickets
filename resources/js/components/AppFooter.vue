@@ -3,7 +3,7 @@
         :color="themeBgColor"
         app
     >
-        <span :style="`color: ${themeFgColor};`">&copy; ISANDO 2021</span>
+        <span :style="`color: ${themeFgColor};`">&copy; ISANDO {{moment(moment.now()).format('YYYY')}}</span>
         <span :style="`color: ${themeFgColor}; margin-left: auto;`" v-if="$store.state.lang && $store.state.lang.lang_map">{{ $store.state.lang.lang_map.main.version }} {{ $store.state.appVersion }}</span>
     </v-footer>
 </template>

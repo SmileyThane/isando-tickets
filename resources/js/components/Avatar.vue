@@ -18,7 +18,9 @@
                     v-on="on"
                     class="white--text headline text-uppercase"
                 >
-                    {{ user.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase() }}
+                    {{
+                        user.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                    }}
                 </span>
                 <v-icon
                     v-else
@@ -28,7 +30,7 @@
                 </v-icon>
             </v-avatar>
         </template>
-        <span>{{user.full_name}}</span>
+        <span>{{ user.full_name }}</span>
     </v-tooltip>
 </template>
 
@@ -48,8 +50,10 @@ export default {
     data() {
         return {}
     },
-    created () {},
-    mounted () {},
+    created() {
+    },
+    mounted() {
+    },
     computed: {
         getColor() {
             if (this.color) {

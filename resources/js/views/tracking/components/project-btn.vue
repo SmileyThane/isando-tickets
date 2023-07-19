@@ -33,6 +33,14 @@
                     </span>
                 </span>
             </v-btn>
+            <v-btn
+                v-if="selectedProject && selectedProject.from"
+                text
+                small
+                :to="`/ticket/${selectedProject.id}`"
+            >
+                <v-icon>mdi-arrow-right</v-icon>
+            </v-btn>
         </template>
         <v-card
             v-if="$helpers.auth.checkPermissionByIds([48,49,50])"

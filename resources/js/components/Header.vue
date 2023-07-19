@@ -47,7 +47,7 @@
             text-color="black"
         >
             <v-avatar left>
-                <v-img :src="avatar" />
+                <v-img :src="avatar"/>
             </v-avatar>
             <v-label class="d-sm-none d-md-flex">{{ username }}</v-label>
 

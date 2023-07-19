@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Auth;
 
 class KbController extends Controller
 {
+    const IMPORTANCE = [3 => 'low', 2 => 'medium', 1 => 'high'];
     protected $kbRepo;
     protected $fileRepo;
-    const IMPORTANCE = [3 => 'low', 2 => 'medium', 1 => 'high'];
 
     public function __construct(KbRepository $kbRepository, FileRepository $fileRepository)
     {
@@ -28,15 +28,15 @@ class KbController extends Controller
         $this->fileRepo = $fileRepository;
     }
 
+    public function listCategories(Request $request)
+    {
+        return self::showResponse(true, $this->kbRepo->getCategories($this->getTypeByAlias($request->type), $request->category_id, $request->search));
+    }
+
     private function getTypeByAlias($alias)
     {
         $KBType = KnowledgeBaseType::query()->where('alias', $alias)->first();
         return $KBType ? $KBType->id : 1;
-    }
-
-    public function listCategories(Request $request)
-    {
-        return self::showResponse(true, $this->kbRepo->getCategories($this->getTypeByAlias($request->type), $request->category_id, $request->search));
     }
 
     public function listTypes(Request $request): JsonResponse
@@ -60,7 +60,8 @@ class KbController extends Controller
             $request->description_de,
             $request->icon ?? 'mdi-help',
             $request->icon_color,
-            $this->getTypeByAlias($request->type)
+            $this->getTypeByAlias($request->type),
+            $request->is_internal
         ));
     }
 
@@ -74,7 +75,8 @@ class KbController extends Controller
             $request->description,
             $request->description_de,
             $request->icon ?? 'mdi-help',
-            $request->icon_color
+            $request->icon_color,
+            $request->is_internal
         ));
     }
 

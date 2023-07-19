@@ -59,14 +59,14 @@ class KbRepository
         return $result;
     }
 
-    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $type_id = null)
+    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $type_id = null, $is_internal = 0)
     {
-        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'type_id'));
+        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'type_id', 'is_internal'));
     }
 
-    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color)
+    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $is_internal)
     {
-        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color'));
+        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'is_internal'));
     }
 
     public function deleteCategory($id)
