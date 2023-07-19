@@ -744,7 +744,7 @@
                                     <v-label>
                                         {{ langMap.ticket.contact_phone }}:
                                     </v-label>
-                                    {{ ticket.contact.user_data.phone }}
+                                    {{ ticket.contact.user_data.contact_phone.phone }}
                                 </span>
                             </span>
                             <br/>
@@ -1150,7 +1150,7 @@
                                     <v-label>
                                         {{ langMap.ticket.contact_phone }}:
                                     </v-label>
-                                    {{ ticket.contact.user_data.phone }}
+                                    {{ ticket.contact.user_data.contact_phone.phone }}
                                 </span>
                             </span>
                             <br/>
