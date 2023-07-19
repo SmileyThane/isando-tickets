@@ -155,7 +155,8 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" :eager="true" :retain-focus="false" content-class="draggable" hide-overlay max-width="50%"
+            <v-dialog v-model="answerDialog" :eager="true" :retain-focus="false" content-class="draggable" hide-overlay
+                      max-width="50%"
                       persistent>
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
@@ -741,10 +742,12 @@
                                     </v-label>
                                     {{ ticket.contact.user_data.email }}
                                     <br>
+                                    <span v-if="ticket.contact.user_data.contact_phone">
                                     <v-label>
                                         {{ langMap.ticket.contact_phone }}:
                                     </v-label>
                                     {{ ticket.contact.user_data.contact_phone.phone }}
+                                    </span>
                                 </span>
                             </span>
                             <br/>
@@ -1147,10 +1150,12 @@
                                     </v-label>
                                     {{ ticket.contact.user_data.email }}
                                     <br>
+                                    <span v-if="ticket.contact.user_data.contact_phone">
                                     <v-label>
                                         {{ langMap.ticket.contact_phone }}:
                                     </v-label>
                                     {{ ticket.contact.user_data.contact_phone.phone }}
+                                    </span>
                                 </span>
                             </span>
                             <br/>
@@ -1548,7 +1553,8 @@
                                             <v-col
                                                 v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id"
                                                 cols="1">
-                                                <v-btn :color="themeBgColor" :title="langMap.ticket.edit_notice" icon right
+                                                <v-btn :color="themeBgColor" :title="langMap.ticket.edit_notice" icon
+                                                       right
                                                        @click="editNotice(noticeItem)">
                                                     <v-icon>mdi-pencil</v-icon>
                                                 </v-btn>
@@ -1988,12 +1994,13 @@
                                                 </v-tooltip>
                                                 <v-tooltip top>
                                                     <template v-slot:activator="{ on, attrs }">
-                                                        <v-icon :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeBgColor"
-                                                                :disabled="!mergeTicketForm.child_ticket_id.includes(item.id)"
-                                                                dark
-                                                                style="float: right"
-                                                                @click="mergeTicketForm.parent_ticket_id = item.id"
-                                                                v-on="on"
+                                                        <v-icon
+                                                            :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeBgColor"
+                                                            :disabled="!mergeTicketForm.child_ticket_id.includes(item.id)"
+                                                            dark
+                                                            style="float: right"
+                                                            @click="mergeTicketForm.parent_ticket_id = item.id"
+                                                            v-on="on"
                                                         >
                                                             mdi-medal-outline
                                                         </v-icon>
