@@ -20,7 +20,7 @@ class RoleController extends Controller
 
     public function roles(GetRolesRequest $request)
     {
-        $roles = $this->roleRepo->getAllByCompanyId($request, Auth::user()->employee->company_id);
+        $roles = $this->roleRepo->getAllByCompanyId($request->all(), Auth::user()->employee->company_id);
 
         return self::showResponse(true, $roles);
     }
