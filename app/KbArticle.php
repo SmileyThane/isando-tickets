@@ -19,6 +19,8 @@ class KbArticle extends Model
 
     protected $appends = ['featured_image', 'importance'];
 
+    protected $with = ['attachments'];
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'id', 'company_id');
@@ -57,7 +59,7 @@ class KbArticle extends Model
 
     public function getFeaturedImageAttribute()
     {
-        return $this->attachments()->where('service_info->type', 'kb_featured')->first();
+        return $this->attachments->where('service_info.type', 'kb_featured')->first();
     }
 
     public function attachments($lang = null): MorphMany

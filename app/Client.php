@@ -21,6 +21,8 @@ class Client extends Model
         'contact_phone', 'contact_email', 'supplier_name', 'last_activity'
     ];
 
+    protected $with = ['emails', 'phones', 'supplier', 'activities'];
+
     public function activities(): MorphMany
     {
         return $this->morphMany(Activity::class, 'model');
@@ -97,22 +99,24 @@ class Client extends Model
 
     public function getContactPhoneAttribute()
     {
-        return $this->phones()->with('type')->first();
+        return $this->phones->first();
     }
 
     public function phones(): MorphMany
     {
-        return $this->morphMany(Phone::class, 'entity');
+        return $this->morphMany(Phone::class, 'entity')
+            ->with('type');
     }
 
     public function getContactEmailAttribute()
     {
-        return $this->emails()->with('type')->first();
+        return $this->emails->first();
     }
 
     public function emails(): MorphMany
     {
-        return $this->morphMany(Email::class, 'entity');
+        return $this->morphMany(Email::class, 'entity')
+            ->with('type');
     }
 
     public function customLicense(): HasOne
@@ -132,7 +136,7 @@ class Client extends Model
 
     public function getLastActivityAttribute()
     {
-        $activity = $this->activities()->latest()->first();
+        $activity = $this->activities->last();
 
         return $activity ? $activity->title : '';
     }

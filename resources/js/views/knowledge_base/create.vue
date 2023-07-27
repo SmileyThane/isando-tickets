@@ -362,7 +362,7 @@ export default {
             that.themeBgColor = color;
         });
 
-        this.getCategoriesTree();
+        // this.getCategoriesTree();
         this.getTags();
         this.getArticle();
         this.getArticles();

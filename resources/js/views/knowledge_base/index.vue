@@ -645,10 +645,10 @@ export default {
     },
     watch: {
         $route(to, from) {
-            if (_.isEmpty(this.$route.query)) {
+            if (from.params.alias !== to.params.alias) {
                 this.getCategories();
                 this.getArticles();
-                this.getCategoriesTree();
+                // this.getCategoriesTree();
                 this.getTags();
             }
             this.categoryForm.parent_id = this.getCategoryIdFromQuery;
@@ -671,7 +671,7 @@ export default {
 
         this.getCategories();
         this.getArticles();
-        this.getCategoriesTree();
+        // this.getCategoriesTree();
         this.getTags();
     },
     methods: {
@@ -790,6 +790,7 @@ export default {
             this.$forceUpdate();
         },
         editCategory(category) {
+            this.getCategoriesTree();
             this.fillCategoryForm(category);
             this.updateCategoryDlg = true;
         },
