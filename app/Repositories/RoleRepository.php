@@ -64,6 +64,17 @@ class RoleRepository
         ModelHasRole::where(['model_id' => $request->company_user_id,
             'model_type' => $request->model_type])->delete();
         foreach ($request->role_ids as $roleId) {
+            $role = Role::query()->find($roleId);
+            if ($role && !$role->company_id) {
+                $correctRole = Role::query()
+                    ->where('name', '=', $role->name)
+                    ->where('company_id', '=', Auth::user()->employee->company_id)
+                    ->first();
+
+                if ($correctRole) {
+                    $roleId = $correctRole->id;
+                }
+            }
             ModelHasRole::firstOrCreate(
                 ['model_id' => $request->company_user_id,
                     'model_type' => $request->model_type,
