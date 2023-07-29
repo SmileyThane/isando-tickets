@@ -236,19 +236,40 @@
                 </v-pagination>
             </template>
             <template v-slot:item.ticket_type_id="{ item }">
-                <v-icon v-if="item.ticket_type.icon" :title="$helpers.i18n.localized(item.ticket_type)" small
-                        v-text="item.ticket_type.icon"/>
-                <v-icon v-else :title="$helpers.i18n.localized(item.ticket_type)" small>mdi-alert</v-icon>
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-icon v-if="item.ticket_type.icon" small
+                                v-on="on"
+                                v-text="item.ticket_type.icon"/>
+                        <v-icon v-else
+                                :title="$helpers.i18n.localized(item.ticket_type)"
+                                small
+                                v-on="on"
+                        >
+                            mdi-alert
+                        </v-icon>
+                    </template>
+                    {{ $helpers.i18n.localized(item.ticket_type) }}
+                </v-tooltip>
             </template>
             <template v-slot:item.status.name="{ item }">
-                <v-badge :color="item.status.color" dot inline @click="showItem(item)">
-                    {{ item.status.name }}
-                </v-badge>
             </template>
-            <template v-slot:item.priority.name="{ item }">
-                <v-badge :color="item.priority.color" dot inline @click="showItem(item)">
-                    {{ item.priority.name }}
-                </v-badge>
+<!--            <template v-slot:item.priority.name="{ item }">-->
+<!--                <v-badge :color="item.priority.color" dot inline @click="showItem(item)">-->
+<!--                    {{ item.priority.name }}-->
+<!--                </v-badge>-->
+<!--            </template>-->
+            <template v-slot:item.number="{ item }">
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <div v-on="on">{{item.number}}</div>
+                        <v-badge :color="item.status.color" dot inline @click="showItem(item)">
+                            <div v-on="on" :style="`color: ${item.priority.color === 'amber' ? '#FEBE00' : item.priority.color}`">#{{item.id}}</div>
+                        </v-badge>
+
+                    </template>
+                    {{ item.priority.name }}.{{ item.status.name }}
+                </v-tooltip>
             </template>
             <template v-slot:item.category.name="{ item }">
                 {{ item.category ? item.category.name : '' }}
