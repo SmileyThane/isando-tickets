@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -16,18 +18,21 @@ class TicketPrioritySeeder extends Seeder
             ['id' => 1],
             [
                 'name' => 'urgent',
+                'color' => '#B90E0A'
             ]
         );
         DB::table('ticket_priorities')->updateOrInsert(
             ['id' => 2],
             [
                 'name' => 'moderate',
+                'color' => '#FEBE00'
             ]
         );
         DB::table('ticket_priorities')->updateOrInsert(
             ['id' => 3],
             [
                 'name' => 'low',
+                'color' => '808080'
             ]
         );
 
