@@ -16,7 +16,7 @@
                 {{ $helpers.i18n.localized(article) }}
             </v-card-title>
             <v-card-text>
-                <div v-if="article.tags">
+                <div v-if="article.tags && article.tags.length > 0">
                     <h4 class="mb-2">
                         {{ langMap.kb.tags }}
                     </h4>
@@ -32,7 +32,7 @@
                     />
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
-                <div v-if="$helpers.i18n.localized(article, 'summary')">
+                <div v-if="article.summary && $helpers.i18n.localized(article, 'summary')">
                     <p ref="summary"
                        class="summary pa-3"
                     >
