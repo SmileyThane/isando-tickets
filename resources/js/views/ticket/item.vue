@@ -2182,6 +2182,7 @@ export default {
             products: [],
             priorities: [],
             types: [],
+            categories: [],
             employees: [],
             followers: [],
             contacts: [],
@@ -2370,6 +2371,7 @@ export default {
         this.getSuppliers()
         this.getProducts()
         this.getPriorities()
+        this.getCategories()
         this.getTypes()
         this.getTeams()
         this.getTickets()
@@ -2518,6 +2520,15 @@ export default {
                     this.snackbar = true;
                 }
                 this.progressBuffer = this.progressBuffer + 10;
+            });
+        },
+        getCategories() {
+            axios.get('/api/ticket_categories').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.categories = response.data
+                }
+
             });
         },
         getContacts(entityItem) {
