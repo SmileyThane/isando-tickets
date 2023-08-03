@@ -46,13 +46,6 @@ class KbCategory extends Model
         }
     }
 
-    protected function hasSubCategories(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => (bool) $this->children
-        );
-    }
-
     private function getTranslatedName()
     {
         if(Auth::user()->language_id === 2) {

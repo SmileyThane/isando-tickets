@@ -414,7 +414,7 @@ export default {
                         }
                         setTimeout(() => Array.from(this.article.categories).forEach(function (category) {
                             that.categories.push(category.id);
-                        }), 2000);
+                        }), 1500);
                         this.$forceUpdate();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;

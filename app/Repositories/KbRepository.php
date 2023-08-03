@@ -53,15 +53,13 @@ class KbRepository
             $result = $result
                 ->withCount('articles')
                 ->with(['children'])
-                ->get()
-                ->append(['has_sub_categories']);
+                ->get();
 
             if (!empty($category_id)) {
                 $result = kbCategory::where('id', $category_id)
                     ->withCount('articles')
                     ->with(['children'])
                     ->get()
-                    ->append(['has_sub_categories'])
                     ->merge($result);
             }
         }

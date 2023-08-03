@@ -25,7 +25,7 @@
                                           :label="langMap.kb.tags" append-icon="mdi-tag-multiple-outline" hide-selected
                                           item-text="name" item-value="id"
                                           multiple small-chips
-                                          v-on:change="getArticles();">
+                                          v-on:change="getArticles(); articlesLoaded = false">
                                     <template v-slot:selection="{ attrs, item, parent, selected }">
                                         <v-chip :color="item.color" :text-color="invertColor(item.color)" class="ml-2"
                                                 close label small v-bind="attrs"
@@ -55,7 +55,7 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link @click.prevent="updateCategoryDlg = true">
+                                        <v-list-item link @click.prevent="getCategoriesTree(); updateCategoryDlg = true">
                                             <v-list-item-title>
                                                 {{ langMap.kb.create_category }}
                                             </v-list-item-title>
@@ -86,13 +86,19 @@
 
         <v-row>
             <v-col class="col-md-4">
-                <v-row>
+                <div class="text-center pt-12" v-if="!categoriesLoaded">
+                    <v-progress-circular
+                        indeterminate
+                        :color="themeBgColor"
+                    ></v-progress-circular>
+                </div>
+                <v-row v-if="categoriesLoaded">
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12" class="pb-1 pt-1">
                         <v-hover v-slot="{ hover }">
                             <v-card
                                 outlined
                                 :color="getCategoryBackgroundColor(category.id)"
-                                v-on:click.native="openCategory(category.id, category.parent_id, category.has_sub_categories)"
+                                v-on:click.native="openCategory(category.id, category.parent_id, Boolean(category.children.length))"
                                 :style="hover ? `outline: 2px solid ${themeBgColor}` : ''"
                                 style="cursor: pointer"
                             >
@@ -184,7 +190,13 @@
                 </v-row>
             </v-col>
             <v-col class="col-md-8">
-                <v-row>
+                <div class="text-center pt-12" v-if="!articlesLoaded">
+                    <v-progress-circular
+                        indeterminate
+                        :color="themeBgColor"
+                    ></v-progress-circular>
+                </div>
+                <v-row v-if="articlesLoaded">
                     <v-col v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
                         <v-card :style="`background-color: ${article.featured_color};`" outlined
                                 style="cursor: pointer"
@@ -641,6 +653,8 @@ export default {
                 delete: 'delete',
             },
             activeCategoryColor: '#ebebeb',
+            articlesLoaded: false,
+            categoriesLoaded: false,
         }
     },
     watch: {
@@ -657,7 +671,7 @@ export default {
     created() {
         this.debounceOpenCategory = _.debounce(
             () => this.openCategory(this.$route.query.parent_category),
-            1000
+            500
         );
     },
     mounted() {
@@ -701,6 +715,7 @@ export default {
                     this.errorType = 'error';
                     this.alert = true;
                 }
+                this.categoriesLoaded = true;
             });
         },
         getCategoriesTree() {
@@ -732,9 +747,11 @@ export default {
                     this.errorType = 'error';
                     this.alert = true;
                 }
+                this.articlesLoaded = true;
             });
         },
         openCategory(id, parent_id = null, subCategories = true) {
+            this.articlesLoaded = false;
             let query = '';
             if (id && parent_id && !subCategories) {
                 query = `parent_category=${parent_id}&category=${id}`
@@ -751,10 +768,10 @@ export default {
                 });
             }
             if (subCategories) {
+                this.categoriesLoaded = false;
                 this.getCategories();
             }
             this.getArticles();
-
         },
         clearCategoryForm() {
             this.categoryForm = {
