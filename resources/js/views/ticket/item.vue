@@ -99,6 +99,30 @@
                                 />
                             </v-col>
                             <v-col cols="12" md="6">
+                                <v-select
+                                    v-model="ticket.ticket_type_id"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :items="types"
+                                    :label="langMap.ticket.type"
+                                    item-text="name"
+                                    item-value="id"
+                                    prepend-icon="mdi-info"
+                                ></v-select>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    v-model="ticket.category_id"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :items="categories"
+                                    :label="langMap.main.category"
+                                    item-text="name"
+                                    item-value="id"
+                                    prepend-icon="mdi-info"
+                                ></v-select>
+                            </v-col>
+                            <v-col cols="12" md="6">
                                 <v-textarea
                                     v-model="ticket.availability"
                                     :color="themeBgColor"
