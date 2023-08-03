@@ -16,7 +16,9 @@ class CompanyUser extends Model
 
     protected $table = 'company_users';
 
-    protected $appends = ['roles', 'role_names', 'color'];
+    protected $appends = ['role_names', 'color'];
+
+    protected $with = ['roles'];
 
     protected $fillable = [
         'user_id',
@@ -28,31 +30,24 @@ class CompanyUser extends Model
     public function getRoleNamesAttribute()
     {
         $result = null;
-        $roles = $this->getRolesAttribute();
+        $rolesCount = count($this->roles);
         $translationsArray = Language::query()->find(Auth::user()->language_id)->lang_map;
-        foreach ($roles as $key => $role) {
+        foreach ($this->roles as $key => $role) {
             $roleName = $role->name;
             if (property_exists($translationsArray->roles, $roleName)) {
                 $result .= $translationsArray->roles->$roleName;
             } else {
                 $result .= $roleName;
             }
-            $result .= $key !== count($roles) - 1 ? ', ' : '';
+            $result .= $key !== $rolesCount - 1 ? ', ' : '';
         }
         return $result ?? $translationsArray->roles->contact;
     }
 
-    public function getRolesAttribute()
-    {
-        $roleIds = $this->roleIds();
-        return Role::query()->whereIn('id', $roleIds)->get();
-    }
-
     public function roleIds()
     {
-        return ModelHasRole::query()->where(['model_id' => $this->attributes['id'], 'model_type' => self::class])
-            ->get()
-            ->pluck('role_id')
+        return $this->roles
+            ->pluck('id')
             ->toArray();
     }
 

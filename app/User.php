@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -90,7 +91,7 @@ class User extends Authenticatable
         return trim($this->name . ' ' . $this->surname);
     }
 
-    public function settings(): HasOne
+    public function settings(): MorphOne
     {
         return $this->morphOne(Settings::class, 'entity');
     }
@@ -110,26 +111,25 @@ class User extends Authenticatable
         return $this->morphMany(Phone::class, 'entity');
     }
 
-    public function getEmailAttribute()
-    {
-        $email = $this->emails()->orderBy('email_type')->first();
-        return $email ? $email->email : null;
-    }
-
     public function emails(): MorphMany
     {
         return $this->morphMany(Email::class, 'entity');
     }
 
+
+    public function getEmailAttribute()
+    {
+        return $this->contact_email->email ?? null;
+    }
+
     public function getEmailIdAttribute()
     {
-        $email = $this->emails()->orderBy('email_type')->first();
-        return $email ? $email->id : null;
+        return $this->contact_email->id ?? null;
     }
 
     public function getContactEmailAttribute()
     {
-        return $email = $this->emails()->with('type')->orderBy('email_type')->first();
+        return $this->emails->sortBy('email_type')->first()?->loadMissing('type');
     }
 
     public function emailSignatures(): MorphMany
@@ -217,12 +217,8 @@ class User extends Authenticatable
 
     public function getColorAttribute()
     {
-        $settings = Settings::where([
-            ['entity_id', '=', $this->id],
-            ['entity_type', '=', User::class]
-        ])->first();
-        if ($settings && $settings->data) {
-            return $settings->data['theme_bg_color'] ?? $settings->data['theme_color'] ?? 'grey darken-1';
+        if ($this->settings && $this->settings->data) {
+            return $this->settings->data['theme_bg_color'] ?? $this->settings->data['theme_color'] ?? 'grey darken-1';
         }
         return '';
     }
