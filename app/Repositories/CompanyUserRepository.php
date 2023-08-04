@@ -98,7 +98,13 @@ class CompanyUserRepository
                 if ($request->with_trashed) {
                     $query->withTrashed();
                 }
-            }, 'assignedToClients.clients', 'userData.emails.type']);
+            },
+                'assignedToClients.clients',
+                'userData.emails.type',
+                'userData.phones.type',
+                'userData.companies',
+                'userData.settings',
+            ]);
 
             if ($request->with_trashed) {
                 $companyUsers->withTrashed();

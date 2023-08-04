@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -103,7 +104,7 @@ class User extends Authenticatable
 
     public function getContactPhoneAttribute()
     {
-        return $this->phones()->with('type')->first();
+        return $this->phones->first()?->loadMissing('type');
     }
 
     public function phones(): MorphMany
@@ -157,14 +158,19 @@ class User extends Authenticatable
         return $this->hasMany(UserNotificationStatus::class, 'user_id', 'id');
     }
 
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'company_users')
+            ->with('settings');
+    }
+
     public function getNumberAttribute()
     {
-        $employee = CompanyUser::where('user_id', $this->id)->first();
-        if (!$employee) {
+        if (!$this->companies->first()) {
             return $this->attributes['number'];
         }
 
-        $settings = $employee->companyData->settings;
+        $settings = $this->companies->first()->settings;
 
         if (empty($settings->data['employee_number_format']) || count(explode('｜', $settings->data['ticket_number_format'])) != 4) {
             $format = '0||50000|8';
