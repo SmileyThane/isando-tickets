@@ -18,9 +18,9 @@ class RoleController extends Controller
         $this->roleRepo = $roleRepository;
     }
 
-    public function roles(GetRolesRequest $request)
+    public function roles(Request $request)
     {
-        $roles = $this->roleRepo->getAllByCompanyId($request->validated(), Auth::user()->employee->company_id);
+        $roles = $this->roleRepo->getAllByCompanyId($request->all(), Auth::user()->employee->company_id);
 
         return self::showResponse(true, $roles);
     }

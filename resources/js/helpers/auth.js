@@ -31,10 +31,9 @@ export const checkKbPermissionsByType = (kbType, permissionType) => {
         if (permissionExists === false) {
             let id = kbTypes
                 .find(item => item.alias === kbType)
-                ?.permissions
-                .find(item => item.type === permissionType)
-                ?.value;
-            permissionExists = permissions.includes(id);
+                ?.permissions?.find(item => item.type === permissionType)
+                    ?.value;
+                permissionExists = permissions.includes(id);
         }
     }
 
