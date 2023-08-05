@@ -254,6 +254,23 @@
             </template>
             <template v-slot:item.status.name="{ item }">
             </template>
+            <template v-slot:item.data-table-expand="{ index, item }">
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            :style="`color: ${item.priority.color === 'amber' ? '#FEBE00' : item.priority.color}`"
+                            dark
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                            @click.prevent.stop="expandItem(item)"
+                        >
+                            <v-icon>{{ expanded.indexOf(item) === -1 ? 'mdi-arrow-down-bold-circle' : 'mdi-arrow-up-bold-circle'}}</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>{{ item.priority.name }}.{{ item.status.name }}</span>
+                </v-tooltip>
+            </template>
 <!--            <template v-slot:item.priority.name="{ item }">-->
 <!--                <v-badge :color="item.priority.color" dot inline @click="showItem(item)">-->
 <!--                    {{ item.priority.name }}-->
