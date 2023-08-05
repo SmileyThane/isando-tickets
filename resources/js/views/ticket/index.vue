@@ -281,7 +281,7 @@
                     <template v-slot:activator="{ on, attrs }">
                         <div v-on="on">{{item.number}}</div>
                         <v-badge :color="item.status.color" dot inline @click="showItem(item)">
-                            <div v-on="on" :style="`color: ${item.priority.color === 'amber' ? '#FEBE00' : item.priority.color}`">#{{item.id}}</div>
+                            <div v-on="on">#{{item.id}}</div>
                         </v-badge>
 
                     </template>
