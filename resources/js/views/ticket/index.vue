@@ -562,6 +562,13 @@ export default {
                 }
             });
         },
+        expandItem(item) {
+            if (this.expanded.indexOf(item) !== -1) {
+                this.expanded = [];
+            } else {
+                this.expanded.splice(0, 1, item);
+            }
+        },
         saveFilter() {
             let data = {
                 'name': this.filterName,
