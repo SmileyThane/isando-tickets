@@ -1059,7 +1059,7 @@
 
             </v-col>
             <v-col cols="6">
-                <v-card>
+                <v-card v-if="$helpers.auth.checkPermissionByIds([2,23])">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
