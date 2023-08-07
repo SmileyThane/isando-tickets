@@ -8,11 +8,15 @@ import store from './../store';
 export const checkPermissionByIds = (ids) => {
     let permissionExists = false;
     let permissions = store.getters['getPermissions'];
-    ids.forEach(id => {
-        if (permissionExists === false) {
-            permissionExists = Array.isArray(permissions) && permissions.includes(id)
-        }
-    });
+    try {
+        ids.forEach(id => {
+            if (permissionExists === false) {
+                permissionExists = Array.isArray(permissions) && permissions.includes(id)
+            }
+        });
+    } catch (e) {
+        console.log(e.message)
+    }
     return permissionExists;
 }
 
@@ -27,14 +31,18 @@ export const checkKbPermissionsByType = (kbType, permissionType) => {
     let permissions = store.getters['getPermissions'];
     let kbTypes = store.getters['KbTypes/getKbTypes'];
 
-    if (Array.isArray(permissions) && Array.isArray(kbTypes)) {
-        if (permissionExists === false) {
-            let id = kbTypes
-                .find(item => item.alias === kbType)
-                ?.permissions?.find(item => item.type === permissionType)
+    try {
+        if (Array.isArray(permissions) && Array.isArray(kbTypes)) {
+            if (permissionExists === false) {
+                let id = kbTypes
+                    .find(item => item.alias === kbType)
+                    ?.permissions?.find(item => item.type === permissionType)
                     ?.value;
                 permissionExists = permissions.includes(id);
+            }
         }
+    } catch (e) {
+        console.log(e.message)
     }
 
     return permissionExists;
