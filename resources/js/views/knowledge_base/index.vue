@@ -660,6 +660,8 @@ export default {
     watch: {
         $route(to, from) {
             if (from.params.alias !== to.params.alias) {
+                this.articlesLoaded = false;
+                this.categoriesLoaded = false;
                 this.getCategories();
                 this.getArticles();
                 // this.getCategoriesTree();
