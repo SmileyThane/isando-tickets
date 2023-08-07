@@ -185,7 +185,7 @@
             </v-col>
             <v-col class="col-md-8">
                 <v-row>
-                    <v-col v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
+                    <v-col v-for="article in sortedArticles()" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
                         <v-card :style="`background-color: ${article.featured_color};`" outlined
                                 style="cursor: pointer"
                                 v-on:click.native="readArticle(article.id)"
@@ -675,6 +675,9 @@ export default {
         this.getTags();
     },
     methods: {
+        sortedArticles() {
+            return this.articles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}))
+        },
         limitTo(str, count = 50) {
             if (!str) return '';
             if (String(str).length <= count) return str;
