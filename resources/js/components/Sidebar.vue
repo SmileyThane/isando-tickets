@@ -5,7 +5,7 @@
         app
     >
         <perfect-scrollbar style="height: 100%;">
-            <v-list-item v-if="this.navbarStyle === 2 && this.companyLogo">
+            <v-list-item v-if="navbarStyle === 2 && companyLogo">
                 <v-list-item-icon style="margin-right: 16px!important;">
                     <v-img :src="companyLogo" contain max-height="3em" max-width="30"></v-img>
                 </v-list-item-icon>
@@ -15,7 +15,7 @@
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item v-else-if="this.navbarStyle === 3 && this.companyLogo">
+            <v-list-item v-else-if="navbarStyle === 3 && companyLogo">
                 <v-list-item-icon style="margin-right: 16px!important;">
                     <v-img :src="companyLogo" contain max-height="3em" max-width="30"></v-img>
                 </v-list-item-icon>
@@ -28,7 +28,7 @@
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item v-else-if="this.navbarStyle === 4 && this.companyLogo">
+            <v-list-item v-else-if="navbarStyle === 4 && companyLogo">
                 <v-list-item-content>
                     <v-list-item-icon>
                         <v-img :src="companyLogo" contain></v-img>
@@ -537,10 +537,10 @@
                                 <v-list-item-content>
                                     <v-list-item-title>
                                         <v-badge
-                                            v-if="this.$store.getters['Timesheet/getCountTimesheetForApproval'] > 0"
+                                            v-if="$store.getters['Timesheet/getCountTimesheetForApproval'] > 0"
                                             :color="themeBgColor"
                                             class="mt-0"
-                                            :content="this.$store.getters['Timesheet/getCountTimesheetForApproval']"
+                                            :content="$store.getters['Timesheet/getCountTimesheetForApproval']"
                                             inline
                                         >
                                             {{ langMap.sidebar.tracking_timesheet }}
