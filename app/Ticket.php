@@ -65,7 +65,7 @@ class Ticket extends Model
 
     public function getDescriptionAttribute()
     {
-        return str_replace("\n", "<br/>", $this->attributes['description']);
+        return str_replace("\n", "<br>", $this->attributes['description']);
     }
 
     public function getFromAttribute()
