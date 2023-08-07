@@ -896,7 +896,6 @@ export default {
             timeTracking: '',
             sidebarGroups: false,
             countTimesheetForApproval: 0,
-
         }
     },
     watch: {

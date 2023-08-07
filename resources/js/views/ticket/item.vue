@@ -99,6 +99,30 @@
                                 />
                             </v-col>
                             <v-col cols="12" md="6">
+                                <v-select
+                                    v-model="ticket.ticket_type_id"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :items="types"
+                                    :label="langMap.ticket.type"
+                                    item-text="name"
+                                    item-value="id"
+                                    prepend-icon="mdi-info"
+                                ></v-select>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    v-model="ticket.category_id"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :items="categories"
+                                    :label="langMap.main.category"
+                                    item-text="name"
+                                    item-value="id"
+                                    prepend-icon="mdi-info"
+                                ></v-select>
+                            </v-col>
+                            <v-col cols="12" md="6">
                                 <v-textarea
                                     v-model="ticket.availability"
                                     :color="themeBgColor"
@@ -2158,6 +2182,7 @@ export default {
             products: [],
             priorities: [],
             types: [],
+            categories: [],
             employees: [],
             followers: [],
             contacts: [],
@@ -2346,6 +2371,7 @@ export default {
         this.getSuppliers()
         this.getProducts()
         this.getPriorities()
+        this.getCategories()
         this.getTypes()
         this.getTeams()
         this.getTickets()
@@ -2494,6 +2520,15 @@ export default {
                     this.snackbar = true;
                 }
                 this.progressBuffer = this.progressBuffer + 10;
+            });
+        },
+        getCategories() {
+            axios.get('/api/ticket_categories').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.categories = response.data
+                }
+
             });
         },
         getContacts(entityItem) {

@@ -18,7 +18,7 @@ class TicketPrioritySeeder extends Seeder
             ['id' => 1],
             [
                 'name' => 'urgent',
-                'color' => '#B90E0A'
+                'color' => '#8B0000'
             ]
         );
         DB::table('ticket_priorities')->updateOrInsert(
@@ -32,7 +32,7 @@ class TicketPrioritySeeder extends Seeder
             ['id' => 3],
             [
                 'name' => 'low',
-                'color' => '808080'
+                'color' => '#808080'
             ]
         );
 
