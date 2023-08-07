@@ -89,7 +89,8 @@
                 <v-row class="flex-row justify-center align-items-center">
                     <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
                                          v-if="isCategoriesLoading"></v-progress-circular>
-                    <v-col v-else v-for="category in categories" :key="'c'+category.id" cols="12" class="pb-1 pt-1">
+                    <perfect-scrollbar v-else style="height: 100vh;" options="scrollOptions">
+                    <v-col v-for="category in categories" :key="'c'+category.id" cols="12" class="pb-1 pt-1">
                         <v-hover v-slot="{ hover }">
                             <v-card
                                 outlined
@@ -183,13 +184,15 @@
                             </v-card>
                         </v-hover>
                     </v-col>
+                    </perfect-scrollbar>
                 </v-row>
             </v-col>
             <v-col class="col-md-8">
                 <v-row class="flex-row justify-center align-items-center">
                     <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
                                          v-if="isArticlesLoading"></v-progress-circular>
-                    <v-col v-else v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
+                    <perfect-scrollbar v-else style="height: 100vh;">
+                    <v-col  v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
                         <v-card :style="`background-color: ${article.featured_color};`" outlined
                                 style="cursor: pointer"
                                 v-on:click.native="readArticle(article.id)"
@@ -266,6 +269,7 @@
                             <!--                            </v-card-actions>-->
                         </v-card>
                     </v-col>
+                    </perfect-scrollbar>
                 </v-row>
             </v-col>
         </v-row>
@@ -433,7 +437,11 @@
 }
 
 >>> .ps {
-    max-height: 20em;
+    max-height: calc(95vh - 109px - 64px - 8px);
+}
+
+>>> .ps__rail-x {
+    display: none!important;
 }
 </style>
 
