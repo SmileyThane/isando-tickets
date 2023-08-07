@@ -62,12 +62,12 @@ export default {
         GET_TREE_PROJECTS(state, projects) {
             let clients = [];
             projects.forEach(i => {
-                if (!clients.find(x => x.id === i.client.id)) {
+                if (i.client && !clients.find(x => x.id === i.client.id)) {
                     clients.push({...i.client, projects: []})
                 }
             })
             clients = clients.map(client => {
-                client.projects = projects.filter(i => i.client.id === client.id)
+                client.projects = projects.filter(i => i.client && i.client.id === client.id)
                     .sort((a, b) => (a.name ? a.name.toLowerCase() : a.name) - (b.name ? b.name.toLowerCase() : b.name))
                     .sort((a, b) => b.is_favorite - a.is_favorite);
                 return client;
