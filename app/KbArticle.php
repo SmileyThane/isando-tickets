@@ -19,6 +19,8 @@ class KbArticle extends Model
 
     protected $appends = ['featured_image', 'importance'];
 
+    protected $hidden = ['content', 'content_de'];
+
     protected $with = ['attachments'];
 
     public function company(): BelongsTo
