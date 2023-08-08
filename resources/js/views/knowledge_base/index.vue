@@ -55,7 +55,7 @@
                                     </template>
 
                                     <v-list>
-                                        <v-list-item link @click.prevent="updateCategoryDlg = true">
+                                        <v-list-item link @click.prevent="getCategoriesTree(); updateCategoryDlg = true">
                                             <v-list-item-title>
                                                 {{ langMap.kb.create_category }}
                                             </v-list-item-title>
@@ -95,7 +95,7 @@
                             <v-card
                                 outlined
                                 :color="getCategoryBackgroundColor(category.id)"
-                                v-on:click.native="openCategory(category.id, category.parent_id, category.has_sub_categories)"
+                                v-on:click.native="openCategory(category.id, category.parent_id, Boolean(category.children.length))"
                                 :style="hover ? `outline: 2px solid ${themeBgColor}` : ''"
                                 style="cursor: pointer"
                             >
@@ -662,7 +662,7 @@ export default {
             if (_.isEmpty(this.$route.query)) {
                 this.getCategories();
                 this.getArticles();
-                this.getCategoriesTree();
+                // this.getCategoriesTree();
                 this.getTags();
             }
             this.categoryForm.parent_id = this.getCategoryIdFromQuery;
@@ -671,7 +671,7 @@ export default {
     created() {
         this.debounceOpenCategory = _.debounce(
             () => this.openCategory(this.$route.query.parent_category),
-            1000
+            500
         );
     },
     mounted() {
@@ -685,7 +685,7 @@ export default {
 
         this.getCategories();
         this.getArticles();
-        this.getCategoriesTree();
+        // this.getCategoriesTree();
         this.getTags();
     },
     methods: {
@@ -781,7 +781,6 @@ export default {
                 this.getCategories();
             }
             this.getArticles();
-
         },
         clearCategoryForm() {
             this.categoryForm = {
@@ -817,6 +816,7 @@ export default {
             this.$forceUpdate();
         },
         editCategory(category) {
+            this.getCategoriesTree();
             this.fillCategoryForm(category);
             this.updateCategoryDlg = true;
         },

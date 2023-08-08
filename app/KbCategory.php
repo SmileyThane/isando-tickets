@@ -17,8 +17,6 @@ class KbCategory extends Model
 
     protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'company_id', 'parent_id', 'type_id', 'is_internal'];
 
-    protected $appends = ['articles_count', 'categories_count', 'full_name', 'has_sub_categories'];
-
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'id', 'company_id');
@@ -29,10 +27,10 @@ class KbCategory extends Model
         return $this->belongsToMany(KbArticle::class, 'kb_article_categories', 'category_id', 'article_id');
     }
 
-    public function getArticlesCountAttribute(): int
-    {
-        return $this->belongsToMany(KbArticle::class, 'kb_article_categories', 'category_id', 'article_id')->count();
-    }
+//    public function getArticlesCountAttribute(): int
+//    {
+//        return $this->belongsToMany(KbArticle::class, 'kb_article_categories', 'category_id', 'article_id')->count();
+//    }
 
     public function getCategoriesCountAttribute(): int
     {
@@ -46,13 +44,6 @@ class KbCategory extends Model
         } else {
             return $this->getTranslatedName();
         }
-    }
-
-    protected function hasSubCategories(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => $this->children()->exists()
-        );
     }
 
     private function getTranslatedName()

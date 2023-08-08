@@ -49,7 +49,7 @@ class ClientRepository
             $request['page'] = 1;
         }
         $clients = $this->getClients($request);
-        $childClientIds = $this->getRecursiveChildClientIds($clients->get());
+        $childClientIds = $this->getRecursiveChildClientIds($clients->with(['clients'])->get());
         $clients = $clients->orWhereIn('id', $childClientIds)
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
         return $clients->with('owner.userData')->paginate($request->per_page ?? $clients->count());
@@ -123,7 +123,7 @@ class ClientRepository
         $company = Company::find($companyId);
         $suppliers[] = ['name' => $company->name, 'item' => [Company::class => $companyId]];
         if (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
-            $childClientIds = $this->getRecursiveChildClientIds($company->clients);
+            $childClientIds = $this->getRecursiveChildClientIds($company->clients()->with('clients')->get());
             $clients = Client::query()->whereIn('id', $childClientIds)
                 ->orderBy('name', 'asc')
                 ->get();
