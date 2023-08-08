@@ -7,7 +7,11 @@
         >
             {{ snackbarMessage }}
         </v-snackbar>
-        <v-card ref="card" outlined>
+        <v-row v-if="isArticleLoading" class="flex-row justify-center align-items-center onCenter">
+            <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
+            ></v-progress-circular>
+        </v-row>
+        <v-card v-else ref="card" outlined>
             <v-img v-if="article.featured_image"
                    :src="article.featured_image.link"
                    width="100%"
@@ -41,7 +45,7 @@
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
                 <div class="content"
-                     v-html="$helpers.i18n.localized(article, 'content') "
+                     v-html="$helpers.i18n.localized(article, 'content') === 'content' ? '' : $helpers.i18n.localized(article, 'content')"
                 />
                 <div v-if="article.attachments && article.attachments.length > 0">
                     <v-spacer>&nbsp;</v-spacer>
@@ -98,6 +102,13 @@
     border: 1px solid #aaaaaa;
     background: #fafafa;
 }
+
+.onCenter {
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    align-items: flex-end;
+}
 </style>
 
 <script>
@@ -113,7 +124,8 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
-            article: []
+            article: [],
+            isArticleLoading: false,
         }
     },
     mounted() {
@@ -139,6 +151,7 @@ export default {
             return this.$helpers.color.invertColor(hex);
         },
         getArticle() {
+            this.isArticleLoading = true;
             axios.get(`/api/kb/article/${this.$route.params.id}?type=${this.$route.params.alias}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
@@ -154,11 +167,16 @@ export default {
                             this.$refs.summary.style.borderColor = this.article.featured_color;
                         }
                     }
+
+                    this.isArticleLoading = false;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.errorType = 'error';
                     this.alert = true;
+                    this.isArticleLoading = false;
                 }
+            }).catch(() => {
+                this.isArticleLoading = false;
             });
         },
         openCategory() {

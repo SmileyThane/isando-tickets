@@ -86,7 +86,10 @@
 
         <v-row>
             <v-col class="col-md-4">
-                <v-row>
+                <v-row class="flex-row justify-center align-items-center">
+                    <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
+                                         v-if="isCategoriesLoading"></v-progress-circular>
+                    <perfect-scrollbar v-else style="height: 100vh;" options="scrollOptions">
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12" class="pb-1 pt-1">
                         <v-hover v-slot="{ hover }">
                             <v-card
@@ -181,11 +184,15 @@
                             </v-card>
                         </v-hover>
                     </v-col>
+                    </perfect-scrollbar>
                 </v-row>
             </v-col>
             <v-col class="col-md-8">
-                <v-row>
-                    <v-col v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
+                <v-row class="flex-row justify-center align-items-center">
+                    <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
+                                         v-if="isArticlesLoading"></v-progress-circular>
+                    <perfect-scrollbar v-else style="height: 100vh;">
+                    <v-col  v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
                         <v-card :style="`background-color: ${article.featured_color};`" outlined
                                 style="cursor: pointer"
                                 v-on:click.native="readArticle(article.id)"
@@ -262,6 +269,7 @@
                             <!--                            </v-card-actions>-->
                         </v-card>
                     </v-col>
+                    </perfect-scrollbar>
                 </v-row>
             </v-col>
         </v-row>
@@ -429,7 +437,11 @@
 }
 
 >>> .ps {
-    max-height: 20em;
+    max-height: calc(95vh - 109px - 64px - 8px);
+}
+
+>>> .ps__rail-x {
+    display: none!important;
 }
 </style>
 
@@ -641,6 +653,8 @@ export default {
                 delete: 'delete',
             },
             activeCategoryColor: '#ebebeb',
+            isCategoriesLoading: false,
+            isArticlesLoading: false,
         }
     },
     watch: {
@@ -687,6 +701,7 @@ export default {
             this.$store.dispatch('Tags/getTagList')
         },
         getCategories() {
+            this.isCategoriesLoading = true
             axios.get(`/api/kb/categories?type=${this.$route.params.alias}`, {
                 params: {
                     search: this.searchWhere.includes(1) ? this.search : '',
@@ -696,11 +711,15 @@ export default {
                 response = response.data;
                 if (response.success === true) {
                     this.categories = response.data;
+                    this.isCategoriesLoading = false
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.errorType = 'error';
                     this.alert = true;
+                    this.isCategoriesLoading = false
                 }
+            }).catch(() => {
+                this.isCategoriesLoading = false
             });
         },
         getCategoriesTree() {
@@ -716,6 +735,7 @@ export default {
             });
         },
         getArticles() {
+            this.isArticlesLoading = true;
             axios.get(`/api/kb/articles?type=${this.$route.params.alias}`, {
                 params: {
                     search: this.searchWhere.includes(2) || this.searchWhere.includes(3) ? this.search : '',
@@ -727,11 +747,15 @@ export default {
                 response = response.data;
                 if (response.success === true) {
                     this.articles = response.data;
+                    this.isArticlesLoading = false;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.errorType = 'error';
                     this.alert = true;
+                    this.isArticlesLoading = false;
                 }
+            }).catch(() => {
+                this.isArticlesLoading = false;
             });
         },
         openCategory(id, parent_id = null, subCategories = true) {
