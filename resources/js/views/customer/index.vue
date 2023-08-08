@@ -304,7 +304,7 @@ export default {
         }
     },
     created() {
-        this.debounceGetClients = _.debounce(this.getClients, 1000);
+        this.debounceGetClients = _.debounce(this.getClients, 500);
     },
     mounted() {
         this.getSuppliers();
@@ -315,6 +315,7 @@ export default {
     },
     methods: {
         getClients() {
+            this.customers = [];
             this.loading = this.themeBgColor
             if (this.options.sortDesc.length <= 0) {
                 this.options.sortBy[0] = 'id'

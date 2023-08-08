@@ -988,6 +988,7 @@
 
                                 >
                                     <v-card
+                                        v-if="clientEmployee.employee"
                                         @click="showUser(clientEmployee)"
                                     >
                                         <v-card-text style="padding: 5px 10px;">

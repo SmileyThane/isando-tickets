@@ -349,7 +349,7 @@ export default {
         }
     },
     created() {
-        this.debounceGetEmployees = _.debounce(this.getEmployees, 1000);
+        this.debounceGetEmployees = _.debounce(this.getEmployees, 500);
     },
     mounted() {
         this.getClients();
@@ -364,6 +364,7 @@ export default {
     },
     methods: {
         getEmployees() {
+            this.contacts = [];
             this.loading = this.themeBgColor
             // console.log(this.options);
             if (this.options.sortDesc.length <= 0) {

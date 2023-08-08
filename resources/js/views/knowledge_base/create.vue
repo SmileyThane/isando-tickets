@@ -362,7 +362,7 @@ export default {
             that.themeBgColor = color;
         });
 
-        this.getCategoriesTree();
+        // this.getCategoriesTree();
         this.getTags();
         this.getArticle();
         this.getArticles();
@@ -414,7 +414,7 @@ export default {
                         }
                         setTimeout(() => Array.from(this.article.categories).forEach(function (category) {
                             that.categories.push(category.id);
-                        }), 2000);
+                        }), 1500);
                         this.$forceUpdate();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;

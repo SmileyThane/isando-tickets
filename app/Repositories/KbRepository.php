@@ -50,10 +50,17 @@ class KbRepository
                         ->orWhere('description', 'like', '%' . $search . '%')->orWhere('description_de', 'like', '%' . $search . '%');
                 });
             }
-            $result = $result->get();
+            $result = $result
+                ->withCount('articles')
+                ->with(['children'])
+                ->get();
 
             if (!empty($category_id)) {
-                $result = kbCategory::where('id', $category_id)->get()->merge($result);
+                $result = kbCategory::where('id', $category_id)
+                    ->withCount('articles')
+                    ->with(['children'])
+                    ->get()
+                    ->merge($result);
             }
         }
         return $result;
