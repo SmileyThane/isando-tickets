@@ -89,7 +89,7 @@
                 <v-row class="flex-row justify-center align-items-center">
                     <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
                                          v-if="isCategoriesLoading"></v-progress-circular>
-                    <perfect-scrollbar v-else style="height: 100vh;" options="scrollOptions">
+                    <perfect-scrollbar v-else style="height: 100vh; width: 100vw;" options="scrollOptions">
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12" class="pb-1 pt-1">
                         <v-hover v-slot="{ hover }">
                             <v-card
@@ -191,7 +191,7 @@
                 <v-row class="flex-row justify-center align-items-center">
                     <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
                                          v-if="isArticlesLoading"></v-progress-circular>
-                    <perfect-scrollbar v-else style="height: 100vh;">
+                    <perfect-scrollbar v-else style="height: 100vh; width: 100vw;">
                     <v-col v-for="article in sortedArticles()" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
                         <v-card :style="`background-color: ${article.featured_color};`" outlined
                                 style="cursor: pointer"
