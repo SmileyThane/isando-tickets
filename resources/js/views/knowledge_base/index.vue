@@ -192,7 +192,7 @@
                     <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
                                          v-if="isArticlesLoading"></v-progress-circular>
                     <perfect-scrollbar v-else style="height: 100vh;">
-                    <v-col  v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
+                    <v-col v-for="article in sortedArticles()" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
                         <v-card :style="`background-color: ${article.featured_color};`" outlined
                                 style="cursor: pointer"
                                 v-on:click.native="readArticle(article.id)"
@@ -689,6 +689,9 @@ export default {
         this.getTags();
     },
     methods: {
+        sortedArticles() {
+            return this.articles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}))
+        },
         limitTo(str, count = 50) {
             if (!str) return '';
             if (String(str).length <= count) return str;
