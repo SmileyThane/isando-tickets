@@ -690,7 +690,9 @@ export default {
     },
     methods: {
         sortedArticles() {
-            return this.articles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}))
+            return this.articles
+                //TODO: make this sort on backend
+                .sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}))
         },
         limitTo(str, count = 50) {
             if (!str) return '';
@@ -816,7 +818,6 @@ export default {
             this.$forceUpdate();
         },
         editCategory(category) {
-            this.getCategoriesTree();
             this.fillCategoryForm(category);
             this.updateCategoryDlg = true;
         },
