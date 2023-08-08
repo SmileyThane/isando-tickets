@@ -133,7 +133,7 @@ class KbRepository
 
     public function getArticle($id)
     {
-        return KbArticle::with('categories', 'tags', 'attachments', 'next', 'clients')->find($id);
+        return KbArticle::with('categories', 'tags', 'attachments', 'next', 'clients')->find($id)->makeVisible(['content', 'content_de']);
     }
 
     public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $type_id = null, $client_ids = [], $is_draft = 0)
