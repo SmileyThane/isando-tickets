@@ -65,7 +65,7 @@ class KbRepository
                 ->get();
 
             if (!empty($category_id)) {
-                $result = kbCategory::where('id', $category_id)
+                $resultCategory = kbCategory::where('id', $category_id)
                     ->withCount('articles')
                     ->with(['children']);
 
@@ -84,14 +84,14 @@ class KbRepository
         return $result;
     }
 
-    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $type_id = null, $is_internal = 0)
+    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $type_id = null, $is_internal = 0, $is_draft = 0)
     {
-        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'type_id', 'is_internal'));
+        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'type_id', 'is_internal', 'is_draft'));
     }
 
-    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $is_internal)
+    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $is_internal, $is_draft)
     {
-        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'is_internal'));
+        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'is_internal', 'is_draft'));
     }
 
     public function deleteCategory($id)
