@@ -50,6 +50,15 @@ class KbRepository
                         ->orWhere('description', 'like', '%' . $search . '%')->orWhere('description_de', 'like', '%' . $search . '%');
                 });
             }
+
+            if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+                $result = $result->where('is_draft', '=', false);
+            }
+
+            if (Auth::user()->employee->assignedToClients()->exists()) {
+                $result = $result->where('is_internal', '=', false);
+            }
+
             $result = $result
                 ->withCount('articles')
                 ->with(['children'])
@@ -58,11 +67,20 @@ class KbRepository
             if (!empty($category_id)) {
                 $result = kbCategory::where('id', $category_id)
                     ->withCount('articles')
-                    ->with(['children'])
-                    ->get()
-                    ->merge($result);
+                    ->with(['children']);
+
+                if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+                    $resultCategory = $resultCategory->where('is_draft', '=', false);
+                }
+
+                if (Auth::user()->employee->assignedToClients()->exists()) {
+                    $resultCategory = $resultCategory->where('is_internal', '=', false);
+                }
+
+                $result =  $resultCategory->get()->merge($result);
             }
         }
+
         return $result;
     }
 
@@ -118,6 +136,10 @@ class KbRepository
             $articles->where('is_draft', '=', false);
         }
 
+        if (Auth::user()->employee->assignedToClients()->exists()) {
+            $articles->where('is_internal', '=', false);
+        }
+
         return $articles->get();
     }
 
@@ -126,6 +148,10 @@ class KbRepository
         $articles = KbArticle::select('id', 'name', 'name_de')->where('type_id', $typeId);
         if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
             $articles->where('is_draft', '=', false);
+        }
+
+        if (Auth::user()->employee->assignedToClients()->exists()) {
+            $articles->where('is_internal', '=', false);
         }
 
         return $articles->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
