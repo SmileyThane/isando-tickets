@@ -979,7 +979,7 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-                        <v-container fluid v-if="client.employees.length">
+                        <v-container fluid>
                             <v-data-table
                                 :footer-props="footerProps"
                                 :headers="contactHeaders"
@@ -1003,7 +1003,7 @@
                                                 <v-icon small>mdi-email-alert</v-icon>
                                             </v-btn>
                                         </template>
-                                        <span>{{ langMap.company.resend_password }}</span>
+                                        <span>{{ langMap.company.reset_password }}</span>
                                     </v-tooltip>
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on, attrs }">
@@ -1031,9 +1031,6 @@
                                     </v-tooltip>
                                 </template>
                             </v-data-table>
-                        </v-container>
-                        <v-container v-else class="centered">
-                            <span class="align-center">{{ langMap.company.company_contacts_not_found }}</span>
                         </v-container>
 
                         <template>
@@ -1206,14 +1203,14 @@
                                         <v-icon small>
                                             mdi-delete
                                         </v-icon>
-                                        {{ langMap.main.delete_link }}
+                                        {{ langMap.main.delete }}
                                     </v-btn>
 
                                     <v-btn color="green darken-1" text @click="editContactInfo">
                                         <v-icon small>{{ contactInfoEditBtn === false ? 'mdi-pencil' : '' }}</v-icon>
 
                                         {{
-                                            contactInfoEditBtn === true ? langMap.main.save : langMap.individuals.edit_link
+                                            contactInfoEditBtn === true ? langMap.main.save : langMap.individuals.update_link
                                         }}
                                     </v-btn>
                                     <v-spacer></v-spacer>
