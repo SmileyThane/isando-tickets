@@ -347,6 +347,9 @@
                                 </v-expansion-panels>
                             </v-col>
                         </v-row>
+                        <v-switch v-model="categoryForm.is_draft" :color="themeBgColor"
+                                  :label="langMap.kb.is_draft" :value="1"/>
+
                         <v-switch v-model="categoryForm.is_internal" :color="themeBgColor"
                                   :label="langMap.kb.is_internal" :value="1"/>
                     </v-card-text>
@@ -486,7 +489,8 @@ export default {
                 icon: '',
                 icon_color: this.$store.state.themeBgColor,
                 _active: [],
-                is_internal: 0
+                is_internal: 0,
+                is_draft: 0
             },
             categoryIcons: [
                 // menu icons
