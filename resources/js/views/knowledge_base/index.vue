@@ -111,7 +111,7 @@
                                     </v-avatar>
                                     <div class="flex-grow-1">
                                         <v-card-title class="category-card-title">
-                                            {{ category.name }}
+                                            {{$helpers.i18n.localized(category, 'name')}}
                                         </v-card-title>
                                         <v-card-text class="category-card-description">
                                             <p class="category-description"
