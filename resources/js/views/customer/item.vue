@@ -35,13 +35,15 @@
                             </v-col>
                             <v-col :cols="client.logo_url ? 4 : 6">
                                 <h3 class="mb-0">{{ client.client_name }}</h3>
-                                <h5 class="mb-3" style="cursor: pointer;" @click="showSupplier">{{ client.supplier_name }}</h5>
+                                <h5 class="mb-3" style="cursor: pointer;" @click="showSupplier">{{
+                                        client.supplier_name
+                                    }}</h5>
                                 <h4 class="mb-3">{{ client.number }}</h4>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
                                     <hr class="lighten"/>
-                                    <p v-for="(item, i) in client.emails" :key="item.id" class="mb-0">
+                                    <p v-for="item in client.emails" :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
                                                 class="mr-2"
                                                 dense small v-text="item.type.icon"/>
@@ -51,7 +53,7 @@
 
                                 <div v-if="client.phones && client.phones.length > 0">
                                     <hr class="lighten"/>
-                                    <p v-for="(item, i) in client.phones" :key="item.id" class="mb-0">
+                                    <p v-for="item in client.phones" :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
                                                 class="mr-2"
                                                 dense small v-text="item.type.icon"/>
@@ -67,7 +69,7 @@
                             </v-col>
                             <v-col cols="6">
                                 <div v-if="client.addresses && client.addresses.length > 0" class="mb-3">
-                                    <p v-for="(item, i) in client.addresses" :key="item.id" class="mb-1">
+                                    <p v-for="item in client.addresses" :key="item.id" class="mb-1">
                                         <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
                                                 class="mr-2 mb-2"
                                                 dense small v-text="item.type.icon"/>
@@ -84,7 +86,7 @@
 
                                 <div v-if="client.socials && client.socials.length > 0">
                                     <hr class="lighten"/>
-                                    <p v-for="(item, i) in client.socials" :key="item.id" class="mb-0">
+                                    <p v-for="item in client.socials" :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)"
                                                 class="mr-2"
                                                 dense small v-text="item.type.icon"/>
@@ -220,7 +222,7 @@
                                     <h3>{{ langMap.company.additional_info }}</h3>
                                     <v-row>
                                         <v-col cols="6">
-                                            <v-list-item v-for="(item, i) in client.emails" :key="item.id">
+                                            <v-list-item v-for="item in client.emails" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
                                                     <v-icon dense small v-text="item.type.icon"/>
                                                 </v-list-item-icon>
@@ -241,7 +243,7 @@
                                             </v-list-item>
                                         </v-col>
                                         <v-col cols="6">
-                                            <v-list-item v-for="(item, i) in client.phones" :key="item.id">
+                                            <v-list-item v-for="item in client.phones" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
                                                     <v-icon dense small v-text="item.type.icon"/>
                                                 </v-list-item-icon>
@@ -388,7 +390,7 @@
                                     </v-row>
                                     <v-row>
                                         <v-col cols="6">
-                                            <v-list-item v-for="(item, i) in client.addresses" :key="item.id">
+                                            <v-list-item v-for="item in client.addresses" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
                                                     <v-icon dense small v-text="item.type.icon"/>
                                                 </v-list-item-icon>
@@ -414,7 +416,7 @@
                                             </v-list-item>
                                         </v-col>
                                         <v-col cols="6">
-                                            <v-list-item v-for="(item, i) in client.socials" :key="item.id">
+                                            <v-list-item v-for="item in client.socials" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
                                                     <v-icon dense small v-text="item.type.icon"/>
                                                 </v-list-item-icon>
@@ -978,137 +980,57 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-container fluid>
-                            <v-row dense>
-                                <v-col
-                                    v-for="clientEmployee in client.employees"
-                                    :key="clientEmployee.id"
-                                    :cols="clientEmployee.flex"
-                                    class="ma-2 col-3"
-                                    color="lightgrey"
-
-                                >
-                                    <v-card
-                                        v-if="clientEmployee.employee"
-                                        @click="showUser(clientEmployee)"
-                                    >
-                                        <v-card-text style="padding: 5px 10px;">
-                                            <v-tooltip :color="themeBgColor"
-                                                       top
-                                            >
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <span v-on="on">
-                                                        <v-avatar
-                                                            v-if="clientEmployee.employee.user_data.avatar_url || clientEmployee.employee.user_data.full_name"
-                                                            class="mr-2"
-                                                            color="grey darken-1"
-                                                            size="2em"
-                                                        >
-                                                            <v-img v-if="clientEmployee.employee.user_data.avatar_url"
-                                                                   :src="clientEmployee.employee.user_data.avatar_url"/>
-                                                            <span
-                                                                v-else-if="clientEmployee.employee.user_data.full_name"
-                                                                class="white--text">
-                                                                {{
-                                                                    clientEmployee.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                                                }}
-                                                            </span>
-                                                        </v-avatar>
-                                                        <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
-                                                        {{ clientEmployee.employee.user_data.full_name }}
-                                                        <br/>
-                                                    </span>
-                                                    <span style="height: 50px; display: block;">
-                                                        <span
-                                                            class="caption mt-2"
-                                                            style="
-                                                            color: darkgrey;
-                                                            margin: 0;
-                                                            width: 180px;
-                                                            text-overflow: ellipsis;
-                                                            overflow: hidden;
-                                                            white-space: nowrap;"
-                                                        >
-                                                            {{
-                                                                clientEmployee.description ? clientEmployee.description : '&nbsp;'
-                                                            }}
-                                                        </span>
-                                                        <span
-                                                            v-if="clientEmployee.employee.user_data.contact_phone"
-                                                            class="caption mt-2"
-                                                            style="
-                                                            color: darkgrey;
-                                                            margin: 0;
-                                                            width: 180px;
-                                                            text-overflow: ellipsis;
-                                                            overflow: hidden;
-                                                            white-space: nowrap;"
-                                                        >
-                                                            <span v-if="clientEmployee.employee.user_data.contact_phone.type">{{
-                                                                clientEmployee.employee.user_data.contact_phone.type.name
-                                                            }}:
-                                                            </span>
-                                                            {{
-                                                                clientEmployee.employee.user_data.contact_phone.phone
-                                                            }}
-                                                            <br/>
-                                                        </span>
-
-                                                    <br/>
-                                                    </span>
-
-                                                </template>
-                                                <span>
-                                                    {{ langMap.company.user }}:
-                                                    {{ clientEmployee.employee.user_data.full_name }}
-                                                    <p v-if="clientEmployee.description" class="caption">
-                                                        {{ clientEmployee.description }}
-                                                    </p>
-                                                    <br v-else/>
-                                                    {{ langMap.main.roles }}:
-                                                    {{ clientEmployee.employee.role_names }}
-
-                                                </span>
-                                            </v-tooltip>
-                                            <v-tooltip top>
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <v-btn
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                        :disabled="!clientEmployee.employee.user_data.is_active" icon
-                                                        @click.native.stop="resetPassword(clientEmployee.employee)">
-                                                        <v-icon small>mdi-email-alert</v-icon>
-                                                    </v-btn>
-                                                </template>
-                                                <span>{{ langMap.company.reset_password }}</span>
-                                            </v-tooltip>
-                                            <v-tooltip top>
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <v-btn
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                        icon
-                                                        @click.native.stop="removeEmployeeProcess(clientEmployee.employee)">
-                                                        <v-icon small>mdi-delete</v-icon>
-                                                    </v-btn>
-                                                </template>
-                                                <span>{{ langMap.company.delete_contact }}</span>
-                                            </v-tooltip>
-                                            <v-tooltip top>
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <v-btn
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                        icon
-                                                        @click.native.stop="showContactInfo(clientEmployee)">
-                                                        <v-icon small>mdi-account-switch-outline</v-icon>
-                                                    </v-btn>
-                                                </template>
-                                                <span>{{ langMap.individuals.contact_info }}</span>
-                                            </v-tooltip>
-                                        </v-card-text>
-                                    </v-card>
-                                </v-col>
-                            </v-row>
+                            <v-data-table
+                                :footer-props="footerProps"
+                                :headers="contactHeaders"
+                                :items="client.employees"
+                                :options.sync="options"
+                                class="elevation-1"
+                                dense
+                                :loading="isCompanyContactsLoading"
+                                item-key="id"
+                                @update:options="updateItemsPerPage"
+                                @click:row="showUser"
+                            >
+                                <template v-slot:item.actions="{ item }" v-if="!isCompanyContactsLoading">
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                                v-bind="attrs"
+                                                v-on="on"
+                                                icon
+                                                @click.native.stop="resetPassword(item.employee)">
+                                                <v-icon small>mdi-email-alert</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{ langMap.company.reset_password }}</span>
+                                    </v-tooltip>
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                                v-bind="attrs"
+                                                v-on="on"
+                                                icon
+                                                @click.native.stop="removeEmployeeProcess(item.employee)">
+                                                <v-icon small>mdi-delete</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{ langMap.company.delete_contact }}</span>
+                                    </v-tooltip>
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                                v-bind="attrs"
+                                                v-on="on"
+                                                icon
+                                                @click.native.stop="showContactInfo(item)">
+                                                <v-icon small>mdi-account-switch-outline</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{ langMap.individuals.contact_info }}</span>
+                                    </v-tooltip>
+                                </template>
+                            </v-data-table>
                         </v-container>
 
                         <template>
@@ -1472,7 +1394,7 @@
                     <v-card-text>
                         <v-row>
                             <v-col cols="12">
-                                <v-list-item v-for="(item, i) in client.billing" :key="item.id">
+                                <v-list-item v-for="item in client.billing" :key="item.id">
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.name"></v-list-item-title>
                                         <v-list-item-subtitle
@@ -1935,7 +1857,7 @@
                         <v-btn color="blue darken-1" text @click="createOrRestoreEmployee('restore')">
                             {{ langMap.individuals.restore }}
                         </v-btn>
-                        <v-btn color="grey darken-1" text  @click="emailTrashed = false">
+                        <v-btn color="grey darken-1" text @click="emailTrashed = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
                     </v-card-actions>
@@ -1946,14 +1868,24 @@
     </v-container>
 </template>
 
+<style scoped>
+>>> .v-data-table__wrapper > table > tbody > tr {
+    cursor: pointer;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+</style>
 
 <script>
 import EventBus from "../../components/EventBus";
 
 export default {
-
     data() {
-
         return {
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
@@ -1973,6 +1905,18 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'product_data.name'},
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+            ],
+            contactHeaders: [
+                {
+                    text: `${this.$store.state.lang.lang_map.main.name}`,
+                    align: 'start',
+                    sortable: true,
+                    value: 'employee.user_data.full_name'
+                },
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+                {text: `${this.$store.state.lang.lang_map.main.phone}`, value: 'employee.user_data.phones[0].phone'},
+                {text: `${this.$store.state.lang.lang_map.main.role}`, value: 'employee.role_names'},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false}
             ],
             activityExpanded: [],
             activityHeaders: [
@@ -2140,6 +2084,7 @@ export default {
             activityTypes: [],
             supplierEmployees: [],
             emailTrashed: false,
+            isCompanyContactsLoading: false,
         }
     },
     mounted() {
@@ -2168,6 +2113,7 @@ export default {
     },
     methods: {
         getClient() {
+            this.isCompanyContactsLoading = true
             axios.get(`/api/client/${this.$route.params.id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -2181,12 +2127,13 @@ export default {
                     this.supplierEmployees = this.client.supplier_type === 'App\\Client' ?
                         this.client.supplier.employees_without_pivot :
                         this.client.supplier.employees
+                    this.isCompanyContactsLoading = false
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
                     this.snackbar = true;
+                    this.isCompanyContactsLoading = false
                 }
-
             })
         },
         getSuppliers() {
@@ -2705,7 +2652,7 @@ export default {
             this.$router.push(`/product/${item.id}`)
         },
         showSupplier() {
-            let to = this.client.supplier_type ===  'App\\Client' ? 'customer' : 'company';
+            let to = this.client.supplier_type === 'App\\Client' ? 'customer' : 'company';
             this.$router.push(`/${to}/${this.client.supplier_id}`)
         },
         changeIsActive(item) {
@@ -3042,13 +2989,13 @@ export default {
         },
     },
     watch: {
-        clientUpdates(value) {
+        clientUpdates() {
             this.clientIsLoaded = true;
             if (this.singleUserForm.user) {
                 this.singleUserForm.user = this.client.employees.find(x => x.employee.user_id === this.singleUserForm.user.id).employee.user_data;
             }
         },
-        newLogo(val) {
+        newLogo() {
             if (this.newLogo !== null) {
                 this.logo = URL.createObjectURL(this.newLogo)
             }
