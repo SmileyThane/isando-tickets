@@ -680,6 +680,7 @@
                             :headers="activityHeaders"
                             :items="client.activities"
                             :options.sync="options"
+                            :loading="loadingActivities"
                             class="elevation-1"
                             dense
                             :expanded.sync="activityExpanded"
@@ -984,10 +985,10 @@
                                 :footer-props="footerProps"
                                 :headers="contactHeaders"
                                 :items="client.employees"
+                                :loading="loadingEmployees"
                                 :options.sync="options"
                                 class="elevation-1"
                                 dense
-                                :loading="isCompanyContactsLoading"
                                 item-key="id"
                                 @update:options="updateItemsPerPage"
                                 @click:row="showUser"
@@ -1509,6 +1510,7 @@
                             :footer-props="footerProps"
                             :headers="productHeaders"
                             :items="client.products"
+                            :loading="loadingProducts"
                             :options.sync="options"
                             class="elevation-1"
                             dense
@@ -1936,6 +1938,10 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
             snackbar: false,
+            loadingEmployees: this.themeBgColor,
+            loadingActivities: this.themeBgColor,
+            loadingBilling: this.themeBgColor,
+            loadingProduct: this.themeBgColor,
             actionColor: '',
             snackbarMessage: '',
             errors: [],
@@ -2114,6 +2120,8 @@ export default {
     methods: {
         getClient() {
             this.isCompanyContactsLoading = true
+            this.loadingEmployees = this.themeBgColor
+            this.loadingActivities = this.themeBgColor
             axios.get(`/api/client/${this.$route.params.id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -2128,6 +2136,8 @@ export default {
                         this.client.supplier.employees_without_pivot :
                         this.client.supplier.employees
                     this.isCompanyContactsLoading = false
+                    this.loadingEmployees = false
+                    this.loadingActivities = false
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -2206,7 +2216,6 @@ export default {
         getEmployees() {
             axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
                 response => {
-                    this.loading = false
                     response = response.data
                     if (response.success === true) {
                         this.employees = response.data.data
@@ -2801,6 +2810,7 @@ export default {
             this.deleteProductDlg = true;
         },
         getProducts() {
+            this.loadingProduct = this.themeBgColor
             axios.get(`/api/product?
                     search=${this.productsSearch}&
                     sort_by=name&
@@ -2811,7 +2821,7 @@ export default {
                     this.products = response.data.data
                     this.totalProducts = response.data.total
                     this.lastPage = response.data.last_page
-                    this.loading = false
+                    this.loadingProduct = false
                 } else {
                     console.log('error')
                 }
