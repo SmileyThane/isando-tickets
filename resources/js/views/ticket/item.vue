@@ -1197,7 +1197,7 @@
                                         {{ ticket.from.name }}
                                     </v-btn>
                                 </div>
-                                <br/>
+                                <span style="padding-bottom: 5px;"></span>
                                 <div>
                                     <v-label v-if="ticket.contact.user_data.name">
                                         {{ langMap.individuals.info }}:
@@ -1208,7 +1208,7 @@
                                            style="color: black;"
                                            @click="handleNavigateToIndividuals"
                                     >
-                                        {{ ticket.contact.user_data.name }}
+                                        {{ ticket.contact.user_data.full_name }}
                                     </v-btn>
                                 </div>
                             </div>
