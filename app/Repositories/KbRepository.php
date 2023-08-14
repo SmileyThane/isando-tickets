@@ -50,30 +50,48 @@ class KbRepository
                         ->orWhere('description', 'like', '%' . $search . '%')->orWhere('description_de', 'like', '%' . $search . '%');
                 });
             }
+
+            if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+                $result = $result->where('is_draft', '=', false);
+            }
+
+            if (Auth::user()->employee->assignedToClients()->exists()) {
+                $result = $result->where('is_internal', '=', false);
+            }
+
             $result = $result
                 ->withCount('articles')
                 ->with(['children'])
                 ->get();
 
             if (!empty($category_id)) {
-                $result = kbCategory::where('id', $category_id)
+                $resultCategory = kbCategory::where('id', $category_id)
                     ->withCount('articles')
-                    ->with(['children'])
-                    ->get()
-                    ->merge($result);
+                    ->with(['children']);
+
+                if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+                    $resultCategory = $resultCategory->where('is_draft', '=', false);
+                }
+
+                if (Auth::user()->employee->assignedToClients()->exists()) {
+                    $resultCategory = $resultCategory->where('is_internal', '=', false);
+                }
+
+                $result =  $resultCategory->get()->merge($result);
             }
         }
+
         return $result;
     }
 
-    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $type_id = null, $is_internal = 0)
+    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $type_id = null, $is_internal = 0, $is_draft = 0)
     {
-        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'type_id', 'is_internal'));
+        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'type_id', 'is_internal', 'is_draft'));
     }
 
-    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $is_internal)
+    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $is_internal, $is_draft)
     {
-        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'is_internal'));
+        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'is_internal', 'is_draft'));
     }
 
     public function deleteCategory($id)
@@ -84,7 +102,7 @@ class KbRepository
 
     public function getArticles($typeId, $category_id, $search, $search_in_text = false, $tags = [])
     {
-        $articles = KbArticle::with('tags', 'attachments')->where('type_id', $typeId)->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+        $articles = KbArticle::with('tags', 'attachments')->where('type_id', $typeId);
 
         if ($category_id) {
             $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
@@ -118,6 +136,10 @@ class KbRepository
             $articles->where('is_draft', '=', false);
         }
 
+        if (Auth::user()->employee->assignedToClients()->exists()) {
+            $articles->where('is_internal', '=', false);
+        }
+
         return $articles->get();
     }
 
@@ -126,6 +148,10 @@ class KbRepository
         $articles = KbArticle::select('id', 'name', 'name_de')->where('type_id', $typeId);
         if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
             $articles->where('is_draft', '=', false);
+        }
+
+        if (Auth::user()->employee->assignedToClients()->exists()) {
+            $articles->where('is_internal', '=', false);
         }
 
         return $articles->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
