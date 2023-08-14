@@ -84,7 +84,7 @@ class KbRepository
 
     public function getArticles($typeId, $category_id, $search, $search_in_text = false, $tags = [])
     {
-        $articles = KbArticle::with('tags', 'attachments')->where('type_id', $typeId)->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+        $articles = KbArticle::with('tags', 'attachments')->where('type_id', $typeId);
 
         if ($category_id) {
             $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
