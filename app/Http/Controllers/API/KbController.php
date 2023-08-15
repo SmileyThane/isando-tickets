@@ -140,27 +140,14 @@ class KbController extends Controller
 
     public function editArticle(Request $request, $id)
     {
-        $article = $this->kbRepo->updateArticle(
-            $id,
-            $request->categories ? json_decode($request->categories) : [],
-            $request->name ?? '',
-            $request->name_de,
-            $request->summary,
-            $request->summary_de,
-            $request->input('content'),
-            $request->content_de,
-            $request->tags ? json_decode($request->tags) : [],
-            $request->is_internal ? 1 : 0,
-            $request->keywords,
-            $request->keywords_de,
-            $request->featured_color,
-            $request->next ? json_decode($request->next) : [],
-            $request->step_type,
-            $request->client_ids,
-            [],
-            (int)$request->is_draft
-        );
+        $request['categories'] = $request->categories ? json_decode($request->categories) : [];
+        $request['tags'] = $request->tags ? json_decode($request->tags) : [];
+        $request['next'] = $request->next ? json_decode($request->next) : [];
+        $request['featured_color'] = $request->featured_color ?: 'transparent';
+        $request['is_internal'] = $request->is_internal ? 1 : 0;
+        $request['is_draft'] = $request->is_draft ? 1 : 0;
 
+        $article = $this->kbRepo->updateArticle($request->all(),$id);
 
         if ($request->has('files')) {
             foreach ($request['files'] as $i => $file) {
