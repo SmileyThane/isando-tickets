@@ -233,6 +233,24 @@
                                         </template>
                                     </v-file-input>
                                 </div>
+                                <v-col
+                                    v-if="ticket.answers.length"
+                                    cols="12">
+                                    <h4>{{ langMap.main.attachments }}</h4>
+                                    <div
+                                        v-for="file in getTicketAttachmentsById().attachments"
+                                    >
+                                        <v-chip
+                                            :color="themeBgColor"
+                                            :text-color="themeFgColor"
+                                            class="ma-2"
+                                            close
+                                            @click:close="removeAttachment(file.id, 'answer')"
+                                        >
+                                            {{ file.name }}
+                                        </v-chip>
+                                    </div>
+                                </v-col>
                             </div>
                         </v-form>
                     </v-card-text>
@@ -296,7 +314,7 @@
                                             :text-color="themeFgColor"
                                             class="ma-2"
                                             close
-                                            @click:close="removeAttachment(attachment.id)"
+                                            @click:close="removeAttachment(attachment.id, 'ticket')"
                                         >
                                             {{ attachment.name }}
                                         </v-chip>
@@ -2142,6 +2160,7 @@ import moment from 'moment-timezone';
 export default {
     data() {
         return {
+            selectedAnswerId: null,
             snackbar: false,
             actionColor: '',
             snackbarMessage: '',
@@ -2327,7 +2346,6 @@ export default {
             },
             onFileChange(form) {
                 this[form].files = null;
-                // console.log(event.target.files);
                 this[form].files = event.target.files;
             },
             currentUser: {
@@ -2393,6 +2411,9 @@ export default {
         this.$store.dispatch('Team/getCoworkers', {force: true});
     },
     methods: {
+        getTicketAttachmentsById(){
+            return this.ticket?.answers?.find(el => el.id === this.selectedAnswerId) || []
+        },
         selectSearchCategory(item) {
             this.searchLabel = item.name
         },
@@ -2611,14 +2632,12 @@ export default {
             this.updateTicket();
         },
         showTicket(item) {
-            // this.$router.push(`/ticket/${item.id}`)
             window.location.href = `/ticket/${item}`
         },
         addTicketAnswer() {
             const config = {
                 headers: {'content-type': 'multipart/form-data'}
             }
-            // console.log(this.ticketAnswer);
             let formData = new FormData();
             for (let key in this.ticketAnswer) {
                 if (key !== 'files' && key !== 'id') {
@@ -2630,6 +2649,11 @@ export default {
             }
             Array.from(this.ticketAnswer.files).forEach(file => formData.append('files[]', file));
 
+            for(let [name, value] of formData) {
+                if(value === "[object Object]") {
+                    formData.delete(name)
+                }
+            }
             if (this.ticketAnswer.id) {
                 axios.post(`/api/ticket/${this.$route.params.id}/answer/${this.ticketAnswer.id}`, formData, config).then(response => {
                     response = response.data
@@ -2903,8 +2927,10 @@ export default {
         editAnswer(answer) {
             this.ticketAnswer.id = answer.id;
             this.ticketAnswer.answer = answer.answer;
+            this.ticketAnswer.files = answer.attachments
             this.selectedSignature = '';
             this.answerDialog = true;
+            this.selectedAnswerId = answer.id
         },
         editNotice(notice) {
             this.ticketNotice.id = notice.id;
@@ -3014,14 +3040,24 @@ export default {
                 this.__globalTimer();
             }, 1000);
         },
-        removeAttachment(id) {
+        removeAttachment(id, variant) {
             axios.delete(`/api/file/${id}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    this.ticket.attachments.splice(
-                        this.ticket.attachments.findIndex(item => item.id === id),
-                        1
-                    );
+                    if (variant === 'answer') {
+                        this.ticketAnswer.files.splice(
+                            this.ticketAnswer.files.findIndex(item => item.id === id),
+                            1
+                        );
+                    }
+
+                    if (variant === 'ticket') {
+                        this.ticket.attachments.splice(
+                            this.ticket.attachments.findIndex(item => item.id === id),
+                            1
+                        );
+                    }
+
                     this.snackbarMessage = this.langMap.kb.attachment_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
