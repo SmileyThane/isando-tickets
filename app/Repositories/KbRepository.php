@@ -219,7 +219,7 @@ class KbRepository
             foreach ($article->categories as $category) {
                 $article->categories()->detach($category->id);
             }
-            foreach ($request['$categories'] as $category) {
+            foreach ($request['categories'] as $category) {
                 $article->categories()->attach($category);
             }
 
