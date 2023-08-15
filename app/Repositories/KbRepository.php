@@ -208,57 +208,61 @@ class KbRepository
         return $article;
     }
 
-    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $approved_at = null, $client_ids = [], $is_draft = 0)
+    public function updateArticle($request, $id)
     {
         $owner_id = Auth::user()->employee->id;
-        $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'approved_at', 'owner_id', 'is_draft'));
+        $request['owner_id'] = $owner_id;
+        $article = KbArticle::query()->find($id);
+        if($article) {
+            $article->update($request);
 
-        foreach ($article->categories as $category) {
-            $article->categories()->detach($category->id);
-        }
-        foreach ($categories as $category) {
-            $article->categories()->attach($category);
-        }
-
-        foreach ($article->tags as $tag) {
-            $article->tags()->detach($tag->id);
-        }
-
-        foreach ($tags as $tag) {
-            if (is_object($tag)) {
-                $article->tags()->attach($tag->id);
-            } else {
-                $tag = Tag::create([
-                    'name' => $tag,
-                    'color' => Tag::randomHexColor()
-                ]);
-
-                $article->tags()->attach($tag->id);
+            foreach ($article->categories as $category) {
+                $article->categories()->detach($category->id);
             }
-        }
-
-        foreach ($article->next as $step) {
-            $article->next()->detach($step->id);
-        }
-
-        foreach ($next_steps as $i => $step) {
-            $stepId = is_object($step) ? $step->id : $step;
-
-            if ($stepId == 0) {
-                $date = date('Y-m-d H:i:s');
-
-                $step = KbArticle::create([
-                    'company_id' => $article->company_id,
-                    'name' => (Language::find(1))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
-                    'name_de' => (Language::find(2))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
-                ]);
-
-                $stepId = $step->id;
+            foreach ($request['$categories'] as $category) {
+                $article->categories()->attach($category);
             }
-            $article->next()->attach($stepId, ['relation_type' => $step_type, 'position' => $i + 1]);
 
-            if ($client_ids && count($client_ids) > 0) {
-                $article->clients()->sync($client_ids);
+            foreach ($article->tags as $tag) {
+                $article->tags()->detach($tag->id);
+            }
+
+            foreach ($request['tags'] as $tag) {
+                if (is_object($tag)) {
+                    $article->tags()->attach($tag->id);
+                } else {
+                    $tag = Tag::create([
+                        'name' => $tag,
+                        'color' => Tag::randomHexColor()
+                    ]);
+
+                    $article->tags()->attach($tag->id);
+                }
+            }
+
+            foreach ($article->next as $step) {
+                $article->next()->detach($step->id);
+            }
+
+            foreach ($request['next_steps'] as $i => $step) {
+                $stepId = is_object($step) ? $step->id : $step;
+
+                if ($stepId == 0) {
+                    $date = date('Y-m-d H:i:s');
+
+                    $step = KbArticle::create([
+                        'company_id' => $article->company_id,
+                        'name' => (Language::find(1))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
+                        'name_de' => (Language::find(2))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
+                    ]);
+
+                    $stepId = $step->id;
+                }
+                $article->next()->attach($stepId, ['relation_type' => $request['step_type'], 'position' => $i + 1]);
+
+                if ($request['client_ids'] && count($request['client_ids']) > 0) {
+                    $article->clients()->sync($request['client_ids']);
+                }
             }
         }
 
