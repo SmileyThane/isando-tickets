@@ -219,24 +219,29 @@ class KbRepository
             foreach ($article->categories as $category) {
                 $article->categories()->detach($category->id);
             }
-            foreach ($request['categories'] as $category) {
-                $article->categories()->attach($category);
+            if (isset($request['categories'])) {
+                foreach ($request['categories'] as $category) {
+                    $article->categories()->attach($category);
+                }
+
             }
 
             foreach ($article->tags as $tag) {
                 $article->tags()->detach($tag->id);
             }
 
-            foreach ($request['tags'] as $tag) {
-                if (is_object($tag)) {
-                    $article->tags()->attach($tag->id);
-                } else {
-                    $tag = Tag::create([
-                        'name' => $tag,
-                        'color' => Tag::randomHexColor()
-                    ]);
+            if (isset($request['tags'])) {
+                foreach ($request['tags'] as $tag) {
+                    if (is_object($tag)) {
+                        $article->tags()->attach($tag->id);
+                    } else {
+                        $tag = Tag::create([
+                            'name' => $tag,
+                            'color' => Tag::randomHexColor()
+                        ]);
 
-                    $article->tags()->attach($tag->id);
+                        $article->tags()->attach($tag->id);
+                    }
                 }
             }
 
@@ -244,24 +249,26 @@ class KbRepository
                 $article->next()->detach($step->id);
             }
 
-            foreach ($request['next_steps'] as $i => $step) {
-                $stepId = is_object($step) ? $step->id : $step;
+            if (isset($request['next_steps'])) {
+                foreach ($request['next_steps'] as $i => $step) {
+                    $stepId = is_object($step) ? $step->id : $step;
 
-                if ($stepId == 0) {
-                    $date = date('Y-m-d H:i:s');
+                    if ($stepId == 0) {
+                        $date = date('Y-m-d H:i:s');
 
-                    $step = KbArticle::create([
-                        'company_id' => $article->company_id,
-                        'name' => (Language::find(1))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
-                        'name_de' => (Language::find(2))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
-                    ]);
+                        $step = KbArticle::create([
+                            'company_id' => $article->company_id,
+                            'name' => (Language::find(1))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
+                            'name_de' => (Language::find(2))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
+                        ]);
 
-                    $stepId = $step->id;
-                }
-                $article->next()->attach($stepId, ['relation_type' => $request['step_type'], 'position' => $i + 1]);
+                        $stepId = $step->id;
+                    }
+                    $article->next()->attach($stepId, ['relation_type' => $request['step_type'], 'position' => $i + 1]);
 
-                if ($request['client_ids'] && count($request['client_ids']) > 0) {
-                    $article->clients()->sync($request['client_ids']);
+                    if ($request['client_ids'] && count($request['client_ids']) > 0) {
+                        $article->clients()->sync($request['client_ids']);
+                    }
                 }
             }
         }
