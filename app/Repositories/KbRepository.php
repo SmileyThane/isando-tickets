@@ -50,30 +50,48 @@ class KbRepository
                         ->orWhere('description', 'like', '%' . $search . '%')->orWhere('description_de', 'like', '%' . $search . '%');
                 });
             }
+
+            if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+                $result = $result->where('is_draft', '=', false);
+            }
+
+            if (Auth::user()->employee->assignedToClients()->exists()) {
+                $result = $result->where('is_internal', '=', false);
+            }
+
             $result = $result
                 ->withCount('articles')
                 ->with(['children'])
                 ->get();
 
             if (!empty($category_id)) {
-                $result = kbCategory::where('id', $category_id)
+                $resultCategory = kbCategory::where('id', $category_id)
                     ->withCount('articles')
-                    ->with(['children'])
-                    ->get()
-                    ->merge($result);
+                    ->with(['children']);
+
+                if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
+                    $resultCategory = $resultCategory->where('is_draft', '=', false);
+                }
+
+                if (Auth::user()->employee->assignedToClients()->exists()) {
+                    $resultCategory = $resultCategory->where('is_internal', '=', false);
+                }
+
+                $result =  $resultCategory->get()->merge($result);
             }
         }
+
         return $result;
     }
 
-    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $type_id = null, $is_internal = 0)
+    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $type_id = null, $is_internal = 0, $is_draft = 0)
     {
-        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'type_id', 'is_internal'));
+        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'type_id', 'is_internal', 'is_draft'));
     }
 
-    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $is_internal)
+    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color, $is_internal, $is_draft)
     {
-        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'is_internal'));
+        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'is_internal', 'is_draft'));
     }
 
     public function deleteCategory($id)
@@ -84,7 +102,7 @@ class KbRepository
 
     public function getArticles($typeId, $category_id, $search, $search_in_text = false, $tags = [])
     {
-        $articles = KbArticle::with('tags', 'attachments')->where('type_id', $typeId)->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+        $articles = KbArticle::with('tags', 'attachments')->where('type_id', $typeId);
 
         if ($category_id) {
             $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
@@ -118,6 +136,10 @@ class KbRepository
             $articles->where('is_draft', '=', false);
         }
 
+        if (Auth::user()->employee->assignedToClients()->exists()) {
+            $articles->where('is_internal', '=', false);
+        }
+
         return $articles->get();
     }
 
@@ -126,6 +148,10 @@ class KbRepository
         $articles = KbArticle::select('id', 'name', 'name_de')->where('type_id', $typeId);
         if (!Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)) {
             $articles->where('is_draft', '=', false);
+        }
+
+        if (Auth::user()->employee->assignedToClients()->exists()) {
+            $articles->where('is_internal', '=', false);
         }
 
         return $articles->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
@@ -182,57 +208,68 @@ class KbRepository
         return $article;
     }
 
-    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1, $approved_at = null, $client_ids = [], $is_draft = 0)
+    public function updateArticle($request, $id)
     {
         $owner_id = Auth::user()->employee->id;
-        $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color', 'approved_at', 'owner_id', 'is_draft'));
+        $request['owner_id'] = $owner_id;
+        $article = KbArticle::query()->find($id);
+        if($article) {
+            $article->update($request);
 
-        foreach ($article->categories as $category) {
-            $article->categories()->detach($category->id);
-        }
-        foreach ($categories as $category) {
-            $article->categories()->attach($category);
-        }
-
-        foreach ($article->tags as $tag) {
-            $article->tags()->detach($tag->id);
-        }
-
-        foreach ($tags as $tag) {
-            if (is_object($tag)) {
-                $article->tags()->attach($tag->id);
-            } else {
-                $tag = Tag::create([
-                    'name' => $tag,
-                    'color' => Tag::randomHexColor()
-                ]);
-
-                $article->tags()->attach($tag->id);
+            foreach ($article->categories as $category) {
+                $article->categories()->detach($category->id);
             }
-        }
+            if (isset($request['categories'])) {
+                foreach ($request['categories'] as $category) {
+                    $article->categories()->attach($category);
+                }
 
-        foreach ($article->next as $step) {
-            $article->next()->detach($step->id);
-        }
-
-        foreach ($next_steps as $i => $step) {
-            $stepId = is_object($step) ? $step->id : $step;
-
-            if ($stepId == 0) {
-                $date = date('Y-m-d H:i:s');
-
-                $step = KbArticle::create([
-                    'company_id' => $article->company_id,
-                    'name' => (Language::find(1))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
-                    'name_de' => (Language::find(2))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
-                ]);
-
-                $stepId = $step->id;
             }
-            $article->next()->attach($stepId, ['relation_type' => $step_type, 'position' => $i + 1]);
 
-            if ($client_ids && count($client_ids) > 0) {
-                $article->clients()->sync($client_ids);
+            foreach ($article->tags as $tag) {
+                $article->tags()->detach($tag->id);
+            }
+
+            if (isset($request['tags'])) {
+                foreach ($request['tags'] as $tag) {
+                    if (is_object($tag)) {
+                        $article->tags()->attach($tag->id);
+                    } else {
+                        $tag = Tag::create([
+                            'name' => $tag,
+                            'color' => Tag::randomHexColor()
+                        ]);
+
+                        $article->tags()->attach($tag->id);
+                    }
+                }
+            }
+
+            foreach ($article->next as $step) {
+                $article->next()->detach($step->id);
+            }
+
+            if (isset($request['next_steps'])) {
+                foreach ($request['next_steps'] as $i => $step) {
+                    $stepId = is_object($step) ? $step->id : $step;
+
+                    if ($stepId == 0) {
+                        $date = date('Y-m-d H:i:s');
+
+                        $step = KbArticle::create([
+                            'company_id' => $article->company_id,
+                            'name' => (Language::find(1))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
+                            'name_de' => (Language::find(2))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i + 1),
+                        ]);
+
+                        $stepId = $step->id;
+                    }
+                    $article->next()->attach($stepId, ['relation_type' => $request['step_type'], 'position' => $i + 1]);
+
+                    if ($request['client_ids'] && count($request['client_ids']) > 0) {
+                        $article->clients()->sync($request['client_ids']);
+                    }
+                }
             }
         }
 

@@ -79,6 +79,9 @@
                             </v-combobox>
 
                             <v-spacer>&nbsp;</v-spacer>
+                            <v-switch v-model="article.is_draft" :color="themeBgColor"
+                                      :label="langMap.kb.is_draft" :value="1"/>
+
                             <v-switch v-model="article.is_internal" :color="themeBgColor"
                                       :label="langMap.kb.is_internal" :value="1"/>
 
@@ -216,6 +219,9 @@
                     </v-row>
                     <v-switch v-model="article.is_draft" :color="themeBgColor"
                               :label="langMap.kb.is_draft" :value="1"/>
+
+                    <v-switch v-model="article.is_internal" :color="themeBgColor"
+                              :label="langMap.kb.is_internal" :value="1"/>
 
                 </v-card-text>
                 <v-card-actions>

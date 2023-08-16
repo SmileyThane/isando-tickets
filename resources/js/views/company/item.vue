@@ -736,6 +736,7 @@
                             :footer-props="footerProps"
                             :headers="productHeaders"
                             :items="company.products"
+                            :loading="loading"
                             :options.sync="options"
                             class="elevation-1"
                             dense
@@ -2333,6 +2334,7 @@ export default {
             snackbarMessage: '',
             tooltip: false,
             enableToEdit: false,
+            loading: this.themeBgColor,
             languages: [],
             errors: [],
             options: {
