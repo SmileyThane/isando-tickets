@@ -40,11 +40,12 @@ class KbRepository
         if ($company) {
             $result = $company->kbCategories()
                 ->where('type_id', $typeId)
-                ->where('parent_id', $category_id)
                 ->orderBy('name', 'ASC')
                 ->orderBy('name_de', 'ASC');
 
-            if (!empty($search)) {
+            if(empty($search)) {
+                $result->where('parent_id', $category_id);
+            } else {
                 $result = $result->where(function ($query) use ($search) {
                     $query->where('name', 'like', '%' . $search . '%')->orWhere('name_de', 'like', '%' . $search . '%')
                         ->orWhere('description', 'like', '%' . $search . '%')->orWhere('description_de', 'like', '%' . $search . '%');
@@ -102,14 +103,22 @@ class KbRepository
 
     public function getArticles($typeId, $category_id, $search, $search_in_text = false, $tags = [])
     {
-        $articles = KbArticle::with('tags', 'attachments')->where('type_id', $typeId);
+        $articles = KbArticle::query()
+            ->select([
+                'id',
+                'name',
+                'name_de',
+                'summary',
+                'summary_de',
+                'featured_color',
+            ])
+            ->with(['tags', 'attachments'])
+            ->where('type_id', $typeId);
 
         if ($category_id) {
             $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
                 $query->where('category_id', $category_id);
             });
-        } elseif (empty($search) && empty($tags)) {
-            $articles = $articles->whereDoesntHave('categories');
         }
 
         if (!empty($search)) {
@@ -119,7 +128,7 @@ class KbRepository
             });
 
             if ($search_in_text) {
-                $articles = $articles->where(function ($query) use ($search) {
+                $articles = $articles->orWhere(function ($query) use ($search) {
                     $query->orWhere('keywords', 'like', '%' . $search . '%')->orWhere('keywords_de', 'like', '%' . $search . '%')
                         ->orWhere('content', 'like', '%' . $search . '%')->orWhere('content_de', 'like', '%' . $search . '%');
                 });
