@@ -2442,8 +2442,9 @@ export default {
         this.$store.dispatch('Team/getCoworkers', {force: true});
     },
     methods: {
-        getTicketAttachmentsById(){
+        getTicketAttachmentsById() {
             return this.ticket?.answers?.find(el => el.id === this.selectedAnswerId) || []
+        },
         handleNavigateToCompany() {
             this.$router.push(`/customer/${this.ticket.from.id}`)
         },
