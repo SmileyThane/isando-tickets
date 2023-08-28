@@ -855,10 +855,10 @@
 
                                             {{ answer.employee.user_data.full_name }}
                                             {{
-                                                answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
+                                                answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY')
                                             }}
                                             {{
-                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? answer.updated_at_time : answer.updated_at) : ''
+                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? moment(answer.updated_at_time).isValid() ? moment(answer.updated_at_time).format('DD.MM.YYYY') : answer.updated_at_time : moment(answer.updated_at).format('DD.MM.YYYY')) : ''
                                             }}
                                             :
                                         </span>
@@ -933,7 +933,7 @@
                                                 {{ answer.employee.user_data.full_name }}
 
                                                 {{
-                                                    answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
+                                                    answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY')
                                                 }} - {{ ticket.name }}:
                                             </span>
                                             <div v-html="answer.answer"></div>
@@ -998,7 +998,7 @@
 
                                                 {{ ticket.creator.user_data.full_name }}
                                                 {{
-                                                ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at
+                                                ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY')
                                             }} - {{ ticket.name }}:
                                         </span>
 
@@ -1095,7 +1095,7 @@
 
                                                 {{ ticket.creator.user_data.full_name }}
                                                 {{
-                                            ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at
+                                            ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY')
                                         }} - {{ ticket.name }}:
                                     </span>
                                     </v-col>
@@ -1574,7 +1574,8 @@
 
                                                 {{ noticeItem.employee.user_data.full_name }}
 
-                                                {{ noticeItem.created_at }}:</strong>
+                                                {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY') : noticeItem.created_at }}
+                                            </strong>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
 
@@ -1615,9 +1616,9 @@
 
                                                     {{ noticeItem.employee.user_data.full_name }}
 
-                                                    {{ noticeItem.created_at }}
+                                                    {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY') : noticeItem.created_at }}
                                                     {{
-                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : ''
+                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + moment(noticeItem.updated_at).isValid() ? moment(noticeItem.updated_at).format('DD.MM.YYYY') : noticeItem.updated_at : ''
                                                     }}
                                                     :
                                                 </strong>
@@ -2164,7 +2165,7 @@
 
                                                     {{ history.employee.user_data.full_name }}
 
-                                                    {{ history.created_at }}:
+                                                    {{ moment(history.created_at).isValid() ? moment(history.created_at).format('DD.MM.YYYY') : history.created_at }}:
                                                 </strong>
                                                 <p>{{ history.description }}</p>
                                             </v-list-item-title>
