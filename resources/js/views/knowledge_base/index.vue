@@ -89,7 +89,7 @@
                 <v-row class="flex-row justify-center align-items-center">
                     <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
                                          v-if="isCategoriesLoading"></v-progress-circular>
-                    <perfect-scrollbar v-else style="height: 100vh; width: 100vw;" options="scrollOptions">
+                    <perfect-scrollbar v-else style="height: 100vh; width: 100vw;">
                     <v-col v-for="category in categories" :key="'c'+category.id" cols="12" class="pb-1 pt-1">
                         <v-hover v-slot="{ hover }">
                             <v-card
@@ -111,12 +111,13 @@
                                     </v-avatar>
                                     <div class="flex-grow-1">
                                         <v-card-title class="category-card-title">
-                                            {{ category.name }}
+                                            {{$helpers.i18n.localized(category, 'name')}}
                                         </v-card-title>
                                         <v-card-text class="category-card-description">
                                             <p class="category-description"
                                                v-if="$helpers.i18n.localized(category, 'description')">
-                                                {{ $helpers.i18n.localized(category, 'description') }}
+                                                {{ $helpers.i18n.localized(category, 'description') !== 'description' ?
+                                                $helpers.i18n.localized(category, 'description') : '&nbsp' }}
                                             </p>
                                         </v-card-text>
                                     </div>
@@ -192,7 +193,7 @@
                     <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
                                          v-if="isArticlesLoading"></v-progress-circular>
                     <perfect-scrollbar v-else style="height: 100vh; width: 100vw;">
-                    <v-col v-for="article in sortedArticles()" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
+                    <v-col v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
                         <v-card :style="`background-color: ${article.featured_color};`" outlined
                                 style="cursor: pointer"
                                 v-on:click.native="readArticle(article.id)"
@@ -346,6 +347,9 @@
                                 </v-expansion-panels>
                             </v-col>
                         </v-row>
+                        <v-switch v-model="categoryForm.is_draft" :color="themeBgColor"
+                                  :label="langMap.kb.is_draft" :value="1"/>
+
                         <v-switch v-model="categoryForm.is_internal" :color="themeBgColor"
                                   :label="langMap.kb.is_internal" :value="1"/>
                     </v-card-text>
@@ -485,7 +489,8 @@ export default {
                 icon: '',
                 icon_color: this.$store.state.themeBgColor,
                 _active: [],
-                is_internal: 0
+                is_internal: 0,
+                is_draft: 0
             },
             categoryIcons: [
                 // menu icons
@@ -659,7 +664,7 @@ export default {
     },
     watch: {
         $route(to, from) {
-            if (_.isEmpty(this.$route.query)) {
+            if (from.params.alias !== to.params.alias) {
                 this.getCategories();
                 this.getArticles();
                 // this.getCategoriesTree();
@@ -670,9 +675,11 @@ export default {
     },
     created() {
         this.debounceOpenCategory = _.debounce(
-            () => this.openCategory(this.$route.query.parent_category),
-            500
-        );
+            () => {
+                this.$router.push(`/${this.$route.params.alias}`, () => {});
+                this.getCategories();
+                this.getArticles();
+            }, 500);
     },
     mounted() {
         let that = this;
@@ -689,11 +696,6 @@ export default {
         this.getTags();
     },
     methods: {
-        sortedArticles() {
-            return this.articles
-                //TODO: make this sort on backend
-                .sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}))
-        },
         limitTo(str, count = 50) {
             if (!str) return '';
             if (String(str).length <= count) return str;
@@ -739,11 +741,11 @@ export default {
                 }
             });
         },
-        getArticles() {
+        getArticles(search = true) {
             this.isArticlesLoading = true;
             axios.get(`/api/kb/articles?type=${this.$route.params.alias}`, {
                 params: {
-                    search: this.searchWhere.includes(2) || this.searchWhere.includes(3) ? this.search : '',
+                    search: search && (this.searchWhere.includes(2) || this.searchWhere.includes(3)) ? this.search : '',
                     search_in_text: this.searchWhere.includes(3),
                     category_id: this.getCategoryIdFromQuery,
                     tags: this.activeTags
@@ -751,7 +753,8 @@ export default {
             }).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    this.articles = response.data;
+                    //TODO: make this sort on backend
+                    this.articles = response.data.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}));
                     this.isArticlesLoading = false;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
@@ -763,9 +766,11 @@ export default {
                 this.isArticlesLoading = false;
             });
         },
-        openCategory(id, parent_id = null, subCategories = true) {
+        openCategory(id = null, parent_id = null, subCategories = true) {
             let query = '';
-            if (id && parent_id && !subCategories) {
+            if (this.search) {
+                query = `category=${id}`;
+            } else if (id && parent_id && !subCategories) {
                 query = `parent_category=${parent_id}&category=${id}`
             } else if (id && subCategories) {
                 query = `parent_category=${id}`;
@@ -773,16 +778,14 @@ export default {
                 query = `category=${id}`;
             }
             if (query) {
-                this.$router.push(`/${this.$route.params.alias}?${query}`, () => {
-                })
+                this.$router.push(`/${this.$route.params.alias}?${query}`, () => {});
             } else if (this.$router.app.$route.fullPath !== this.$router.app.$route.path) {
-                this.$router.push(`/${this.$route.params.alias}`, () => {
-                });
+                this.$router.push(`/${this.$route.params.alias}`, () => {});
             }
-            if (subCategories) {
+            if (subCategories && !this.search) {
                 this.getCategories();
             }
-            this.getArticles();
+            this.getArticles(false);
         },
         clearCategoryForm() {
             this.categoryForm = {

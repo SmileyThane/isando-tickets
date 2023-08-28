@@ -1201,6 +1201,36 @@
                                 </span>
                             </span>
                             <br/>
+                            <div style="display: flex; flex-direction: column">
+                                <div>
+                                    <v-label v-if="ticket.from.name">
+                                        {{ langMap.ticket.company_from }}:
+                                    </v-label>
+                                    <v-btn v-if="ticket.from.name"
+                                           class="float-md-right"
+                                           color="white" small
+                                           style="color: black;"
+                                           @click="handleNavigateToCompany"
+                                    >
+                                        {{ ticket.from.name }}
+                                    </v-btn>
+                                </div>
+                                <span style="padding-bottom: 5px;"></span>
+                                <div>
+                                    <v-label v-if="ticket.contact.user_data.name">
+                                        {{ langMap.individuals.info }}:
+                                    </v-label>
+                                    <v-btn v-if="ticket.contact.user_data.name"
+                                           class="float-md-right"
+                                           color="white" small
+                                           style="color: black;"
+                                           @click="handleNavigateToIndividuals"
+                                    >
+                                        {{ ticket.contact.user_data.full_name }}
+                                    </v-btn>
+                                </div>
+                            </div>
+                            <br/>
                             <v-label v-if="ticket.availability">
                                 {{ langMap.ticket.availability }}:
                             </v-label>
@@ -2413,6 +2443,11 @@ export default {
     methods: {
         getTicketAttachmentsById(){
             return this.ticket?.answers?.find(el => el.id === this.selectedAnswerId) || []
+        handleNavigateToCompany() {
+            this.$router.push(`/customer/${this.ticket.from.id}`)
+        },
+        handleNavigateToIndividuals(){
+            this.$router.push(`/employee/${this.ticket.contact.user_data.id}`)
         },
         selectSearchCategory(item) {
             this.searchLabel = item.name
