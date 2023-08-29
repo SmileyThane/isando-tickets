@@ -173,6 +173,10 @@ class CompanyUserRepository
         $result = false;
         $companyUser = CompanyUser::find($id);
         if ($companyUser) {
+            Email::query()
+                ->where('entity_id', $companyUser->user_id)
+                ->where('entity_type', User::class)
+                ->delete();
             User::where('id', $companyUser->user_id)->delete();
             ClientCompanyUser::where('company_user_id', $companyUser->id)->delete();
             $companyUser->delete();
