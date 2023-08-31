@@ -2894,7 +2894,8 @@ export default {
                     if (response.error.email_trashed) {
                         this.emailTrashed = true;
                     } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
+                        let error = Object.keys(response.error) ? response.error[Object.keys(response.error)[0]].shift() : this.langMap.main.generic_error;
+                        this.snackbarMessage = error;
                         this.actionColor = 'error';
                         this.snackbar = true;
                     }
