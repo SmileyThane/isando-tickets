@@ -84,7 +84,8 @@ class EmailReceiverRepository
                     $ticket = Ticket::where('name', 'like', $ticketSubject)
                         ->where(static function ($query) use ($userGlobal) {
                             return $query->where('from_company_user_id', $userGlobal->employee->id)
-                                ->orWhere('to_company_user_id', $userGlobal->employee->id);
+                                ->orWhere('to_company_user_id', $userGlobal->employee->id)
+                                ->orWhere('contact_company_user_id', $userGlobal->employee->id);
                         })->first();
                     $attachments = $this->handleEmailAttachments($message->getAttachments());
                     if ($ticket !== null && $cachedCount === 0 &&
