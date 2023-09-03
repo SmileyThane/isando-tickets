@@ -233,6 +233,24 @@
                                         </template>
                                     </v-file-input>
                                 </div>
+                                <v-col
+                                    v-if="ticket.answers.length"
+                                    cols="12">
+                                    <h4>{{ langMap.main.attachments }}</h4>
+                                    <div
+                                        v-for="file in getTicketAttachmentsById().attachments"
+                                    >
+                                        <v-chip
+                                            :color="themeBgColor"
+                                            :text-color="themeFgColor"
+                                            class="ma-2"
+                                            close
+                                            @click:close="removeAttachment(file.id, 'answer')"
+                                        >
+                                            {{ file.name }}
+                                        </v-chip>
+                                    </div>
+                                </v-col>
                             </div>
                         </v-form>
                     </v-card-text>
@@ -296,7 +314,7 @@
                                             :text-color="themeFgColor"
                                             class="ma-2"
                                             close
-                                            @click:close="removeAttachment(attachment.id)"
+                                            @click:close="removeAttachment(attachment.id, 'ticket')"
                                         >
                                             {{ attachment.name }}
                                         </v-chip>
@@ -837,10 +855,10 @@
 
                                             {{ answer.employee.user_data.full_name }}
                                             {{
-                                                answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
+                                                answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY')
                                             }}
                                             {{
-                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? answer.updated_at_time : answer.updated_at) : ''
+                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? moment(answer.updated_at_time).isValid() ? moment(answer.updated_at_time).format('DD.MM.YYYY') : answer.updated_at_time : moment(answer.updated_at).format('DD.MM.YYYY')) : ''
                                             }}
                                             :
                                         </span>
@@ -915,7 +933,7 @@
                                                 {{ answer.employee.user_data.full_name }}
 
                                                 {{
-                                                    answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
+                                                    answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY')
                                                 }} - {{ ticket.name }}:
                                             </span>
                                             <div v-html="answer.answer"></div>
@@ -980,7 +998,7 @@
 
                                                 {{ ticket.creator.user_data.full_name }}
                                                 {{
-                                                ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at
+                                                ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY')
                                             }} - {{ ticket.name }}:
                                         </span>
 
@@ -1077,7 +1095,7 @@
 
                                                 {{ ticket.creator.user_data.full_name }}
                                                 {{
-                                            ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at
+                                            ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY')
                                         }} - {{ ticket.name }}:
                                     </span>
                                     </v-col>
@@ -1556,7 +1574,8 @@
 
                                                 {{ noticeItem.employee.user_data.full_name }}
 
-                                                {{ noticeItem.created_at }}:</strong>
+                                                {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY') : noticeItem.created_at }}
+                                            </strong>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
 
@@ -1597,9 +1616,9 @@
 
                                                     {{ noticeItem.employee.user_data.full_name }}
 
-                                                    {{ noticeItem.created_at }}
+                                                    {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY') : noticeItem.created_at }}
                                                     {{
-                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : ''
+                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + moment(noticeItem.updated_at).isValid() ? moment(noticeItem.updated_at).format('DD.MM.YYYY') : noticeItem.updated_at : ''
                                                     }}
                                                     :
                                                 </strong>
@@ -2146,7 +2165,7 @@
 
                                                     {{ history.employee.user_data.full_name }}
 
-                                                    {{ history.created_at }}:
+                                                    {{ moment(history.created_at).isValid() ? moment(history.created_at).format('DD.MM.YYYY') : history.created_at }}:
                                                 </strong>
                                                 <p>{{ history.description }}</p>
                                             </v-list-item-title>
@@ -2172,6 +2191,7 @@ import moment from 'moment-timezone';
 export default {
     data() {
         return {
+            selectedAnswerId: null,
             snackbar: false,
             actionColor: '',
             snackbarMessage: '',
@@ -2357,7 +2377,6 @@ export default {
             },
             onFileChange(form) {
                 this[form].files = null;
-                // console.log(event.target.files);
                 this[form].files = event.target.files;
             },
             currentUser: {
@@ -2423,6 +2442,9 @@ export default {
         this.$store.dispatch('Team/getCoworkers', {force: true});
     },
     methods: {
+        getTicketAttachmentsById() {
+            return this.ticket?.answers?.find(el => el.id === this.selectedAnswerId) || []
+        },
         handleNavigateToCompany() {
             this.$router.push(`/customer/${this.ticket.from.id}`)
         },
@@ -2647,14 +2669,12 @@ export default {
             this.updateTicket();
         },
         showTicket(item) {
-            // this.$router.push(`/ticket/${item.id}`)
             window.location.href = `/ticket/${item}`
         },
         addTicketAnswer() {
             const config = {
                 headers: {'content-type': 'multipart/form-data'}
             }
-            // console.log(this.ticketAnswer);
             let formData = new FormData();
             for (let key in this.ticketAnswer) {
                 if (key !== 'files' && key !== 'id') {
@@ -2666,6 +2686,11 @@ export default {
             }
             Array.from(this.ticketAnswer.files).forEach(file => formData.append('files[]', file));
 
+            for(let [name, value] of formData) {
+                if(value === "[object Object]") {
+                    formData.delete(name)
+                }
+            }
             if (this.ticketAnswer.id) {
                 axios.post(`/api/ticket/${this.$route.params.id}/answer/${this.ticketAnswer.id}`, formData, config).then(response => {
                     response = response.data
@@ -2939,8 +2964,10 @@ export default {
         editAnswer(answer) {
             this.ticketAnswer.id = answer.id;
             this.ticketAnswer.answer = answer.answer;
+            this.ticketAnswer.files = answer.attachments
             this.selectedSignature = '';
             this.answerDialog = true;
+            this.selectedAnswerId = answer.id
         },
         editNotice(notice) {
             this.ticketNotice.id = notice.id;
@@ -3050,14 +3077,24 @@ export default {
                 this.__globalTimer();
             }, 1000);
         },
-        removeAttachment(id) {
+        removeAttachment(id, variant) {
             axios.delete(`/api/file/${id}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    this.ticket.attachments.splice(
-                        this.ticket.attachments.findIndex(item => item.id === id),
-                        1
-                    );
+                    if (variant === 'answer') {
+                        this.ticketAnswer.files.splice(
+                            this.ticketAnswer.files.findIndex(item => item.id === id),
+                            1
+                        );
+                    }
+
+                    if (variant === 'ticket') {
+                        this.ticket.attachments.splice(
+                            this.ticket.attachments.findIndex(item => item.id === id),
+                            1
+                        );
+                    }
+
                     this.snackbarMessage = this.langMap.kb.attachment_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;

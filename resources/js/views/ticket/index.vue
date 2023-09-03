@@ -276,6 +276,9 @@
 <!--                    {{ item.priority.name }}-->
 <!--                </v-badge>-->
 <!--            </template>-->
+            <template v-slot:item.last_update="{ item }">
+                {{moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY') : item.last_update}}
+            </template>
             <template v-slot:item.number="{ item }">
                 <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">

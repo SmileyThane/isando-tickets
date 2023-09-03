@@ -1941,7 +1941,7 @@ export default {
             loadingEmployees: this.themeBgColor,
             loadingActivities: this.themeBgColor,
             loadingBilling: this.themeBgColor,
-            loadingProduct: this.themeBgColor,
+            loadingProducts: this.themeBgColor,
             actionColor: '',
             snackbarMessage: '',
             errors: [],
@@ -2238,7 +2238,8 @@ export default {
                     if (response.error.email_trashed) {
                         this.emailTrashed = true;
                     } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
+                        let error = Object.keys(response.error) ? response.error[Object.keys(response.error)[0]].shift() : this.langMap.main.generic_error;
+                        this.snackbarMessage = error;
                         this.actionColor = 'error';
                         this.snackbar = true;
                     }
@@ -2810,7 +2811,7 @@ export default {
             this.deleteProductDlg = true;
         },
         getProducts() {
-            this.loadingProduct = this.themeBgColor
+            this.loadingProducts = this.themeBgColor
             axios.get(`/api/product?
                     search=${this.productsSearch}&
                     sort_by=name&
@@ -2821,7 +2822,7 @@ export default {
                     this.products = response.data.data
                     this.totalProducts = response.data.total
                     this.lastPage = response.data.last_page
-                    this.loadingProduct = false
+                    this.loadingProducts = false
                 } else {
                     console.log('error')
                 }

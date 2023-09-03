@@ -103,6 +103,15 @@
     background: #fafafa;
 }
 
+>>> .v-card__text {
+    font-family: "Roboto", sans-serif;
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+    letter-spacing: .0071428571em;
+    color: #00000099;
+}
+
 .onCenter {
     width: 100%;
     height: 50vh;
