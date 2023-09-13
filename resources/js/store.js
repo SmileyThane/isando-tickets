@@ -18,6 +18,7 @@ import {
     Timesheet,
     Tracking,
     KbTypes,
+    Roles,
 } from './modules';
 
 Vue.use(Vuex);
@@ -40,6 +41,7 @@ export default new Vuex.Store({
         IncidentReporting,
         SettingsIncident,
         KbTypes,
+        Roles,
     },
     state: {
         roles: {},

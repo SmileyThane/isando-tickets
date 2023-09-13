@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\GetRolesRequest;
 use App\Permission;
 use App\Repositories\RoleRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,6 +46,26 @@ class RoleController extends Controller
             return self::showResponse(true, $this->roleRepo->mergeRolesWithPermissions($request->data));
         }
         return self::showResponse(false);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function store(Request $request): JsonResponse
+    {
+        return self::showResponse(true, $this->roleRepo->store(
+            array_merge($request->all(), ['company_id' => auth()->user()->employee->company_id]),
+        ));
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function clone(Request $request): JsonResponse
+    {
+        return self::showResponse(true, $this->roleRepo->clone($request->all()));
     }
 
 }

@@ -9,6 +9,7 @@ use App\Role;
 use App\RoleHasPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class RoleRepository
@@ -103,10 +104,13 @@ class RoleRepository
         return $this->getRolesWithPermissions();
     }
 
-    public function getRolesWithPermissions(array $data): array
+    public function getRolesWithPermissions(array $data = []): array
     {
         $result = [];
-        $roles = Role::query()->where(['company_id' => Auth::user()->employee->company_id])->get();
+        $roles = Role::query()
+            ->where(['company_id' => Auth::user()->employee->company_id])
+            ->with(['permissions'])
+            ->get();
 
         if (isset($data['search'])) {
             $permissions = Permission::query()
@@ -142,5 +146,31 @@ class RoleRepository
         }
 
         return $roles->get()->toArray();
+    }
+
+    /**
+     * @param array $data
+     * @return Role
+     */
+    public function store(array $data): Role
+    {
+        return Role::create($data);
+    }
+
+    /**
+     * @param array $data
+     * @return Role
+     */
+    public function clone(array $data): Role
+    {
+        $role = Role::findOrFail($data['role_id']);
+        $cloneRole = $role->replicate()->fill($data);
+
+        DB::transaction(function () use ($cloneRole, $role) {
+            $cloneRole->save();
+            $cloneRole->permissions()->attach($role->permissions);
+        });
+
+        return $cloneRole;
     }
 }
