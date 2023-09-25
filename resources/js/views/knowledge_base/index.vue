@@ -447,6 +447,10 @@
 >>> .ps__rail-x {
     display: none!important;
 }
+
+>>> .ps__rail-y {
+    z-index: 0!important;
+}
 </style>
 
 <script>
