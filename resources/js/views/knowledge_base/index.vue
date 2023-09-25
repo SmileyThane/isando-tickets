@@ -692,7 +692,7 @@ export default {
 
         this.getCategories();
         this.getArticles();
-        // this.getCategoriesTree();
+        this.getCategoriesTree();
         this.getTags();
     },
     methods: {
