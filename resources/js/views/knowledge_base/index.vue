@@ -812,7 +812,9 @@ export default {
                 description_de: category.description_de,
                 icon_color: category.icon_color,
                 icon: category.icon,
-                _active: [category.parent_id]
+                _active: [category.parent_id],
+                is_draft: category.is_draft,
+                is_internal: category.is_internal
             };
             this.$forceUpdate();
         },
