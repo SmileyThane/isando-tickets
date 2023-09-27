@@ -77,7 +77,7 @@ class KbController extends Controller
             $request->description_de,
             $request->icon ?? 'mdi-help',
             $request->icon_color,
-            $request->is_internal,
+            (int)$request->is_internal,
             (int)$request->is_draft
         ));
     }
