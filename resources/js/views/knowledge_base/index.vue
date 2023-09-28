@@ -447,6 +447,10 @@
 >>> .ps__rail-x {
     display: none!important;
 }
+
+>>> .ps__rail-y {
+    z-index: 0!important;
+}
 </style>
 
 <script>
@@ -692,7 +696,7 @@ export default {
 
         this.getCategories();
         this.getArticles();
-        // this.getCategoriesTree();
+        this.getCategoriesTree();
         this.getTags();
     },
     methods: {
@@ -812,7 +816,9 @@ export default {
                 description_de: category.description_de,
                 icon_color: category.icon_color,
                 icon: category.icon,
-                _active: [category.parent_id]
+                _active: [category.parent_id],
+                is_draft: category.is_draft,
+                is_internal: category.is_internal
             };
             this.$forceUpdate();
         },

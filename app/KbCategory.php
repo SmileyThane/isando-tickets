@@ -15,7 +15,7 @@ class KbCategory extends Model
 {
     use SoftDeletes, NodeTrait;
 
-    protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'company_id', 'parent_id', 'type_id', 'is_internal'];
+    protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'company_id', 'parent_id', 'type_id', 'is_internal', 'is_draft'];
 
     public function company(): BelongsTo
     {
