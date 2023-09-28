@@ -403,6 +403,12 @@ class LanguageSeeder extends Seeder
                             'contractor' => 'Contractor',
                             'search_by_permissions' => 'Search by permissions',
                             'search_by_roles' => 'Search by roles',
+                            'create_new_role' => 'Create new role',
+                            'clone_role' => 'Clone role',
+                            'role_created' => 'Role was successfully created',
+                            'role_cloned' => 'Role was successfully cloned',
+                            'select_role_to_clone' => 'Select a role to clone permissions',
+                            'role_name_label' => 'Name (for example \'new role\')',
                         ],
                     'company' =>
                         [
@@ -771,7 +777,8 @@ class LanguageSeeder extends Seeder
                             'yes' => 'Yes',
                             'no' => 'No',
                             'unlink' => 'Unlink',
-                            'useful_links' => 'Useful links'
+                            'useful_links' => 'Useful links',
+                            'clone' => 'Clone',
                         ],
                     'system_settings' =>
                         [
@@ -1421,6 +1428,12 @@ class LanguageSeeder extends Seeder
                             'contractor' => 'Auftragnehmer',
                             'search_by_permissions' => 'Suche nach Berechtigungen',
                             'search_by_roles' => 'Suche nach Rollen',
+                            'create_new_role' => 'Neue Rolle erstellen',
+                            'clone_role' => 'Klonrolle',
+                            'role_created' => 'Die Rolle wurde erfolgreich erstellt',
+                            'role_cloned' => 'Die Rolle wurde erfolgreich geklont',
+                            'select_role_to_clone' => 'Wählen Sie eine Rolle zum Klonen von Berechtigungen auss',
+                            'role_name_label' => 'Name (zum Beispiel \'neue rolle\')',
                         ],
                         'company' => [
                             'company_number' => 'Firmennummer',
@@ -1772,7 +1785,8 @@ class LanguageSeeder extends Seeder
                             'yes' => 'Ja',
                             'no' => 'Nein',
                             'unlink' => 'Verknüpfung aufheben',
-                            'useful_links' => 'Nützliche Links'
+                            'useful_links' => 'Nützliche Links',
+                            'clone' => 'Klon',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',

@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('roles', 'API\RoleController@roles');
     Route::get('roles/full', 'API\RoleController@getRolesWithPermissions');
     Route::put('roles/full', 'API\RoleController@mergeRolesWithPermissions');
+    Route::post('roles', 'API\RoleController@store');
+    Route::post('roles/clone', 'API\RoleController@clone');
     Route::get('permissions', 'API\RoleController@permissions');
 
 

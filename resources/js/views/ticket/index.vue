@@ -516,7 +516,7 @@ export default {
                 // },
                 {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number'},
                 // {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.type}`, value: 'ticket_type_id'},
+                {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update'},
                 // {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
                 {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
@@ -524,7 +524,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.product_name}`, value: 'product.name'},
                 {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person'},
-                {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update'},
+                {text: `${this.$store.state.lang.lang_map.ticket.type}`, value: 'ticket_type_id'},
             ],
             mergeTicketForm: {
                 parent_ticket_id: null,

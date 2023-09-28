@@ -2,8 +2,10 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 class Role extends Model
 {
@@ -23,14 +25,27 @@ class Role extends Model
 
     protected $fillable = ['id', 'company_id', 'name'];
 
-    public function permissions(): HasMany
+    protected $attributes = [
+        'guard_name' => 'web',
+    ];
+
+    public function permissions(): BelongsToMany
     {
-        return $this->hasMany(RoleHasPermission::class, 'role_id', 'id');
+        return $this->belongsToMany(Permission::class, 'role_has_permissions');
     }
 
     public function permissionIds()
     {
-        $permissionIds = RoleHasPermission::where('role_id', $this->id)->get();
-        return $permissionIds ? $permissionIds->pluck('permission_id')->toArray() : [];
+        return $this->permissions ? $this->permissions->pluck('id')->toArray() : [];
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => Str::snake($value),
+        );
     }
 }

@@ -88,11 +88,106 @@
                             </template>
 
                         </v-data-table>
-
                     </div>
                 </div>
             </div>
+            <v-col cols="12">
+                <v-btn
+                    :color="themeBgColor"
+                    :style="`color: ${themeFgColor};`"
+                    v-text="langMap.roles.create_new_role"
+                    @click="createRoleDialog = true"
+                />
+                <v-btn
+                    :color="themeBgColor"
+                    :style="`color: ${themeFgColor};`"
+                    v-text="langMap.roles.clone_role"
+                    @click="cloneRoleDialog = true"
+                />
+            </v-col>
         </div>
+        <v-dialog v-model="createRoleDialog" max-width="600px" persistent>
+            <v-card dense outlined>
+                <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                    {{ langMap.roles.create_new_role }}
+                </v-card-title>
+                <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-text-field
+                                    v-model="forms.createRole.name"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :label="langMap.roles.role_name_label"
+                                    dense
+                                />
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        color="red"
+                        @click="createRoleDialog=false"
+                        :style="`color: ${themeFgColor};`"
+                        v-text="langMap.main.cancel"
+                    />
+                    <v-btn
+                        :color="themeBgColor"
+                        :style="`color: ${themeFgColor};`"
+                        v-text="langMap.main.create"
+                        @click="createRoleDialog=false; createRole(forms.createRole)"
+                    />
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="cloneRoleDialog" max-width="600px" persistent>
+            <v-card dense outlined>
+                <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                    {{ langMap.roles.clone_role }}
+                </v-card-title>
+                <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-text-field
+                                    v-model="forms.cloneRole.name"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :label="langMap.roles.role_name_label"
+                                    dense
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-select
+                                    v-model="forms.cloneRole.role_id"
+                                    :items="roles"
+                                    item-text="name"
+                                    item-value="id"
+                                    :label="langMap.roles.select_role_to_clone"
+                                    dense
+                                ></v-select>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        color="red"
+                        @click="cloneRoleDialog=false"
+                        :style="`color: ${themeFgColor};`"
+                        v-text="langMap.main.cancel"
+                    />
+                    <v-btn
+                        :color="themeBgColor"
+                        :style="`color: ${themeFgColor};`"
+                        v-text="langMap.main.clone"
+                        @click="cloneRoleDialog=false; cloneRole(forms.cloneRole)"
+                    />
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -120,6 +215,18 @@ export default {
             canBeEdited: false,
             permissionsSearch: '',
             rolesSearch: '',
+            createRoleDialog: false,
+            cloneRoleDialog: false,
+            roles: [],
+            forms: {
+                createRole: {
+                    name: '',
+                },
+                cloneRole: {
+                    name: '',
+                    role_id: null,
+                }
+            }
         }
     },
     mounted() {
@@ -138,6 +245,38 @@ export default {
         this.debounceGetRoles = _.debounce(this.getRoles, 1000);
     },
     methods: {
+        createRole(data) {
+            this.$store.dispatch('Roles/createRole', data)
+                .then(result => {
+                    console.log('result');
+                    if (result) {
+                        this.getRoles();
+                        this.getFullRoles();
+                        this.showSnackbar(this.langMap.roles.role_created);
+                    }
+                })
+                .catch(error => {
+                    this.showSnackbar(this.langMap.main.generic_error, 'error');
+                });
+        },
+        cloneRole(data) {
+            this.$store.dispatch('Roles/cloneRole', data)
+                .then(result => {
+                    if (result) {
+                        this.getRoles();
+                        this.getFullRoles();
+                        this.showSnackbar(this.langMap.roles.role_cloned);
+                    }
+                })
+                .catch(error => {
+                    this.showSnackbar(this.langMap.main.generic_error, 'error');
+                });
+        },
+        showSnackbar(text, color = 'success') {
+            this.snackbarMessage = text;
+            this.actionColor = color;
+            this.snackbar = true;
+        },
         getFullRoles() {
             this.loading = this.themeBgColor
             axios.get('/api/roles/full', {
@@ -167,6 +306,7 @@ export default {
                 this.loading = false
                 response = response.data
                 if (response.success === true) {
+                    this.roles = response.data;
                     let result = response.data.map((item) => {
                         return {'text': item.name, 'value': `${item.id}`, sortable: false};
                     })
@@ -179,11 +319,12 @@ export default {
             });
         },
         updateRoles() {
+            this.loading = this.themeBgColor;
             axios.put(`/api/roles/full`, {'data': this.items}).then(response => {
-                response = response.data
+                this.loading = false;
+                response = response.data;
                 if (response.success === true) {
-                    this.items = response.data
-                    window.location.reload()
+                    this.items = response.data;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
