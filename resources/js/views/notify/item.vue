@@ -42,10 +42,11 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.recipients}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.notification.recipients }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-btn color="white" style="color: black;" @click="addRecipient(); updateRecipientsDlg = true">
-                            {{langMap.main.update}}
+                            {{ langMap.main.update }}
                         </v-btn>
                     </v-toolbar>
 
