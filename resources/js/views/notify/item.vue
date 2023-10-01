@@ -13,11 +13,12 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         :color="themeBgColor"
-                        dense
                         dark
+                        dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.template}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.notification.template }}
+                        </v-toolbar-title>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
