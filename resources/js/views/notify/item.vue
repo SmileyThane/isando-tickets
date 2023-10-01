@@ -22,13 +22,13 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
-                            <h3 v-if="templateId === 'create'">{{langMap.notification.new_template}}</h3>
+                            <h3 v-if="templateId === 'create'">{{ langMap.notification.new_template }}</h3>
                             <div v-else>
-                                <h3>{{template.name}}</h3>
-                                <p>{{template.description}}</p>
+                                <h3>{{ template.name }}</h3>
+                                <p>{{ template.description }}</p>
                             </div>
 
-                            <a href="#" @click="cancel">{{langMap.notification.select_template}}</a>
+                            <a href="#" @click="cancel">{{ langMap.notification.select_template }}</a>
                         </v-form>
                     </v-card-text>
                 </v-card>
