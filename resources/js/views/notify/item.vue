@@ -57,12 +57,12 @@
                                     <perfect-scrollbar>
                                         <v-treeview
                                             ref="tree1"
+                                            :color="themeBgColor"
                                             :items="template.recipients"
                                             dense
-                                            :color="themeBgColor"
                                         >
                                             <template v-slot:prepend="{ item }">
-                                                <v-icon small v-if="item.entity_type === 'App\\Client'">
+                                                <v-icon v-if="item.entity_type === 'App\\Client'" small>
                                                     mdi-factory
                                                 </v-icon>
                                                 <v-icon small v-if="item.entity_type === 'App\\User'">
