@@ -106,16 +106,16 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols="12" class="pa-3">
+                                <v-col class="pa-3" cols="12">
 
                                     <v-menu
                                         ref="menu1"
                                         v-model="datepickerMenu"
                                         :close-on-content-click="false"
-                                        transition="scale-transition"
-                                        offset-y
                                         max-width="290px"
                                         min-width="290px"
+                                        offset-y
+                                        transition="scale-transition"
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-text-field
