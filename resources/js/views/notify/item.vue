@@ -130,9 +130,9 @@
                                             ></v-text-field>
                                         </template>
                                         <v-date-picker
-                                            first-day-of-week="1"
-                                            :color="themeBgColor"
                                             v-model="dueDate"
+                                            :color="themeBgColor"
+                                            first-day-of-week="1"
                                             no-title
                                             @input="datepickerMenu = false"
                                         ></v-date-picker>
