@@ -119,12 +119,12 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-text-field
-                                                :color="themeBgColor"
-                                                dense
                                                 v-model="dueDate"
+                                                :color="themeBgColor"
                                                 :label="langMap.notification.due_date"
-                                                persistent-hint
                                                 append-icon="mdi-calendar"
+                                                dense
+                                                persistent-hint
                                                 v-bind="attrs"
                                                 v-on="on"
                                             ></v-text-field>
