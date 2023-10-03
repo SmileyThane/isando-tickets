@@ -153,9 +153,10 @@
                                     >
                                     </v-select>
                                 </v-col>
-                                <v-col cols="12" class="pa-3">
+                                <v-col class="pa-3" cols="12">
                                     <v-select
                                         ref="type"
+                                        v-model="template.notification_type_id"
                                         :color="themeBgColor"
                                         :item-color="themeBgColor"
                                         v-model="template.notification_type_id"
