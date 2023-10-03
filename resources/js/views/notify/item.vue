@@ -144,12 +144,11 @@
                                         v-model="template.priority"
                                         :color="themeBgColor"
                                         :item-color="themeBgColor"
-                                        v-model="template.priority"
                                         :items="priorities"
                                         :label="langMap.notification.priority"
-                                        item-value="id"
-                                        item-text="name"
                                         dense
+                                        item-text="name"
+                                        item-value="id"
                                         required
                                     >
                                     </v-select>
