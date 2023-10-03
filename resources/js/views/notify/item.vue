@@ -159,11 +159,10 @@
                                         v-model="template.notification_type_id"
                                         :color="themeBgColor"
                                         :item-color="themeBgColor"
-                                        v-model="template.notification_type_id"
                                         :items="notificationTypes"
                                         :label="langMap.notification.notification_type"
-                                        item-value="id"
                                         dense
+                                        item-value="id"
                                         required
                                     >
                                         <template slot="selection" slot-scope="data">
