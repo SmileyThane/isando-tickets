@@ -138,9 +138,10 @@
                                         ></v-date-picker>
                                     </v-menu>
                                 </v-col>
-                                <v-col cols="12" class="pa-3">
+                                <v-col class="pa-3" cols="12">
                                     <v-select
                                         ref="priority"
+                                        v-model="template.priority"
                                         :color="themeBgColor"
                                         :item-color="themeBgColor"
                                         v-model="template.priority"
