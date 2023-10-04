@@ -224,9 +224,9 @@
                                         :item-color="themeBgColor"
                                         :items="signatures"
                                         :label="langMap.notification.signature"
-                                        item-value="id"
-                                        item-text="name"
                                         dense
+                                        item-text="name"
+                                        item-value="id"
                                     >
                                         <template slot="selection" slot-scope="data">
                                             <div class="text--black mt-3" v-html="data.item.signature"></div>
@@ -242,12 +242,12 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar
-                        dense
                         :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.attachments}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.notification.attachments }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -266,10 +266,10 @@
                                             >
                                                 <v-list-item-content>
                                                     <v-file-input
-                                                        dense
-                                                        :color="themeBgColor"
                                                         v-model="attachments[i]"
+                                                        :color="themeBgColor"
                                                         :label="langMap.notification.select_file"
+                                                        dense
                                                         show-size
                                                     >
                                                     </v-file-input>
