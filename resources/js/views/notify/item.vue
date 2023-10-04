@@ -183,12 +183,13 @@
             <v-col cols="8">
                 <v-card class="elevation-12">
                     <v-toolbar
-                        dense
                         :color="themeBgColor"
                         dark
+                        dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.details}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.notification.details }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
