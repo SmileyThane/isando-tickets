@@ -195,12 +195,12 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols="12" class="pa-3">
+                                <v-col class="pa-3" cols="12">
 
                                     <v-text-field
                                         ref="subject"
-                                        :color="themeBgColor"
                                         v-model="template.name"
+                                        :color="themeBgColor"
                                         :label="langMap.notification.subject"
                                         dense
                                         required
