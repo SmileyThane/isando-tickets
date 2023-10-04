@@ -207,21 +207,21 @@
                                     >
                                     </v-text-field>
                                 </v-col>
-                                <v-col cols="12" class="pa-3">
+                                <v-col class="pa-3" cols="12">
                                     <Tinymce
                                         ref="body"
-                                        aria-rowcount="20"
                                         v-model="template.text"
                                         :placeholder="langMap.notification.text"
+                                        aria-rowcount="20"
                                         required
                                     />
                                     <v-spacer>&nbsp;</v-spacer>
                                 </v-col>
-                                <v-col cols="12" class="pa-3">
+                                <v-col class="pa-3" cols="12">
                                     <v-select
+                                        v-model="selectedSignatureId"
                                         :color="themeBgColor"
                                         :item-color="themeBgColor"
-                                        v-model="selectedSignatureId"
                                         :items="signatures"
                                         :label="langMap.notification.signature"
                                         item-value="id"
