@@ -244,6 +244,7 @@
                     <v-toolbar
                         :color="themeBgColor"
                         dark
+                        dense
                         flat
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.notification.attachments }}
@@ -277,12 +278,12 @@
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-btn
+                                                        :color="themeBgColor"
+                                                        bottom
                                                         dark
                                                         fab
                                                         right
-                                                        bottom
                                                         small
-                                                        :color="themeBgColor"
                                                         @click="attachments.splice(i, 1)"
                                                     >
                                                         <v-icon x-small>mdi-delete</v-icon>
