@@ -340,7 +340,6 @@
                                     class="mr-3"
                                     dark
                                     @click="send()"
-                                    class="mr-3"
 
                                 >
                                     {{ langMap.main.send }}
@@ -349,8 +348,9 @@
                                 <v-btn
                                     class="mr-3"
                                     color="grey"
+                                    @click="cancel()"
                                 >
-                                    {{langMap.main.cancel}}
+                                    {{ langMap.main.cancel }}
                                 </v-btn>
 
                                 <v-btn
