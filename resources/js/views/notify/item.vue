@@ -331,23 +331,22 @@
                                     class="mr-3"
                                     dark
                                     @click="saveAsDlg = true"
-                                    class="mr-3"
                                 >
-                                    {{langMap.main.save_as}}
+                                    {{ langMap.main.save_as }}
                                 </v-btn>
 
                                 <v-btn
                                     :color="themeBgColor"
+                                    class="mr-3"
                                     dark
                                     @click="send()"
                                     class="mr-3"
 
                                 >
-                                    {{langMap.main.send}}
+                                    {{ langMap.main.send }}
                                 </v-btn>
 
                                 <v-btn
-                                    @click="cancel()"
                                     class="mr-3"
                                     color="grey"
                                 >
