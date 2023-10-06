@@ -295,9 +295,11 @@
                                     <v-expansion-panels>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header @click.native.stop="attachments.push({})">
-                                                {{langMap.notification.new_attachment}}
+                                                {{ langMap.notification.new_attachment }}
                                                 <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`" @click="attachments.push({})">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`"
+                                                            @click="attachments.push({})">mdi-plus
+                                                    </v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                         </v-expansion-panel>
@@ -313,19 +315,20 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar
-                        dense
                         :color="themeBgColor"
                         dark
+                        dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.main.actions}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.main.actions }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
                         <v-row>
-                            <v-col cols="12" class="pa-3">
+                            <v-col class="pa-3" cols="12">
                                 <v-btn
                                     :color="themeBgColor"
+                                    class="mr-3"
                                     dark
                                     @click="saveAsDlg = true"
                                     class="mr-3"
