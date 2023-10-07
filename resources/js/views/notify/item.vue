@@ -369,25 +369,31 @@
         <v-row justify="center">
             <v-dialog v-model="saveAsDlg" max-width="600px" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                        {{langMap.main.save_as}}
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.main.save_as }}
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <div class="row">
-                                <v-col cols="6" class="pa-3">
-                                    <v-text-field :color="themeBgColor" :item-color="themeBgColor" v-model="template.name" :label="langMap.main.name" dense></v-text-field>
+                                <v-col class="pa-3" cols="6">
+                                    <v-text-field v-model="template.name" :color="themeBgColor"
+                                                  :item-color="themeBgColor" :label="langMap.main.name"
+                                                  dense></v-text-field>
                                 </v-col>
-                                <v-col cols="6" class="pa-3">
-                                    <v-text-field :color="themeBgColor" :item-color="themeBgColor" v-model="template.description" :label="langMap.main.description" dense></v-text-field>
+                                <v-col class="pa-3" cols="6">
+                                    <v-text-field v-model="template.description" :color="themeBgColor"
+                                                  :item-color="themeBgColor" :label="langMap.main.description"
+                                                  dense></v-text-field>
                                 </v-col>
                             </div>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="saveAsDlg=false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn :color="themeBgColor" text @click="saveAsDlg=false; saveAsTemplate()">{{langMap.main.save}}</v-btn>
+                        <v-btn color="red" text @click="saveAsDlg=false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn :color="themeBgColor" text @click="saveAsDlg=false; saveAsTemplate()">
+                            {{ langMap.main.save }}
+                        </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
