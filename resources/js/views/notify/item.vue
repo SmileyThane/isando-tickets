@@ -357,7 +357,7 @@
                                     color="red lighten-4"
                                     @click="deleteDlg = true"
                                 >
-                                    {{langMap.main.delete}}
+                                    {{ langMap.main.delete }}
                                 </v-btn>
                             </v-col>
                         </v-row>
@@ -367,7 +367,7 @@
         </v-row>
 
         <v-row justify="center">
-            <v-dialog v-model="saveAsDlg" persistent max-width="600px">
+            <v-dialog v-model="saveAsDlg" max-width="600px" persistent>
                 <v-card>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                         {{langMap.main.save_as}}
