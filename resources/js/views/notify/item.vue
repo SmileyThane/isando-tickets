@@ -415,27 +415,27 @@
                 </v-card>
             </v-dialog>
 
-            <v-dialog v-model="updateRecipientsDlg" persistent max-width="800px">
+            <v-dialog v-model="updateRecipientsDlg" max-width="800px" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                        {{langMap.notification.recipients}}
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.notification.recipients }}
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <div class="row">
-                                <v-col cols="5" class="pa-3">
-                                    <h3>{{langMap.notification.select_recipient}}</h3>
+                                <v-col class="pa-3" cols="5">
+                                    <h3>{{ langMap.notification.select_recipient }}</h3>
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <v-text-field
                                         v-model="srcSearch"
+                                        :color="themeBgColor"
                                         :label="langMap.main.search"
+                                        class="pa-3"
+                                        clear-icon="mdi-close-circle-outline"
+                                        clearable
                                         dense
                                         hide-details
-                                        clearable
-                                        clear-icon="mdi-close-circle-outline"
-                                        :color="themeBgColor"
-                                        class="pa-3"
                                     ></v-text-field>
                                     <perfect-scrollbar>
                                         <v-treeview
