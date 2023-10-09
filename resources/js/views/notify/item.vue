@@ -439,12 +439,13 @@
                                     ></v-text-field>
                                     <perfect-scrollbar>
                                         <v-treeview
-                                            :items="recipients"
                                             v-model="toAdd"
+                                            :color="themeBgColor"
+                                            :items="recipients"
                                             :search="srcSearch"
+                                            :selected-color="themeBgColor"
+                                            dense
                                             hoverable
-                                            selectable
-                                            open-on-click
                                             item-disabled="disabled"
                                             dense
                                             :color="themeBgColor"
