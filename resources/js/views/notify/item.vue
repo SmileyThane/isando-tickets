@@ -447,12 +447,11 @@
                                             dense
                                             hoverable
                                             item-disabled="disabled"
-                                            dense
-                                            :color="themeBgColor"
-                                            :selected-color="themeBgColor"
+                                            open-on-click
+                                            selectable
                                         >
                                             <template v-slot:prepend="{ item }">
-                                                <v-icon small v-if="item.entity_type === 'App\\Client'">
+                                                <v-icon v-if="item.entity_type === 'App\\Client'" small>
                                                     mdi-factory
                                                 </v-icon>
                                                 <v-icon small v-if="item.entity_type === 'App\\User'">
