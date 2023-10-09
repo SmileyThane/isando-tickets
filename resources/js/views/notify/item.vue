@@ -497,18 +497,17 @@
                                         &lt;&lt;
                                     </v-btn>
                                 </v-col>
-                                <v-col cols="5" class="pa-3">
-                                    <h3>{{langMap.notification.selected_recipients}}</h3>
+                                <v-col class="pa-3" cols="5">
+                                    <h3>{{ langMap.notification.selected_recipients }}</h3>
                                     <v-spacer>&nbsp;</v-spacer>
                                     <v-text-field
                                         v-model="dstSearch"
                                         :label="langMap.main.search"
+                                        class="pa-3"
+                                        clear-icon="mdi-close-circle-outline"
+                                        clearable
                                         dense
                                         hide-details
-                                        clearable
-                                        clear-icon="mdi-close-circle-outline"
-                                        :color="themeBgColor"
-                                        class="pa-3"
                                     ></v-text-field>
                                     <perfect-scrollbar>
                                         <v-treeview
