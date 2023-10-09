@@ -478,20 +478,20 @@
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <v-btn
-                                        style="color: white;"
                                         :color="themeBgColor"
                                         :title="langMap.notification.add_selected"
                                         class="pa-3 mt-10"
+                                        style="color: white;"
                                         @click="addRecipient"
                                     >
                                         &gt;&gt;
                                     </v-btn>
                                     <v-spacer>&nbsp;</v-spacer>
                                     <v-btn
-                                        style="color: white;"
                                         :color="themeBgColor"
                                         :title="langMap.notification.delete_selected"
                                         class="pa-3"
+                                        style="color: white;"
                                         @click="deleteRecipient"
                                     >
                                         &lt;&lt;
