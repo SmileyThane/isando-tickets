@@ -524,16 +524,17 @@
                                             selectable
                                         >
                                             <template v-slot:prepend="{ item }">
-                                                <v-icon small v-if="item.entity_type === 'App\\Client'">
+                                                <v-icon v-if="item.entity_type === 'App\\Client'" small>
                                                     mdi-factory
                                                 </v-icon>
-                                                <v-icon small v-if="item.entity_type === 'App\\User'">
+                                                <v-icon v-if="item.entity_type === 'App\\User'" small>
                                                     mdi-account
                                                 </v-icon>
                                                 <v-icon small v-if="item.entity_type === 'App\\Email' && item.type">
                                                     {{ item.type.icon }}
                                                 </v-icon>
-                                                <v-icon small v-else-if="item.entity_type === 'App\\Email' && !item.type">
+                                                <v-icon v-else-if="item.entity_type === 'App\\Email' && !item.type"
+                                                        small>
                                                     mdi-email
                                                 </v-icon>
                                             </template>
