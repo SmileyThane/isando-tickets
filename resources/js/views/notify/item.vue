@@ -530,7 +530,7 @@
                                                 <v-icon v-if="item.entity_type === 'App\\User'" small>
                                                     mdi-account
                                                 </v-icon>
-                                                <v-icon small v-if="item.entity_type === 'App\\Email' && item.type">
+                                                <v-icon v-if="item.entity_type === 'App\\Email' && item.type" small>
                                                     {{ item.type.icon }}
                                                 </v-icon>
                                                 <v-icon v-else-if="item.entity_type === 'App\\Email' && !item.type"
@@ -551,8 +551,10 @@
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="red" text @click="updateRecipientsDlg=false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn :color="themeBgColor" text @click="updateRecipientsDlg=false; updateRecipients()">{{langMap.main.update}}</v-btn>
+                        <v-btn color="red" text @click="updateRecipientsDlg=false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn :color="themeBgColor" text @click="updateRecipientsDlg=false; updateRecipients()">
+                            {{ langMap.main.update }}
+                        </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -560,13 +562,14 @@
     </v-container>
 </template>
 <style scoped>
->>>.ps {
+>>> .ps {
     max-height: 300px;
 }
 >>>.v-treeview--dense .v-treeview-node__root {
     min-height: 1.1em;
 }
->>>.v-treeview-node__root .v-icon {
+
+>>> .v-treeview-node__root .v-icon {
     font-size: 20px;
 }
 >>>.v-treeview-node__checkbox {
