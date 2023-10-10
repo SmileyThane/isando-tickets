@@ -502,6 +502,7 @@
                                     <v-spacer>&nbsp;</v-spacer>
                                     <v-text-field
                                         v-model="dstSearch"
+                                        :color="themeBgColor"
                                         :label="langMap.main.search"
                                         class="pa-3"
                                         clear-icon="mdi-close-circle-outline"
@@ -512,15 +513,15 @@
                                     <perfect-scrollbar>
                                         <v-treeview
                                             ref="tree2"
-                                            :items="newRecipients"
                                             v-model="toDelete"
-                                            selectable
-                                            open-all
-                                            :search="dstSearch"
-                                            item-disabled="locked"
-                                            dense
                                             :color="themeBgColor"
+                                            :items="newRecipients"
+                                            :search="dstSearch"
                                             :selected-color="themeBgColor"
+                                            dense
+                                            item-disabled="locked"
+                                            open-all
+                                            selectable
                                         >
                                             <template v-slot:prepend="{ item }">
                                                 <v-icon small v-if="item.entity_type === 'App\\Client'">
