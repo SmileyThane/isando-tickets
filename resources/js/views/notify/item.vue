@@ -565,14 +565,16 @@
 >>> .ps {
     max-height: 300px;
 }
->>>.v-treeview--dense .v-treeview-node__root {
+
+>>> .v-treeview--dense .v-treeview-node__root {
     min-height: 1.1em;
 }
 
 >>> .v-treeview-node__root .v-icon {
     font-size: 20px;
 }
->>>.v-treeview-node__checkbox {
+
+>>> .v-treeview-node__checkbox {
     margin-left: 0px !important;
 }
 </style>
@@ -631,7 +633,7 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
@@ -645,7 +647,7 @@ export default {
                 if (response.success === true) {
                     this.template = response.data;
                     let that = this;
-                    let check = function(item) {
+                    let check = function (item) {
                         if (item.entity_type === 'App\\Email') {
                             that.toAdd.push(item.id);
                         }
@@ -703,7 +705,7 @@ export default {
         },
         addRecipient() {
             let that = this;
-            let disable = function(items) {
+            let disable = function (items) {
                 items.forEach(function (item) {
                     if (that.toAdd.includes(item.id)) {
                         item.disabled = true;
@@ -742,7 +744,7 @@ export default {
         deleteRecipient() {
             let that = this;
 
-            let enable = function(items) {
+            let enable = function (items) {
                 items.forEach(function (item) {
                     if (that.toDelete.includes(item.id)) {
                         item.disabled = false;
@@ -847,7 +849,7 @@ export default {
             let that = this;
 
             let recipients = [];
-            let extract = function(item) {
+            let extract = function (item) {
                 if (item.entity_type === 'App\\Email') {
                     recipients.push(item.name);
                 }
@@ -857,7 +859,7 @@ export default {
             }
             this.template.recipients.forEach(extract);
 
-            let signature  = this.signatures.find(function (item) {
+            let signature = this.signatures.find(function (item) {
                 return item.id === that.selectedSignatureId;
             });
 
@@ -869,10 +871,10 @@ export default {
             formData.append('priority', this.template.priority);
 
             this.attachments.forEach(function (item, i) {
-                formData.append('attachment_'+i, item);
+                formData.append('attachment_' + i, item);
             });
-            axios.post('/api/notification/send', formData,{
-                headers:{
+            axios.post('/api/notification/send', formData, {
+                headers: {
                     'content-type': 'multipart/form-data'
                 }
             }).then(response => {
