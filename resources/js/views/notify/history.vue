@@ -50,14 +50,14 @@
                                 <span v-if="item.type">{{ $helpers.i18n.localized(item.type) }}</span>
                             </template>
                             <template v-slot:item.sender="{item}">
-                                {{item.sender.full_name}}
+                                {{ item.sender.full_name }}
                             </template>
                             <template v-slot:item.created_at="{item}">
-                                {{moment(item.created_at).format('YYYY-MM-DD hh:mm') }}
+                                {{ moment(item.created_at).format('YYYY-MM-DD hh:mm') }}
                             </template>
                             <template v-slot:footer>
-                                <v-pagination :color="themeBgColor"
-                                              v-model="options.page"
+                                <v-pagination v-model="options.page"
+                                              :color="themeBgColor"
                                               :length="lastPage"
                                               circle
                                               :page="options.page"
