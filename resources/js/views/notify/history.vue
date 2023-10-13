@@ -15,15 +15,15 @@
 
                     <div class="card-body">
                         <v-data-table
+                            :footer-props="footerProps"
                             :headers="headers"
                             :items="notifications"
+                            :loading="loading"
+                            :loading-text="langMap.main.loading"
                             :options.sync="options"
                             :server-items-length="totalNotifications"
-                            :loading="loading"
-                            :footer-props="footerProps"
                             class="elevation-1"
                             hide-default-footer
-                            :loading-text="langMap.main.loading"
                             @click:row="showNotification"
                         >
                             <template v-slot:top>
