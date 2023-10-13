@@ -38,15 +38,16 @@
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
-                                            v-model="options.itemsPerPage"
+                                            class="mx-4"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
                                 </v-row>
                             </template>
                             <template v-slot:item.type="{item}">
-                                <v-icon v-if="item.type" left :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon"></v-icon>
-                                <span v-if="item.type">{{$helpers.i18n.localized(item.type)}}</span>
+                                <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" left
+                                        v-text="item.type.icon"></v-icon>
+                                <span v-if="item.type">{{ $helpers.i18n.localized(item.type) }}</span>
                             </template>
                             <template v-slot:item.sender="{item}">
                                 {{item.sender.full_name}}
