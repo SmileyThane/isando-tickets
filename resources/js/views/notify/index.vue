@@ -82,15 +82,15 @@
             </div>
         </div>
         <template>
-            <v-dialog v-model="removeNotificationDialog" persistent max-width="480">
+            <v-dialog v-model="removeNotificationDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                        {{langMap.main.delete_selected}}?
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeNotificationDialog = false">
-                            {{langMap.main.cancel}}
+                            {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn color="red darken-1" text @click="removeNotificationDialog = false; deleteNotification(selectedNotificationId)">
                             {{langMap.main.delete}}
