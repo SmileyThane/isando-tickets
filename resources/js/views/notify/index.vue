@@ -67,12 +67,12 @@
                                 </v-icon>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination :color="themeBgColor"
-                                              v-model="options.page"
+                                <v-pagination v-model="options.page"
+                                              :color="themeBgColor"
                                               :length="lastPage"
-                                              circle
                                               :page="options.page"
                                               :total-visible="5"
+                                              circle
                                 >
                                 </v-pagination>
                             </template>
