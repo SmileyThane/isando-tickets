@@ -1,10 +1,10 @@
 <template>
     <v-container fluid>
         <v-snackbar
-            :bottom="true"
-            :right="true"
             v-model="snackbar"
+            :bottom="true"
             :color="actionColor"
+            :right="true"
         >
             {{ snackbarMessage }}
         </v-snackbar>
