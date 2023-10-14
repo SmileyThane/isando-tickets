@@ -50,7 +50,7 @@
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
-                                            v-model="options.itemsPerPage"
+                                            class="mx-4"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
