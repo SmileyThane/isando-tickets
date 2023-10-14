@@ -40,12 +40,12 @@
                         >
                             <template v-slot:top>
                                 <v-row>
-                                    <v-col sm="12" md="10">
-                                       &nbsp;
+                                    <v-col md="10" sm="12">
+                                        &nbsp;
                                     </v-col>
-                                    <v-col sm="12" md="2">
+                                    <v-col md="2" sm="12">
                                         <v-select
-                                            class="mx-4"
+                                            v-model="options.itemsPerPage"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
