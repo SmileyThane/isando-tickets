@@ -57,11 +57,14 @@
                                 </v-row>
                             </template>
                             <template v-slot:item.type="{item}">
-                                <v-icon v-if="item.type" left :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon"></v-icon>
-                                <span v-if="item.type">{{$helpers.i18n.localized(item.type)}}</span>
+                                <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" left
+                                        v-text="item.type.icon"></v-icon>
+                                <span v-if="item.type">{{ $helpers.i18n.localized(item.type) }}</span>
                             </template>
                             <template v-slot:item.action="{item}">
-                                <v-icon small :title="langMap.main.delete" @click.native.stop="removeNotification(item)">mdi-delete</v-icon>
+                                <v-icon :title="langMap.main.delete" small
+                                        @click.native.stop="removeNotification(item)">mdi-delete
+                                </v-icon>
                             </template>
                             <template v-slot:footer>
                                 <v-pagination :color="themeBgColor"
