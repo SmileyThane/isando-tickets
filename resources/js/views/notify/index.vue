@@ -17,9 +17,11 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header @click.native.stop="addNotification()">
-                                    {{langMap.company.new_notification_template}}
+                                    {{ langMap.company.new_notification_template }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`" @click="addNotification()">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`"
+                                                @click="addNotification()">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                             </v-expansion-panel>
