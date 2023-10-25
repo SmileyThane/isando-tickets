@@ -19,7 +19,7 @@
             <v-card-title>
                 {{ $helpers.i18n.localized(article) }}
             </v-card-title>
-            <v-card-text>
+            <v-card-text id="pdf-element">
                 <div v-if="article.tags && article.tags.length > 0">
                     <h4 class="mb-2">
                         {{ langMap.kb.tags }}
@@ -69,29 +69,32 @@
                         </v-chip>
                     </v-chip-group>
                 </div>
-                <br>
-                <div>
-                    <p>{{ langMap.main.useful_links }}</p>
-                    <v-btn :color="themeBgColor"
-                           v-if="article.next.length > 0"
-                           v-for="item in article.next"
-                           key="id"
-                           text
-                           @click="next(item.id)"
-                    >
-                        {{ item.name }}
-                    </v-btn>
-
-                </div>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions
+                style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+                <p>{{ langMap.main.useful_links }}</p>
+                <v-btn :color="themeBgColor"
+                       v-if="article.next.length > 0"
+                       v-for="item in article.next"
+                       key="id"
+                       text
+                       @click="next(item.id)"
+                >
+                    {{ item.name }}
+                </v-btn>
+
+                <v-btn :color="themeBgColor"
+                       text
+                       @click="exportToPdf"
+                       style="margin-left: 0;"
+                >{{ 'export to pdf' }}
+                </v-btn>
                 <v-btn :color="themeBgColor"
                        text
                        @click="back()"
                        v-text="langMap.kb.back_to_category"
+                       style="margin-left: 0;"
                 />
-
-
             </v-card-actions>
         </v-card>
     </v-container>
@@ -122,6 +125,7 @@
 
 <script>
 import EventBus from '../../components/EventBus';
+import html2pdf from "html2pdf.js";
 
 export default {
     data() {
@@ -149,6 +153,18 @@ export default {
         this.getArticle();
     },
     methods: {
+        exportToPdf() {
+            html2pdf(document.getElementById("pdf-element"), {
+                margin: 1,
+                filename: `${this.$helpers.i18n.localized(this.article)}.pdf`,
+                image: {
+                    quality: 1
+                },
+                pagebreak: {
+                    mode: ['avoid-all']
+                }
+            });
+        },
         back() {
             window.history.back()
         },

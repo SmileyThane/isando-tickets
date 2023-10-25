@@ -31,6 +31,7 @@
   "dependencies": {
     "@tinymce/tinymce-vue": "^3.2.8",
     "chart.js": "^2.9.4",
+    "html2pdf.js": "^0.10.1",
     "moment": "^2.29.2",
     "moment-timezone": "^0.5.35",
     "primeicons": "^6.0.1",
