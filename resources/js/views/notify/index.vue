@@ -172,18 +172,18 @@ export default {
                     page: this.options.page
                 }
             }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.notifications = response.data.data
-                        this.totalNotifications = response.data.total
-                        this.lastPage = response.data.last_page
-                        this.loading = false
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
+                response = response.data
+                if (response.success === true) {
+                    this.notifications = response.data.data
+                    this.totalNotifications = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.loading = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
         },
         deleteNotification(id) {
             axios.delete(`/api/notification/${id}`).then(response => {
