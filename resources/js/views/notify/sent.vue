@@ -65,13 +65,16 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.attachments}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.notification.attachments }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
                     <v-card-text>
-                        <v-chip class="ma-1" v-for="item in template.attachments" :key="item" outlined :color="themeBgColor">
-                            <v-icon dense x-small left :color="themeBgColor">mdi-file</v-icon>{{item}}
+                        <v-chip v-for="item in template.attachments" :key="item" :color="themeBgColor" class="ma-1"
+                                outlined>
+                            <v-icon :color="themeBgColor" dense left x-small>mdi-file</v-icon>
+                            {{ item }}
                         </v-chip>
                     </v-card-text>
                 </v-card>
