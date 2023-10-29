@@ -21,11 +21,14 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-                        <v-label :color="themeBgColor">{{langMap.notification.subject}}:</v-label> <span>{{template.subject}}</span>
+                        <v-label :color="themeBgColor">{{ langMap.notification.subject }}:</v-label>
+                        <span>{{ template.subject }}</span>
                         <v-spacer>&nbsp;</v-spacer>
-                        <v-label :color="themeBgColor">{{langMap.notification.sender}}:</v-label> <span>{{template.sender.full_name}}</span>
+                        <v-label :color="themeBgColor">{{ langMap.notification.sender }}:</v-label>
+                        <span>{{ template.sender.full_name }}</span>
                         <v-spacer>&nbsp;</v-spacer>
-                        <v-label :color="themeBgColor">{{langMap.notification.sent_at}}:</v-label> <span>{{moment(template.created_at).format('YYYY-DD-MM hh:mm')}}</span>
+                        <v-label :color="themeBgColor">{{ langMap.notification.sent_at }}:</v-label>
+                        <span>{{ moment(template.created_at).format('YYYY-DD-MM hh:mm') }}</span>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
