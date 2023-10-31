@@ -94,8 +94,10 @@
                     </v-toolbar>
 
                     <v-card-text>
-                        <v-chip class="ma-1" v-for="item in template.recipients" :key="item.address" outlined :color="themeBgColor">
-                            <v-icon dense x-small left :color="themeBgColor">mdi-email</v-icon>{{item.address}}
+                        <v-chip v-for="item in template.recipients" :key="item.address" :color="themeBgColor" class="ma-1"
+                                outlined>
+                            <v-icon :color="themeBgColor" dense left x-small>mdi-email</v-icon>
+                            {{ item.address }}
                         </v-chip>
                     </v-card-text>
                 </v-card>
@@ -104,9 +106,9 @@
                 </v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar
-                        dense
                         :color="themeBgColor"
                         dark
+                        dense
                         flat
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.text}}</v-toolbar-title>
