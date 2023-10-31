@@ -607,7 +607,7 @@
                     <v-toolbar :color="themeBgColor" dark dense flat>
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{
                                 langMap.main.activities
-                            }} ({{langMap.main.type}})
+                            }} ({{ langMap.main.type }})
                         </v-toolbar-title>
                     </v-toolbar>
 
