@@ -1715,8 +1715,6 @@
                                                 :label="langMap.system_settings.permission"
                                                 item-text="name"
                                                 item-value="id"
-                                                :items="permissions"
-                                                v-model="item.value"
                                             >
                                             </v-autocomplete>
                                         </v-col>
