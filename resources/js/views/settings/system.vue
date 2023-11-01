@@ -1732,9 +1732,9 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <v-dialog v-model="kb.deleteTypeDialog" persistent max-width="480">
+            <v-dialog v-model="kb.deleteTypeDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.main.delete_selected }}? ({{ $helpers.i18n.localized(kb.selected) }})
                     </v-card-title>
                     <v-card-actions>
