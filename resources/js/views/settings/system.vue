@@ -1708,9 +1708,11 @@
                                         </v-col>
                                         <v-col class="col-md-10 col-sm-10 py-1">
                                             <v-autocomplete
-                                                :label="langMap.system_settings.permission"
+                                                v-model="item.value"
                                                 :color="themeBgColor"
                                                 :item-color="themeBgColor"
+                                                :items="permissions"
+                                                :label="langMap.system_settings.permission"
                                                 item-text="name"
                                                 item-value="id"
                                                 :items="permissions"
