@@ -2885,13 +2885,13 @@ export default {
         createActivityType() {
             this.$store.dispatch('ActivityTypes/createActivityType', this.forms.activityType)
                 .then(currency => {
-                if (currency) {
-                    this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.activity_type_created_successfully;
-                    this.actionColor = 'success'
-                    this.snackbar = true;
-                    this.resetForm();
-                }
-            });
+                    if (currency) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.activity_type_created_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.resetForm();
+                    }
+                });
         },
         getLangName(code) {
             const languages = this.$store.getters['Languages/getLanguages'];
