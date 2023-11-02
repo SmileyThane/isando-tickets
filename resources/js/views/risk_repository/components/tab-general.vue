@@ -34,11 +34,11 @@
             </v-col>
             <v-col class="pb-0" cols="6" lg="6" md="6" sm="12" xl="4">
                 <v-select
+                    :placeholder="langMap.ir.ab.stage_monitoring"
                     class=""
                     dense
                     hide-details
                     outlined
-                    :placeholder="langMap.ir.ab.stage_monitoring"
                 ></v-select>
             </v-col>
             <v-col cols="6" lg="6" md="6" sm="12" xl="8"></v-col>
