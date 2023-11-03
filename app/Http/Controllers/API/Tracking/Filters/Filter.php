@@ -14,9 +14,10 @@ abstract class Filter {
         return $this->applyFilters($builder);
     }
 
-    protected abstract function applyFilters($builder);
-
-    protected function filterName() {
+    protected function filterName()
+    {
         return Str::snake(class_basename($this));
     }
+
+    protected abstract function applyFilters($builder);
 }
