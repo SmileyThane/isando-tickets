@@ -27,8 +27,9 @@
                     :selected="$store.getters['RiskRepository/getSelectedArticle'] && $store.getters['RiskRepository/getSelectedArticle'].id === article.id"
                 />
             </v-col>
-            <v-col v-if="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedArticle']"
-                   cols="4">
+            <v-col
+                v-if="$store.getters['RiskRepository/getSelectedCategory'] && $store.getters['RiskRepository/getSelectedArticle']"
+                cols="4">
                 <riskCategoryDescription/>
             </v-col>
         </v-row>
