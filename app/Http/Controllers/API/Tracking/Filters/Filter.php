@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API\Tracking\Filters;
 use Closure;
 use Illuminate\Support\Str;
 
-abstract class Filter {
-    public function handle($request, Closure $next) {
+abstract class Filter
+{
+    public function handle($request, Closure $next)
+    {
         if (!request()->has($this->filterName())) {
             return $next($request);
         }
