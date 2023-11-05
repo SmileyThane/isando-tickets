@@ -3,7 +3,6 @@
 
 namespace App\Http\Controllers\API\Tracking\Traits;
 
-use App\Company;
 use App\Http\Controllers\API\Tracking\Filters\Coworkers\Projects;
 use App\Permission;
 use Illuminate\Http\Request;
