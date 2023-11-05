@@ -13,10 +13,9 @@ use App\Http\Controllers\Controller;
 use App\Repositories\CurrencyRepository;
 use App\Repositories\TeamRepository;
 use App\Repositories\TicketRepository;
+use App\Repositories\TrackingProjectRepository;
 use App\Repositories\TrackingReportRepository;
 use App\Repositories\TrackingRepository;
-use App\Repositories\TrackingProjectRepository;
-use App\Repositories\CurrencyRepository;
 use App\Repositories\TrackingTimesheetRepository;
 
 class BaseController extends Controller
