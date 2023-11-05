@@ -10,6 +10,7 @@ use App\Http\Controllers\API\Tracking\Traits\Products;
 use App\Http\Controllers\API\Tracking\Traits\Team;
 use App\Http\Controllers\API\Tracking\Traits\Tickets;
 use App\Http\Controllers\Controller;
+use App\Repositories\CurrencyRepository;
 use App\Repositories\TeamRepository;
 use App\Repositories\TicketRepository;
 use App\Repositories\TrackingReportRepository;
