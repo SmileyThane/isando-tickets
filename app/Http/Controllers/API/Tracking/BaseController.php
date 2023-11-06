@@ -32,14 +32,14 @@ class BaseController extends Controller
     protected $clientService;
 
     public function __construct(
-        TrackingRepository $trackingRepository,
-        TrackingProjectRepository $trackingProjectRepository,
-        TeamRepository $teamRepository,
-        TrackingReportRepository $trackingReportRepository,
-        TicketRepository $ticketRepository,
-        CurrencyRepository $currencyRepository,
+        TrackingRepository          $trackingRepository,
+        TrackingProjectRepository   $trackingProjectRepository,
+        TeamRepository              $teamRepository,
+        TrackingReportRepository    $trackingReportRepository,
+        TicketRepository            $ticketRepository,
+        CurrencyRepository          $currencyRepository,
         TrackingTimesheetRepository $trackingTimesheetRepository,
-        ClientService $clientServ
+        ClientService               $clientServ
     )
     {
         $this->trackingRepo = $trackingRepository;
