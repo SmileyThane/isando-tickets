@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 
 class DashboardController extends BaseController
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
 
         $from = Carbon::parse($request->get('periodStart', Carbon::now()))->startOf('day')->format(Tracking::$DATETIME_FORMAT);
         $to = Carbon::parse($request->get('periodEnd', Carbon::now()))->endOf('day')->format(Tracking::$DATETIME_FORMAT);
