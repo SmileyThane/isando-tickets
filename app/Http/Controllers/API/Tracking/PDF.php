@@ -17,11 +17,13 @@ class PDF extends FPDF
 
     private $firstPage = 1;
 
-    public function setFirstPage(int $number) {
+    public function setFirstPage(int $number)
+    {
         $this->firstPage = $number;
     }
 
-    public function SetOptions($options) {
+    public function SetOptions($options)
+    {
         $this->options = $options;
     }
 
