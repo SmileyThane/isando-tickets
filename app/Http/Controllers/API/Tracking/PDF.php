@@ -27,19 +27,23 @@ class PDF extends FPDF
         $this->options = $options;
     }
 
-    public function showHeader() {
+    public function showHeader()
+    {
         $this->InHeader = true;
     }
 
-    public function hideHeader() {
+    public function hideHeader()
+    {
         $this->InHeader = false;
     }
 
-    public function showFooter() {
+    public function showFooter()
+    {
         $this->InFooter = true;
     }
 
-    public function hideFooter() {
+    public function hideFooter()
+    {
         $this->InFooter = false;
     }
 
