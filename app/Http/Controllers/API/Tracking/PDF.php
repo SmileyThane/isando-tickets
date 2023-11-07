@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\API\Tracking;
 
 use Codedge\Fpdf\Fpdf\Fpdf;
+use easyTable;
+use Exception;
 
-class PDF extends FPDF {
+class PDF extends FPDF
+{
 
     protected $options = [
-        'title'     => 'Title',
-        'user'      => 'User',
-        'period'    => 'Period'
+        'title' => 'Title',
+        'user' => 'User',
+        'period' => 'Period'
     ];
 
     private $firstPage = 1;
