@@ -51,10 +51,10 @@ class PDF extends FPDF
     {
         if ($this->PageNo() > $this->firstPage) {
             // Select Arial bold 15
-            $this->SetFont('Arial','',10);
+            $this->SetFont('Arial', '', 10);
             // Framed title
             foreach ($this->options as $key => $option) {
-                $this->Cell(30,5,$option,'L',1,'L');
+                $this->Cell(30, 5, $option, 'L', 1, 'L');
             }
             // Line break
             $this->Ln(10);
