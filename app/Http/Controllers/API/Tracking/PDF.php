@@ -84,23 +84,21 @@ class PDF extends FPDF
         // Read file lines
         $lines = file($file);
         $data = array();
-        foreach($lines as $line)
-            $data[] = explode(';',trim($line));
+        foreach ($lines as $line)
+            $data[] = explode(';', trim($line));
         return $data;
     }
 
-    // Simple table
     public function BasicTable($header, $data)
     {
         // Header
-        foreach($header as $col)
-            $this->Cell(40,7,$col,1);
+        foreach ($header as $col)
+            $this->Cell(40, 7, $col, 1);
         $this->Ln();
         // Data
-        foreach($data as $row)
-        {
-            foreach($row as $col)
-                $this->Cell(40,6,$col,1);
+        foreach ($data as $row) {
+            foreach ($row as $col)
+                $this->Cell(40, 6, $col, 1);
             $this->Ln();
         }
     }
