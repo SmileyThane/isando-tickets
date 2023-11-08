@@ -133,6 +133,38 @@ class PDF extends FPDF
         $this->Cell(array_sum($w), 0, '', 'T');
     }
 
+    // Simple table
+
+    public function AutoLineBreak($string, $width)
+    {
+        $arr = explode(' ', $string);
+        $line = '';
+        $tmpLine = '';
+        $string = '';
+        foreach ($arr as $word) {
+            if (empty($word)) continue;
+            if ($this->GetCountLines($tmpLine . ' ' . $word, $width) < 2) {
+                $tmpLine = $tmpLine . ' ' . $word;
+            } else {
+                if (!empty($tmpLine)) {
+                    $line .= $tmpLine . "\n";
+                    $tmpLine = $word;
+                }
+            }
+        }
+        $line .= $tmpLine;
+//        dd($this->GetCountLines($string, $width), strlen($string), $line, $arr);
+        return $line;
+    }
+
+    // Better table
+
+    public function GetCountLines($text, $fullWidth = 210)
+    {
+        $lines = Ceil($this->GetStringWidth(trim($text)) / $fullWidth);
+        return $lines <= 1 ? 1 : $lines;
+    }
+
     // Colored table
     public function FancyTable($header, $data)
     {
