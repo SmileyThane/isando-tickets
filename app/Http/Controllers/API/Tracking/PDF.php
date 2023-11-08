@@ -118,18 +118,19 @@ class PDF extends FPDF
         $this->SetFont('Arial', '', 8);
         // Data
         $this->SetLineWidth(.1);
-        foreach($data as $keyRow => $row) {
-            $i = 0;    $currentY = $this->GetY();
+        foreach ($data as $keyRow => $row) {
+            $i = 0;
+            $currentY = $this->GetY();
             foreach ($row as $keyColumn => $column) {
                 $currentX = $this->GetX();
-                $this->MultiCell($w[$i],6, $this->AutoLineBreak($column, $w[$i]));
+                $this->MultiCell($w[$i], 6, $this->AutoLineBreak($column, $w[$i]));
                 $this->SetXY($currentX + $w[$i], $currentY);
                 $i++;
             }
             $this->Ln();
         }
         // Closing line
-        $this->Cell(array_sum($w),0,'','T');
+        $this->Cell(array_sum($w), 0, '', 'T');
     }
 
     // Colored table
