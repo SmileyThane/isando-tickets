@@ -67,42 +67,18 @@ class PDF extends FPDF
             // Go to 1.5 cm from bottom
             $this->SetY(-20);
             // Select Arial italic 8
-            $this->SetFont('Arial','',8);
+            $this->SetFont('Arial', '', 8);
             // Print right page number
             $this->SetX(-50);
-            $this->Cell(0,10,'Page '.$this->PageNo() . ' of {nb}','L',0,'L');
+            $this->Cell(0, 10, 'Page ' . $this->PageNo() . ' of {nb}', 'L', 0, 'L');
         }
     }
 
-    public function GetCenterX($text, $fullWidth = 210) {
+    public function GetCenterX($text, $fullWidth = 210)
+    {
         return Round($fullWidth / 2 - ($this->GetStringWidth($text) / 2));
     }
 
-    public function GetCountLines($text, $fullWidth = 210) {
-        $lines = Ceil($this->GetStringWidth(trim($text)) / $fullWidth);
-        return $lines <= 1 ? 1 : $lines;
-    }
-
-    public function AutoLineBreak($string, $width) {
-        $arr = explode(' ', $string);
-        $line = ''; $tmpLine = ''; $string = '';
-        foreach ($arr as $word) {
-            if (empty($word)) continue;
-            if ($this->GetCountLines($tmpLine . ' ' . $word, $width) < 2) {
-                $tmpLine = $tmpLine . ' ' . $word;
-            } else {
-                if (!empty($tmpLine)) {
-                    $line .= $tmpLine . "\n";
-                    $tmpLine = $word;
-                }
-            }
-        }
-        $line .= $tmpLine;
-//        dd($this->GetCountLines($string, $width), strlen($string), $line, $arr);
-        return $line;
-    }
-
-    // Load data
     public function LoadData($file)
     {
         // Read file lines
