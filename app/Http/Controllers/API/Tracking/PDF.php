@@ -103,7 +103,8 @@ class PDF extends FPDF
         }
     }
 
-    // Better table
+    // Load data
+
     public function ImprovedTable($header, $data)
     {
         // Column widths
@@ -111,8 +112,8 @@ class PDF extends FPDF
         // Header
         $this->SetFont('Arial', 'b', 8);
         $this->SetLineWidth(.2);
-        for($i=0;$i<count($header);$i++)
-            $this->Cell($w[$i],7,$header[$i],'TB',0,'C');
+        for ($i = 0; $i < count($header); $i++)
+            $this->Cell($w[$i], 7, $header[$i], 'TB', 0, 'C');
         $this->Ln();
         $this->SetFont('Arial', '', 8);
         // Data
