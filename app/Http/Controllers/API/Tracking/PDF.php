@@ -215,7 +215,7 @@ class PDF extends FPDF
                 $table->easyCell($headers[$i]['text'], $headers[$i]['style']);
             $table->printRow(true);
 
-            foreach($data as $keyRow => $row) {
+            foreach ($data as $keyRow => $row) {
                 foreach ($row as $keyColumn => $column) {
                     $style = 'border:B;border-width:0.1';
                     if (in_array($keyColumn, ['start', 'end', 'total'])) {
@@ -227,7 +227,7 @@ class PDF extends FPDF
             }
 
             $table->endTable();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->Error($exception->getMessage());
         }
     }
