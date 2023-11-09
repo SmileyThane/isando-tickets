@@ -199,13 +199,16 @@ class PDF extends FPDF
     }
 
     // Rubber table
-    public function EasyTable(Array $headers, Array $data) {
+    public function EasyTable(array $headers, array $data)
+    {
         foreach ($headers as $key => $header) {
             $headers[$key]['text'] = $this->fixCharacters($header['text']);
         }
-        $columnWidths = '%{' . implode(',', collect($headers)->map(function($item) {return $item['width'];})->toArray()) . '}';
+        $columnWidths = '%{' . implode(',', collect($headers)->map(function ($item) {
+                return $item['width'];
+            })->toArray()) . '}';
         try {
-            $table = new \easyTable($this, $columnWidths, 'width:100%;border:0;font-size:8');
+            $table = new easyTable($this, $columnWidths, 'width:100%;border:0;font-size:8');
 
 //            for($i=0;$i<count($headers);$i++)
             foreach ($headers as $i => $header)
