@@ -257,13 +257,13 @@ class PDF extends FPDF
     {
         if ($c == 'fill') {
             return $this->FillColor;
-        }
-        elseif($c=='text'){
+        } elseif ($c == 'text') {
             return $this->TextColor;
         }
     }
 
-    public function get_page_width(){
+    public function get_page_width()
+    {
         return $this->w;
     }
 
