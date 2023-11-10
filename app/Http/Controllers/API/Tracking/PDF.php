@@ -232,12 +232,19 @@ class PDF extends FPDF
         }
     }
 
-    public function PageBreak(){
+    private function fixCharacters($text)
+    {
+        return iconv(mb_detect_encoding($text, 'auto'), 'CP1252//IGNORE', $text);
+    }
+
+    public function PageBreak()
+    {
         return $this->PageBreakTrigger;
     }
 
-    public function current_font($c){
-        if($c=='family'){
+    public function current_font($c)
+    {
+        if ($c == 'family') {
             return $this->FontFamily;
         }
         elseif($c=='style'){
