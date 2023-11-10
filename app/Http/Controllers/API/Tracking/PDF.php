@@ -246,17 +246,16 @@ class PDF extends FPDF
     {
         if ($c == 'family') {
             return $this->FontFamily;
-        }
-        elseif($c=='style'){
+        } elseif ($c == 'style') {
             return $this->FontStyle;
-        }
-        elseif($c=='size'){
+        } elseif ($c == 'size') {
             return $this->FontSizePt;
         }
     }
 
-    public function get_color($c){
-        if($c=='fill'){
+    public function get_color($c)
+    {
+        if ($c == 'fill') {
             return $this->FillColor;
         }
         elseif($c=='text'){
