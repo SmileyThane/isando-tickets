@@ -267,14 +267,13 @@ class PDF extends FPDF
         return $this->w;
     }
 
-    public function get_margin($c){
-        if($c=='l'){
+    public function get_margin($c)
+    {
+        if ($c == 'l') {
             return $this->lMargin;
-        }
-        elseif($c=='r'){
+        } elseif ($c == 'r') {
             return $this->rMargin;
-        }
-        elseif($c=='t'){
+        } elseif ($c == 't') {
             return $this->tMargin;
         }
     }
