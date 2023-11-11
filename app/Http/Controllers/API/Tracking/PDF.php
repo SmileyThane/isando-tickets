@@ -278,47 +278,14 @@ class PDF extends FPDF
         }
     }
 
-    public function get_linewidth(){
+    public function get_linewidth()
+    {
         return $this->LineWidth;
     }
 
-    public function get_orientation(){
+    public function get_orientation()
+    {
         return $this->CurOrientation;
-    }
-    /***********************************************************************
-     *
-     * Based on FPDF method SetFont
-     *
-     ************************************************************************/
-
-    private function &FontData($family, $style, $size){
-        if($family=='')
-            $family = $this->FontFamily;
-        else
-            $family = strtolower($family);
-        $style = strtoupper($style);
-        if(strpos($style,'U')!==false){
-            $style = str_replace('U','',$style);
-        }
-        if($style=='IB')
-            $style = 'BI';
-        $fontkey = $family.$style;
-        if(!isset($this->fonts[$fontkey])){
-            if($family=='arial')
-                $family = 'helvetica';
-            if(in_array($family,$this->CoreFonts)){
-                if($family=='symbol' || $family=='zapfdingbats')
-                    $style = '';
-                $fontkey = $family.$style;
-                if(!isset($this->fonts[$fontkey]))
-                    $this->AddFont($family,$style);
-            }
-            else
-                $this->Error('Undefined font: '.$family.' '.$style);
-        }
-        $result['FontSize'] = $size/$this->k;
-        $result['CurrentFont']=&$this->fonts[$fontkey];
-        return $result;
     }
 
     /***********************************************************************
@@ -328,56 +295,55 @@ class PDF extends FPDF
      ************************************************************************/
 
 
-    public function extMultiCell($font_family, $font_style, $font_size, $w, $txt){
-        $result=array();
-        $font=$this->FontData($font_family, $font_style, $font_size);
+    public function extMultiCell($font_family, $font_style, $font_size, $w, $txt)
+    {
+        $result = array();
+        $font = $this->FontData($font_family, $font_style, $font_size);
         $cw = $font['CurrentFont']['cw'];
-        if($w==0){
+        if ($w == 0) {
             return $result;
         }
-        $wmax = ($w-2*$this->cMargin)*1000/($font['FontSize']);
+        $wmax = ($w - 2 * $this->cMargin) * 1000 / ($font['FontSize']);
 
-        $s = trim(str_replace("\r",'',$txt));
+        $s = trim(str_replace("\r", '', $txt));
         $chs = strlen($s);
         $sep = -1;
         $i = 0;
         $j = 0;
         $l = 0;
-        while($i<$chs){
+        while ($i < $chs) {
             $c = $s[$i];
-            if($c=="\n"){
-                $result[]=substr($s,$j,$i-$j);
+            if ($c == "\n") {
+                $result[] = substr($s, $j, $i - $j);
                 $i++;
                 $sep = -1;
                 $j = $i;
                 $l = 0;
                 continue;
             }
-            if($c==' '){
-                if($l==0){
-                    while($s[$i]==' '){
+            if ($c == ' ') {
+                if ($l == 0) {
+                    while ($s[$i] == ' ') {
                         $i++;
                     }
-                    $j=$i;
+                    $j = $i;
                 }
                 $sep = $i;
             }
             $l += $cw[$c];
-            if($l>$wmax){
-                if($sep==-1){
-                    if($i==$j)
+            if ($l > $wmax) {
+                if ($sep == -1) {
+                    if ($i == $j)
                         $i++;
-                    $result[]=substr($s,$j,$i-$j);
-                }
-                else{
-                    $result[]=substr($s,$j,$sep-$j);
-                    $i = $sep+1;
+                    $result[] = substr($s, $j, $i - $j);
+                } else {
+                    $result[] = substr($s, $j, $sep - $j);
+                    $i = $sep + 1;
                 }
                 $sep = -1;
                 $j = $i;
                 $l = 0;
-            }
-            else{
+            } else {
                 $i++;
             }
         }
