@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 class ProjectController extends BaseController
 {
 
-    public function get(Request $request) {
+    public function get(Request $request)
+    {
         $trackingProjects = $this->trackingProjectsRepo->all($request);
         return self::showResponse(true, $trackingProjects);
     }
@@ -46,12 +47,14 @@ class ProjectController extends BaseController
         return self::showResponse($result);
     }
 
-    public function toggleFavorite($id) {
+    public function toggleFavorite($id)
+    {
         $result = $this->trackingProjectsRepo->toggleFavorite($id);
         return self::showResponse($result);
     }
 
-    public function toggleArchive($id) {
+    public function toggleArchive($id)
+    {
         $result = $this->trackingProjectsRepo->toggleArchive($id);
         return self::showResponse($result);
     }
