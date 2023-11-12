@@ -447,11 +447,8 @@ class PDF extends FPDF
         }
     }
 
-    private function fixCharacters($text) {
-        return iconv(mb_detect_encoding($text, 'auto'), 'CP1252//IGNORE', $text);
-    }
-
-    function Write($h, $txt, $link='') {
+    function Write($h, $txt, $link = '')
+    {
         $txt = $this->fixCharacters($txt);
         parent::Write($h, $txt, $link);
     }
