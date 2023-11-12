@@ -397,52 +397,51 @@ class PDF extends FPDF
      ************************************************************************/
 
 
-    public function CellBlock($w, $h, &$array_txt, $align='J',$link=''){
-        if(!isset($this->CurrentFont))
+    public function CellBlock($w, $h, &$array_txt, $align = 'J', $link = '')
+    {
+        if (!isset($this->CurrentFont))
             $this->Error('No font has been set');
-        foreach($array_txt as $ti=>$txt){
+        foreach ($array_txt as $ti => $txt) {
             $k = $this->k;
-            if($this->y+$h>$this->PageBreakTrigger){
+            if ($this->y + $h > $this->PageBreakTrigger) {
                 break;
             }
-            if($w==0){
+            if ($w == 0) {
                 return;
             }
             $s = '';
-            if($txt!==''){
-                $stringWidth=$this->GetStringWidth($txt);
-                if($align=='R'){
-                    $dx = $w-$this->cMargin-$stringWidth;
-                }
-                elseif($align=='C'){
-                    $dx = ($w-$stringWidth)/2;
-                }
-                else{
+            if ($txt !== '') {
+                $stringWidth = $this->GetStringWidth($txt);
+                if ($align == 'R') {
+                    $dx = $w - $this->cMargin - $stringWidth;
+                } elseif ($align == 'C') {
+                    $dx = ($w - $stringWidth) / 2;
+                } else {
                     $dx = $this->cMargin;
                 }
-                if($align=='J'){
-                    $ns=count(explode(' ', $txt));
-                    $wx = $w-2*$this->cMargin;
-                    $this->ws = ($ns>1) ? (($wx-$stringWidth)*(1/($ns-1))) : 0;
-                    $this->_out(sprintf('%.3F Tw',$this->ws*$this->k));
+                if ($align == 'J') {
+                    $ns = count(explode(' ', $txt));
+                    $wx = $w - 2 * $this->cMargin;
+                    $this->ws = ($ns > 1) ? (($wx - $stringWidth) * (1 / ($ns - 1))) : 0;
+                    $this->_out(sprintf('%.3F Tw', $this->ws * $this->k));
                 }
-                if($this->ColorFlag)
-                    $s .= 'q '.$this->TextColor.' ';
-                $s .= sprintf('BT %.2F %.2F Td (%s) Tj ET',($this->x+$dx)*$k,($this->h-($this->y+.5*$h+.3*$this->FontSize))*$k,$this->_escape($txt));
-                if($this->underline)
-                    $s .= ' '.$this->_dounderline($this->x+$dx,$this->y+.5*$h+.3*$this->FontSize,$txt);
-                if($this->ColorFlag)
+                if ($this->ColorFlag)
+                    $s .= 'q ' . $this->TextColor . ' ';
+                $s .= sprintf('BT %.2F %.2F Td (%s) Tj ET', ($this->x + $dx) * $k, ($this->h - ($this->y + .5 * $h + .3 * $this->FontSize)) * $k, $this->_escape($txt));
+                if ($this->underline)
+                    $s .= ' ' . $this->_dounderline($this->x + $dx, $this->y + .5 * $h + .3 * $this->FontSize, $txt);
+                if ($this->ColorFlag)
                     $s .= ' Q';
-                if($link)
-                    $this->Link($this->x+$dx,$this->y+.5*$h-.5*$this->FontSize,$stringWidth,$this->FontSize,$link);
+                if ($link)
+                    $this->Link($this->x + $dx, $this->y + .5 * $h - .5 * $this->FontSize, $stringWidth, $this->FontSize, $link);
                 unset($array_txt[$ti]);
             }
-            if($s)
+            if ($s)
                 $this->_out($s);
             $this->lasth = $h;
             $this->y += $h;
         }
-        if($this->ws>0){
+        if ($this->ws > 0) {
             $this->ws = 0;
             $this->_out('0 Tw');
         }
