@@ -347,12 +347,49 @@ class PDF extends FPDF
                 $i++;
             }
         }
-        $s=trim(substr($s,$j,$i-$j));
-        if($s!=''){
-            $result[]=$s;
+        $s = trim(substr($s, $j, $i - $j));
+        if ($s != '') {
+            $result[] = $s;
         }
         return $result;
     }
+
+    /***********************************************************************
+     *
+     * Based on FPDF method SetFont
+     *
+     ************************************************************************/
+
+    private function &FontData($family, $style, $size)
+    {
+        if ($family == '')
+            $family = $this->FontFamily;
+        else
+            $family = strtolower($family);
+        $style = strtoupper($style);
+        if (strpos($style, 'U') !== false) {
+            $style = str_replace('U', '', $style);
+        }
+        if ($style == 'IB')
+            $style = 'BI';
+        $fontkey = $family . $style;
+        if (!isset($this->fonts[$fontkey])) {
+            if ($family == 'arial')
+                $family = 'helvetica';
+            if (in_array($family, $this->CoreFonts)) {
+                if ($family == 'symbol' || $family == 'zapfdingbats')
+                    $style = '';
+                $fontkey = $family . $style;
+                if (!isset($this->fonts[$fontkey]))
+                    $this->AddFont($family, $style);
+            } else
+                $this->Error('Undefined font: ' . $family . ' ' . $style);
+        }
+        $result['FontSize'] = $size / $this->k;
+        $result['CurrentFont'] =& $this->fonts[$fontkey];
+        return $result;
+    }
+
     /***********************************************************************
      *
      * Based on FPDF method Cell
