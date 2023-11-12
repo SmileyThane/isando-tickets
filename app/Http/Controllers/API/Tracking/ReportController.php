@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API\Tracking;
 
+use Exception;
 use Illuminate\Http\Request;
 
 class ReportController extends BaseController
@@ -13,8 +14,10 @@ class ReportController extends BaseController
         try {
             if (isset($request[0])) {
                 switch (strtolower($request[0]->query->get('format', 'json'))) {
-                    case 'pdf': return $this->trackingReportRepo->genPDF(array_shift($request));
-                    case 'csv': return $this->trackingReportRepo->genCSV(array_shift($request));
+                    case 'pdf':
+                        return $this->trackingReportRepo->genPDF(array_shift($request));
+                    case 'csv':
+                        return $this->trackingReportRepo->genCSV(array_shift($request));
                     default:
                         $result = parent::callAction($method, $request);
                         return self::showResponse(true, $result);
@@ -22,7 +25,7 @@ class ReportController extends BaseController
             }
             $result = parent::callAction($method, $request);
             return self::showResponse(true, $result);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
     }
