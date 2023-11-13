@@ -37,15 +37,15 @@ class SettingsController extends BaseController
                 $company = Company::find(Auth::user()->employee->companyData->id);
                 $company->currency_id = $currency->id;
                 $company->save();
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 return self::showResponse(false, $exception->getMessage());
             }
         }
-        if ($request->has('settings') && Auth::user()->employee->getPermissionIds([80,81])) {
+        if ($request->has('settings') && Auth::user()->employee->getPermissionIds([80, 81])) {
             TrackingSettings::updateOrCreate([
-                    'entity_id' => Auth::user()->id,
-                    'entity_type' => User::class
-                ], [
+                'entity_id' => Auth::user()->id,
+                'entity_type' => User::class
+            ], [
                     'data' => $request->get('settings')
                 ]
             );
