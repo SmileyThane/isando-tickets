@@ -9,12 +9,14 @@ use App\Currency;
 use App\TrackingSettings;
 use App\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SettingsController extends BaseController
 {
-    public function get() {
+    public function get()
+    {
         $company = Auth::user()->employee->companyData;
         return self::showResponse(true, [
             'company' => $company,
@@ -27,7 +29,8 @@ class SettingsController extends BaseController
         ]);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         if ($request->has('currency') && $request->get('currency') !== null) {
             try {
                 $currency = Currency::find((int)$request->get('currency'));
@@ -50,7 +53,8 @@ class SettingsController extends BaseController
         return self::showResponse(true, '');
     }
 
-    public function genReport(Request $request, $source = 'tracker') {
+    public function genReport(Request $request, $source = 'tracker')
+    {
         if (!Auth::user()->employee->getPermissionIds([96])) {
             return self::showResponse(false, '');
         }
