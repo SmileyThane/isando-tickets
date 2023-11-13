@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Tracking;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
