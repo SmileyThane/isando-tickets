@@ -30,7 +30,8 @@ class ReportController extends BaseController
         }
     }
 
-    public function get(Request $request) {
+    public function get(Request $request)
+    {
         return $this->trackingReportRepo->all($request);
     }
 
@@ -49,15 +50,16 @@ class ReportController extends BaseController
         return $this->trackingReportRepo->delete($id);
     }
 
-    public function generate(Request $request) {
+    public function generate(Request $request)
+    {
         $result = $this->trackingReportRepo->validate($request, true);
         if ($result === false) {
-            throw new \Exception('Validation error');
+            throw new Exception('Validation error');
         }
         try {
             return $this->trackingReportRepo->generate($request);
-        } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
+        } catch (Exception $exception) {
+            throw new Exception($exception->getMessage());
         }
     }
 
