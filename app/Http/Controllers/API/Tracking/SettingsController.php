@@ -66,7 +66,8 @@ class SettingsController extends BaseController
         return $this->trackingReportRepo->getReportDetail($source, $periodStart, $periodEnd, $clients, $coworkers);
     }
 
-    public function getReconciliationReport(Request $request) {
+    public function getReconciliationReport(Request $request)
+    {
         if (!Auth::user()->employee->getPermissionIds([96])) {
             return self::showResponse(false, '');
         }
