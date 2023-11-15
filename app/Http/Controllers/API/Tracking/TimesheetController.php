@@ -125,11 +125,12 @@ class TimesheetController extends BaseController
         }
     }
 
-    public function removeTemplate(Request $request, $template_id) {
+    public function removeTemplate(Request $request, $template_id)
+    {
         try {
             $result = $this->timesheetRepo->removeTemplate($template_id);
             return self::showResponse(true, $result);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
     }
