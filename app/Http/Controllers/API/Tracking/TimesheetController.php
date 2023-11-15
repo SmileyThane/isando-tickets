@@ -108,7 +108,7 @@ class TimesheetController extends BaseController
         try {
             $result = $this->timesheetRepo->saveAsTemplate($items, $config);
             return self::showResponse(true, $result);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
     }
@@ -120,7 +120,7 @@ class TimesheetController extends BaseController
             $dateEnd = Carbon::parse($request->get('end'))->format('Y-m-d');
             $result = $this->timesheetRepo->loadTemplate($template_id, $dateStart, $dateEnd);
             return self::showResponse(true, $result);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
     }
@@ -134,15 +134,17 @@ class TimesheetController extends BaseController
         }
     }
 
-    public function exportPdf(Request $request) {
+    public function exportPdf(Request $request)
+    {
         try {
             return $this->timesheetRepo->exportPdf($request);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
     }
 
-    public function saveOrdering(Request $request) {
+    public function saveOrdering(Request $request)
+    {
         $ids = $request->get('ids');
         $result = $this->timesheetRepo->saveOrdering($ids);
         return self::showResponse($result, []);
