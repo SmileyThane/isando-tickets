@@ -10,12 +10,14 @@ use Illuminate\Support\Facades\Auth;
 class TimesheetController extends BaseController
 {
 
-    public function get(Request $request) {
+    public function get(Request $request)
+    {
         $trackingProjects = $this->timesheetRepo->all($request);
         return self::showResponse(true, $trackingProjects);
     }
 
-    public function getAllGroupedByStatus(Request $request) {
+    public function getAllGroupedByStatus(Request $request)
+    {
         $trackingProjects = $this->timesheetRepo->getAllGroupedByStatus($request);
         return self::showResponse(true, $trackingProjects);
     }
@@ -76,14 +78,16 @@ class TimesheetController extends BaseController
         return self::showResponse(true, true);
     }
 
-    public function getCountTimesheetForApproval() {
+    public function getCountTimesheetForApproval()
+    {
         $count = $this->timesheetRepo->getCountTimesheetForApproval();
         return self::showResponse(true, [
             'count' => $count,
         ]);
     }
 
-    public function copyPreviousWeek(Request $request) {
+    public function copyPreviousWeek(Request $request)
+    {
         $this->timesheetRepo->copyPreviousWeek(
             Auth::user(),
             Carbon::parse($request->from)->format('Y-m-d'),
@@ -92,11 +96,13 @@ class TimesheetController extends BaseController
         return self::showResponse(true, []);
     }
 
-    public function getUserTemplates() {
+    public function getUserTemplates()
+    {
         return self::showResponse(true, $this->timesheetRepo->getUserTemplates());
     }
 
-    public function saveAsTemplate(Request $request) {
+    public function saveAsTemplate(Request $request)
+    {
         $items = $request->get('items');
         $config = $request->get('data');
         try {
@@ -107,7 +113,8 @@ class TimesheetController extends BaseController
         }
     }
 
-    public function loadTemplate(Request $request, $template_id) {
+    public function loadTemplate(Request $request, $template_id)
+    {
         try {
             $dateStart = Carbon::parse($request->get('start'))->format('Y-m-d');
             $dateEnd = Carbon::parse($request->get('end'))->format('Y-m-d');
