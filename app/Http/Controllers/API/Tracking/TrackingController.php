@@ -57,7 +57,7 @@ class TrackingController extends BaseController
         try {
             $result = $this->trackingRepo->delete($tracking);
             return self::showResponse($result);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
     }
