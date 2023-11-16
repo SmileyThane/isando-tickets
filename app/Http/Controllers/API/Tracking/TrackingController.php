@@ -30,7 +30,7 @@ class TrackingController extends BaseController
             try {
                 $result = $this->trackingRepo->create($request);
                 $success = true;
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 return self::showResponse(false, $exception->getMessage());
             }
         }
