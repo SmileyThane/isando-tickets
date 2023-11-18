@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Tremby\LaravelGitVersion\GitVersionHelper;
 
 class AuthController extends Controller
 {
@@ -30,13 +31,14 @@ class AuthController extends Controller
     protected $roleRepo;
 
     public function __construct(
-        CompanyRepository $companyRepository,
-        UserRepository $userRepository,
+        CompanyRepository     $companyRepository,
+        UserRepository        $userRepository,
         CompanyUserRepository $companyUserRepository,
-        LicenseRepository $licenceRepository,
-        RoleRepository $roleRepository,
-        PlanRepository $planRepository
-    ) {
+        LicenseRepository     $licenceRepository,
+        RoleRepository        $roleRepository,
+        PlanRepository        $planRepository
+    )
+    {
         $this->companyRepo = $companyRepository;
         $this->userRepo = $userRepository;
         $this->companyUserRepo = $companyUserRepository;
@@ -131,7 +133,7 @@ class AuthController extends Controller
 
     public function getAppVersion(Request $request)
     {
-        $versionStr = \Tremby\LaravelGitVersion\GitVersionHelper::getVersion();
+        $versionStr = GitVersionHelper::getVersion();
         if (config('app.env') == 'production') {
             $versionStr = str_ireplace('-dirty', '', $versionStr);
             $versionStr = substr($versionStr, 0, strrpos($versionStr, '-'));
