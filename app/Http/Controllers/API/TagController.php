@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Repositories\TagRepository;
 use App\Tag;
+use Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class TagController extends Controller
 {
     protected $tagRepo = null;
 
-    public function __construct(TagRepository $tagRepository) {
+    public function __construct(TagRepository $tagRepository)
+    {
         $this->tagRepo = $tagRepository;
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $success = false;
         $result = $this->tagRepo->validate($request, true);
         if ($result === true) {
@@ -25,25 +28,29 @@ class TagController extends Controller
         return self::showResponse($success, $result);
     }
 
-    public function get(Request $request) {
+    public function get(Request $request)
+    {
         $result = $this->tagRepo->all($request);
         return self::showResponse((bool)$result, $result);
     }
 
-    public function update(Request $request, Tag $tag) {
+    public function update(Request $request, Tag $tag)
+    {
         $result = $this->tagRepo->update($request, $tag);
         return self::showResponse((bool)$result, $result);
     }
 
-    public function delete(Request $request, Tag $tag) {
+    public function delete(Request $request, Tag $tag)
+    {
         $result = $this->tagRepo->delete($tag);
         return self::showResponse($result, $result);
     }
 
-    public function createOrUpdateTranslation(Request $request, Tag $tag) {
+    public function createOrUpdateTranslation(Request $request, Tag $tag)
+    {
         try {
             $result = $this->tagRepo->createOrUpdateTranslation($request, $tag);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
         return self::showResponse(true, $result);
