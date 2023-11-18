@@ -4,11 +4,12 @@
 namespace App\Http\Controllers\API;
 
 
+use App\Http\Controllers\Controller;
 use App\Repositories\ServiceRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ServiceController extends \App\Http\Controllers\Controller
+class ServiceController extends Controller
 {
 
     protected $serviceRepo;
