@@ -92,7 +92,8 @@ class TicketController extends Controller
         return self::showResponse(true, $type);
     }
 
-    public function deleteType($id): JsonResponse {
+    public function deleteType($id): JsonResponse
+    {
         try {
             if ($id !== 1) {
                 TicketType::where('id', $id)->delete();
