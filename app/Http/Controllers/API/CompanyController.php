@@ -18,9 +18,10 @@ class CompanyController extends Controller
     protected $companyUserRepo;
 
     public function __construct(
-        CompanyRepository $companyRepository,
+        CompanyRepository     $companyRepository,
         CompanyUserRepository $companyUserRepository
-    ) {
+    )
+    {
         $this->companyRepo = $companyRepository;
         $this->companyUserRepo = $companyUserRepository;
     }

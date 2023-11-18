@@ -32,7 +32,7 @@ class ActivityController extends Controller
     public function destroy($id)
     {
         $activity = Activity::query()->find($id);
-        if ($activity){
+        if ($activity) {
             $activity->delete();
         }
 
@@ -67,7 +67,7 @@ class ActivityController extends Controller
     public function destroyType($id): JsonResponse
     {
         $activityType = ActivityType::query()->find($id);
-        if ($activityType){
+        if ($activityType) {
             $activityType->delete();
         }
 
