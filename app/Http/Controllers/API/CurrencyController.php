@@ -4,8 +4,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Currency;
-use \App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use App\Repositories\CurrencyRepository;
+use Exception;
 use Illuminate\Http\Request;
 
 class CurrencyController extends Controller
@@ -35,7 +36,7 @@ class CurrencyController extends Controller
                 return self::showResponse(false, $validate);
             }
             return self::showResponse(true, $this->currencyRepo->create($request));
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
     }
@@ -49,7 +50,7 @@ class CurrencyController extends Controller
                 return self::showResponse(false, $validate);
             }
             return self::showResponse(true, $this->currencyRepo->update($request, $currency));
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
     }
@@ -59,7 +60,7 @@ class CurrencyController extends Controller
         try {
             $this->currencyRepo->delete($request, $currency);
             return self::showResponse(true, null);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return self::showResponse(false, $exception->getMessage());
         }
     }

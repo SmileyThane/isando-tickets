@@ -8,7 +8,6 @@ use App\Permission;
 use App\Repositories\CustomLicenseRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class CustomLicenseController extends Controller
 {
