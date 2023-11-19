@@ -148,7 +148,7 @@ class KbController extends Controller
         $request['is_internal'] = $request->is_internal ? 1 : 0;
         $request['is_draft'] = $request->is_draft ? 1 : 0;
 
-        $article = $this->kbRepo->updateArticle($request->all(),$id);
+        $article = $this->kbRepo->updateArticle($request->all(), $id);
 
         if ($request->has('files')) {
             foreach ($request['files'] as $i => $file) {
@@ -176,7 +176,7 @@ class KbController extends Controller
      *
      * @param CreateKnowledgeBaseTypeRequest $request
      * @return JsonResponse
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function create(CreateKnowledgeBaseTypeRequest $request): JsonResponse
     {
@@ -194,7 +194,7 @@ class KbController extends Controller
      * @param UpdateKnowledgeBaseTypeRequest $request
      * @param KnowledgeBaseType $knowledgeBaseType
      * @return JsonResponse
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function update(UpdateKnowledgeBaseTypeRequest $request, KnowledgeBaseType $knowledgeBaseType): JsonResponse
     {
@@ -211,7 +211,7 @@ class KbController extends Controller
      *
      * @param KnowledgeBaseType $knowledgeBaseType
      * @return JsonResponse
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function delete(KnowledgeBaseType $knowledgeBaseType): JsonResponse
     {
