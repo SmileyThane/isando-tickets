@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Country;
 use App\Repositories\EmailReceiverRepository;
 use App\TimeZone;
 use Illuminate\Contracts\Support\Renderable;
