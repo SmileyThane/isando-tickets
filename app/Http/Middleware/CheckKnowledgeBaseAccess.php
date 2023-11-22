@@ -16,7 +16,7 @@ class CheckKnowledgeBaseAccess
      * Handle an incoming request.
      *
      * @param Request $request
-     * @param \Closure(Request): (Response|RedirectResponse) $next
+     * @param Closure(Request): (Response|RedirectResponse) $next
      * @param string $type
      * @return Response|RedirectResponse
      * @throws Throwable
