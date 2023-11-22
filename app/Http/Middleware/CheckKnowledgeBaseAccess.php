@@ -19,7 +19,7 @@ class CheckKnowledgeBaseAccess
      * @param \Closure(Request): (Response|RedirectResponse) $next
      * @param string $type
      * @return Response|RedirectResponse
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function handle(Request $request, Closure $next, string $type)
     {
