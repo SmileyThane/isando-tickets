@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Role\GetRolesRequest;
 use App\Permission;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\JsonResponse;

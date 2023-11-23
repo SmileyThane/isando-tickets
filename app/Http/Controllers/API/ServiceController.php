@@ -19,7 +19,8 @@ class ServiceController extends Controller
         $this->serviceRepo = $serviceRepository;
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $success = false;
         $result = $this->serviceRepo->validate($request, true);
         if ($result === true) {
