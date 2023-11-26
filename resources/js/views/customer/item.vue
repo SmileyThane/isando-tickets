@@ -703,18 +703,18 @@
                             ></v-text-field>
                         </v-card-title>
                         <v-data-table
+                            :expanded.sync="activityExpanded"
                             :footer-props="footerProps"
                             :headers="activityHeaders"
                             :items="client.activities"
-                            :options.sync="options"
                             :loading="loadingActivities"
+                            :options.sync="options"
+                            :search="activitySearch"
                             class="elevation-1"
                             dense
-                            :expanded.sync="activityExpanded"
-                            single-expand
-                            show-expand
                             item-key="id"
-                            :search="activitySearch"
+                            show-expand
+                            single-expand
                             @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }" v-if="$helpers.auth.checkPermissionByIds([106])">
