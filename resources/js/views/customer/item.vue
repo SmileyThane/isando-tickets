@@ -167,10 +167,11 @@
                                                         v-model="client.supplier_object"
                                                         :color="themeBgColor"
                                                         :item-color="themeBgColor"
+                                                        :items="suppliers"
+                                                        :label="langMap.customer.supplier"
+                                                        dense
                                                         item-text="name"
                                                         item-value="item"
-                                                        v-model="client.supplier_object"
-                                                        :items="suppliers"
                                                     />
                                                 </v-col>
                                                 <v-col cols="12">
@@ -186,8 +187,7 @@
                                                 </v-col>
                                                 <v-col cols="12">
                                                     <v-select
-                                                        dense
-                                                        :label="langMap.main.owner"
+                                                        v-model="client.owner_id"
                                                         :color="themeBgColor"
                                                         :item-color="themeBgColor"
                                                         item-text="user_data.full_name"
