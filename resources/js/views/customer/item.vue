@@ -190,10 +190,11 @@
                                                         v-model="client.owner_id"
                                                         :color="themeBgColor"
                                                         :item-color="themeBgColor"
+                                                        :items="supplierEmployees"
+                                                        :label="langMap.main.owner"
+                                                        dense
                                                         item-text="user_data.full_name"
                                                         item-value="id"
-                                                        v-model="client.owner_id"
-                                                        :items="supplierEmployees"
                                                     >
                                                         <template v-slot:item="props">
                                                             {{ props.item.user_data.full_name }}
