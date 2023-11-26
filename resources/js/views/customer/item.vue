@@ -695,11 +695,11 @@
                         <v-card-title>
                             <v-text-field
                                 v-model="activitySearch"
-                                append-icon="mdi-magnify"
                                 :color="themeBgColor"
                                 :label="langMap.main.search"
-                                single-line
+                                append-icon="mdi-magnify"
                                 hide-details
+                                single-line
                             ></v-text-field>
                         </v-card-title>
                         <v-data-table
