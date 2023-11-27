@@ -868,15 +868,15 @@
                                                     >
                                                         <v-spacer></v-spacer>
                                                         <v-btn
-                                                            text
                                                             color="primary"
+                                                            text
                                                             @click="menuActivityDate = false"
                                                         >
                                                             Cancel
                                                         </v-btn>
                                                         <v-btn
-                                                            text
                                                             color="primary"
+                                                            text
                                                             @click="$refs.menuActivityDateRef.save(activityForm.date)"
                                                         >
                                                             OK
