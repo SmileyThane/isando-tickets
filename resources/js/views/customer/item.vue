@@ -717,19 +717,19 @@
                             single-expand
                             @update:options="updateItemsPerPage"
                         >
-                            <template v-slot:item.actions="{ item }" v-if="$helpers.auth.checkPermissionByIds([106])">
+                            <template v-if="$helpers.auth.checkPermissionByIds([106])" v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="selectActivity(item)">
+                                        <v-btn icon v-bind="attrs" @click="selectActivity(item)" v-on="on">
                                             <v-icon small>mdi-pencil</v-icon>
                                         </v-btn>
                                     </template>
                                     <span>{{ langMap.main.update_activity }}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }"
-                                              v-if="$helpers.auth.checkPermissionByIds([107])">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="deleteActivity(item.id)">
+                                    <template v-if="$helpers.auth.checkPermissionByIds([107])"
+                                              v-slot:activator="{ on, attrs }">
+                                        <v-btn icon v-bind="attrs" @click="deleteActivity(item.id)" v-on="on">
                                             <v-icon small>mdi-trash-can</v-icon>
                                         </v-btn>
                                     </template>
@@ -771,8 +771,8 @@
 
                         <v-spacer>&nbsp;</v-spacer>
 
-                        <v-expansion-panels v-model="activityFormPanel"
-                                            v-if="$helpers.auth.checkPermissionByIds([106])">
+                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([106])"
+                                            v-model="activityFormPanel">
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.main.add_activity }}
@@ -824,9 +824,9 @@
                                                     :item-color="themeBgColor"
                                                     :items="client.employees"
                                                     :label="langMap.main.activity_contact"
-                                                    prepend-icon="mdi-account-outline"
                                                     dense
                                                     item-value="employee.id"
+                                                    prepend-icon="mdi-account-outline"
                                                 >
                                                     <template v-slot:selection="data">
                                                         {{ data.item.employee.user_data.full_name }}
