@@ -844,15 +844,15 @@
                                                     v-model="menuActivityDate"
                                                     :close-on-content-click="false"
                                                     :return-value.sync="activityForm.date"
-                                                    transition="scale-transition"
-                                                    offset-y
                                                     min-width="auto"
+                                                    offset-y
+                                                    transition="scale-transition"
                                                 >
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-text-field
                                                             v-model="activityForm.date"
-                                                            label="Date"
                                                             :color="themeBgColor"
+                                                            label="Date"
                                                             prepend-icon="mdi-calendar"
                                                             readonly
                                                             v-bind="attrs"
@@ -860,10 +860,10 @@
                                                         ></v-text-field>
                                                     </template>
                                                     <v-date-picker
-                                                        first-day-of-week="1"
                                                         v-model="activityForm.date"
-                                                        no-title
                                                         :color="themeBgColor"
+                                                        first-day-of-week="1"
+                                                        no-title
                                                         scrollable
                                                     >
                                                         <v-spacer></v-spacer>
