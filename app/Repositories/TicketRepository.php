@@ -8,6 +8,7 @@ use App\Company;
 use App\CompanyUser;
 use App\Notifications\ChangedFollowTicketStatus;
 use App\Notifications\ChangedTicketStatus;
+use App\Notifications\SendTicketReply;
 use App\Permission;
 use App\ProductCompanyUser;
 use App\TeamCompanyUser;
@@ -516,9 +517,38 @@ class TicketRepository
         } else {
             $request->status_id = 4;
         }
+
+        $this->sendEmailWithReply($id, $request->answer);
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_added');
         $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, null, $historyDescription);
+
+        return true;
+    }
+
+    public function sendEmailWithReply($ticketId, $reply): bool {
+        $ticket = Ticket::find($ticketId);
+
+        $assignedPerson = $ticket->assignedPerson;
+        $contact = $ticket->contact;
+
+        if ($assignedPerson) {
+            $assignedPerson->userData->notify(
+                new SendTicketReply(
+                    $ticket->title,
+                    $reply
+                )
+            );
+        }
+
+        if ($contact) {
+            $contact->userData->notify(
+                new SendTicketReply(
+                    $ticket->title,
+                    $reply
+                )
+            );
+        }
 
         return true;
     }
