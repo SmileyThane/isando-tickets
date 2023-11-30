@@ -55,9 +55,7 @@ class SendTicketReply extends Notification implements ShouldQueue
         return (new MailMessage)
             ->from(Config::get('mail.from.address'))
             ->subject($this->subject)
-            ->line($this->message)
-;
-
+            ->view('ticket_reply', ['reply' => $this->message]);
     }
 
     /**
