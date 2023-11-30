@@ -535,7 +535,7 @@ class TicketRepository
         if ($assignedPerson) {
             $assignedPerson->userData->notify(
                 new SendTicketReply(
-                    $ticket->title,
+                    $ticket->name,
                     $reply
                 )
             );
@@ -544,7 +544,7 @@ class TicketRepository
         if ($contact) {
             $contact->userData->notify(
                 new SendTicketReply(
-                    $ticket->title,
+                    $ticket->name,
                     $reply
                 )
             );
