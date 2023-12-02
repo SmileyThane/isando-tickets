@@ -1547,7 +1547,7 @@
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showProduct(item.product_data)">
+                                        <v-btn icon v-bind="attrs" @click="showProduct(item.product_data)" v-on="on">
                                             <v-icon small>mdi-eye</v-icon>
                                         </v-btn>
                                     </template>
@@ -1555,7 +1555,7 @@
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
+                                        <v-btn icon v-bind="attrs" @click="showDeleteProductDlg(item)" v-on="on">
                                             <v-icon small>mdi-link-off</v-icon>
                                         </v-btn>
                                     </template>
