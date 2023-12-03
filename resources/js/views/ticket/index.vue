@@ -273,11 +273,6 @@
                     <span>{{ item.priority.name }}.{{ item.status.name }}</span>
                 </v-tooltip>
             </template>
-<!--            <template v-slot:item.priority.name="{ item }">-->
-<!--                <v-badge :color="item.priority.color" dot inline @click="showItem(item)">-->
-<!--                    {{ item.priority.name }}-->
-<!--                </v-badge>-->
-<!--            </template>-->
             <template v-slot:item.last_update="{ item }">
                 {{moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY') : item.last_update}}
             </template>
