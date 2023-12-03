@@ -1875,7 +1875,7 @@
         <template>
             <v-dialog v-model="emailTrashed" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.company.email_exist }} ? ({{ employeeForm.email }})
                     </v-card-title>
                     <v-card-actions>
@@ -2317,7 +2317,7 @@ export default {
                         this.errorType = 'error';
                         this.alert = true;
 
-                        return;
+
                     }
                 });
             }
