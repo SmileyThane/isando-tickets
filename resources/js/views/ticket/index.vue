@@ -265,7 +265,9 @@
                             v-on="on"
                             @click.prevent.stop="expandItem(item)"
                         >
-                            <v-icon>{{ expanded.indexOf(item) === -1 ? 'mdi-arrow-down-bold-circle' : 'mdi-arrow-up-bold-circle'}}</v-icon>
+                            <v-icon>
+                                {{ expanded.indexOf(item) === -1 ? 'mdi-arrow-down-bold-circle' : 'mdi-arrow-up-bold-circle' }}
+                            </v-icon>
                         </v-btn>
                     </template>
                     <span>{{ item.priority.name }}.{{ item.status.name }}</span>

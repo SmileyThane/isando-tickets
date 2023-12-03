@@ -50,7 +50,8 @@
                                         >
                                             <template v-slot:append-outer>
                                                 <v-btn :color="themeBgColor"
-                                                       :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'" :title="langMap.individuals.add_new" icon
+                                                       :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'"
+                                                       :title="langMap.individuals.add_new" icon
                                                        @click="createContactDlg = true;">
                                                     <v-icon>mdi-plus</v-icon>
                                                 </v-btn>
