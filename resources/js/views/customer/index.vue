@@ -28,13 +28,13 @@
                                         <div class="row">
                                             <div class="col-md-2">
                                                 <v-text-field
+                                                    v-model="clientForm.client_name"
                                                     :color="themeBgColor"
+                                                    :error-messages="errors.name"
                                                     :label="langMap.main.name"
                                                     name="company_name"
-                                                    type="text"
-                                                    v-model="clientForm.client_name"
-                                                    :error-messages="errors.name"
                                                     required
+                                                    type="text"
                                                 ></v-text-field>
                                             </div>
                                             <div class="col-md-2">
