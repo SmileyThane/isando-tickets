@@ -3,6 +3,7 @@
         <v-snackbar
             v-model="snackbar"
             :bottom="true"
+            :color="actionColor"
             :right="true"
         >
             {{ snackbarMessage }}
