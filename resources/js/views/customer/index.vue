@@ -39,13 +39,13 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <v-text-field
+                                                    v-model="clientForm.number"
                                                     :color="themeBgColor"
+                                                    :error-messages="errors.number"
                                                     :label="langMap.company.company_number"
                                                     name="number"
-                                                    type="text"
                                                     prepend-icon="mdi-numeric"
-                                                    v-model="clientForm.number"
-                                                    :error-messages="errors.number"
+                                                    type="text"
                                                 ></v-text-field>
                                             </div>
                                             <div class="col-md-5">
