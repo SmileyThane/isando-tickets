@@ -61,13 +61,13 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <v-select
-                                                    :label="langMap.customer.supplier"
+                                                    v-model="clientForm.supplier_object"
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
+                                                    :items="suppliers"
+                                                    :label="langMap.customer.supplier"
                                                     item-text="name"
                                                     item-value="item"
-                                                    v-model="clientForm.supplier_object"
-                                                    :items="suppliers"
                                                 />
                                             </div>
 
