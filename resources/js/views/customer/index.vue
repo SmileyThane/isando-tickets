@@ -72,11 +72,11 @@
                                             </div>
 
                                             <v-btn
+                                                :color="themeBgColor"
+                                                bottom
                                                 dark
                                                 fab
                                                 right
-                                                bottom
-                                                :color="themeBgColor"
                                                 @click="addClient"
                                             >
                                                 <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
