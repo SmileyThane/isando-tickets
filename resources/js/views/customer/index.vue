@@ -50,13 +50,13 @@
                                             </div>
                                             <div class="col-md-5">
                                                 <v-text-field
+                                                    v-model="clientForm.client_description"
                                                     :color="themeBgColor"
+                                                    :error-messages="errors.description"
                                                     :label="langMap.main.description"
                                                     name="company_description"
-                                                    type="text"
-                                                    v-model="clientForm.client_description"
-                                                    :error-messages="errors.description"
                                                     required
+                                                    type="text"
                                                 ></v-text-field>
                                             </div>
                                             <div class="col-md-3">
