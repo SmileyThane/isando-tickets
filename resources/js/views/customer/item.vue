@@ -156,16 +156,15 @@
                                                         v-model="client.number"
                                                         :color="themeBgColor"
                                                         :label="langMap.company.company_number"
+                                                        :rules="[false, 0, ]"
                                                         dense
                                                         prepend-icon="mdi-numeric"
                                                         type="text"
-                                                        :rules="[false, 0, ]"
                                                     />
                                                 </v-col>
                                                 <v-col cols="6">
                                                     <v-select
-                                                        dense
-                                                        :label="langMap.customer.supplier"
+                                                        v-model="client.supplier_object"
                                                         :color="themeBgColor"
                                                         :item-color="themeBgColor"
                                                         item-text="name"
