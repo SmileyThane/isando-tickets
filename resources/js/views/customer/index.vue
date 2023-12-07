@@ -89,20 +89,20 @@
                             </v-expansion-panel>
                         </v-expansion-panels>
                         <v-data-table
-                            show-expand
+                            :expanded.sync="expanded"
+                            :footer-props="footerProps"
                             :headers="headers"
                             :items="customers"
-                            :single-expand="singleExpand"
-                            :expanded.sync="expanded"
+                            :loading="loading"
+                            :loading-text="langMap.main.loading"
                             :options.sync="options"
                             :server-items-length="totalCustomers"
-                            :loading="loading"
-                            :footer-props="footerProps"
+                            :single-expand="singleExpand"
                             class="elevation-1"
-                            hide-default-footer
-                            :loading-text="langMap.main.loading"
-                            @click:row="showItem"
                             fixed-header
+                            hide-default-footer
+                            show-expand
+                            @click:row="showItem"
                         >
                             <template v-slot:top>
                                 <v-row>
