@@ -138,18 +138,17 @@
                             </template>
                             <template v-slot:item.phone="{item}">
                                 <span v-if="item.contact_phone && item.contact_phone.phone">
-                                    <v-icon v-if="item.contact_phone.type" x-small dense
-                                            v-text="item.contact_phone.type.icon"
-                                            :title="$helpers.i18n.localized(item.contact_phone.type)"></v-icon>
+                                    <v-icon v-if="item.contact_phone.type" :title="$helpers.i18n.localized(item.contact_phone.type)" dense
+                                            x-small
+                                            v-text="item.contact_phone.type.icon"></v-icon>
                                     {{ item.contact_phone.phone }}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination :color="themeBgColor"
-                                              v-model="options.page"
+                                <v-pagination v-model="options.page"
+                                              :color="themeBgColor"
                                               :length="lastPage"
-                                              circle
                                               :page="options.page"
                                               :total-visible="5"
                                 >
