@@ -118,7 +118,7 @@
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
-                                            v-model="options.itemsPerPage"
+                                            class="mx-4"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
@@ -129,9 +129,9 @@
                             </template>
                             <template v-slot:item.email="{item}">
                                 <span v-if="item.contact_email && item.contact_email.email">
-                                    <v-icon v-if="item.contact_email.type" x-small dense
-                                            v-text="item.contact_email.type.icon"
-                                            :title="$helpers.i18n.localized(item.contact_email.type)"></v-icon>
+                                    <v-icon v-if="item.contact_email.type" :title="$helpers.i18n.localized(item.contact_email.type)" dense
+                                            x-small
+                                            v-text="item.contact_email.type.icon"></v-icon>
                                     {{ item.contact_email.email }}
                                 </span>
                                 <span v-else>&nbsp;</span>
