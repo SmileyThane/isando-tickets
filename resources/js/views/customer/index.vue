@@ -106,14 +106,14 @@
                         >
                             <template v-slot:top>
                                 <v-row>
-                                    <v-col sm="12" md="10">
-                                        <v-text-field @input="debounceGetClients" v-model="customersSearch"
-                                                      :color="themeBgColor"
-                                                      :label="langMap.main.search" class="mx-4"></v-text-field>
+                                    <v-col md="10" sm="12">
+                                        <v-text-field v-model="customersSearch" :color="themeBgColor"
+                                                      :label="langMap.main.search"
+                                                      class="mx-4" @input="debounceGetClients"></v-text-field>
                                     </v-col>
-                                    <v-col sm="12" md="2">
+                                    <v-col md="2" sm="12">
                                         <v-select
-                                            class="mx-4"
+                                            v-model="options.itemsPerPage"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
