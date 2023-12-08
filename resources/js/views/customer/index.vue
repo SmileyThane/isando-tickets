@@ -176,9 +176,9 @@
                                         <v-btn
                                             color="grey"
                                             dark
-                                            @click="showItem(item)"
                                             fab
                                             x-small
+                                            @click="showItem(item)"
                                         >
                                             <v-icon
                                             >
@@ -189,6 +189,8 @@
                                         <v-btn
                                             color="error"
                                             dark
+                                            fab
+                                            x-small
                                             @click="deleteProcess(item)"
                                             fab
                                             x-small
