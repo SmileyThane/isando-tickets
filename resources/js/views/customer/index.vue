@@ -151,12 +151,13 @@
                                               :length="lastPage"
                                               :page="options.page"
                                               :total-visible="5"
+                                              circle
                                 >
                                 </v-pagination>
                             </template>
                             <template v-slot:item.is_active="{ item }">
-                                <v-icon @click="showItem(item)" class="justify-center" v-if="item"
-                                        :style="item.is_active === 1 ?'color:#95C13D;' : 'color:red;'"
+                                <v-icon v-if="item" :style="item.is_active === 1 ?'color:#95C13D;' : 'color:red;'" class="justify-center"
+                                        @click="showItem(item)"
                                 >
                                     {{
                                         item.is_active === 1 ?
