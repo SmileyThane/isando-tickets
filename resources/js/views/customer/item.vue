@@ -1048,9 +1048,9 @@
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
+                                                icon
                                                 v-bind="attrs"
                                                 v-on="on"
-                                                icon
                                                 @click.native.stop="showContactInfo(item)">
                                                 <v-icon small>mdi-account-switch-outline</v-icon>
                                             </v-btn>
