@@ -930,8 +930,8 @@
                                                     <template v-slot:selection="{ index, text }">
                                                         <v-chip
                                                             :color="themeBgColor"
-                                                            class="ma-2"
                                                             :text-color="themeFgColor"
+                                                            class="ma-2"
                                                         >
                                                             {{ text }}
                                                         </v-chip>
@@ -972,8 +972,8 @@
                                             </v-btn>
                                             &nbsp;
                                             <v-btn
-                                                color="#f1f1f1"
                                                 bottom
+                                                color="#f1f1f1"
                                                 dark
                                                 fab
                                                 right
