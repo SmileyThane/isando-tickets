@@ -918,14 +918,14 @@
                                             </v-col>
                                             <v-col cols="md-12">
                                                 <v-file-input
-                                                    chips
-                                                    multiple
                                                     v-model="activityForm.files"
-                                                    :label="langMap.main.attachments"
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
-                                                    prepend-icon="mdi-paperclip"
-                                                    :show-size="1000" F
+                                                    :label="langMap.main.attachments"
+                                                    :show-size="1000"
+                                                    F
+                                                    chips
+                                                    multiple prepend-icon="mdi-paperclip"
                                                 >
                                                     <template v-slot:selection="{ index, text }">
                                                         <v-chip
