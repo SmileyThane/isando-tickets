@@ -1472,14 +1472,14 @@
                                                             dense
                                                         />
                                                     </v-col>
-                                                    <v-col cols="1" v-if="currency">
+                                                    <v-col v-if="currency" cols="1">
                                                         <v-text-field
                                                             v-model="currency.symbol"
-                                                            readonly
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
                                                             :label="langMap.tracking.settings.currency"
                                                             dense
+                                                            readonly
                                                         />
                                                     </v-col>
                                                     <v-btn
