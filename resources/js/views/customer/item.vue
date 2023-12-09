@@ -891,10 +891,10 @@
                                                     :close-on-content-click="false"
                                                     :nudge-right="40"
                                                     :return-value.sync="activityForm.time"
-                                                    transition="scale-transition"
-                                                    offset-y
                                                     max-width="290px"
                                                     min-width="290px"
+                                                    offset-y
+                                                    transition="scale-transition"
                                                 >
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-text-field
