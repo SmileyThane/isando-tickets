@@ -1020,13 +1020,13 @@
                                 @update:options="updateItemsPerPage"
                                 @click:row="showUser"
                             >
-                                <template v-slot:item.actions="{ item }" v-if="!isCompanyContactsLoading">
+                                <template v-if="!isCompanyContactsLoading" v-slot:item.actions="{ item }">
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
+                                                icon
                                                 v-bind="attrs"
                                                 v-on="on"
-                                                icon
                                                 @click.native.stop="resetPassword(item.employee)">
                                                 <v-icon small>mdi-email-alert</v-icon>
                                             </v-btn>
@@ -1036,9 +1036,9 @@
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
+                                                icon
                                                 v-bind="attrs"
                                                 v-on="on"
-                                                icon
                                                 @click.native.stop="removeEmployeeProcess(item.employee)">
                                                 <v-icon small>mdi-delete</v-icon>
                                             </v-btn>
