@@ -192,8 +192,6 @@
                                             fab
                                             x-small
                                             @click="deleteProcess(item)"
-                                            fab
-                                            x-small
                                         >
                                             <v-icon>
                                                 mdi-delete
@@ -208,9 +206,9 @@
             </div>
         </div>
         <template>
-            <v-dialog v-model="removeCustomerDialog" persistent max-width="480">
+            <v-dialog v-model="removeCustomerDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
