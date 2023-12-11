@@ -28,8 +28,6 @@ class EmailReceiverRepository
     const YAHOO_QUOTED_TAG_PART_FOR_REMOVING = '<div id="yahoo_quoted';
     const CUSTOM_QUOTED_TAG_PART_FOR_REMOVING = '<br id="lineBreakAtBeginningOfMessage">';
 
-    const ALLOWED_DOMAINS_LIST = ''
-
     public function __construct(TicketRepository $ticketRepository)
     {
         $this->ticketRepo = $ticketRepository;
