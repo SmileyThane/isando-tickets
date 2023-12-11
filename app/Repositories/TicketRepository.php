@@ -519,7 +519,7 @@ class TicketRepository
         }
 
         if ($replyShouldBeEmailed) {
-            $this->sendEmailWithReply($id, $request->answer);
+            $this->sendEmailWithReply($id, $request->answer, $files);
         }
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_added');
@@ -528,7 +528,7 @@ class TicketRepository
         return true;
     }
 
-    public function sendEmailWithReply($ticketId, $reply): bool {
+    public function sendEmailWithReply($ticketId, $reply, $files): bool {
         $ticket = Ticket::find($ticketId);
 
         $assignedPerson = $ticket->assignedPerson;
@@ -540,7 +540,7 @@ class TicketRepository
                 new SendTicketReply(
                     $ticket->name,
                     $reply,
-                    $ticket->attachments
+                    $files
                 )
             );
         }
@@ -551,7 +551,7 @@ class TicketRepository
                 new SendTicketReply(
                     $ticket->name,
                     $reply,
-                    $ticket->attachments
+                    $files
                 )
             );
         }
