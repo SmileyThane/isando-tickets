@@ -163,7 +163,7 @@ class EmailReceiverRepository
         $params['answer'] = $this->prettifyAnswer($message);
         $params['files'] = $files;
         Log::info('answer created');
-        return $this->ticketRepo->addAnswer($params, $ticket->id, $user->employee->id);
+        return $this->ticketRepo->addAnswer($params, $ticket->id, $user->employee->id, false);
     }
 
     private function removeEmptyParagraphs($content)

@@ -500,7 +500,7 @@ class TicketRepository
         return true;
     }
 
-    public function addAnswer(Request $request, $id, $employeeId = null): bool
+    public function addAnswer(Request $request, $id, $employeeId = null, $replyShouldBeEmailed = true): bool
     {
         $ticketAnswer = new TicketAnswer();
         $ticketAnswer->ticket_id = $id;
@@ -518,7 +518,9 @@ class TicketRepository
             $request->status_id = 4;
         }
 
-        $this->sendEmailWithReply($id, $request->answer);
+        if ($replyShouldBeEmailed) {
+            $this->sendEmailWithReply($id, $request->answer);
+        }
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_added');
         $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, null, $historyDescription);
