@@ -289,11 +289,11 @@ class EmailReceiverRepository
     {
         $result = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
 
-        if(strstr($str, self::YAHOO_QUOTED_TAG_PART_FOR_REMOVING)) {
+        if(strstr($message, self::YAHOO_QUOTED_TAG_PART_FOR_REMOVING)) {
             $result = explode(self::YAHOO_QUOTED_TAG_PART, $result)[0];
         }
 
-        if(strstr($str, self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING)) {
+        if(strstr($message, self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING)) {
             $result = explode(self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING, $result)[0];
         }
 
