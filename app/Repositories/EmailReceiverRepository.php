@@ -28,6 +28,8 @@ class EmailReceiverRepository
     const YAHOO_QUOTED_TAG_PART_FOR_REMOVING = '<div id="yahoo_quoted';
     const CUSTOM_QUOTED_TAG_PART_FOR_REMOVING = '<br id="lineBreakAtBeginningOfMessage">';
 
+    const ALLOWED_DOMAINS_LIST = ''
+
     public function __construct(TicketRepository $ticketRepository)
     {
         $this->ticketRepo = $ticketRepository;
@@ -289,11 +291,11 @@ class EmailReceiverRepository
     {
         $result = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
 
-        if(strstr($message, self::YAHOO_QUOTED_TAG_PART_FOR_REMOVING)) {
+        if(strstr($result, self::YAHOO_QUOTED_TAG_PART_FOR_REMOVING)) {
             $result = explode(self::YAHOO_QUOTED_TAG_PART, $result)[0];
         }
 
-        if(strstr($message, self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING)) {
+        if(strstr($result, self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING)) {
             $result = explode(self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING, $result)[0];
         }
 
