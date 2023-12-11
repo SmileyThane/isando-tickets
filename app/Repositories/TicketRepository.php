@@ -533,7 +533,7 @@ class TicketRepository
         $contact = $ticket->contact;
 
         if ($assignedPerson && Auth::id() !== $assignedPerson->user_id) {
-
+            Log::debug('Reply to assignedPerson');
             $assignedPerson->userData->notify(
                 new SendTicketReply(
                     $ticket->name,
@@ -543,6 +543,7 @@ class TicketRepository
         }
 
         if ($contact && Auth::id() !== $contact->user_id) {
+            Log::debug('Reply to contact');
             $contact->userData->notify(
                 new SendTicketReply(
                     $ticket->name,
