@@ -59,7 +59,7 @@ class SendTicketReply extends Notification implements ShouldQueue
             ->bcc(Config::get('mail.bcc.address'));
 
         foreach ($this->attachments as $attachment) {
-            $message->attach(File::get(public_path( 'storage/' . $attachment->filepath . $attachment->name)));
+            $message->attach(public_path( 'storage/' . $attachment->filepath . $attachment->name));
         }
 
         $message->view('ticket_reply', ['reply' => $this->message]);
