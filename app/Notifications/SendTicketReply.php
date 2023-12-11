@@ -2,13 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Ticket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
 
 class SendTicketReply extends Notification implements ShouldQueue
 {
@@ -16,6 +15,7 @@ class SendTicketReply extends Notification implements ShouldQueue
 
     protected $subject;
     protected $message;
+    protected $attachments;
 
     /**
      * Create a new notification instance.
@@ -27,10 +27,11 @@ class SendTicketReply extends Notification implements ShouldQueue
      * @param $ticket_id
      * @param $language
      */
-    public function __construct($subject, $message)
+    public function __construct($subject, $message, $attachments)
     {
         $this->subject = $subject;
         $this->message = $message;
+        $this->attachments = $attachments;
     }
 
     /**
@@ -52,11 +53,17 @@ class SendTicketReply extends Notification implements ShouldQueue
      */
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        $message = (new MailMessage)
             ->from(Config::get('mail.from.address'))
             ->subject($this->subject)
-            ->bcc(Config::get('mail.bcc.address'))
-            ->view('ticket_reply', ['reply' => $this->message]);
+            ->bcc(Config::get('mail.bcc.address'));
+
+        foreach ($this->attachments as $attachment) {
+            $message->attach(File::get(public_path($attachment->filepath . $attachment->name)));
+        }
+
+        $message->view('ticket_reply', ['reply' => $this->message]);
+        return $message;
     }
 
     /**

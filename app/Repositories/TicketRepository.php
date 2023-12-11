@@ -539,7 +539,8 @@ class TicketRepository
             $assignedPerson->userData->notify(
                 new SendTicketReply(
                     $ticket->name,
-                    $reply
+                    $reply,
+                    $ticket->attachments
                 )
             );
         }
@@ -549,7 +550,8 @@ class TicketRepository
             $contact->userData->notify(
                 new SendTicketReply(
                     $ticket->name,
-                    $reply
+                    $reply,
+                    $ticket->attachments
                 )
             );
         }
