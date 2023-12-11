@@ -216,7 +216,7 @@ class EmailReceiverRepository
             if (is_string($message)) {
                 $params['description'] = $message;
             } else {
-                $params['description'] = this->prettifyAnswer($message);
+                $params['description'] = $this->prettifyAnswer($message);
             }
             $params['files'] = $files;
             return $this->ticketRepo->create($params, $userFrom->employee->id);
