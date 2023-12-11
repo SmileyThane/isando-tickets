@@ -129,7 +129,7 @@ class TicketRepository
             $ticketResult->where('to_company_user_id', Auth::user()->employee->id);
         }
         if ($request->only_open === "true") {
-            $ticketResult->whereIn('status_id', [1, 2, 4]);
+            $ticketResult->whereIn('status_id', [1, 2, 3, 4]);
         }
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
