@@ -519,7 +519,7 @@ class TicketRepository
         }
 
         if ($replyShouldBeEmailed) {
-            $this->sendEmailWithReply($id, $request->answer, $files);
+            $this->sendEmailWithReply($id, $request->answer, $ticketAnswer->attachments);
         }
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_added');
