@@ -587,10 +587,10 @@
             width="290px"
         >
             <v-date-picker
-                first-day-of-week="1"
                 v-model="tempExpDate"
                 :color="themeBgColor"
                 :locale="calendarLocale"
+                first-day-of-week="1"
                 scrollable
             >
                 <v-spacer></v-spacer>
