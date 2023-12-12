@@ -523,7 +523,7 @@ class TicketRepository
         }
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_added');
-        $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, null, $historyDescription);
+        $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, $employeeId, $historyDescription);
 
         return true;
     }
