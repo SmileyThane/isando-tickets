@@ -63,6 +63,8 @@ class EmailReceiverRepository
         foreach ($messages as $key => $message) {
 
             if ($message->getFrom()) {
+                Log::debug('mail from:');
+                Log::debug(json_encode($message->getFrom()));
                 $senderObject = $message->getFrom()[0];
                 $senderEmail = $senderObject->mail;
             } else {
