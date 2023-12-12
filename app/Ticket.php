@@ -268,19 +268,28 @@ class Ticket extends Model
     public function setNumberAttribute(): void
     {
         // Prefix + Delimiter + creation_date + Delimiter + sequence
+        $settings = $owner = null;
+        $ownerName = 'T';
+
         try {
             $owner = $this->to_enity_type === Company::class ?
                 $this->to :
                 $this->to->supplier_type::find($this->to->supplier_id);
         } catch (Throwable $th) {
-            $owner = Auth::user()->employee->companyData; // as variant to modification or fix
+            if (Auth::user()) {
+                $owner = Auth::user()->employee->companyData; // as variant to modification or fix
+            }
         }
 
-        $settings = $owner->settings;
-        if (empty($settings->data['ticket_number_format']) ||
+        if ($owner) {
+            $ownerName = $owner->name;
+            $settings = $owner->settings;
+        }
+
+        if (!$settings || empty($settings->data['ticket_number_format']) ||
             count(explode('｜', $settings->data['ticket_number_format'])) != 5
         ) {
-            $format = strtoupper(substr(str_replace(' ', '', $owner->name), 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
+            $format = strtoupper(substr(str_replace(' ', '', $ownerName), 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
         } else {
             $format = $settings->data['ticket_number_format'];
         }
