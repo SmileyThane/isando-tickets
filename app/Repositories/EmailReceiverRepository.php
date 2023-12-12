@@ -155,7 +155,7 @@ class EmailReceiverRepository
         $user = null;
         $email = Email::where(['email' => $senderEmail, 'entity_type' => User::class])->first();
         if ($email) {
-            $user = User::where(['is_active' => true, 'id' => $email->entity_id])->first();
+            $user = User::where(['id' => $email->entity_id])->first();
         }
         if (!$user) {
             Log::info($senderEmail . ' not found');
@@ -179,7 +179,7 @@ class EmailReceiverRepository
         $userFrom = null;
         $email = Email::where(['email' => $senderEmail, 'entity_type' => User::class])->first();
         if ($email) {
-            $userFrom = User::where(['is_active' => true, 'id' => $email->entity_id])->first();
+            $userFrom = User::where(['id' => $email->entity_id])->first();
         }
         if ($userFrom && $userFrom->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $userFrom->employee->id)->first();
