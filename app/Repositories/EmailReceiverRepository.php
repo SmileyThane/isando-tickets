@@ -69,8 +69,6 @@ class EmailReceiverRepository
                 continue;
             }
 
-            var_dump($message->getFrom(), $message->getSubject());
-
             $rawSubject = $message->getSubject();
             $userGlobal = null;
             $email = Email::where(['email' => $senderEmail, 'entity_type' => User::class])->first();
