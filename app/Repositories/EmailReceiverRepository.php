@@ -67,7 +67,7 @@ class EmailReceiverRepository
                 foreach ($message->getFrom() as $emailLog) {
                     Log::debug($emailLog);
                 }
-                Log::debug('end mail from:');
+                Log::debug('end mail from');
                 $senderObject = $message->getFrom()[0];
                 $senderEmail = $senderObject->mail;
             } else {
