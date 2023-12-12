@@ -73,7 +73,7 @@ class EmailReceiverRepository
             $userGlobal = null;
             $email = Email::where(['email' => $senderEmail, 'entity_type' => User::class])->first();
             if ($email) {
-                $userGlobal = User::where(['is_active' => true, 'id' => $email->entity_id])->first();
+                $userGlobal = User::where(['id' => $email->entity_id])->first();
             }
             if ($userGlobal) {
                 Log::info('email from ' . $userGlobal->name);
