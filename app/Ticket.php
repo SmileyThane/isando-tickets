@@ -107,9 +107,14 @@ class Ticket extends Model
 
     public function getLastUpdateAttribute(): string
     {
-        $locale = Language::find($this->langId)->locale;
-        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-        return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+        try {
+            $locale = Language::find($this->langId)->locale;
+            $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+            return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+
+        } catch (\Throwable $th) {
+            return Carbon::parse($this->attributes['updated_at'])->calendar();
+        }
     }
 
     public function getCreatedAtAttribute()
@@ -120,7 +125,7 @@ class Ticket extends Model
             return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
 
         } catch (\Throwable $th) {
-            Carbon::parse($this->attributes['created_at'])->calendar();
+            return Carbon::parse($this->attributes['created_at'])->calendar();
         }
     }
 
@@ -128,7 +133,6 @@ class Ticket extends Model
     {
         $locale = Language::find($this->langId)->locale;
         $createdAt = Carbon::parse($this->attributes['created_at']);
-        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
     }
 
