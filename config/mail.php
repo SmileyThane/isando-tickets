@@ -96,7 +96,7 @@ return [
     ],
 
     'bcc' => [
-        'address' => env('MAIL_BCC_ADDRESS', 'bcc@example.com'),
+        'address' => env('MAIL_BCC_ADDRESS', 'office@inax247.com'),
     ],
 
     /*
