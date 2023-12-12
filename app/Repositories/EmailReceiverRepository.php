@@ -91,6 +91,8 @@ class EmailReceiverRepository
                                 ->orWhere('contact_company_user_id', $userGlobal->employee->id);
                         })->first();
                     $attachments = $this->handleEmailAttachments($message->getAttachments());
+                    Log::info('empty ticker ' . (string)$ticket === null);
+                    Log::info('cached count ' . (string)$cachedCount);
                     if ($ticket !== null && $cachedCount === 0 &&
                         !in_array($senderEmail, config('mail.contact_form_addresses'), true)
                     ) {
