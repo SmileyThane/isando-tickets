@@ -96,8 +96,7 @@ class EmailReceiverRepository
                     ) {
                         Log::info('system starts creating answer for ticket ' . $ticket->id);
                         $responseBody = $this->ticketAnswerFromEmail($senderEmail, $ticket, $message, $attachments);
-                    } elseif ($ticket === null)
-                        && $cachedCount === 0) {
+                    } elseif ($ticket === null && $cachedCount === 0) {
                         Log::info('system starts creating new ticket');
                         $responseBody = $this->createTicketFromEmail($senderEmail, $message, $ticketSubject, $attachments);
                     }
