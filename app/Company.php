@@ -133,8 +133,14 @@ class Company extends Model
 
     public function getSecondAliasAttribute()
     {
+        if (Auth::user()) {
+            $language = Language::find(Auth::user()->language_id);
+        } else {
+            $language = Language::first();
+        }
+
         return $this->attributes['second_alias'] ??
-            Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
+            $language->lang_map->main->ticketing;
     }
 
     public function currency(): HasOne
