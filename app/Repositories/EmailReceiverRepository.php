@@ -62,13 +62,14 @@ class EmailReceiverRepository
         $responseBody = null;
         foreach ($messages as $key => $message) {
 
-            var_dump($message->getFrom(), $message->getSubject());
             if ($message->getFrom()) {
                 $senderObject = $message->getFrom()[0];
                 $senderEmail = $senderObject->mail;
             } else {
                 continue;
             }
+
+            var_dump($message->getFrom(), $message->getSubject());
 
             $rawSubject = $message->getSubject();
             $userGlobal = null;
