@@ -114,9 +114,14 @@ class Ticket extends Model
 
     public function getCreatedAtAttribute()
     {
-        $locale = Language::find($this->langId)->locale;
-        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-        return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+        try {
+            $locale = Language::find($this->langId)->locale;
+            $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+            return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+
+        } catch (\Throwable $th) {
+            Carbon::parse($this->attributes['created_at'])->calendar();
+        }
     }
 
     public function getCreatedAtTimeAttribute()
