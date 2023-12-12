@@ -95,6 +95,10 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Isando Technologies, Ticketing'),
     ],
 
+    'bcc' => [
+        'address' => env('MAIL_BCC_ADDRESS', 'bcc@example.com'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Markdown Mail Settings

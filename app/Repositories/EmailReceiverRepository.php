@@ -25,6 +25,9 @@ class EmailReceiverRepository
 {
     protected $ticketRepo;
 
+    const YAHOO_QUOTED_TAG_PART_FOR_REMOVING = '<div id="yahoo_quoted';
+    const CUSTOM_QUOTED_TAG_PART_FOR_REMOVING = '<br id="lineBreakAtBeginningOfMessage">';
+
     public function __construct(TicketRepository $ticketRepository)
     {
         $this->ticketRepo = $ticketRepository;
@@ -157,10 +160,10 @@ class EmailReceiverRepository
             Log::info($senderEmail . ' not found');
         }
         $params = new Request();
-        $params['answer'] = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
+        $params['answer'] = $this->prettifyAnswer($message);
         $params['files'] = $files;
         Log::info('answer created');
-        return $this->ticketRepo->addAnswer($params, $ticket->id, $user->employee->id);
+        return $this->ticketRepo->addAnswer($params, $ticket->id, $user->employee->id, false);
     }
 
     private function removeEmptyParagraphs($content)
@@ -213,9 +216,8 @@ class EmailReceiverRepository
             if (is_string($message)) {
                 $params['description'] = $message;
             } else {
-                $params['description'] = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
+                $params['description'] = $this->prettifyAnswer($message);
             }
-//            Log::info(json_encode($message));
             $params['files'] = $files;
             return $this->ticketRepo->create($params, $userFrom->employee->id);
         }
@@ -281,6 +283,21 @@ class EmailReceiverRepository
             }
         }
         return $priorityId;
+    }
+
+    private function prettifyAnswer($message)
+    {
+        $result = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
+
+        if(strstr($result, self::YAHOO_QUOTED_TAG_PART_FOR_REMOVING)) {
+            $result = explode(self::YAHOO_QUOTED_TAG_PART, $result)[0];
+        }
+
+        if(strstr($result, self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING)) {
+            $result = explode(self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING, $result)[0];
+        }
+
+        return $result;
     }
 
     private function makeSystemRequest($uri, $token, $params)
