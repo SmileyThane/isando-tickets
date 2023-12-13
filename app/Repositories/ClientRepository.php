@@ -555,4 +555,14 @@ class ClientRepository
         $client->save();
         return $client;
     }
+
+    public function updateNotes($id, $notes)
+    {
+        $client = Client::find($id);
+
+        if ($client && $notes) {
+            $client->notes = $notes;
+            $client->save();
+        }
+    }
 }
