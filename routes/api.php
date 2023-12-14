@@ -123,6 +123,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('client/{id}', 'API\ClientController@find');
         Route::get('client/{id}/related', 'API\ClientController@relatedClients');
         Route::patch('client/{id}', 'API\ClientController@update');
+        Route::patch('client/{id}/notes', 'API\ClientController@updateNotes');
         Route::delete('client/{id}', 'API\ClientController@delete');
         Route::post('client/employee', 'API\ClientController@attach');
         Route::delete('client/employee/{id}', 'API\ClientController@detach');
