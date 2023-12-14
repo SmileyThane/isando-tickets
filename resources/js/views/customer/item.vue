@@ -1992,7 +1992,8 @@ export default {
                     }
                 ],
                 logo_url: '',
-                is_active: false
+                is_active: false,
+                notes: ''
             },
             employeeForm: {
                 company_user_id: 0,
@@ -2314,6 +2315,13 @@ export default {
         cancelUpdateClient() {
             this.getClient();
             this.enableToEdit = false;
+        },
+        saveNote() {
+            axios.patch(`/api/client/${this.$route.params.id}/notes`, {notes: this.client.notes}).then(response => {
+                this.snackbarMessage = this.langMap.main.update_successful;
+                this.actionColor = 'success'
+                this.snackbar = true
+            });
         },
         editInternalBilling(item) {
             if (this.internalBillingEditor === null) {
