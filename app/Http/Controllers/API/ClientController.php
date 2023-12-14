@@ -183,4 +183,11 @@ class ClientController extends Controller
 
         return self::showResponse(false);
     }
+
+    public function updateNotes(Request $request, $id)
+    {
+        $this->clientRepo->updateNotes($id, $request->notes);
+
+        return self::showResponse(true);
+    }
 }
