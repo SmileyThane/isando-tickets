@@ -36,15 +36,15 @@
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
-                                            v-model="options.itemsPerPage"
+                                            class="mx-4"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
                                 </v-row>
                             </template>
                             <template v-slot:item.id="{item}">
-                                <span v-if="item.employee">{{item.employee.user_data.id}}</span>
-                                <span v-else>{{item.id}}</span>
+                                <span v-if="item.employee">{{ item.employee.user_data.id }}</span>
+                                <span v-else>{{ item.id }}</span>
                             </template>
                             <template v-slot:item.type="{item}">
                                 <v-icon v-if="item.employee" :title="langMap.main.individual">mdi-account</v-icon>
