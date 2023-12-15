@@ -155,9 +155,9 @@
 </style>
 
 <script>
-    import EventBus from "../../components/EventBus";
+import EventBus from "../../components/EventBus";
 
-    export default {
+export default {
 
         data() {
             return {
