@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-snackbar :bottom="true" :right="true" v-model="snackbar" :color="actionColor">
+        <v-snackbar v-model="snackbar" :bottom="true" :color="actionColor" :right="true">
             {{ snackbarMessage }}
         </v-snackbar>
         <div class="row justify-content-center">
@@ -10,17 +10,17 @@
 
                     <div class="card-body">
                         <v-data-table
+                            :footer-props="footerProps"
                             :headers="headers"
                             :items="customers"
+                            :loading="loading"
+                            :loading-text="langMap.main.loading"
                             :options.sync="options"
                             :server-items-length="totalCustomers"
-                            :loading="loading"
-                            :footer-props="footerProps"
                             class="elevation-1"
-                            hide-default-footer
-                            :loading-text="langMap.main.loading"
-                            @click:row="showItem"
                             fixed-header
+                            hide-default-footer
+                            @click:row="showItem"
                         >
                             <template v-slot:top>
                                 <v-row>
