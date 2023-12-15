@@ -51,13 +51,16 @@
                                 <v-icon v-else :title="langMap.main.customer">mdi-factory</v-icon>
                             </template>
                             <template v-slot:item.name="{item}">
-                                <span v-if="item.employee">{{item.employee.user_data.full_name}}</span>
-                                <span v-else>{{item.name}}</span>
+                                <span v-if="item.employee">{{ item.employee.user_data.full_name }}</span>
+                                <span v-else>{{ item.name }}</span>
                             </template>
                             <template v-slot:item.email="{item}">
-                                <span v-if="item.employee && item.employee.user_data.contact_email && item.employee.user_data.contact_email.email">
-                                    <v-icon v-if="item.employee.user_data.contact_email.type" x-small dense v-text="item.employee.user_data.contact_email.type.icon" :title="$helpers.i18n.localized(item.employee.user_data.contact_email.type)"></v-icon>
-                                    {{item.employee.user_data.contact_email.email}}
+                                <span
+                                    v-if="item.employee && item.employee.user_data.contact_email && item.employee.user_data.contact_email.email">
+                                    <v-icon v-if="item.employee.user_data.contact_email.type" :title="$helpers.i18n.localized(item.employee.user_data.contact_email.type)" dense
+                                            x-small
+                                            v-text="item.employee.user_data.contact_email.type.icon"></v-icon>
+                                    {{ item.employee.user_data.contact_email.email }}
                                 </span>
                                 <span v-else-if="item.contact_email && item.contact_email.email">
                                     <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="$helpers.i18n.localized(item.contact_email.type)"></v-icon>
