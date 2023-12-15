@@ -95,17 +95,23 @@
                                     {{ item.employee.user_data.addresses[0].city }}
                                 </span>
                                 <span v-else-if="item.addresses && item.addresses.length > 0">
-                                    <v-icon v-if="item.addresses[0].type" x-small dense v-text="item.addresses[0].type.icon" :title="$helpers.i18n.localized(item.addresses[0].type)"></v-icon>
-                                    {{item.addresses[0].city}}
+                                    <v-icon v-if="item.addresses[0].type" :title="$helpers.i18n.localized(item.addresses[0].type)" dense
+                                            x-small
+                                            v-text="item.addresses[0].type.icon"></v-icon>
+                                    {{ item.addresses[0].city }}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.country="{item}">
-                                <span v-if="item.employee && item.employee.user_data.addresses && item.employee.user_data.addresses.length > 0 && item.employee.user_data.addresses[0].country" :title="$helpers.i18n.localized(item.employee.user_data.addresses[0].country)">
-                                    {{item.employee.user_data.addresses[0].country.iso_3166_2}}
+                                <span
+                                    v-if="item.employee && item.employee.user_data.addresses && item.employee.user_data.addresses.length > 0 && item.employee.user_data.addresses[0].country"
+                                    :title="$helpers.i18n.localized(item.employee.user_data.addresses[0].country)">
+                                    {{ item.employee.user_data.addresses[0].country.iso_3166_2 }}
                                 </span>
-                                <span v-else-if="item.addresses && item.addresses.length > 0 && item.addresses[0].country" :title="$helpers.i18n.localized(item.addresses[0].country)">
-                                    {{item.addresses[0].country.iso_3166_2}}
+                                <span
+                                    v-else-if="item.addresses && item.addresses.length > 0 && item.addresses[0].country"
+                                    :title="$helpers.i18n.localized(item.addresses[0].country)">
+                                    {{ item.addresses[0].country.iso_3166_2 }}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
