@@ -63,26 +63,36 @@
                                     {{ item.employee.user_data.contact_email.email }}
                                 </span>
                                 <span v-else-if="item.contact_email && item.contact_email.email">
-                                    <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="$helpers.i18n.localized(item.contact_email.type)"></v-icon>
-                                    {{item.contact_email.email}}
+                                    <v-icon v-if="item.contact_email.type" :title="$helpers.i18n.localized(item.contact_email.type)" dense
+                                            x-small
+                                            v-text="item.contact_email.type.icon"></v-icon>
+                                    {{ item.contact_email.email }}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.phone="{item}">
-                                <span v-if="item.employee && item.employee.user_data.contact_phone && item.employee.user_data.contact_phone.phone">
-                                    <v-icon v-if="item.employee.user_data.contact_phone.type" x-small dense v-text="item.employee.user_data.contact_phone.type.icon" :title="$helpers.i18n.localized(item.employee.user_data.contact_phone.type)"></v-icon>
-                                    {{item.employee.user_data.contact_phone.phone}}
+                                <span
+                                    v-if="item.employee && item.employee.user_data.contact_phone && item.employee.user_data.contact_phone.phone">
+                                    <v-icon v-if="item.employee.user_data.contact_phone.type" :title="$helpers.i18n.localized(item.employee.user_data.contact_phone.type)" dense
+                                            x-small
+                                            v-text="item.employee.user_data.contact_phone.type.icon"></v-icon>
+                                    {{ item.employee.user_data.contact_phone.phone }}
                                 </span>
                                 <span v-else-if="item.contact_phone && item.contact_phone.phone">
-                                    <v-icon v-if="item.contact_phone.type" x-small dense v-text="item.contact_phone.type.icon" :title="$helpers.i18n.localized(item.contact_phone.type)"></v-icon>
-                                    {{item.contact_phone.phone}}
+                                    <v-icon v-if="item.contact_phone.type" :title="$helpers.i18n.localized(item.contact_phone.type)" dense
+                                            x-small
+                                            v-text="item.contact_phone.type.icon"></v-icon>
+                                    {{ item.contact_phone.phone }}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.city="{item}">
-                                <span v-if="item.employee && item.employee.user_data.addresses && item.employee.user_data.addresses.length > 0">
-                                    <v-icon v-if="item.employee.user_data.addresses[0].type" x-small dense v-text="item.employee.user_data.addresses[0].type.icon" :title="$helpers.i18n.localized(item.employee.user_data.addresses[0].type)"></v-icon>
-                                    {{item.employee.user_data.addresses[0].city}}
+                                <span
+                                    v-if="item.employee && item.employee.user_data.addresses && item.employee.user_data.addresses.length > 0">
+                                    <v-icon v-if="item.employee.user_data.addresses[0].type" :title="$helpers.i18n.localized(item.employee.user_data.addresses[0].type)" dense
+                                            x-small
+                                            v-text="item.employee.user_data.addresses[0].type.icon"></v-icon>
+                                    {{ item.employee.user_data.addresses[0].city }}
                                 </span>
                                 <span v-else-if="item.addresses && item.addresses.length > 0">
                                     <v-icon v-if="item.addresses[0].type" x-small dense v-text="item.addresses[0].type.icon" :title="$helpers.i18n.localized(item.addresses[0].type)"></v-icon>
