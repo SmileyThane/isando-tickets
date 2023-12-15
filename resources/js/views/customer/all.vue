@@ -159,102 +159,102 @@ import EventBus from "../../components/EventBus";
 
 export default {
 
-        data() {
-            return {
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                themeFgColor: this.$store.state.themeFgColor,
-                themeBgColor: this.$store.state.themeBgColor,
-                totalCustomers: 0,
-                lastPage: 0,
-                loading: this.themeBgColor,
-                langMap: this.$store.state.lang.lang_map,
-                options: {
-                    page: 1,
-                    sortDesc: [false],
-                    sortBy: ['name'],
-                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
-                },
-                footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [10, 25, 50, 100]
-                },
-                headers: [
-                    {text: 'ID', align: 'end', value: 'id', sortable: false},
-                    {text: this.$store.state.lang.lang_map.main.type, value: 'type', sortable: false},
-                    {text: this.$store.state.lang.lang_map.main.name, value: 'name'},
-                    {text: this.$store.state.lang.lang_map.main.email, value: 'email'},
-                    {text: this.$store.state.lang.lang_map.main.phone, value: 'phone'},
-                    {text: this.$store.state.lang.lang_map.main.city, value: 'city'},
-                    {text: this.$store.state.lang.lang_map.main.country, value: 'country'},
-                    {text: this.$store.state.lang.lang_map.main.status, value: 'is_active'}
-                ],
-                customersSearch: '',
-                customers: []
+    data() {
+        return {
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            totalCustomers: 0,
+            lastPage: 0,
+            loading: this.themeBgColor,
+            langMap: this.$store.state.lang.lang_map,
+            options: {
+                page: 1,
+                sortDesc: [false],
+                sortBy: ['name'],
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
+            },
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [10, 25, 50, 100]
+            },
+            headers: [
+                {text: 'ID', align: 'end', value: 'id', sortable: false},
+                {text: this.$store.state.lang.lang_map.main.type, value: 'type', sortable: false},
+                {text: this.$store.state.lang.lang_map.main.name, value: 'name'},
+                {text: this.$store.state.lang.lang_map.main.email, value: 'email'},
+                {text: this.$store.state.lang.lang_map.main.phone, value: 'phone'},
+                {text: this.$store.state.lang.lang_map.main.city, value: 'city'},
+                {text: this.$store.state.lang.lang_map.main.country, value: 'country'},
+                {text: this.$store.state.lang.lang_map.main.status, value: 'is_active'}
+            ],
+            customersSearch: '',
+            customers: []
+        }
+    },
+    mounted() {
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+    },
+    created() {
+        this.debounceGetCustomers = _.debounce(this.getCustomers, 1000);
+    },
+    methods: {
+        getCustomers() {
+            this.loading = this.themeBgColor;
+            if (this.options.sortDesc.length <= 0) {
+                this.options.sortBy[0] = 'id';
+                this.options.sortDesc[0] = false;
             }
-        },
-        mounted() {
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
-            });
-        },
-        created() {
-            this.debounceGetCustomers = _.debounce(this.getCustomers, 1000);
-        },
-        methods: {
-            getCustomers() {
-                this.loading = this.themeBgColor;
-                if (this.options.sortDesc.length <= 0) {
-                    this.options.sortBy[0] = 'id';
-                    this.options.sortDesc[0] = false;
-                }
-                if (this.totalCustomers < this.options.itemsPerPage) {
-                    this.options.page = 1;
-                }
-                axios.get('/api/all', {
-                    params: {
-                        search: this.customersSearch,
-                        sort_by: this.options.sortBy[0],
-                        sort_val: this.options.sortDesc[0],
-                        per_page: this.options.itemsPerPage,
-                        page: this.options.page
-                    }
-                }).then(response => {
-                    this.loading = false;
-                    response = response.data;
-                            if (response.success === true) {
-                                this.customers = response.data.data;
-                                this.totalCustomers = response.data.total;
-                                this.lastPage = response.data.last_page;
-                            } else {
-                                this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
-                                this.errorType = 'error';
-                                this.snackbar = true;
-                            }
-                        });
-            },
-            showItem(item) {
-                if (item.employee) {
-                    this.$router.push(`/employee/${item.employee.user_data.id}`);
-                } else {
-                    this.$router.push(`/customer/${item.id}`);
-                }
-            },
-            updateItemsCount(value) {
-                this.options.itemsPerPage = value;
-                localStorage.itemsPerPage = value;
+            if (this.totalCustomers < this.options.itemsPerPage) {
                 this.options.page = 1;
             }
+            axios.get('/api/all', {
+                params: {
+                    search: this.customersSearch,
+                    sort_by: this.options.sortBy[0],
+                    sort_val: this.options.sortDesc[0],
+                    per_page: this.options.itemsPerPage,
+                    page: this.options.page
+                }
+            }).then(response => {
+                this.loading = false;
+                response = response.data;
+                if (response.success === true) {
+                    this.customers = response.data.data;
+                    this.totalCustomers = response.data.total;
+                    this.lastPage = response.data.last_page;
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.snackbar = true;
+                }
+            });
         },
-        watch: {
-            options: {
-                handler() {
-                    this.getCustomers()
-                },
-                deep: true
+        showItem(item) {
+            if (item.employee) {
+                this.$router.push(`/employee/${item.employee.user_data.id}`);
+            } else {
+                this.$router.push(`/customer/${item.id}`);
             }
         },
-    }
+        updateItemsCount(value) {
+            this.options.itemsPerPage = value;
+            localStorage.itemsPerPage = value;
+            this.options.page = 1;
+        }
+    },
+    watch: {
+        options: {
+            handler() {
+                this.getCustomers()
+            },
+            deep: true
+        }
+    },
+}
 </script>
