@@ -148,9 +148,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('product/{id}', 'API\ProductController@find');
         Route::post('product/{id}', 'API\ProductController@update');
         Route::delete('product/{id}', 'API\ProductController@delete');
-        Route::post('product/employee', 'API\ProductController@attachEmployee');
+        Route::post('product/{id}/employee', 'API\ProductController@attachEmployee');
         Route::delete('product/employee/{id}', 'API\ProductController@detachEmployee');
-        Route::post('product/client', 'API\ProductController@attachClient');
+        Route::post('product/{id}/client', 'API\ProductController@attachClient');
         Route::delete('product/client/{id}', 'API\ProductController@detachClient');
 
         //ticket management
