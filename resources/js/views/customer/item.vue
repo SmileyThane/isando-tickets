@@ -2866,7 +2866,7 @@ export default {
         },
         addProductClient() {
             this.supplierForm.client_id = this.client.id
-            axios.post(`/api/product/client`, this.supplierForm).then(response => {
+            axios.post(`/api/product/${this.supplierForm.product_id}/client`, this.supplierForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getClient();
