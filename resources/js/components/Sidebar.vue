@@ -286,10 +286,10 @@
                                     <v-icon>mdi-badge-account-horizontal-outline</v-icon>
                                 </v-list-item-action>
                             </template>
-                            <span>{{ customers }} - CRM</span>
+                            <span>CRM</span>
                         </v-tooltip>
                         <v-list-item-content>
-                            <v-list-item-title>{{ customers }} - CRM</v-list-item-title>
+                            <v-list-item-title>CRM</v-list-item-title>
                         </v-list-item-content>
                     </template>
                     <v-tooltip right :disabled="!localDrawer">
