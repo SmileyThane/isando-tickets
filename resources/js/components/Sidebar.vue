@@ -916,7 +916,7 @@ export default {
         this.getTrackingSettings();
         this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
 
-        this.ticket = this.langMap.sidebar.ticket;
+        this.ticket = this.langMap.sidebar.ticket_list_menu;
         this.customers = this.langMap.sidebar.customers
         this.notifications = this.langMap.sidebar.notifications
         this.settings = this.langMap.sidebar.settings
