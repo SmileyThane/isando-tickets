@@ -426,10 +426,10 @@
                                                                           v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
-                                                    <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
+                                                    <v-icon small @click="editSocial(item)">mdi-pencil</v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action>
-                                                    <v-icon small @click="deleteAddress(item.id)">mdi-delete</v-icon>
+                                                    <v-icon small @click="deleteSocial(item.id)">mdi-delete</v-icon>
                                                 </v-list-item-action>
                                             </v-list-item>
                                         </v-col>
@@ -1979,7 +1979,28 @@ export default {
             },
             footerProps: {
                 showFirstLastPage: true,
-                itemsPerPageOptions: [10, 25, 50, 100],
+                itemsPerPageOptions: [
+                    {
+                        'text': 10,
+                        'value': 10,
+                    },
+                    {
+                        'text': 20,
+                        'value': 20,
+                    },
+                    {
+                        'text': 50,
+                        'value': 50,
+                    },
+                    {
+                        'text': 100,
+                        'value': 100,
+                    },
+                    {
+                        'text': this.$store.state.lang.lang_map.sidebar.all,
+                        'value': 10000,
+                    }
+                ],
             },
             enableToEdit: false,
             rolesDialog: false,
