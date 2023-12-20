@@ -266,7 +266,28 @@ export default {
             },
             footerProps: {
                 showFirstLastPage: true,
-                itemsPerPageOptions: [10, 25, 50, 100],
+                itemsPerPageOptions: [
+                    {
+                        'text': 10,
+                        'value': 10,
+                    },
+                    {
+                        'text': 20,
+                        'value': 20,
+                    },
+                    {
+                        'text': 50,
+                        'value': 50,
+                    },
+                    {
+                        'text': 100,
+                        'value': 100,
+                    },
+                    {
+                        'text': this.$store.state.lang.lang_map.sidebar.all,
+                        'value': 10000,
+                    }
+                ],
             },
             headers: [
                 {text: '', value: 'data-table-expand'},
@@ -358,9 +379,8 @@ export default {
             axios.post('/api/client', this.clientForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.getClients()
-                    this.getSuppliers()
                     this.clientForm = {}
+                    this.showItem(response.data)
                 } else {
                     this.errors = response.error
                     this.snackbarMessage = this.langMap.main.generic_error;
