@@ -98,7 +98,28 @@ export default {
             },
             footerProps: {
                 showFirstLastPage: true,
-                itemsPerPageOptions: [10, 25, 50, 100],
+                itemsPerPageOptions: [
+                    {
+                        'text': 10,
+                        'value': 10,
+                    },
+                    {
+                        'text': 20,
+                        'value': 20,
+                    },
+                    {
+                        'text': 50,
+                        'value': 50,
+                    },
+                    {
+                        'text': 100,
+                        'value': 100,
+                    },
+                    {
+                        'text': this.$store.state.lang.lang_map.sidebar.all,
+                        'value': 10000,
+                    }
+                ],
             },
             headers: [
                 {text: 'ID', align: 'end', value: 'id'},
