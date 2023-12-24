@@ -318,7 +318,28 @@ export default {
             },
             footerProps: {
                 showFirstLastPage: true,
-                itemsPerPageOptions: [10, 25, 50, 100],
+                itemsPerPageOptions: [
+                    {
+                        'text': 10,
+                        'value': 10,
+                    },
+                    {
+                        'text': 20,
+                        'value': 20,
+                    },
+                    {
+                        'text': 50,
+                        'value': 50,
+                    },
+                    {
+                        'text': 100,
+                        'value': 100,
+                    },
+                    {
+                        'text': this.$store.state.lang.lang_map.sidebar.all,
+                        'value': 10000,
+                    }
+                ],
             },
             langMap: this.$store.state.lang.lang_map,
             headers: [
@@ -430,11 +451,11 @@ export default {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.getEmployees()
                     this.snackbarMessage = this.langMap.company.employee_created
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.employeeForm = {}
+                    this.showItem(response.data)
                 } else {
                     if (response.error.email_trashed) {
                         this.emailTrashed = true;
