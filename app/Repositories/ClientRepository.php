@@ -272,13 +272,15 @@ class ClientRepository
     public function attach(Request $request)
     {
         Log::info('attached_c_cu_d:' . $request->client_id . '_' . $request->company_user_id . '_' . $request->description);
-        return ClientCompanyUser::firstOrCreate(
+        $clientCompanyUser = ClientCompanyUser::with('employee')->firstOrCreate(
             [
                 'client_id' => $request->client_id,
                 'company_user_id' => $request->company_user_id
             ],
             ['description' => $request->description]
         );
+
+        return $clientCompanyUser->employee;
     }
 
     public function updateDescription(Request $request)
