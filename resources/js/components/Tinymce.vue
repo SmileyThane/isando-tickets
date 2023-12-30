@@ -11,15 +11,15 @@
            'insertdatetime media table paste code wordcount searchreplace emoticons'
          ],
          toolbar:
-           'undo redo | formatselect fontsizeselect | bold italic image backcolor forecolor| \
+           'undo redo | formatselect fontsizeselect fontsize | bold italic image backcolor forecolor| \
            alignleft aligncenter alignright alignjustify searchreplace| \
            bullist numlist outdent indent emoticons| removeformat',
            image_title: true,
            relative_urls : false,
            file_picker_types: 'image',
            file_picker_callback: pickerCallback,
+           block_formats: 'Normal=p; Header 1=h1; Header 2=h2; Header 3=h3; Header 4=h4; Header 5=h5; Header 6=h6; Code=code'
        }"
-
         api-key="2v20ajrzng0ftoh79hde6tj4xavm9ej7au8gq939q914sb0w"
         v-bind:value="value"
         @input="handleInput"
