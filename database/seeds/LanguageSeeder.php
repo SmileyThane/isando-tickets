@@ -26,7 +26,7 @@ class LanguageSeeder extends Seeder
                         [
                             'companies' => 'My Company',
                             'customers' => 'Companies',
-                            'products' => 'Product',
+                            'products' => 'Products',
                             'teams' => 'Team',
                             'individuals' => 'Individuals',
                             'individual' => 'Individual',
