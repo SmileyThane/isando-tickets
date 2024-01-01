@@ -109,4 +109,3 @@ class ProductController extends Controller
         return self::showResponse(false);
     }
 }
-
