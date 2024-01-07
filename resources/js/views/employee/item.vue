@@ -1263,6 +1263,115 @@
                     </v-card-text>
                 </v-card>
 
+                <v-card>
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.product.info }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="productHeaders"
+                            :items="userData.employee.assigned_to_products"
+                            :options.sync="options"
+                            class="elevation-1"
+                            dense
+                            item-key="id"
+                            @update:options="updateItemsPerPage"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn icon v-bind="attrs" @click="showProduct(item.product_data)" v-on="on">
+                                            <v-icon small>mdi-eye</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.show_product }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn icon v-bind="attrs" @click="showDeleteProductDlg(item)" v-on="on">
+                                            <v-icon small>mdi-link-off</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.product.unlink_product }}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+
+                        <v-spacer>&nbsp;</v-spacer>
+
+                        <v-expansion-panels>
+                            <v-expansion-panel @click="resetProduct">
+                                <v-expansion-panel-header>
+                                    {{ langMap.product.add_new }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12">
+                                                <v-autocomplete
+                                                    v-model="employeeProductForm.product_id"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="products"
+                                                    :label="langMap.main.products"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                />
+                                            </v-col>
+
+                                            <v-col cols="md-12">
+                                                <v-autocomplete
+                                                    v-model="employeeProductForm.company_user_id"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="companies"
+                                                    :label="langMap.main.activity_company"
+                                                    prepend-icon="mdi-account-outline"
+                                                    dense
+                                                    item-value="company_user_id"
+                                                >
+                                                    <template v-slot:selection="data">
+                                                        {{ data.item.clients.name }}
+                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                                    </template>
+                                                    <template v-slot:item="data">
+                                                        {{ data.item.clients.name }}
+                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                                    </template>
+                                                </v-autocomplete>
+                                            </v-col>
+
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                @click="addProductEmployee"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+
             </v-col>
         </v-row>
 
