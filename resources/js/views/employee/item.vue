@@ -1636,6 +1636,18 @@ export default {
             options: {
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
             },
+            productHeaders: [
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'product_data.id',
+                },
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'product_data.name'},
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+            ],
+
             footerProps: {
                 showFirstLastPage: true,
                 itemsPerPageOptions: [
@@ -1808,6 +1820,7 @@ export default {
         this.getClients()
         this.getEmployees();
         this.getActivityTypes();
+        this.getProducts();
         // if (localStorage.getItem('auth_token')) {
         //     this.$router.push('tickets')
         // }
