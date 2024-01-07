@@ -1787,8 +1787,13 @@ export default {
             activityFormPanel: [],
             menuActivityDate: false,
             menuActivityTime: false,
-            employees: []
-
+            employees: [],
+            employeeProductForm: {
+                company_user_id: null,
+                product_id: null
+            },
+            products: [],
+            productsSearch: '',
         }
     },
     mounted() {
@@ -2602,6 +2607,70 @@ export default {
                 }
             });
         },
+        showProduct(item) {
+            this.$router.push(`/product/${item.id}`)
+        },
+        showDeleteProductDlg(item) {
+            this.selectedProductId = item.id;
+            this.deleteProductDlg = true;
+        },
+        resetProduct() {
+            this.employeeProductForm = {
+                company_user_id: null,
+                product_id: null
+            }
+        },
+        getProducts() {
+            this.loadingProducts = this.themeBgColor
+            axios.get(`/api/product?
+                    search=${this.productsSearch}&
+                    sort_by=name&
+                    sort_val=false&
+                    `).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.products = response.data.data
+                    this.totalProducts = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.loadingProducts = false
+                } else {
+                    console.log('error')
+                }
+
+            });
+        },
+
+        addProductEmployee() {
+            axios.post(`/api/product/${this.employeeProductForm.product_id}/employee`, this.employeeProductForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser();
+                    this.resetProduct();
+                } else {
+                    console.log('error')
+                }
+
+            });
+        },
+        deleteProduct(productId) {
+            axios.delete(`/api/product/client/${productId}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient()
+                    this.selectedProductId = null;
+                    this.snackbarMessage = this.langMap.customer.product_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetProduct();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+
+
     }
 }
 </script>
