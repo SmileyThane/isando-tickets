@@ -1217,10 +1217,10 @@
                                 </div>
                                 <span style="padding-bottom: 5px;"></span>
                                 <div>
-                                    <v-label v-if="ticket.contact.user_data.name">
+                                    <v-label v-if="ticket.contact && ticket.contact.user_data.name">
                                         {{ langMap.individuals.info }}:
                                     </v-label>
-                                    <v-btn v-if="ticket.contact.user_data.name"
+                                    <v-btn v-if="ticket.contact && ticket.contact.user_data.name"
                                            class="float-md-right"
                                            color="white" small
                                            style="color: black;"
