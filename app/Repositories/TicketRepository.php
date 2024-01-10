@@ -329,6 +329,9 @@ class TicketRepository
                 $request->from_entity_id,
                 $ticket->id
             );
+
+            $ticket->description = str_replace("<p>&nbsp;</p>", '<br/>', $ticket->description);
+
             $ticket->name = $request->name;
             $ticket->description = $request->description;
             $ticket->from_entity_id = $request->from_entity_id;
