@@ -40,7 +40,6 @@
                                     }}</h5>
                                 <h4 class="mb-3">{{ client.number }}</h4>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
-
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
                                     <hr class="lighten"/>
                                     <p v-for="item in client.emails" :key="item.id" class="mb-0">
