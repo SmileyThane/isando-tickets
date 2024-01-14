@@ -17,15 +17,15 @@
     <span class="header__date">
             {{ $period }}
         </span>
-    </header>
+</header>
 
-    <footer class="footer text-right">
-        <div class="footer__page-number text-right" style="float: right">
-            Footer
-        </div>
-    </footer>
-    <main>
-        @yield('content')
-    </main>
+<footer class="footer text-right">
+    <div class="footer__page-number text-right" style="float: right">
+        Footer
+    </div>
+</footer>
+<main>
+    @yield('content')
+</main>
 </body>
 </html>
