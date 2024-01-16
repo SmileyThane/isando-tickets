@@ -18,23 +18,35 @@
         </thead>
         <tbody>
         @forelse($data as $item)
-        <tr style="border-bottom: 1px solid #a1a3a4;">
-            <td>{{ \Carbon\Carbon::parse($item->date_from)->format('D d M Y') }}</td>
-            <td align="center">{{ \Carbon\Carbon::parse($item->date_from)->format('H:i') }}</td>
-            <td align="center">{{ \Carbon\Carbon::parse($item->date_from)->format('H:i') }}</td>
-            <td>@if ($item->user){{ $item->user->full_name }}@endif</td>
-            <td>@if ($item->project && $item->project->client){{ $item->project->client->name }}@endif</td>
-            <td>@if ($item->project){{ $item->project->name }}@endif</td>
-            <td>@if ($item->service){{ $item->service->name }}@endif</td>
-            <td>{{ $item->description }}</td>
-            <td align="center">@if ($item->billable) Yes @else No @endif</td>
-            <td>{{ $item->amount }}</td>
-        </tr>
-    @empty
-        <tr>
-            <td align="center" colspan="10">No data</td>
-        </tr>
-    @endforelse
-    </tbody>
-</table>
+            <tr style="border-bottom: 1px solid #a1a3a4;">
+                <td>{{ \Carbon\Carbon::parse($item->date_from)->format('D d M Y') }}</td>
+                <td align="center">{{ \Carbon\Carbon::parse($item->date_from)->format('H:i') }}</td>
+                <td align="center">{{ \Carbon\Carbon::parse($item->date_from)->format('H:i') }}</td>
+                <td>@if ($item->user)
+                        {{ $item->user->full_name }}
+                    @endif</td>
+                <td>@if ($item->project && $item->project->client)
+                        {{ $item->project->client->name }}
+                    @endif</td>
+                <td>@if ($item->project)
+                        {{ $item->project->name }}
+                    @endif</td>
+                <td>@if ($item->service)
+                        {{ $item->service->name }}
+                    @endif</td>
+                <td>{{ $item->description }}</td>
+                <td align="center">@if ($item->billable)
+                        Yes
+                    @else
+                        No
+                    @endif</td>
+                <td>{{ $item->amount }}</td>
+            </tr>
+        @empty
+            <tr>
+                <td align="center" colspan="10">No data</td>
+            </tr>
+        @endforelse
+        </tbody>
+    </table>
 @endsection
