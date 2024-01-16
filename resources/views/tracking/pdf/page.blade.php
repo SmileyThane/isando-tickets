@@ -1,8 +1,8 @@
 @extends('tracking.pdf.layout')
 
 @section('content')
-<table width="100%" cellspacing="0" cellpadding="3">
-    <thead>
+    <table width="100%" cellspacing="0" cellpadding="3">
+        <thead>
         <tr style="border-top: 1px solid #000; border-bottom: 1px solid #000;">
             <th align="center">Date</th>
             <th align="center">Start</th>
@@ -15,8 +15,8 @@
             <th align="center">Billable</th>
             <th align="center">Amount</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         @forelse($data as $item)
         <tr style="border-bottom: 1px solid #a1a3a4;">
             <td>{{ \Carbon\Carbon::parse($item->date_from)->format('D d M Y') }}</td>
