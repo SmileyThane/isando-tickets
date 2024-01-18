@@ -274,7 +274,7 @@
                 </v-tooltip>
             </template>
             <template v-slot:item.last_update="{ item }">
-                {{ moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY') : item.last_update }}
+                {{ moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY HH:mm') : item.last_update }}
             </template>
             <template v-slot:item.number="{ item }">
                 <v-tooltip top>
@@ -292,7 +292,7 @@
                 {{ item.category ? item.category.name : '' }}
             </template>
             <template v-slot:item.product.name="{ item }">
-                {{ item.product ? item.product.full_name : '' }}
+                {{ item.product ? item.product.name : '' }}
             </template>
             <template v-slot:item.assigned_person="{ item }">
                 <div v-if="item.assigned_person && item.assigned_person.user_data" class="justify-center"
