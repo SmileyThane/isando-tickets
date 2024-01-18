@@ -1146,9 +1146,15 @@
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
                         >
-                            <span>
-                                 <strong>{{ langMap.ticket.reported_by }}: </strong>
-                                 <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
+                            <div class="d-flex flex-row">
+                                <div class="d-inline-flex" style="min-width: 100px;">
+                                    <div class="d-flex flex-column my-2">
+                                        <strong>{{ langMap.ticket.reported_by }}: </strong>
+                                    </div>
+                                </div>
+                                <div class="d-inline-flex" style="min-width: 80px;">
+                                    <div class="d-flex flex-column">
+                                        <span v-if="ticket.contact !== null" class="">
                                      <v-avatar
                                          v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                          class="mr-2 mb-2"
@@ -1168,8 +1174,11 @@
                                      {{ ticket.contact.user_data.full_name }}
                                      <br/>
                                      {{ ticket.from.name }}
-                                  </span>
-                            </span>
+
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
                                 <v-icon>$expand</v-icon>
