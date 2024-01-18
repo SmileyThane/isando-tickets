@@ -855,10 +855,10 @@
 
                                             {{ answer.employee.user_data.full_name }}
                                             {{
-                                                answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY')
+                                                answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY HH:mm') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY HH:mm')
                                             }}
                                             {{
-                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? moment(answer.updated_at_time).isValid() ? moment(answer.updated_at_time).format('DD.MM.YYYY') : answer.updated_at_time : moment(answer.updated_at).format('DD.MM.YYYY')) : ''
+                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? moment(answer.updated_at_time).isValid() ? moment(answer.updated_at_time).format('DD.MM.YYYY HH:mm') : answer.updated_at_time : moment(answer.updated_at).format('DD.MM.YYYY HH:mm')) : ''
                                             }}
                                             :
                                         </span>
@@ -933,7 +933,7 @@
                                                 {{ answer.employee.user_data.full_name }}
 
                                                 {{
-                                                    answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY')
+                                                    answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY HH:mm') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY HH:mm')
                                                 }} - {{ ticket.name }}:
                                             </span>
                                             <div v-html="answer.answer"></div>
@@ -998,7 +998,7 @@
 
                                                 {{ ticket.creator.user_data.full_name }}
                                                 {{
-                                                ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY')
+                                                ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY HH:mm') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY HH:mm')
                                             }} - {{ ticket.name }}:
                                         </span>
 
@@ -1095,7 +1095,7 @@
 
                                                 {{ ticket.creator.user_data.full_name }}
                                                 {{
-                                            ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY')
+                                            ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY HH:mm') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY HH:mm')
                                         }} - {{ ticket.name }}:
                                     </span>
                                     </v-col>
@@ -1268,8 +1268,8 @@
                         >
                             <span>
                                  <strong>{{ langMap.sidebar.product }}: </strong>
-                                 <span v-if="ticket.product" class="float-md-right text-md-right">
-                                     {{ ticket.product.full_name }}
+                                 <span v-if="ticket.product" class="">
+                                     {{ ticket.product.name }}
                                   </span>
                             </span>
                             <v-spacer></v-spacer>
@@ -1583,7 +1583,7 @@
 
                                                 {{ noticeItem.employee.user_data.full_name }}
 
-                                                {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY') : noticeItem.created_at }}
+                                                {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY HH:mm') : noticeItem.created_at }}
                                             </strong>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
@@ -1625,9 +1625,9 @@
 
                                                     {{ noticeItem.employee.user_data.full_name }}
 
-                                                    {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY') : noticeItem.created_at }}
+                                                    {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY HH:mm') : noticeItem.created_at }}
                                                     {{
-                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + moment(noticeItem.updated_at).isValid() ? moment(noticeItem.updated_at).format('DD.MM.YYYY') : noticeItem.updated_at : ''
+                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + moment(noticeItem.updated_at).isValid() ? moment(noticeItem.updated_at).format('DD.MM.YYYY HH:mm') : noticeItem.updated_at : ''
                                                     }}
                                                     :
                                                 </strong>
@@ -2174,7 +2174,7 @@
 
                                                     {{ history.employee.user_data.full_name }}
 
-                                                    {{ moment(history.created_at).isValid() ? moment(history.created_at).format('DD.MM.YYYY') : history.created_at }}:
+                                                    {{ moment(history.created_at).isValid() ? moment(history.created_at).format('DD.MM.YYYY HH:mm') : history.created_at }}:
                                                 </strong>
                                                 <p>{{ history.description }}</p>
                                             </v-list-item-title>
