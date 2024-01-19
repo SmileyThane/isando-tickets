@@ -19,7 +19,7 @@ class TicketAnswer extends Model
     {
         $locale = Language::find(Auth::user()->language_id)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-        return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+        return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale);
     }
 
     public function getCreatedAtTimeAttribute()
@@ -34,7 +34,7 @@ class TicketAnswer extends Model
     {
         $locale = Language::find(Auth::user()->language_id)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-        return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+        return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale);
     }
 
     public function getUpdatedAtTimeAttribute()
