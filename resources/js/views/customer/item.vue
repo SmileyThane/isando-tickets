@@ -1106,25 +1106,32 @@
                                 </v-card-title>
                                 <v-card-text>
                                     <v-row>
+                                        <v-col class="pb-0">
+                                            <v-icon x-large>
+                                                mdi-factory
+                                            </v-icon>
+                                            <v-divider></v-divider>
+                                            <br>
+                                            <strong>
+                                                {{ client.client_name }}
+                                            </strong>
+                                        </v-col>
+                                        <v-col class="text-right pb-0">
+                                            <v-icon x-large>
+                                                mdi-card-account-details-outline
+                                            </v-icon>
+                                            <v-divider></v-divider>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
                                             <span
-                                                class="col-md-6 pa-4 text-left"
+                                                class="col-md-6 pa-4 text-left pt-0"
                                             >
-
-                                                <v-icon x-large>
-                                                    mdi-factory
-                                                </v-icon>
-                                                <br>
-                                                <strong>
-                                                    {{ client.client_name }}
-                                                </strong>
-                                                <br>
-                                                <br>
-                                                <br>
                                                 <br>
                                                 <span>
                                                     {{ langMap.main.email }}
                                                 </span>
-                                                <br>
+                                                <br >
                                                 <strong v-for="email in client.emails">
                                                     <span>
                                                         {{ email.email }}
@@ -1137,8 +1144,8 @@
                                                         </v-icon>
                                                     </span>
                                                 </strong>
-                                                <v-divider>&nbsp;</v-divider>
-                                                <span>
+                                                <br >
+                                                <span >
                                                     {{ langMap.main.phone }}
                                                 </span>
                                                 <br>
@@ -1154,30 +1161,27 @@
                                                         </v-icon>
                                                     </span>
                                                 </strong>
+                                                <br>
+                                                <span>
+                                                    {{ langMap.main.description }}
+                                                </span>
+                                                <br>
+                                                <strong>
+                                                        {{ contactInfoForm.description }}
+                                                </strong>
+                                                <br>
+                                                <span>
+                                                    {{ langMap.main.roles }}
+                                                </span>
+                                                <br>
+                                                <strong>
+                                                        {{ contactInfoForm.employee.role_names }}
+                                                </strong>
                                             </span>
                                         <v-spacer></v-spacer>
                                         <span
-                                            class="col-md-6 pa-4  text-right"
+                                            class="col-md-6 pa-4 pt-0 text-right"
                                         >
-                                            <v-icon x-large>
-                                                mdi-card-account-details-outline
-                                            </v-icon>
-                                                <br/>
-                                            <span>
-                                                <br>
-                                                <v-text-field
-                                                    v-model="contactInfoForm.description"
-                                                    :color="themeBgColor"
-                                                    :label="langMap.main.description"
-                                                    :readonly="contactInfoEditBtn === false"
-                                                    dense
-                                                    reverse
-                                                    size="9"
-                                                    style="text-align: right;"
-                                                >
-                                                </v-text-field>
-                                            </span>
-
                                                 <br>
                                                 <span>
                                                     {{ langMap.main.email }}
@@ -1195,11 +1199,11 @@
                                                         </v-icon>
                                                     </span>
                                                 </strong>
-                                                <v-spacer>&nbsp;</v-spacer>
+                                                <br >
                                                 <span>
                                                     {{ langMap.main.phone }}
                                                 </span>
-                                                <br/>
+                                                <br>
                                                 <strong v-for="phone in contactInfoForm.employee.user_data.phones">
                                                     <span>
                                                         {{ phone.phone }}
