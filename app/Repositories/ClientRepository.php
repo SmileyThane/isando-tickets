@@ -80,6 +80,7 @@ class ClientRepository
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
                         ->orWhere('short_name', 'like', '%' . $request->search . '%')
+                        ->orWhere('company_external_id', 'like', '%' . $request->search . '%')
                         ->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
@@ -198,7 +199,8 @@ class ClientRepository
         $client->name = $request->client_name;
         $client->description = $request->client_description;
         $client->photo = $request->photo;
-        $client->number = $request->number;
+        $client->company_external_id = $request->company_external_id;
+        $client->number = $request->p;
         $client->supplier_id = $request->supplier_id;
         $client->supplier_type = $request->supplier_type;
         $client->save();
@@ -224,6 +226,7 @@ class ClientRepository
         $client->name = $request->client_name ?? $client->name;
         $client->description = $request->client_description ?? $client->description;
         $client->number = $request->number ?? $client->number;
+        $client->company_external_id = $request->company_external_id;
         $client->short_name = $request->short_name ?? $client->short_name;
         $client->photo = $request->photo ?? $client->photo;
         $client->owner_id = $request->owner_id ?? $client->owner_id;
