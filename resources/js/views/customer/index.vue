@@ -39,16 +39,27 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <v-text-field
-                                                    v-model="clientForm.number"
+                                                    v-model="clientForm.company_external_id"
                                                     :color="themeBgColor"
-                                                    :error-messages="errors.number"
+                                                    :error-messages="errors.company_external_id"
+                                                    :label="langMap.profile.personal_id"
+                                                    name="number"
+                                                    prepend-icon="mdi-numeric"
+                                                    type="text"
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <v-text-field
+                                                    v-model="clientForm.company_external_id"
+                                                    :color="themeBgColor"
+                                                    :error-messages="errors.company_external_id"
                                                     :label="langMap.company.company_number"
                                                     name="number"
                                                     prepend-icon="mdi-numeric"
                                                     type="text"
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-5">
+                                            <div class="col-md-4">
                                                 <v-text-field
                                                     v-model="clientForm.client_description"
                                                     :color="themeBgColor"
@@ -59,7 +70,7 @@
                                                     type="text"
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 <v-select
                                                     v-model="clientForm.supplier_object"
                                                     :color="themeBgColor"
@@ -303,6 +314,7 @@ export default {
                     sortable: false
                 },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.profile.personal_id}`, value: 'company_external_id'},
                 {text: `${this.$store.state.lang.lang_map.main.company_number}`, value: 'number'},
                 {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
                 {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false},
