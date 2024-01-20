@@ -129,7 +129,7 @@
                                         </v-col>
                                         <v-col cols="10">
                                             <v-row>
-                                                <v-col cols="6">
+                                                <v-col cols="12">
                                                     <v-text-field
                                                         v-model="client.client_name"
                                                         :color="themeBgColor"
@@ -156,6 +156,16 @@
                                                         :color="themeBgColor"
                                                         :label="langMap.company.company_number"
                                                         :rules="[false, 0, ]"
+                                                        dense
+                                                        prepend-icon="mdi-numeric"
+                                                        type="text"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="6">
+                                                    <v-text-field
+                                                        v-model="client.company_external_id"
+                                                        :color="themeBgColor"
+                                                        :label="langMap.profile.personal_id"
                                                         dense
                                                         prepend-icon="mdi-numeric"
                                                         type="text"
