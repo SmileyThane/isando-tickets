@@ -780,7 +780,7 @@ class LanguageSeeder extends Seeder
                             'unlink' => 'Unlink',
                             'useful_links' => 'Useful links',
                             'clone' => 'Clone',
-                            'client_number' => 'Client number',
+                            'client_number' => 'Client No.',
                         ],
                     'system_settings' =>
                         [
@@ -1790,7 +1790,7 @@ class LanguageSeeder extends Seeder
                             'unlink' => 'Verknüpfung aufheben',
                             'useful_links' => 'Nützliche Links',
                             'clone' => 'Klon',
-                            'client_number' => 'Kundennummer',
+                            'client_number' => 'Kunden-Nr.',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
