@@ -165,7 +165,7 @@
                                                     <v-text-field
                                                         v-model="client.company_external_id"
                                                         :color="themeBgColor"
-                                                        :label="langMap.profile.personal_id"
+                                                        :label="langMap.main.client_number"
                                                         dense
                                                         prepend-icon="mdi-numeric"
                                                         type="text"

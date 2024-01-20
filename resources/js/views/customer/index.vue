@@ -42,7 +42,7 @@
                                                     v-model="clientForm.company_external_id"
                                                     :color="themeBgColor"
                                                     :error-messages="errors.company_external_id"
-                                                    :label="langMap.profile.personal_id"
+                                                    :label="langMap.main.client_number"
                                                     name="number"
                                                     prepend-icon="mdi-numeric"
                                                     type="text"
