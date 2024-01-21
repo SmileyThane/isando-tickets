@@ -23,11 +23,11 @@
                 Total time
                 <hr width="150">
             </span>
-            <span class="total-time__time text-center">{{ $totalTime }}</span>
-        </div>
-        <div class="page-1__created-at text-center">
-            Created at {{ \Carbon\Carbon::now()->format('d F Y H:i') }} o'clock
-        </div>
+        <span class="total-time__time text-center">{{ $totalTime }}</span>
     </div>
+    <div class="page-1__created-at text-center">
+        Created at {{ \Carbon\Carbon::now()->format('d F Y H:i') }} o'clock
+    </div>
+</div>
 </body>
 </html>
