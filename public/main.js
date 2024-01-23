@@ -112,6 +112,16 @@
     /******/
     function __webpack_require__(moduleId) {
         /******/
+/******/
+(function (modules) { // webpackBootstrap
+    /******/ 	// The module cache
+    /******/
+    var installedModules = {};
+    /******/
+    /******/ 	// The require function
+    /******/
+    function __webpack_require__(moduleId) {
+        /******/
 
         !(function webpackMissingModule() {
             var e = new Error("Cannot find module 'npm'");
