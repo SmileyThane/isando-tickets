@@ -428,6 +428,9 @@ themeBgColor: this.$store.state.themeBgColor,
                 },
                 deep: true,
             },
+            loading(value) {
+                this.$parent.$parent.$refs.container.scrollTop = 0
+            }
         },
     }
 </script>

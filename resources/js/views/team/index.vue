@@ -287,6 +287,11 @@ themeBgColor: this.$store.state.themeBgColor,
                 localStorage.itemsPerPage = value;
                 this.options.page = 1
             },
+        },
+        watch: {
+            loading(value) {
+                this.$parent.$parent.$refs.container.scrollTop = 0
+            }
         }
     }
 </script>
