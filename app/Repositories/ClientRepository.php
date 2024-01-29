@@ -365,6 +365,16 @@ class ClientRepository
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
                         ->orWhere('description', 'like', '%' . $request->search . '%');
+
+                    $filterGroup = ClientFilterGroup::query()->where('name', 'like', '%' . $request->search . '%')->get();
+                    if ($filterGroup) {
+                        $clientIds = ClientFilterGroupHasClients::query()
+                            ->whereIn('group_id', $filterGroup->pluck('id'))
+                            ->get();
+                        if ($clientIds) {
+                            $query->orWhereIn('id', $clientIds->pluck('client_id'));
+                        }
+                    }
                 }
             );
 
