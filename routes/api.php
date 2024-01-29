@@ -415,5 +415,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('activities/types/{id}', [ActivityController::class, 'destroyType']);
     Route::patch('activities/types/{id}', [ActivityController::class, 'updateType']);
     Route::post('activities/types', [ActivityController::class, 'storeType']);
+
+    Route::get('filter_groups/client', [ClientGroupController::class, 'all']);
 });
 
