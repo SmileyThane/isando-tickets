@@ -93,6 +93,21 @@
                                     </p>
                                 </div>
                             </v-col>
+                            <v-col cols="12">
+                                <v-combobox
+                                    v-model="client.filter_groups"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :items="filterGroups"
+                                    dense
+                                    disabled
+                                    multiple
+                                    chips
+                                    item-value="id"
+                                    prepend-icon="mdi-group"
+                                >
+                                </v-combobox>
+                            </v-col>
                         </v-row>
                         <v-row>
                             <v-col cols="6">
@@ -614,6 +629,26 @@
                                                     </v-expansion-panel-content>
                                                 </v-expansion-panel>
                                             </v-expansion-panels>
+                                        </v-col>
+                                    </v-row>
+                                    <hr class="lighten"/>
+                                    <v-spacer>&nbsp;</v-spacer>
+                                    <h3>{{ langMap.main.client_groups }}</h3>
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-combobox
+                                                v-model="client.filter_groups"
+                                                :color="themeBgColor"
+                                                :item-color="themeBgColor"
+                                                :items="filterGroups"
+                                                dense
+                                                clearable
+                                                multiple
+                                                chips
+                                                item-value="id"
+                                                prepend-icon="mdi-group"
+                                            >
+                                            </v-combobox>
                                         </v-col>
                                     </v-row>
 
@@ -1141,7 +1176,7 @@
                                                 <span>
                                                     {{ langMap.main.email }}
                                                 </span>
-                                                <br >
+                                                <br>
                                                 <strong v-for="email in client.emails">
                                                     <span>
                                                         {{ email.email }}
@@ -1154,8 +1189,8 @@
                                                         </v-icon>
                                                     </span>
                                                 </strong>
-                                                <br >
-                                                <span >
+                                                <br>
+                                                <span>
                                                     {{ langMap.main.phone }}
                                                 </span>
                                                 <br>
@@ -1209,7 +1244,7 @@
                                                         </v-icon>
                                                     </span>
                                                 </strong>
-                                                <br >
+                                                <br>
                                                 <span>
                                                     {{ langMap.main.phone }}
                                                 </span>
@@ -2054,8 +2089,10 @@ export default {
                 ],
                 logo_url: '',
                 is_active: false,
-                notes: ''
+                notes: '',
+                filter_groups: []
             },
+            filterGroups: [],
             employeeForm: {
                 company_user_id: 0,
                 description: '',
@@ -2170,7 +2207,7 @@ export default {
         this.employeeForm.client_id = parseInt(this.$route.params.id);
         this.$store.dispatch('getMainCompany');
         this.getEmployees();
-
+        this.getFilterGroups();
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -2200,6 +2237,9 @@ export default {
                     this.isCompanyContactsLoading = false
                     this.loadingEmployees = false
                     this.loadingActivities = false
+                    this.client.filter_groups = this.client.client_filter_groups.map(group => {
+                        return group.data.name;
+                    })
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -2207,6 +2247,20 @@ export default {
                     this.isCompanyContactsLoading = false
                 }
             })
+        },
+        getFilterGroups() {
+            axios.get('/api/filter_groups/client').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.filterGroups = response.data.map(group => {
+                        return group.name;
+                    })
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
         },
         getSuppliers() {
             axios.get('/api/supplier').then(response => {
@@ -2357,6 +2411,7 @@ export default {
             }
             this.client.supplier_type = Object.keys(this.client.supplier_object).shift()
             this.client.supplier_id = Object.values(this.client.supplier_object).shift()
+            console.log(this.client)
             axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
                 response = response.data
                 if (response.success === true) {
