@@ -39,4 +39,24 @@ class ClientGroupController extends Controller
         }
         return self::showResponse(true, $result);
     }
+
+    public function create(Request $request): JsonResponse
+    {
+        $employee = $companyId = Auth::user()->employee;
+        $group = new ClientFilterGroup();
+        $group->parent_id = $request->parent_id;
+        $group->name = $request->name;
+        $group->company_id = $employee->company_id;
+        $group->save();
+
+        return self::showResponse(true, $group);
+    }
+
+    public function delete($id)
+    {
+        ClientFilterGroup::query()->where('id', '=', $id)->delete();
+
+        return self::showResponse(true);
+    }
+
 }
