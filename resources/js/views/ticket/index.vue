@@ -113,7 +113,6 @@
                             hide-details
                             item-text="name"
                             item-value="id"
-                            prepend-icon="mdi-filter"
                             @change="getTickets"
                         >
                             <template v-slot:append-outer>
@@ -124,6 +123,23 @@
                                     mdi-delete
                                 </v-icon>
                             </template>
+                            <template slot="prepend">
+                                <v-menu
+                                    bottom
+                                    rounded
+                                    transition="slide-y-transition"
+                                >
+                                    <template v-slot:activator="{ on: menu, attrs }">
+                                        <v-btn
+                                            text
+                                            v-if="!filterPanel"
+                                            @click="filterPanel = true"
+                                        >
+                                            <v-icon>mdi-filter</v-icon>
+                                        </v-btn>
+                                    </template>
+                                </v-menu>
+                            </template>
                         </v-autocomplete>
                         <v-text-field
                             v-if="filterPanel"
@@ -132,24 +148,25 @@
                             :label="langMap.main.name"
                             class="ma-2"
                             dense
-                            prepend-icon="mdi-text"
                         >
+                            <template slot="prepend">
+                                <v-menu
+                                    bottom
+                                    rounded
+                                    transition="slide-y-transition"
+                                >
+                                    <template v-slot:activator="{ on: menu, attrs }">
+                                        <v-btn
+                                            v-if="filterPanel"
+                                            text
+                                            @click="saveFilter"
+                                        >
+                                            <v-icon>mdi-filter-plus</v-icon>
+                                        </v-btn>
+                                    </template>
+                                </v-menu>
+                            </template>
                         </v-text-field>
-                    </v-col>
-                    <v-col md="6" sm="12">
-                        <v-btn :color="!filterPanel ? 'grey darken-1' : 'red darken-1'"
-                               class="ma-2"
-                               outlined
-                               @click="filterPanel = !filterPanel">
-                            {{ !filterPanel ? langMap.main.add : langMap.main.close }}
-                        </v-btn>
-                        <v-btn v-if="filterPanel"
-                               class="ma-2"
-                               color="green darken-1"
-                               outlined
-                               @click="saveFilter">
-                            {{ langMap.main.save }}
-                        </v-btn>
                     </v-col>
                     <v-col class="pt-0" md="2">
                         <v-checkbox
