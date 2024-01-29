@@ -782,6 +782,7 @@ class LanguageSeeder extends Seeder
                             'clone' => 'Clone',
                             'client_number' => 'Client No.',
                             'client_groups' => 'Client groups',
+                            'add_client_group' => 'Add client group',
                         ],
                     'system_settings' =>
                         [
@@ -1793,6 +1794,7 @@ class LanguageSeeder extends Seeder
                             'clone' => 'Klon',
                             'client_number' => 'Kunden-Nr.',
                             'client_groups' => 'Client groups',
+                            'add_client_group' => 'Add client group',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
