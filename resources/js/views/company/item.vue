@@ -2530,6 +2530,10 @@ export default {
                 company_id: '',
                 parent_id: '',
             },
+            clientFilterGroupForm: {
+                name: '',
+                parent_id: '',
+            },
             customers: [],
             groupModelItems: [],
             selectedGroupModelItems: [],
@@ -2556,6 +2560,7 @@ export default {
                 symbol: ''
             },
             emailTrashed: false,
+            clientFilterGroups: [],
         }
     },
     created() {
@@ -2575,6 +2580,7 @@ export default {
         this.getCountries();
         this.getProductCategoriesTree();
         this.getProductCategoriesFlat();
+        this.getFilterGroups()
         this.productCategoryForm.company_id = this.$route.params.id;
         this.employeeForm.company_id = this.$route.params.id;
         let that = this;
@@ -2601,6 +2607,18 @@ export default {
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getFilterGroups() {
+            axios.get('/api/filter_groups/client?view_as_tree=1').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.clientFilterGroups = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
                     this.snackbar = true;
                 }
             });
@@ -3455,7 +3473,39 @@ export default {
         },
         updateItemsPerPage(options) {
             localStorage.itemsPerPage = options.itemsPerPage;
-        }
+        },
+        addClientFilterGroup() {
+            axios.post('/api/filter_groups/client', this.clientFilterGroupForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getFilterGroups()
+                    this.snackbarMessage = this.langMap.main.added;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
+        deleteClientFilterGroup(id) {
+            axios.delete(`/api/filter_groups/client/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getFilterGroups()
+                    this.snackbarMessage = this.langMap.main.deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
     },
     watch: {
         companyUpdates(value) {
