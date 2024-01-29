@@ -76,7 +76,7 @@
                             </template>
                         </v-text-field>
                     </v-col>
-                    <v-col md="2" sm="12">
+                    <v-col md="1" sm="12">
                         <v-select
                             v-model="options.itemsPerPage"
                             :color="themeBgColor"
@@ -88,7 +88,18 @@
                             @change="updateItemsCount"
                         ></v-select>
                     </v-col>
-                    <v-col md="4" sm="12">
+                    <v-col md="1" sm="12">
+                        <v-pagination v-model="options.page"
+                                      :color="themeBgColor"
+                                      :length="lastPage"
+                                      :page="options.page"
+                                      :total-visible="0"
+                                      class="mx-4 mt-2 d-flex"
+                                      circle
+                        >
+                        </v-pagination>
+                    </v-col>
+                    <v-col md="10" sm="12">
                         <v-autocomplete
                             v-if="!filterPanel"
                             v-model="filterId"
