@@ -364,6 +364,7 @@ class ClientRepository
             $clients->where(
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('company_external_id', 'like', '%' . $request->search . '%')
                         ->orWhere('description', 'like', '%' . $request->search . '%');
 
                     $filterGroup = ClientFilterGroup::query()->where('name', 'like', '%' . $request->search . '%')->get();
@@ -382,6 +383,7 @@ class ClientRepository
                 'employee.userData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('number', 'like', '%' . $request->search . '%')
                         ->orWhere('surname', 'like', '%' . $request->search . '%');
                 }
             );
