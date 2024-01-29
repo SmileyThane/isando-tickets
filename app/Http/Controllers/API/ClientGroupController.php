@@ -3,18 +3,8 @@
 
 namespace App\Http\Controllers\API;
 
-use App\ClientCompanyUser;
 use App\ClientFilterGroup;
-use App\ClientFilterGroupHasClients;
-use App\CompanyUser;
 use App\Http\Controllers\Controller;
-use App\Permission;
-use App\Repositories\ClientRepository;
-use App\Repositories\CompanyUserRepository;
-use App\Repositories\LimitationGroupRepository;
-use App\Repositories\UserRepository;
-use App\Role;
-use App\RoleHasPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
