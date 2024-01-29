@@ -122,16 +122,27 @@
                                                       :label="langMap.main.search"
                                                       class="mx-4" @input="debounceGetClients"></v-text-field>
                                     </v-col>
-                                    <v-col md="2" sm="12">
+                                    <v-col md="1" sm="12">
                                         <v-select
                                             v-model="options.itemsPerPage"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
-                                            class="mx-4"
+                                            class="mx-4 d-flex"
                                             @change="updateItemsCount"
                                         ></v-select>
+                                    </v-col>
+                                    <v-col md="1" sm="12">
+                                        <v-pagination v-model="options.page"
+                                                      :color="themeBgColor"
+                                                      :length="lastPage"
+                                                      :page="options.page"
+                                                      :total-visible="0"
+                                                      class="mx-4 mt-2 d-flex"
+                                                      circle
+                                        >
+                                        </v-pagination>
                                     </v-col>
                                 </v-row>
                             </template>
