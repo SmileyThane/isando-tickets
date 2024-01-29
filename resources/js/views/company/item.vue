@@ -1364,6 +1364,102 @@
 
                     </v-card-text>
                 </v-card>
+
+                <br>
+                <v-card class="elevation-12">
+                    <v-spacer></v-spacer>
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.main.client_groups
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-treeview
+                                        :items="clientFilterGroups"
+                                        activatable
+                                        item-key="id"
+                                        open-on-click
+                                    >
+                                        <template v-slot:prepend="{ item }">
+                                            <v-icon v-if="item.children && item.children.length > 0">mdi-folder</v-icon>
+                                            <v-icon v-else>mdi-group</v-icon>
+                                        </template>
+                                        <template v-slot:append="{ item }">
+                                            <v-btn
+                                                icon
+                                                small
+                                                @click="deleteClientFilterGroup(item.id)"
+                                            >
+                                                <v-icon>mdi-trash-can</v-icon>
+                                            </v-btn>
+                                        </template>
+
+                                    </v-treeview>
+
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{ langMap.main.add_client_group }}
+                                                <template v-slot:actions>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col class="pa-1" cols="md-6">
+                                                            <v-text-field
+                                                                v-model="clientFilterGroupForm.name"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :label="langMap.main.name"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="6">
+                                                            <v-select
+                                                                v-model="clientFilterGroupForm.parent_id"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :items="clientFilterGroups"
+                                                                :label="langMap.company.parent_product_category"
+                                                                item-text="name"
+                                                                item-value="id"
+                                                                dense
+                                                            >
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            :color="themeBgColor"
+                                                            bottom
+                                                            dark
+                                                            fab
+                                                            right
+                                                            small
+                                                            @click="addClientFilterGroup()"
+                                                        >
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </div>
         </div>
         <v-row justify="center">
