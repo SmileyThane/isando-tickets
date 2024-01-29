@@ -417,5 +417,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('activities/types', [ActivityController::class, 'storeType']);
 
     Route::get('filter_groups/client', [ClientGroupController::class, 'all']);
+    Route::post('filter_groups/client', [ClientGroupController::class, 'create']);
+    Route::delete('filter_groups/client/{id}', [ClientGroupController::class, 'delete']);
 });
 
