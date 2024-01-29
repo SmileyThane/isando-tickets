@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Client;
 use App\ClientCompanyUser;
+use App\ClientFilterGroup;
+use App\ClientFilterGroupHasClients;
 use App\Company;
 use App\Email;
 use App\LimitationGroup;
@@ -78,10 +80,20 @@ class ClientRepository
         if ($request->search) {
             $clients->where(
                 function ($query) use ($request) {
+
                     $query->where('name', 'like', '%' . $request->search . '%')
                         ->orWhere('short_name', 'like', '%' . $request->search . '%')
                         ->orWhere('company_external_id', 'like', '%' . $request->search . '%')
                         ->orWhere('description', 'like', '%' . $request->search . '%');
+                    $filterGroup = ClientFilterGroup::query()->where('name', 'like', '%' . $request->search . '%')->get();
+                    if ($filterGroup) {
+                        $clientIds = ClientFilterGroupHasClients::query()
+                            ->whereIn('group_id', $filterGroup->pluck('id'))
+                            ->get();
+                        if ($clientIds) {
+                            $query->orWhereIn('id', $clientIds->pluck('client_id'));
+                        }
+                    }
                 }
             );
         }
@@ -165,6 +177,7 @@ class ClientRepository
             'activities.type',
             'activities.employee',
             'owner.userData',
+            'clientFilterGroups.data',
             'supplier'];
 
         if ($client->supplier_type === Client::class) {
@@ -235,6 +248,8 @@ class ClientRepository
             $client->supplier_type = $request->supplier_type ?? $client->supplier_type;
         }
         $client->save();
+
+        $this->syncFilterGroups($request->filter_groups, $id);
 
         return $client;
     }
