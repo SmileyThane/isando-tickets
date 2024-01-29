@@ -595,4 +595,25 @@ class ClientRepository
             $client->save();
         }
     }
+
+    public function syncFilterGroups($groupNames, $clientId) {
+        $employee = $companyId = Auth::user()->employee;
+        $groupIds = [];
+        foreach ($groupNames as $groupName) {
+            if ($employee) {
+                $group = ClientFilterGroup::query()
+                    ->firstOrCreate(['name' => $groupName, 'company_id' => $employee->company_id]);
+                if ($group) {
+                    ClientFilterGroupHasClients::query()
+                        ->firstOrCreate(['client_id' => $clientId, 'group_id' => $group->id]);
+                    $groupIds[] = $group->id;
+                }
+            }
+        }
+
+        ClientFilterGroupHasClients::query()
+            ->where('client_id', '=', $clientId)
+            ->whereNotIn('group_id', $groupIds)
+            ->delete();
+    }
 }
