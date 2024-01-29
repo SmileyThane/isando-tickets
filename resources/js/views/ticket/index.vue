@@ -76,7 +76,7 @@
                             </template>
                         </v-text-field>
                     </v-col>
-                    <v-col md="2" sm="12">
+                    <v-col md="1" sm="12">
                         <v-select
                             v-model="options.itemsPerPage"
                             :color="themeBgColor"
@@ -88,7 +88,18 @@
                             @change="updateItemsCount"
                         ></v-select>
                     </v-col>
-                    <v-col md="4" sm="12">
+                    <v-col md="1" sm="12">
+                        <v-pagination v-model="options.page"
+                                      :color="themeBgColor"
+                                      :length="lastPage"
+                                      :page="options.page"
+                                      :total-visible="0"
+                                      class="mx-4 mt-2 d-flex"
+                                      circle
+                        >
+                        </v-pagination>
+                    </v-col>
+                    <v-col md="10" sm="12">
                         <v-autocomplete
                             v-if="!filterPanel"
                             v-model="filterId"
@@ -102,7 +113,6 @@
                             hide-details
                             item-text="name"
                             item-value="id"
-                            prepend-icon="mdi-filter"
                             @change="getTickets"
                         >
                             <template v-slot:append-outer>
@@ -113,6 +123,23 @@
                                     mdi-delete
                                 </v-icon>
                             </template>
+                            <template slot="prepend">
+                                <v-menu
+                                    bottom
+                                    rounded
+                                    transition="slide-y-transition"
+                                >
+                                    <template v-slot:activator="{ on: menu, attrs }">
+                                        <v-btn
+                                            text
+                                            v-if="!filterPanel"
+                                            @click="filterPanel = true"
+                                        >
+                                            <v-icon>mdi-filter</v-icon>
+                                        </v-btn>
+                                    </template>
+                                </v-menu>
+                            </template>
                         </v-autocomplete>
                         <v-text-field
                             v-if="filterPanel"
@@ -121,24 +148,25 @@
                             :label="langMap.main.name"
                             class="ma-2"
                             dense
-                            prepend-icon="mdi-text"
                         >
+                            <template slot="prepend">
+                                <v-menu
+                                    bottom
+                                    rounded
+                                    transition="slide-y-transition"
+                                >
+                                    <template v-slot:activator="{ on: menu, attrs }">
+                                        <v-btn
+                                            v-if="filterPanel"
+                                            text
+                                            @click="saveFilter"
+                                        >
+                                            <v-icon>mdi-filter-plus</v-icon>
+                                        </v-btn>
+                                    </template>
+                                </v-menu>
+                            </template>
                         </v-text-field>
-                    </v-col>
-                    <v-col md="6" sm="12">
-                        <v-btn :color="!filterPanel ? 'grey darken-1' : 'red darken-1'"
-                               class="ma-2"
-                               outlined
-                               @click="filterPanel = !filterPanel">
-                            {{ !filterPanel ? langMap.main.add : langMap.main.close }}
-                        </v-btn>
-                        <v-btn v-if="filterPanel"
-                               class="ma-2"
-                               color="green darken-1"
-                               outlined
-                               @click="saveFilter">
-                            {{ langMap.main.save }}
-                        </v-btn>
                     </v-col>
                     <v-col class="pt-0" md="2">
                         <v-checkbox
@@ -274,7 +302,7 @@
                 </v-tooltip>
             </template>
             <template v-slot:item.last_update="{ item }">
-                {{ moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY') : item.last_update }}
+                {{ moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY HH:mm') : item.last_update }}
             </template>
             <template v-slot:item.number="{ item }">
                 <v-tooltip top>
@@ -292,7 +320,7 @@
                 {{ item.category ? item.category.name : '' }}
             </template>
             <template v-slot:item.product.name="{ item }">
-                {{ item.product ? item.product.full_name : '' }}
+                {{ item.product ? item.product.name : '' }}
             </template>
             <template v-slot:item.assigned_person="{ item }">
                 <div v-if="item.assigned_person && item.assigned_person.user_data" class="justify-center"
@@ -794,6 +822,9 @@ export default {
             }, 500),
             deep: true,
         },
+        loading(value) {
+            this.$parent.$parent.$refs.container.scrollTop = 0
+        }
     },
 }
 </script>

@@ -110,10 +110,10 @@ class Ticket extends Model
         try {
             $locale = Language::find($this->langId)->locale;
             $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-            return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+            return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale);
 
         } catch (\Throwable $th) {
-            return Carbon::parse($this->attributes['updated_at'])->calendar();
+            return Carbon::parse($this->attributes['updated_at']);
         }
     }
 
@@ -122,10 +122,10 @@ class Ticket extends Model
         try {
             $locale = Language::find($this->langId)->locale;
             $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-            return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+            return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale);
 
         } catch (\Throwable $th) {
-            return Carbon::parse($this->attributes['created_at'])->calendar();
+            return Carbon::parse($this->attributes['created_at']);
         }
     }
 

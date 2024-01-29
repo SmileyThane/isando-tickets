@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Client;
 use App\ClientCompanyUser;
+use App\ClientFilterGroup;
+use App\ClientFilterGroupHasClients;
 use App\Company;
 use App\Email;
 use App\LimitationGroup;
@@ -78,9 +80,20 @@ class ClientRepository
         if ($request->search) {
             $clients->where(
                 function ($query) use ($request) {
+
                     $query->where('name', 'like', '%' . $request->search . '%')
                         ->orWhere('short_name', 'like', '%' . $request->search . '%')
+                        ->orWhere('company_external_id', 'like', '%' . $request->search . '%')
                         ->orWhere('description', 'like', '%' . $request->search . '%');
+                    $filterGroup = ClientFilterGroup::query()->where('name', 'like', '%' . $request->search . '%')->get();
+                    if ($filterGroup) {
+                        $clientIds = ClientFilterGroupHasClients::query()
+                            ->whereIn('group_id', $filterGroup->pluck('id'))
+                            ->get();
+                        if ($clientIds) {
+                            $query->orWhereIn('id', $clientIds->pluck('client_id'));
+                        }
+                    }
                 }
             );
         }
@@ -164,6 +177,7 @@ class ClientRepository
             'activities.type',
             'activities.employee',
             'owner.userData',
+            'clientFilterGroups.data',
             'supplier'];
 
         if ($client->supplier_type === Client::class) {
@@ -198,7 +212,8 @@ class ClientRepository
         $client->name = $request->client_name;
         $client->description = $request->client_description;
         $client->photo = $request->photo;
-        $client->number = $request->number;
+        $client->company_external_id = $request->company_external_id;
+        $client->number = $request->p;
         $client->supplier_id = $request->supplier_id;
         $client->supplier_type = $request->supplier_type;
         $client->save();
@@ -224,6 +239,7 @@ class ClientRepository
         $client->name = $request->client_name ?? $client->name;
         $client->description = $request->client_description ?? $client->description;
         $client->number = $request->number ?? $client->number;
+        $client->company_external_id = $request->company_external_id;
         $client->short_name = $request->short_name ?? $client->short_name;
         $client->photo = $request->photo ?? $client->photo;
         $client->owner_id = $request->owner_id ?? $client->owner_id;
@@ -232,6 +248,8 @@ class ClientRepository
             $client->supplier_type = $request->supplier_type ?? $client->supplier_type;
         }
         $client->save();
+
+        $this->syncFilterGroups($request->filter_groups, $id);
 
         return $client;
     }
@@ -346,7 +364,18 @@ class ClientRepository
             $clients->where(
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('company_external_id', 'like', '%' . $request->search . '%')
                         ->orWhere('description', 'like', '%' . $request->search . '%');
+
+                    $filterGroup = ClientFilterGroup::query()->where('name', 'like', '%' . $request->search . '%')->get();
+                    if ($filterGroup) {
+                        $clientIds = ClientFilterGroupHasClients::query()
+                            ->whereIn('group_id', $filterGroup->pluck('id'))
+                            ->get();
+                        if ($clientIds) {
+                            $query->orWhereIn('id', $clientIds->pluck('client_id'));
+                        }
+                    }
                 }
             );
 
@@ -354,6 +383,7 @@ class ClientRepository
                 'employee.userData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('number', 'like', '%' . $request->search . '%')
                         ->orWhere('surname', 'like', '%' . $request->search . '%');
                 }
             );
@@ -566,5 +596,26 @@ class ClientRepository
             $client->notes = $notes;
             $client->save();
         }
+    }
+
+    public function syncFilterGroups($groupNames, $clientId) {
+        $employee = $companyId = Auth::user()->employee;
+        $groupIds = [];
+        foreach ($groupNames as $groupName) {
+            if ($employee) {
+                $group = ClientFilterGroup::query()
+                    ->firstOrCreate(['name' => $groupName, 'company_id' => $employee->company_id]);
+                if ($group) {
+                    ClientFilterGroupHasClients::query()
+                        ->firstOrCreate(['client_id' => $clientId, 'group_id' => $group->id]);
+                    $groupIds[] = $group->id;
+                }
+            }
+        }
+
+        ClientFilterGroupHasClients::query()
+            ->where('client_id', '=', $clientId)
+            ->whereNotIn('group_id', $groupIds)
+            ->delete();
     }
 }

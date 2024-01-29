@@ -39,16 +39,27 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <v-text-field
-                                                    v-model="clientForm.number"
+                                                    v-model="clientForm.company_external_id"
                                                     :color="themeBgColor"
-                                                    :error-messages="errors.number"
+                                                    :error-messages="errors.company_external_id"
+                                                    :label="langMap.main.client_number"
+                                                    name="number"
+                                                    prepend-icon="mdi-numeric"
+                                                    type="text"
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <v-text-field
+                                                    v-model="clientForm.company_external_id"
+                                                    :color="themeBgColor"
+                                                    :error-messages="errors.company_external_id"
                                                     :label="langMap.company.company_number"
                                                     name="number"
                                                     prepend-icon="mdi-numeric"
                                                     type="text"
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-5">
+                                            <div class="col-md-4">
                                                 <v-text-field
                                                     v-model="clientForm.client_description"
                                                     :color="themeBgColor"
@@ -59,7 +70,7 @@
                                                     type="text"
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 <v-select
                                                     v-model="clientForm.supplier_object"
                                                     :color="themeBgColor"
@@ -111,16 +122,27 @@
                                                       :label="langMap.main.search"
                                                       class="mx-4" @input="debounceGetClients"></v-text-field>
                                     </v-col>
-                                    <v-col md="2" sm="12">
+                                    <v-col md="1" sm="12">
                                         <v-select
                                             v-model="options.itemsPerPage"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
-                                            class="mx-4"
+                                            class="mx-4 d-flex"
                                             @change="updateItemsCount"
                                         ></v-select>
+                                    </v-col>
+                                    <v-col md="1" sm="12">
+                                        <v-pagination v-model="options.page"
+                                                      :color="themeBgColor"
+                                                      :length="lastPage"
+                                                      :page="options.page"
+                                                      :total-visible="0"
+                                                      class="mx-4 mt-2 d-flex"
+                                                      circle
+                                        >
+                                        </v-pagination>
                                     </v-col>
                                 </v-row>
                             </template>
@@ -303,6 +325,7 @@ export default {
                     sortable: false
                 },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.main.client_number}`, value: 'company_external_id'},
                 {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
                 {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false},
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
@@ -439,6 +462,9 @@ export default {
             },
             deep: true,
         },
+        loading(value) {
+            this.$parent.$parent.$refs.container.scrollTop = 0
+        }
     },
 }
 </script>

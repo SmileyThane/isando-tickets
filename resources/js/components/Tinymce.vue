@@ -2,7 +2,7 @@
     <tinymce
         :init="{
          height: 300,
-         content_style: 'body { font-family:  Roboto, sans-serif; font-size: .875rem; font-weight: 400; line-height: 1.375rem; letter-spacing: .0071428571em; color: #00000099; } a { color: #1976d2; }',
+         content_style: 'body { font-family:  Roboto, sans-serif; font-size: 10pt; font-weight: 400; line-height: 1rem; letter-spacing: .0071428571em; color: #00000099; } a { color: #1976d2; }',
          menubar: true,
          branding: false,
          plugins: [

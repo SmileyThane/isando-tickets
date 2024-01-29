@@ -146,7 +146,7 @@
                                                     :label="langMap.individuals.with_trashed"
                                                     class="mx-4" @change="debounceGetEmployees"/>
                                     </v-col>
-                                    <v-col md="2" sm="12">
+                                    <v-col md="1" sm="12">
                                         <v-select
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
@@ -156,6 +156,17 @@
                                             v-model="options.itemsPerPage"
                                             @change="updateItemsCount"
                                         ></v-select>
+                                    </v-col>
+                                    <v-col md="1" sm="12">
+                                        <v-pagination v-model="options.page"
+                                                      :color="themeBgColor"
+                                                      :length="lastPage"
+                                                      :page="options.page"
+                                                      :total-visible="0"
+                                                      class="mx-4 mt-2 d-flex"
+                                                      circle
+                                        >
+                                        </v-pagination>
                                     </v-col>
                                 </v-row>
                             </template>
@@ -511,6 +522,9 @@ export default {
             },
             deep: true
         },
+        loading(value) {
+            this.$parent.$parent.$refs.container.scrollTop = 0
+        }
     },
 }
 </script>

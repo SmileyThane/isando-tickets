@@ -72,7 +72,7 @@
                                         <v-text-field @input="getTeams" v-model="teamsSearch" :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
-                                    <v-col sm="12" md="2">
+                                    <v-col sm="12" md="1">
                                         <v-select
                                             class="mx-4"
                                             :color="themeBgColor"
@@ -82,6 +82,17 @@
                                             v-model="options.itemsPerPage"
                                             @change="updateItemsCount"
                                         ></v-select>
+                                        <v-col md="1" sm="12">
+                                            <v-pagination v-model="options.page"
+                                                          :color="themeBgColor"
+                                                          :length="lastPage"
+                                                          :page="options.page"
+                                                          :total-visible="0"
+                                                          class="mx-4 mt-2 d-flex"
+                                                          circle
+                                            >
+                                            </v-pagination>
+                                        </v-col>
                                     </v-col>
                                 </v-row>
                             </template>
@@ -287,6 +298,11 @@ themeBgColor: this.$store.state.themeBgColor,
                 localStorage.itemsPerPage = value;
                 this.options.page = 1
             },
+        },
+        watch: {
+            loading(value) {
+                this.$parent.$parent.$refs.container.scrollTop = 0
+            }
         }
     }
 </script>

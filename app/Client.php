@@ -78,6 +78,11 @@ class Client extends Model
         return $this->hasMany(ProductClient::class, 'client_id', 'id');
     }
 
+    public function clientFilterGroups(): HasMany
+    {
+        return $this->hasMany(ClientFilterGroupHasClients::class, 'client_id', 'id');
+    }
+
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class, 'country_id', 'id');

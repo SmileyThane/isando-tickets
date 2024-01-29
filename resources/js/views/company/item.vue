@@ -1364,6 +1364,102 @@
 
                     </v-card-text>
                 </v-card>
+
+                <br>
+                <v-card class="elevation-12">
+                    <v-spacer></v-spacer>
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.main.client_groups
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-treeview
+                                        :items="clientFilterGroups"
+                                        activatable
+                                        item-key="id"
+                                        open-on-click
+                                    >
+                                        <template v-slot:prepend="{ item }">
+                                            <v-icon v-if="item.children && item.children.length > 0">mdi-folder</v-icon>
+                                            <v-icon v-else>mdi-group</v-icon>
+                                        </template>
+                                        <template v-slot:append="{ item }">
+                                            <v-btn
+                                                icon
+                                                small
+                                                @click="deleteClientFilterGroup(item.id)"
+                                            >
+                                                <v-icon>mdi-trash-can</v-icon>
+                                            </v-btn>
+                                        </template>
+
+                                    </v-treeview>
+
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{ langMap.main.add_client_group }}
+                                                <template v-slot:actions>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col class="pa-1" cols="md-6">
+                                                            <v-text-field
+                                                                v-model="clientFilterGroupForm.name"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :label="langMap.main.name"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="6">
+                                                            <v-select
+                                                                v-model="clientFilterGroupForm.parent_id"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :items="clientFilterGroups"
+                                                                :label="langMap.company.parent_product_category"
+                                                                item-text="name"
+                                                                item-value="id"
+                                                                dense
+                                                            >
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            :color="themeBgColor"
+                                                            bottom
+                                                            dark
+                                                            fab
+                                                            right
+                                                            small
+                                                            @click="addClientFilterGroup()"
+                                                        >
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </div>
         </div>
         <v-row justify="center">
@@ -2530,6 +2626,10 @@ export default {
                 company_id: '',
                 parent_id: '',
             },
+            clientFilterGroupForm: {
+                name: '',
+                parent_id: '',
+            },
             customers: [],
             groupModelItems: [],
             selectedGroupModelItems: [],
@@ -2556,6 +2656,7 @@ export default {
                 symbol: ''
             },
             emailTrashed: false,
+            clientFilterGroups: [],
         }
     },
     created() {
@@ -2575,6 +2676,7 @@ export default {
         this.getCountries();
         this.getProductCategoriesTree();
         this.getProductCategoriesFlat();
+        this.getFilterGroups()
         this.productCategoryForm.company_id = this.$route.params.id;
         this.employeeForm.company_id = this.$route.params.id;
         let that = this;
@@ -2601,6 +2703,18 @@ export default {
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getFilterGroups() {
+            axios.get('/api/filter_groups/client?view_as_tree=1').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.clientFilterGroups = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
                     this.snackbar = true;
                 }
             });
@@ -3455,7 +3569,39 @@ export default {
         },
         updateItemsPerPage(options) {
             localStorage.itemsPerPage = options.itemsPerPage;
-        }
+        },
+        addClientFilterGroup() {
+            axios.post('/api/filter_groups/client', this.clientFilterGroupForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getFilterGroups()
+                    this.snackbarMessage = this.langMap.main.added;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
+        deleteClientFilterGroup(id) {
+            axios.delete(`/api/filter_groups/client/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getFilterGroups()
+                    this.snackbarMessage = this.langMap.main.deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
     },
     watch: {
         companyUpdates(value) {

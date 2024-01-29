@@ -135,8 +135,10 @@ class ProductRepository
     public function attachEmployee(Request $request)
     {
         ProductCompanyUser::firstOrCreate(
-            ['client_id' => $request->product_id,
-                'company_user_id' => $request->company_user_id]
+            [
+                'product_id' => $request->product_id,
+                'company_user_id' => $request->company_user_id
+            ]
         );
         return true;
     }

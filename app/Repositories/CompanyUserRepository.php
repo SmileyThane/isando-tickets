@@ -116,6 +116,7 @@ class CompanyUserRepository
                 'userData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('number', 'like', '%' . $request->search . '%')
                         ->orWhere('surname', 'like', '%' . $request->search . '%');
                     if($request->with_trashed) {
                         $query->withTrashed();

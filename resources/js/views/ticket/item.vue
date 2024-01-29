@@ -855,10 +855,10 @@
 
                                             {{ answer.employee.user_data.full_name }}
                                             {{
-                                                answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY')
+                                                answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY HH:mm') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY HH:mm')
                                             }}
                                             {{
-                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? moment(answer.updated_at_time).isValid() ? moment(answer.updated_at_time).format('DD.MM.YYYY') : answer.updated_at_time : moment(answer.updated_at).format('DD.MM.YYYY')) : ''
+                                                answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? moment(answer.updated_at_time).isValid() ? moment(answer.updated_at_time).format('DD.MM.YYYY HH:mm') : answer.updated_at_time : moment(answer.updated_at).format('DD.MM.YYYY HH:mm')) : ''
                                             }}
                                             :
                                         </span>
@@ -933,7 +933,7 @@
                                                 {{ answer.employee.user_data.full_name }}
 
                                                 {{
-                                                    answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY')
+                                                    answer.created_at_time !== '' ? moment(answer.created_at_time).isValid() ? moment(answer.created_at_time).format('DD.MM.YYYY HH:mm') : answer.created_at_time : moment(answer.created_at).format('DD.MM.YYYY HH:mm')
                                                 }} - {{ ticket.name }}:
                                             </span>
                                             <div v-html="answer.answer"></div>
@@ -998,7 +998,7 @@
 
                                                 {{ ticket.creator.user_data.full_name }}
                                                 {{
-                                                ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY')
+                                                ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY HH:mm') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY HH:mm')
                                             }} - {{ ticket.name }}:
                                         </span>
 
@@ -1095,7 +1095,7 @@
 
                                                 {{ ticket.creator.user_data.full_name }}
                                                 {{
-                                            ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY')
+                                            ticket.created_at_time !== '' ? moment(ticket.created_at_time).isValid() ? moment(ticket.created_at_time).format('DD.MM.YYYY HH:mm') : ticket.created_at_time : moment(ticket.created_at).format('DD.MM.YYYY HH:mm')
                                         }} - {{ ticket.name }}:
                                     </span>
                                     </v-col>
@@ -1146,9 +1146,15 @@
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
                         >
-                            <span>
-                                 <strong>{{ langMap.ticket.reported_by }}: </strong>
-                                 <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
+                            <div class="d-flex flex-row">
+                                <div class="d-inline-flex" style="min-width: 100px;">
+                                    <div class="d-flex flex-column my-2">
+                                        <strong>{{ langMap.ticket.reported_by }}: </strong>
+                                    </div>
+                                </div>
+                                <div class="d-inline-flex" style="min-width: 80px;">
+                                    <div class="d-flex flex-column">
+                                        <span v-if="ticket.contact !== null" class="">
                                      <v-avatar
                                          v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                          class="mr-2 mb-2"
@@ -1168,8 +1174,11 @@
                                      {{ ticket.contact.user_data.full_name }}
                                      <br/>
                                      {{ ticket.from.name }}
-                                  </span>
-                            </span>
+
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
                                 <v-icon>$expand</v-icon>
@@ -1217,10 +1226,10 @@
                                 </div>
                                 <span style="padding-bottom: 5px;"></span>
                                 <div>
-                                    <v-label v-if="ticket.contact.user_data.name">
+                                    <v-label v-if="ticket.contact && ticket.contact.user_data.name">
                                         {{ langMap.individuals.info }}:
                                     </v-label>
-                                    <v-btn v-if="ticket.contact.user_data.name"
+                                    <v-btn v-if="ticket.contact && ticket.contact.user_data.name"
                                            class="float-md-right"
                                            color="white" small
                                            style="color: black;"
@@ -1259,8 +1268,8 @@
                         >
                             <span>
                                  <strong>{{ langMap.sidebar.product }}: </strong>
-                                 <span v-if="ticket.product" class="float-md-right text-md-right">
-                                     {{ ticket.product.full_name }}
+                                 <span v-if="ticket.product" class="">
+                                     {{ ticket.product.name }}
                                   </span>
                             </span>
                             <v-spacer></v-spacer>
@@ -1574,7 +1583,7 @@
 
                                                 {{ noticeItem.employee.user_data.full_name }}
 
-                                                {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY') : noticeItem.created_at }}
+                                                {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY HH:mm') : noticeItem.created_at }}
                                             </strong>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
@@ -1616,9 +1625,9 @@
 
                                                     {{ noticeItem.employee.user_data.full_name }}
 
-                                                    {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY') : noticeItem.created_at }}
+                                                    {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY HH:mm') : noticeItem.created_at }}
                                                     {{
-                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + moment(noticeItem.updated_at).isValid() ? moment(noticeItem.updated_at).format('DD.MM.YYYY') : noticeItem.updated_at : ''
+                                                        noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + moment(noticeItem.updated_at).isValid() ? moment(noticeItem.updated_at).format('DD.MM.YYYY HH:mm') : noticeItem.updated_at : ''
                                                     }}
                                                     :
                                                 </strong>
@@ -2165,7 +2174,7 @@
 
                                                     {{ history.employee.user_data.full_name }}
 
-                                                    {{ moment(history.created_at).isValid() ? moment(history.created_at).format('DD.MM.YYYY') : history.created_at }}:
+                                                    {{ moment(history.created_at).isValid() ? moment(history.created_at).format('DD.MM.YYYY HH:mm') : history.created_at }}:
                                                 </strong>
                                                 <p>{{ history.description }}</p>
                                             </v-list-item-title>

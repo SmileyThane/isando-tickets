@@ -7,8 +7,7 @@
 
         <sidebar v-if="isLoaded && isAuthorized === true" v-model="drawer"></sidebar>
         <app-header v-if="isLoaded && isAuthorized === true" v-model="drawer"></app-header>
-
-        <perfect-scrollbar style="height: 100vh;">
+        <perfect-scrollbar style="height: 100vh;" ref="mainScrollbar" watchOptions>
             <v-main v-if="isLoaded"
                     :style="isAuthorized === false ? 'background-image: url(/login_bg.jpg); background-size: cover; height: 100vh;' : ''">
                 <router-view></router-view>
