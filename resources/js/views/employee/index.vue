@@ -511,6 +511,9 @@ export default {
             },
             deep: true
         },
+        loading(value) {
+            this.$parent.$parent.$refs.container.scrollTop = 0
+        }
     },
 }
 </script>
