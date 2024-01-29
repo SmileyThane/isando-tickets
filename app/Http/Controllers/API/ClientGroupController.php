@@ -27,7 +27,15 @@ class ClientGroupController extends Controller
 
         $employee = $companyId = Auth::user()->employee;
         if ($employee) {
-            $result = ClientFilterGroup::query()->where('company_id', '=', $employee->company_id)->get();
+            $query = ClientFilterGroup::query()
+                ->where('company_id', '=', $employee->company_id);
+
+            if ($request->view_as_tree == 1) {
+                $query->where('parent_id', '=', null);
+                $query->with('children');
+            }
+
+            $result = $query->get();
         }
         return self::showResponse(true, $result);
     }
