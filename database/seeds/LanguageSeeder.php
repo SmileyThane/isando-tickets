@@ -781,6 +781,7 @@ class LanguageSeeder extends Seeder
                             'useful_links' => 'Useful links',
                             'clone' => 'Clone',
                             'client_number' => 'Client No.',
+                            'client_groups' => 'Client groups',
                         ],
                     'system_settings' =>
                         [
@@ -1791,6 +1792,7 @@ class LanguageSeeder extends Seeder
                             'useful_links' => 'Nützliche Links',
                             'clone' => 'Klon',
                             'client_number' => 'Kunden-Nr.',
+                            'client_groups' => 'Client groups',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
