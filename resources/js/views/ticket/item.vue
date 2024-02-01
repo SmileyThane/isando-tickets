@@ -745,23 +745,6 @@
                                                 <br/>
                                                 {{ ticket.from.name }}
                                             </span>
-                                            <!--                                    <v-btn-->
-                                            <!--                                        text-->
-                                            <!--                                        small-->
-                                            <!--                                        :to="makeCompanyLink(ticket)"-->
-                                            <!--                                        style="text-transform: none;"-->
-                                            <!--                                    >-->
-                                            <!--                                        {{ ticket.from.name }}-->
-                                            <!--                                    </v-btn>-->
-                                            <!--                                    <v-btn-->
-                                            <!--                                        text-->
-                                            <!--                                        small-->
-                                            <!--                                        :to="'/individuals/'+ ticket.contact.id"-->
-                                            <!--                                        style="text-transform: none;"-->
-                                            <!--                                    >-->
-                                            <!--                                        {{ ticket.contact.user_data.name }}-->
-                                            <!--                                        {{ ticket.contact.user_data.surname }}-->
-                                            <!--                                    </v-btn>-->
                             </span>
                             <template v-slot:actions>
                                 <v-icon>$expand</v-icon>
@@ -1155,26 +1138,25 @@
                                 <div class="d-inline-flex" style="min-width: 80px;">
                                     <div class="d-flex flex-column">
                                         <span v-if="ticket.contact !== null" class="">
-                                     <v-avatar
-                                         v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
-                                         class="mr-2 mb-2"
-                                         color="grey darken-1"
-                                         size="2em"
-                                     >
-                                         <v-img v-if="ticket.contact.user_data.avatar_url"
-                                                :src="ticket.contact.user_data.avatar_url"/>
-                                         <span v-else-if="ticket.contact.user_data.full_name" class="white--text">
-                                            {{
-                                                 ticket.contact.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                             }}
-                                         </span>
-                                     </v-avatar>
-
-                                     <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
-                                     {{ ticket.contact.user_data.full_name }}
-                                     <br/>
-                                     {{ ticket.from.name }}
-
+                                            <v-avatar
+                                                v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
+                                                class="mr-2 mb-2"
+                                                color="grey darken-1"
+                                                size="2em"
+                                            >
+                                                <v-img v-if="ticket.contact.user_data.avatar_url"
+                                                       :src="ticket.contact.user_data.avatar_url"/>
+                                                <span v-else-if="ticket.contact.user_data.full_name"
+                                                      class="white--text">
+                                                    {{
+                                                        ticket.contact.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                    }}
+                                                </span>
+                                            </v-avatar>
+                                            <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
+                                            {{ ticket.contact.user_data.full_name }}
+                                            <br/>
+                                            {{ ticket.from.name }}
                                         </span>
                                     </div>
                                 </div>
@@ -1583,7 +1565,9 @@
 
                                                 {{ noticeItem.employee.user_data.full_name }}
 
-                                                {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY HH:mm') : noticeItem.created_at }}
+                                                {{
+                                                    moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY HH:mm') : noticeItem.created_at
+                                                }}
                                             </strong>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
@@ -1625,7 +1609,9 @@
 
                                                     {{ noticeItem.employee.user_data.full_name }}
 
-                                                    {{ moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY HH:mm') : noticeItem.created_at }}
+                                                    {{
+                                                        moment(noticeItem.created_at).isValid() ? moment(noticeItem.created_at).format('DD.MM.YYYY HH:mm') : noticeItem.created_at
+                                                    }}
                                                     {{
                                                         noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + moment(noticeItem.updated_at).isValid() ? moment(noticeItem.updated_at).format('DD.MM.YYYY HH:mm') : noticeItem.updated_at : ''
                                                     }}
@@ -2174,7 +2160,9 @@
 
                                                     {{ history.employee.user_data.full_name }}
 
-                                                    {{ moment(history.created_at).isValid() ? moment(history.created_at).format('DD.MM.YYYY HH:mm') : history.created_at }}:
+                                                    {{
+                                                        moment(history.created_at).isValid() ? moment(history.created_at).format('DD.MM.YYYY HH:mm') : history.created_at
+                                                    }}:
                                                 </strong>
                                                 <p>{{ history.description }}</p>
                                             </v-list-item-title>
@@ -2457,7 +2445,7 @@ export default {
         handleNavigateToCompany() {
             this.$router.push(`/customer/${this.ticket.from.id}`)
         },
-        handleNavigateToIndividuals(){
+        handleNavigateToIndividuals() {
             this.$router.push(`/employee/${this.ticket.contact.user_data.id}`)
         },
         selectSearchCategory(item) {
@@ -2600,14 +2588,12 @@ export default {
         },
         getContacts(entityItem) {
             this.contacts = []
-            // this.ticket.contact_company_user_id = null;
             let route = '';
             if (Object.keys(entityItem)[0] === 'App\\Company') {
                 route = `/api/company/${Object.values(entityItem)[0]}`
             } else {
                 route = `/api/client/${Object.values(entityItem)[0]}`
             }
-            // console.log(entityItem);
             axios.get(route).then(response => {
                 response = response.data
                 if (response.success === true && response.data !== null) {
@@ -2695,8 +2681,8 @@ export default {
             }
             Array.from(this.ticketAnswer.files).forEach(file => formData.append('files[]', file));
 
-            for(let [name, value] of formData) {
-                if(value === "[object Object]") {
+            for (let [name, value] of formData) {
+                if (value === "[object Object]") {
                     formData.delete(name)
                 }
             }
