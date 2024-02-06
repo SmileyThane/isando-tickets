@@ -162,32 +162,32 @@
                                                         v-if="$helpers.auth.checkKbPermissionsByType(
                                                 getRouteAlias,
                                                 kbPermissionsTypes.delete)"
-                                                    link
-                                                    @click="deleteCategory(category)"
-                                                >
-                                                    <v-list-item-title>
-                                                        {{
-                                                            langMap.kb.delete
-                                                        }}
-                                                    </v-list-item-title>
-                                                    <v-list-item-action>
-                                                        <v-icon :color="themeBgColor">mdi-folder-remove-outline
-                                                        </v-icon>
-                                                    </v-list-item-action>
-                                                </v-list-item>
-                                            </v-list>
-                                        </v-menu>
+                                                        link
+                                                        @click="deleteCategory(category)"
+                                                    >
+                                                        <v-list-item-title>
+                                                            {{
+                                                                langMap.kb.delete
+                                                            }}
+                                                        </v-list-item-title>
+                                                        <v-list-item-action>
+                                                            <v-icon :color="themeBgColor">mdi-folder-remove-outline
+                                                            </v-icon>
+                                                        </v-list-item-action>
+                                                    </v-list-item>
+                                                </v-list>
+                                            </v-menu>
+                                        </div>
+                                        <!--                            <v-card-actions>-->
+                                        <!--                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text-->
+                                        <!--                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>-->
+                                        <!--                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"-->
+                                        <!--                                       v-text="langMap.kb.open_category"/>-->
+                                        <!--                            </v-card-actions>-->
                                     </div>
-                                    <!--                            <v-card-actions>-->
-                                    <!--                                <v-btn v-if="category.id == $route.query.category" :color="themeBgColor" text-->
-                                    <!--                                       @click="openCategory(category.parent_id)" v-text="langMap.kb.return_to_parent"/>-->
-                                    <!--                                <v-btn v-else :color="themeBgColor" text @click="openCategory(category.id)"-->
-                                    <!--                                       v-text="langMap.kb.open_category"/>-->
-                                    <!--                            </v-card-actions>-->
-                                </div>
-                            </v-card>
-                        </v-hover>
-                    </v-col>
+                                </v-card>
+                            </v-hover>
+                        </v-col>
                     </perfect-scrollbar>
                 </v-row>
             </v-col>
