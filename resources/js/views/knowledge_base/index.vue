@@ -193,36 +193,47 @@
             </v-col>
             <v-col class="col-md-8">
                 <v-row class="flex-row justify-center align-items-center">
-                    <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
-                                         v-if="isArticlesLoading"></v-progress-circular>
-                    <perfect-scrollbar v-else style="height: 100vh; width: 100vw;">
-                    <v-col v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
-                        <v-card :style="`background-color: ${article.featured_color};`" outlined
-                                style="cursor: pointer"
-                                v-on:click.native="readArticle(article.id)"
-                        >
-                            <div class="d-flex justify-space-between">
-                                <div class="flex-grow-1 pl-3">
-                                    <v-card-title class="article-card-title">
-                                        {{ $helpers.i18n.localized(article) }}
-                                    </v-card-title>
-                                    <v-card-text class="article-card-description">
-                                        <p class="mb-2 mt-2">
-                                            {{
-                                                $helpers.i18n.localized(article, 'summary') !== 'summary' ?
-                                                    $helpers.i18n.localized(article, 'summary') : '&nbsp;'
-                                            }}
-                                        </p>
-                                    </v-card-text>
-                                </div>
-                                <v-menu
-                                    bottom
+                    <perfect-scrollbar style="height: 100vh; width: 100vw;">
+                        <v-col v-if="isArticlesLoading" cols="12" class="pb-1 pt-1">
+                            <v-progress-circular
+                                class="mt-4"
+                                indeterminate
+                                :value="20"
+                                color="#40613e"
                                 >
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn icon v-on="on">
-                                            <v-icon>mdi-dots-vertical</v-icon>
-                                        </v-btn>
-                                    </template>
+                            </v-progress-circular>
+                            <v-skeleton-loader
+                                v-for="index in 5" :key="index"
+                               type="list-item-two-line"
+                            ></v-skeleton-loader>
+                        </v-col>
+                        <v-col v-else v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
+                            <v-card :style="`background-color: ${article.featured_color};`" outlined
+                                    style="cursor: pointer"
+                                    v-on:click.native="readArticle(article.id)"
+                            >
+                                <div class="d-flex justify-space-between">
+                                    <div class="flex-grow-1 pl-3">
+                                        <v-card-title class="article-card-title">
+                                            {{ $helpers.i18n.localized(article) }}
+                                        </v-card-title>
+                                        <v-card-text class="article-card-description">
+                                            <p class="mb-2 mt-2">
+                                                {{
+                                                    $helpers.i18n.localized(article, 'summary') !== 'summary' ?
+                                                        $helpers.i18n.localized(article, 'summary') : '&nbsp;'
+                                                }}
+                                            </p>
+                                        </v-card-text>
+                                    </div>
+                                    <v-menu
+                                        bottom
+                                    >
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn icon v-on="on">
+                                                <v-icon>mdi-dots-vertical</v-icon>
+                                            </v-btn>
+                                        </template>
 
                                     <v-list>
                                         <v-list-item
