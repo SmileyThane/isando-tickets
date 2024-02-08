@@ -103,7 +103,8 @@
                                     {{ item.employee.user_data.addresses[0].city }}
                                 </span>
                                 <span v-else-if="item.addresses && item.addresses.length > 0">
-                                    <v-icon v-if="item.addresses[0].type" :title="$helpers.i18n.localized(item.addresses[0].type)" dense
+                                    <v-icon v-if="item.addresses[0].type"
+                                            :title="$helpers.i18n.localized(item.addresses[0].type)" dense
                                             x-small
                                             v-text="item.addresses[0].type.icon"></v-icon>
                                     {{ item.addresses[0].city }}
@@ -125,7 +126,9 @@
                             </template>
                             <template v-slot:item.is_active="{item}">
                                 <v-icon v-if="item.employee" class="justify-center">
-                                    {{ item.employee.user_data.status === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
+                                    {{
+                                        item.employee.user_data.status === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel'
+                                    }}
                                 </v-icon>
                                 <v-icon v-else class="justify-center">
                                     {{ item.is_active === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
