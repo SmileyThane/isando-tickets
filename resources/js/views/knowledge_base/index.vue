@@ -235,25 +235,25 @@
                                             </v-btn>
                                         </template>
 
-                                    <v-list>
-                                        <v-list-item
-                                            v-if="$helpers.auth.checkKbPermissionsByType(
+                                        <v-list>
+                                            <v-list-item
+                                                v-if="$helpers.auth.checkKbPermissionsByType(
                                                 getRouteAlias,
                                                 kbPermissionsTypes.edit)"
-                                            link
-                                            @click="editArticle(article.id)"
-                                        >
-                                            <v-list-item-title>
-                                                {{
-                                                    langMap.kb.edit
-                                                }}
-                                            </v-list-item-title>
-                                            <v-list-item-action>
-                                                <v-icon :color="themeBgColor">mdi-file-edit-outline</v-icon>
-                                            </v-list-item-action>
-                                        </v-list-item>
-                                        <v-list-item
-                                            v-if="$helpers.auth.checkKbPermissionsByType(
+                                                link
+                                                @click="editArticle(article.id)"
+                                            >
+                                                <v-list-item-title>
+                                                    {{
+                                                        langMap.kb.edit
+                                                    }}
+                                                </v-list-item-title>
+                                                <v-list-item-action>
+                                                    <v-icon :color="themeBgColor">mdi-file-edit-outline</v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                            <v-list-item
+                                                v-if="$helpers.auth.checkKbPermissionsByType(
                                                 getRouteAlias,
                                                 kbPermissionsTypes.delete)"
                                             link
