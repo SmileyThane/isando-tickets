@@ -256,34 +256,23 @@
                                                 v-if="$helpers.auth.checkKbPermissionsByType(
                                                 getRouteAlias,
                                                 kbPermissionsTypes.delete)"
-                                            link
-                                            @click="deleteArticle(article)"
-                                        >
-                                            <v-list-item-title>
-                                                {{
-                                                    langMap.kb.delete
-                                                }}
-                                            </v-list-item-title>
-                                            <v-list-item-action>
-                                                <v-icon :color="themeBgColor">mdi-file-remove-outline</v-icon>
-                                            </v-list-item-action>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-menu>
-                            </div>
-                            <!--                            <v-card-text style="height: 6em;">-->
-                            <!--                                <v-chip-group v-if="article.tags">-->
-                            <!--                                    <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>-->
-                            <!--                                </v-chip-group>-->
-                            <!--                                <p v-else>{{ langMap.kb.no_tags}}</p>-->
-                            <!--                                <v-spacer>&nbsp;</v-spacer>-->
-                            <!--                                <p>{{ $helpers.i18n.localized(article, 'summary') }}</p>-->
-                            <!--                            </v-card-text>-->
-                            <!--                            <v-card-actions>-->
-                            <!--                                <v-btn text :color="themeBgColor" v-text="langMap.kb.read_article" @click="readArticle(article.id)" />-->
-                            <!--                            </v-card-actions>-->
-                        </v-card>
-                    </v-col>
+                                                link
+                                                @click="deleteArticle(article)"
+                                            >
+                                                <v-list-item-title>
+                                                    {{
+                                                        langMap.kb.delete
+                                                    }}
+                                                </v-list-item-title>
+                                                <v-list-item-action>
+                                                    <v-icon :color="themeBgColor">mdi-file-remove-outline</v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                                </div>
+                            </v-card>
+                        </v-col>
                     </perfect-scrollbar>
                 </v-row>
             </v-col>
