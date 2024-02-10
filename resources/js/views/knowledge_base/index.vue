@@ -683,7 +683,8 @@ export default {
     created() {
         this.debounceOpenCategory = _.debounce(
             () => {
-                this.$router.push(`/${this.$route.params.alias}`, () => {});
+                this.$router.push(`/${this.$route.params.alias}`, () => {
+                });
                 this.getCategories();
                 this.getArticles();
             }, 500);
@@ -785,9 +786,11 @@ export default {
                 query = `category=${id}`;
             }
             if (query) {
-                this.$router.push(`/${this.$route.params.alias}?${query}`, () => {});
+                this.$router.push(`/${this.$route.params.alias}?${query}`, () => {
+                });
             } else if (this.$router.app.$route.fullPath !== this.$router.app.$route.path) {
-                this.$router.push(`/${this.$route.params.alias}`, () => {});
+                this.$router.push(`/${this.$route.params.alias}`, () => {
+                });
             }
             if (subCategories && !this.search) {
                 this.getCategories();
