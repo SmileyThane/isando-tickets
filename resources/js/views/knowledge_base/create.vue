@@ -294,13 +294,13 @@
     max-height: 20em;
 }
 
->>> .v-text-field__slot > textarea  {
+>>> .v-text-field__slot > textarea {
     font-family: "Roboto", sans-serif;
     font-size: .875rem;
     font-weight: 400;
     line-height: 1.375rem;
     letter-spacing: .0071428571em;
-    color: #00000099!important;
+    color: #00000099 !important;
 }
 
 >>> .v-text-field__slot > input {
