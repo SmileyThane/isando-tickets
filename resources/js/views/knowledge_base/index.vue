@@ -200,11 +200,11 @@
                                 indeterminate
                                 :value="20"
                                 color="#40613e"
-                                >
+                            >
                             </v-progress-circular>
                             <v-skeleton-loader
                                 v-for="index in 5" :key="index"
-                               type="list-item-two-line"
+                                type="list-item-two-line"
                             ></v-skeleton-loader>
                         </v-col>
                         <v-col v-else v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
