@@ -111,6 +111,8 @@ class KbRepository
                 'summary',
                 'summary_de',
                 'featured_color',
+                'is_draft',
+                'is_internal'
             ])
             ->with(['tags', 'attachments'])
             ->where('type_id', $typeId);

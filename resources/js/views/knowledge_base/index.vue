@@ -200,11 +200,11 @@
                                 indeterminate
                                 :value="20"
                                 color="#40613e"
-                                >
+                            >
                             </v-progress-circular>
                             <v-skeleton-loader
                                 v-for="index in 5" :key="index"
-                               type="list-item-two-line"
+                                type="list-item-two-line"
                             ></v-skeleton-loader>
                         </v-col>
                         <v-col v-else v-for="article in articles" :key="'a'+article.id" cols="12" class="pb-1 pt-1">
@@ -216,6 +216,25 @@
                                     <div class="flex-grow-1 pl-3">
                                         <v-card-title class="article-card-title">
                                             {{ $helpers.i18n.localized(article) }}
+
+                                            <v-chip
+                                                v-if="article.is_draft"
+                                                color="#A9A9A9"
+                                                text-color="#A9A9A9"
+                                                class="ml-2"
+                                                label small outlined
+                                            >
+                                                {{ langMap.kb.is_draft }}
+                                            </v-chip>
+                                            <v-chip
+                                                v-if="article.is_internal"
+                                                color="#023047"
+                                                text-color="#023047"
+                                                class="ml-2"
+                                                label small outlined
+                                            >
+                                                {{ langMap.kb.is_internal }}
+                                            </v-chip>
                                         </v-card-title>
                                         <v-card-text class="article-card-description">
                                             <p class="mb-2 mt-2">
