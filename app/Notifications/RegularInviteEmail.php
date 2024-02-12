@@ -62,30 +62,30 @@ class RegularInviteEmail extends Notification
         if ($this->language == 'en') {
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
-                ->subject('You have been invited to the ticketing system!')
+                ->subject('You have been invited to INAX online support!')
                 ->line('Dear ' . $this->name . ', ')
-                ->line("Welcome to our $this->from ticketing system. Your account has been created.")
+                ->line("Welcome to our $this->from online support. Your account has been created.")
                 ->line("Please use below credentials to log into your account:")
                 ->line('Your login name:' . $this->email)
                 ->line('Your password: ' . $this->password)
-                ->action('Link to our ticketing system: ', env('APP_URL'))
+                ->action("Link to $this->from online support: ", env('APP_URL'))
                 ->line('Have a Good Day!')
                 ->line('')
-                ->salutation('- Best Wishes, ' . $this->from);
+                ->salutation('Best Wishes, ' . $this->from);
         } else {
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
-                ->subject('Sie wurden zum Ticketsystem eingeladen!')
+                ->subject("Sie wurden zum $this->from Online Support eingeladen!")
                 ->greeting(' ')
                 ->line('Hallo ' . $this->name . ',')
-                ->line("Willkommen bei unserem $this->from Ticketing-System der $this->from. Ihr Konto wurde erstellt.")
-                ->line("Bitte verwenden Sie die untenstehenden Zugangsdaten, um sich in Ihr Konto anzumelden::")
+                ->line("Willkommen bei unserem $this->from Online Support. Ihr Konto wurde erstellt.")
+                ->line("Bitte benutzen Sie Ihr neues Passwort, um sich in Ihr Konto anzumelden:")
                 ->line('Ihr Login-Name: ' . $this->email)
                 ->line('Ihr Passwort: ' . $this->password)
-                ->action('Link zu unserem Ticketing-System: ', env('APP_URL'))
+                ->action('Link zu unserem $this->from Online Support: ', env('APP_URL'))
                 ->line('Wir wünschen Ihnen einen schönen Tag!')
                 ->line('')
-                ->salutation('Freundliche Grüsse, ' . $this->from);
+                ->salutation('Freundliche Grüße, ' . $this->from);
         }
     }
 

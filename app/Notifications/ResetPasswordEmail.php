@@ -65,30 +65,29 @@ class ResetPasswordEmail extends Notification
         if ($this->language == 'en') {
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
-                ->subject('Your password was restored at the ticketing system!')
+                ->subject('Your password was restored!')
                 ->line('Dear ' . $this->name . ', ')
-                ->line("Welcome back to our ticketing system. Your account has been restored.")
+                ->line("Welcome back. Your account has been restored.")
                 ->line("Please use your new password to log into your account:")
                 ->line('Your login name: ' . $this->email)
                 ->line('Your password: ' . $this->password)
-                ->action('Link to our ticketing system: ', env('APP_URL'))
-                ->line('Have a Good Day!')
+                ->action('Link to INAX online support: ', env('APP_URL'))
+                ->line('Have a good day!')
                 ->line('')
-                ->salutation('- Best Wishes, INAX AG' . $this->from);
+                ->salutation('- Best Wishes, ' . $this->from);
         } else {
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
-                ->subject('Sie wurden zum Ticketsystem eingeladen!')
-                ->greeting(' ')
-                ->line('Hallo ' . $this->name . ',')
-                ->line("Willkommen zurück zu unserem Ticketing-System der INAX AG. Ihr Konto wurde wiederhergestellt.")
-                ->line("Bitte benutzen Sie Ihr neues Passwort, um sich in Ihr Konto anzumelden:")
+                ->subject('Ihr Passwort wurde wiederhergestellt!')
+                ->line('Guten Tag ' . $this->name . ',')
+                ->line("Willkommen zurück beim INAX Online Support. Ihr Passwort wurde wiederhergestellt.")
+                ->line("Bitte verwenden Sie Ihr neues Passwort, um sich in Ihr Konto anzumelden:")
                 ->line('Ihr Login-Name: ' . $this->email)
                 ->line('Ihr Passwort: ' . $this->password)
-                ->action('Link zu unserem Ticketing-System: ', env('APP_URL'))
+                ->action('Link zum INAX Online Support: ', env('APP_URL'))
                 ->line('Wir wünschen Ihnen einen schönen Tag!')
                 ->line('')
-                ->salutation('Freundliche Grüsse, INAX AG');
+                ->salutation('Freundliche Grüße, ' . $this->from);
         }
     }
 
