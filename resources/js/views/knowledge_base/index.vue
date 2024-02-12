@@ -90,53 +90,55 @@
                     <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
                                          v-if="isCategoriesLoading"></v-progress-circular>
                     <perfect-scrollbar v-else style="height: 100vh; width: 100vw;">
-                    <v-col v-for="category in categories" :key="'c'+category.id" cols="12" class="pb-1 pt-1">
-                        <v-hover v-slot="{ hover }">
-                            <v-card
-                                outlined
-                                :color="getCategoryBackgroundColor(category.id)"
-                                v-on:click.native="openCategory(category.id, category.parent_id, Boolean(category.children.length))"
-                                :style="hover ? `outline: 2px solid ${themeBgColor}` : ''"
-                                style="cursor: pointer"
-                            >
-                                <p v-if="getParentCategoryName &&
+                        <v-col v-for="category in categories" :key="'c'+category.id" cols="12" class="pb-1 pt-1">
+                            <v-hover v-slot="{ hover }">
+                                <v-card
+                                    outlined
+                                    :color="getCategoryBackgroundColor(category.id)"
+                                    v-on:click.native="openCategory(category.id, category.parent_id, Boolean(category.children.length))"
+                                    :style="hover ? `outline: 2px solid ${themeBgColor}` : ''"
+                                    style="cursor: pointer"
+                                >
+                                    <p v-if="getParentCategoryName &&
                                 category.parent_id === parseInt($route.query.parent_category)"
-                                   class="parent-category-title">
-                                    {{ getParentCategoryName }} >
-                                </p>
-                                <div class="d-flex justify-space-between">
-                                    <v-avatar size="60">
-                                        <v-icon :color="category.icon_color" size="45"
-                                                v-text="category.icon ? category.icon : 'mdi-help'"/>
-                                    </v-avatar>
-                                    <div class="flex-grow-1">
-                                        <v-card-title class="category-card-title">
-                                            {{$helpers.i18n.localized(category, 'name')}}
-                                        </v-card-title>
-                                        <v-card-text class="category-card-description">
-                                            <p class="category-description"
-                                               v-if="$helpers.i18n.localized(category, 'description')">
-                                                {{ $helpers.i18n.localized(category, 'description') !== 'description' ?
-                                                $helpers.i18n.localized(category, 'description') : '&nbsp' }}
-                                            </p>
-                                        </v-card-text>
-                                    </div>
-                                    <div style="min-width: 60px">
-                                        <v-btn icon height="30" width="30"
-                                               v-if="category.id == $route.query.parent_category"
-                                               @click.prevent.stop="openCategory(category.parent_id)">
-                                            <v-icon :color="themeBgColor">
-                                                mdi-arrow-u-left-top
-                                            </v-icon>
-                                        </v-btn>
-                                        <v-menu
-                                            bottom
-                                        >
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon v-on="on" height="30" width="30" style="float: right">
-                                                    <v-icon>mdi-dots-vertical</v-icon>
-                                                </v-btn>
-                                            </template>
+                                       class="parent-category-title">
+                                        {{ getParentCategoryName }} >
+                                    </p>
+                                    <div class="d-flex justify-space-between">
+                                        <v-avatar size="60">
+                                            <v-icon :color="category.icon_color" size="45"
+                                                    v-text="category.icon ? category.icon : 'mdi-help'"/>
+                                        </v-avatar>
+                                        <div class="flex-grow-1">
+                                            <v-card-title class="category-card-title">
+                                                {{ $helpers.i18n.localized(category, 'name') }}
+                                            </v-card-title>
+                                            <v-card-text class="category-card-description">
+                                                <p class="category-description"
+                                                   v-if="$helpers.i18n.localized(category, 'description')">
+                                                    {{
+                                                        $helpers.i18n.localized(category, 'description') !== 'description' ?
+                                                            $helpers.i18n.localized(category, 'description') : '&nbsp'
+                                                    }}
+                                                </p>
+                                            </v-card-text>
+                                        </div>
+                                        <div style="min-width: 60px">
+                                            <v-btn icon height="30" width="30"
+                                                   v-if="category.id == $route.query.parent_category"
+                                                   @click.prevent.stop="openCategory(category.parent_id)">
+                                                <v-icon :color="themeBgColor">
+                                                    mdi-arrow-u-left-top
+                                                </v-icon>
+                                            </v-btn>
+                                            <v-menu
+                                                bottom
+                                            >
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn icon v-on="on" height="30" width="30" style="float: right">
+                                                        <v-icon>mdi-dots-vertical</v-icon>
+                                                    </v-btn>
+                                                </template>
 
                                             <v-list>
                                                 <v-list-item
