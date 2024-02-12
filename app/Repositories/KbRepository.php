@@ -119,6 +119,8 @@ class KbRepository
             $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
                 $query->where('category_id', $category_id);
             });
+        } else {
+            $articles = $articles->whereDoesntHave('categories');
         }
 
         if (!empty($search)) {
