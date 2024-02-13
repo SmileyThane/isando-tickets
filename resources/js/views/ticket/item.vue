@@ -1179,23 +1179,20 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <br/>
-                            <v-btn class="float-md-right"
-                                   color="white" small
-                                   style="color: black;"
-                                   @click="updateDialog = true"
-                            >
-                                <v-icon small>mdi-pencil</v-icon>
-                                {{ langMap.main.edit }}
-                            </v-btn>
-                            <span>
-                                <span v-if="ticket.contact !== null">
-                                    <v-label>
+                            <div v-if="ticket.contact !== null && ticket.contact.user_data.email !== null" style="display: flex; flex-direction: column">
+                                <div>
+                                    <v-label v-if="ticket.from.name">
                                         {{ langMap.ticket.contact_email }}:
                                     </v-label>
-                                    {{ ticket.contact.user_data.email }}
-                                    <br>
-                                    <span v-if="ticket.contact.user_data.contact_phone">
-                                    <v-label>
+                                    <div class="float-md-right ml-1">
+                                        {{ ticket.contact.user_data.email }}
+                                    </div>
+                                </div>
+                                <span style="padding-bottom: 5px;"></span>
+                            </div>
+                            <div v-if="ticket.contact !== null && ticket.contact.user_data.contact_phone !== null" style="display: flex; flex-direction: column">
+                                <div>
+                                    <v-label v-if="ticket.from.name">
                                         {{ langMap.ticket.contact_phone }}:
                                     </v-label>
                                     {{ ticket.contact.user_data.contact_phone.phone }}
