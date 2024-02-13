@@ -735,15 +735,18 @@
                                                            :src="ticket.contact.user_data.avatar_url"/>
                                                     <span v-else-if="ticket.contact.user_data.full_name"
                                                           class="white--text">
-                                                    {{
+                                                        {{
                                                             ticket.contact.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
                                                         }}
                                                     </span>
                                                    </v-avatar>
                                                 <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
-                                                {{ ticket.contact.user_data.full_name }}
-                                                <br/>
-                                                {{ ticket.from.name }}
+                                                <span v-if="ticket.contact.user_data.full_name">
+                                                    {{ ticket.contact.user_data.full_name }} - {{ ticket.from.name }}
+                                                </span>
+                                                <span v-else>
+                                                    {{ ticket.from.name }}
+                                                </span>
                                             </span>
                             </span>
                             <template v-slot:actions>
