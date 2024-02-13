@@ -1167,7 +1167,14 @@
                             </div>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
-                                <v-icon>$expand</v-icon>
+                                <v-btn class="float-md-right ml-1"
+                                       color="white"
+                                       small
+                                       style="color: black;"
+                                       @click="updateDialog = true"
+                                >
+                                    {{ langMap.main.edit }}
+                                </v-btn>
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
