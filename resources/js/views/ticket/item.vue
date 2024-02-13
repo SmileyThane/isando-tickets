@@ -1136,8 +1136,8 @@
                                     </div>
                                 </div>
                                 <div class="d-inline-flex" style="min-width: 80px;">
-                                    <div class="d-flex flex-column">
-                                        <span v-if="ticket.contact !== null" class="">
+                                    <div v-if="ticket.contact" class="d-flex flex-column">
+                                        <span>
                                             <v-avatar
                                                 v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                                 class="mr-2 mb-2"
@@ -1154,11 +1154,12 @@
                                                 </span>
                                             </v-avatar>
                                             <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
-                                            {{ ticket.contact.user_data.full_name }}
-                                            <br/>
-                                            {{ ticket.from.name }}
+                                            {{ ticket.contact.user_data.full_name }} - {{ ticket.from.name }}
                                         </span>
                                     </div>
+                                    <div v-else class="d-inline-flex my-2" style="min-width: 80px;">
+                                            {{ ticket.from.name }}
+                                        </div>
                                 </div>
                             </div>
                             <v-spacer></v-spacer>
