@@ -1336,7 +1336,7 @@
                                             </v-avatar>
                                             <span class="mt-2">{{ ticket.assigned_person.user_data.full_name }}</span>
                                         </div>
-                                        <div class="d-inline-block my-2 ma-1">
+                                        <div class="d-inline-flex mb-2 mt-6">
                                             <template
                                                 v-if="ticket.followers.length"
                                             >
@@ -1366,8 +1366,8 @@
                                                     </div>
                                                 </div>
                                             </template>
-                                            <div v-else class="float-left mr-2 mt-2">No followers</div>
-                                            <div v-if="ticket.followers.length > 5" class="float-left mr-2 mt-2">
+                                            <div v-else>No followers</div>
+                                            <div v-if="ticket.followers.length > 5">
                                                 (+{{ ticket.followers.length - 5 }} others)
                                             </div>
                                         </div>
