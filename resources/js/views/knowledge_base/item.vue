@@ -1,5 +1,5 @@
 <template>
-    <v-container id="pdf-element" fluid>
+    <v-container fluid>
         <v-snackbar v-model="snackbar"
                     :bottom="true"
                     :color="actionColor"
@@ -12,10 +12,11 @@
             ></v-progress-circular>
         </v-row>
         <v-card v-else ref="card" outlined>
-            <v-img v-if="article.featured_image"
-                   :src="article.featured_image.link"
-                   width="100%"
-            />
+            <span id="pdf-element">
+                            <v-img v-if="article.featured_image"
+                                   :src="article.featured_image.link"
+                                   width="100%"
+                            />
             <v-card-title>
                 {{ $helpers.i18n.localized(article) }}
             </v-card-title>
@@ -70,6 +71,7 @@
                     </v-chip-group>
                 </div>
             </v-card-text>
+            </span>
             <v-card-actions
                 style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
                 <p>{{ langMap.main.useful_links }}</p>
@@ -170,11 +172,13 @@ export default {
                 margin: 1,
                 filename: `${this.$helpers.i18n.localized(this.article)}.pdf`,
                 image: {
-                    quality: 1
+                    quality: 10
                 },
+                html2canvas: {scale: 2},
                 pagebreak: {
                     mode: ['avoid-all']
-                }
+                },
+                jsPDF: {unit: 'in', format: 'letter', orientation: 'portrait'}
             });
         },
         back() {
