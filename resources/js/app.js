@@ -49,7 +49,7 @@ Vue.use({
 
 const router = new VueRouter({
     scrollBehavior() {
-        return { x: 0, y: 0 };
+        return {x: 0, y: 0};
     },
     mode: 'history',
     routes: Routes
@@ -91,7 +91,7 @@ const app = new Vue({
         store.dispatch('getMainCompany');
     },
     methods: {
-        async loadRolesPermissions () {
+        async loadRolesPermissions() {
             await store.dispatch('getPermissions');
             await store.dispatch('KbTypes/getKbTypes');
             await store.dispatch('getRoles');
