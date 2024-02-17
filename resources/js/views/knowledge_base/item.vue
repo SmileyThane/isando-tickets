@@ -159,6 +159,11 @@ export default {
 
         this.getArticle();
     },
+    computed: {
+        getRouteAlias() {
+            return this.$route.params.alias;
+        },
+    },
     methods: {
         exportToPdf() {
             html2pdf(document.getElementById("pdf-element"), {
