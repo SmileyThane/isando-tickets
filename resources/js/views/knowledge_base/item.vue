@@ -140,6 +140,12 @@ export default {
             themeBgColor: this.$store.state.themeBgColor,
             article: [],
             isArticleLoading: false,
+            kbPermissionsTypes: {
+                view: 'view',
+                create: 'create',
+                edit: 'edit',
+                delete: 'delete',
+            },
         }
     },
     mounted() {
