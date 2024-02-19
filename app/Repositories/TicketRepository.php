@@ -248,7 +248,7 @@ class TicketRepository
 
     public function find($id)
     {
-        return Ticket::where('id', $id)
+        $ticket = Ticket::where('id', $id)
             ->with(
                 'creator.userData',
                 'assignedPerson.userData',
@@ -271,7 +271,11 @@ class TicketRepository
                 'mergedParent',
                 'billedBy',
                 'followers'
-            )->first()->makeVisible(['to']);
+            )->first()
+            if ($ticket) {
+                $ticket->makeVisible(['to']);
+            }
+        return $ticket;
     }
 
     public function create(Request $request, $employeeId = null): Ticket
