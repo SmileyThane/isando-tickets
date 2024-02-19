@@ -271,7 +271,7 @@ class TicketRepository
                 'mergedParent',
                 'billedBy',
                 'followers'
-            )->first()
+            )->first();
             if ($ticket) {
                 $ticket->makeVisible(['to']);
             }
