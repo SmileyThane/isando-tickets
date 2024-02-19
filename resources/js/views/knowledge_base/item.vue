@@ -164,7 +164,7 @@ export default {
     computed: {
         getRouteAlias() {
             return this.$route.params.alias;
-        },
+        }
     },
     methods: {
         exportToPdf() {
@@ -178,7 +178,11 @@ export default {
                 pagebreak: {
                     mode: ['avoid-all']
                 },
-                jsPDF: {unit: 'in', format: 'letter', orientation: 'portrait'}
+                jsPDF: {
+                    unit: 'in',
+                    format: 'letter',
+                    orientation: 'portrait'
+                }
             });
         },
         back() {
