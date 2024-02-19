@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container id="pdf-element" fluid>
         <v-snackbar v-model="snackbar"
                     :bottom="true"
                     :color="actionColor"
@@ -19,7 +19,7 @@
             <v-card-title>
                 {{ $helpers.i18n.localized(article) }}
             </v-card-title>
-            <v-card-text id="pdf-element">
+            <v-card-text>
                 <div v-if="article.tags && article.tags.length > 0">
                     <h4 class="mb-2">
                         {{ langMap.kb.tags }}
@@ -87,6 +87,7 @@
                        text
                        @click="exportToPdf"
                        style="margin-left: 0;"
+                       v-if="$helpers.auth.checkKbPermissionsByType(getRouteAlias, kbPermissionsTypes.edit)"
                 >{{ 'export to pdf' }}
                 </v-btn>
                 <v-btn :color="themeBgColor"
