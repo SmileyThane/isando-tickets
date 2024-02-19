@@ -1161,8 +1161,8 @@
                                         </span>
                                     </div>
                                     <div v-else class="d-inline-flex my-2" style="min-width: 80px;">
-                                            {{ ticket.from.name }}
-                                        </div>
+                                        {{ ticket.from.name }}
+                                    </div>
                                 </div>
                             </div>
                             <v-spacer></v-spacer>
@@ -1179,7 +1179,8 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <br/>
-                            <div v-if="ticket.contact !== null && ticket.contact.user_data.email !== null" style="display: flex; flex-direction: column">
+                            <div v-if="ticket.contact !== null && ticket.contact.user_data.email !== null"
+                                 style="display: flex; flex-direction: column">
                                 <div>
                                     <v-label v-if="ticket.from.name">
                                         {{ langMap.ticket.contact_email }}:
@@ -1190,7 +1191,8 @@
                                 </div>
                                 <span style="padding-bottom: 5px;"></span>
                             </div>
-                            <div v-if="ticket.contact !== null && ticket.contact.user_data.contact_phone !== null" style="display: flex; flex-direction: column">
+                            <div v-if="ticket.contact !== null && ticket.contact.user_data.contact_phone !== null"
+                                 style="display: flex; flex-direction: column">
                                 <div>
                                     <v-label v-if="ticket.from.name">
                                         {{ langMap.ticket.contact_phone }}:
@@ -1355,7 +1357,7 @@
                                                                    :src="follower.avatar_url"/>
                                                             <span v-else-if="follower.full_name"
                                                                   class="white--text">
-                                                            {{
+                                                                {{
                                                                     follower.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
                                                                 }}
                                                         </span>
@@ -1402,8 +1404,6 @@
                                 </div>
                             </div>
                             <template v-slot:actions>
-                                &nbsp;
-                                <!--                                <v-icon>$expand</v-icon>-->
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
@@ -1437,11 +1437,9 @@
                                 >
                                     <template v-slot:selection="data">
                                         {{ data.item.employee.user_data.full_name }}
-                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                     <template v-slot:item="data">
                                         {{ data.item.employee.user_data.full_name }}
-                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                 </v-autocomplete>
                                 <v-select
