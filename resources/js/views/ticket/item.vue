@@ -735,15 +735,18 @@
                                                            :src="ticket.contact.user_data.avatar_url"/>
                                                     <span v-else-if="ticket.contact.user_data.full_name"
                                                           class="white--text">
-                                                    {{
+                                                        {{
                                                             ticket.contact.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
                                                         }}
                                                     </span>
                                                    </v-avatar>
                                                 <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
-                                                {{ ticket.contact.user_data.full_name }}
-                                                <br/>
-                                                {{ ticket.from.name }}
+                                                <span v-if="ticket.contact.user_data.full_name">
+                                                    {{ ticket.contact.user_data.full_name }} - {{ ticket.from.name }}
+                                                </span>
+                                                <span v-else>
+                                                    {{ ticket.from.name }}
+                                                </span>
                                             </span>
                             </span>
                             <template v-slot:actions>
@@ -1136,8 +1139,8 @@
                                     </div>
                                 </div>
                                 <div class="d-inline-flex" style="min-width: 80px;">
-                                    <div class="d-flex flex-column">
-                                        <span v-if="ticket.contact !== null" class="">
+                                    <div v-if="ticket.contact" class="d-flex flex-column">
+                                        <span>
                                             <v-avatar
                                                 v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                                 class="mr-2 mb-2"
@@ -1154,44 +1157,52 @@
                                                 </span>
                                             </v-avatar>
                                             <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
-                                            {{ ticket.contact.user_data.full_name }}
-                                            <br/>
-                                            {{ ticket.from.name }}
+                                            {{ ticket.contact.user_data.full_name }} - {{ ticket.from.name }}
                                         </span>
+                                    </div>
+                                    <div v-else class="d-inline-flex my-2" style="min-width: 80px;">
+                                        {{ ticket.from.name }}
                                     </div>
                                 </div>
                             </div>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
-                                <v-icon>$expand</v-icon>
+                                <v-btn class="float-md-right ml-1"
+                                       color="white"
+                                       small
+                                       style="color: black;"
+                                       @click="updateDialog = true"
+                                >
+                                    {{ langMap.main.edit }}
+                                </v-btn>
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <br/>
-                            <v-btn class="float-md-right"
-                                   color="white" small
-                                   style="color: black;"
-                                   @click="updateDialog = true"
-                            >
-                                <v-icon small>mdi-pencil</v-icon>
-                                {{ langMap.main.edit }}
-                            </v-btn>
-                            <span>
-                                <span v-if="ticket.contact !== null">
-                                    <v-label>
+                            <div v-if="ticket.contact !== null && ticket.contact.user_data.email !== null"
+                                 style="display: flex; flex-direction: column">
+                                <div>
+                                    <v-label v-if="ticket.from.name">
                                         {{ langMap.ticket.contact_email }}:
                                     </v-label>
-                                    {{ ticket.contact.user_data.email }}
-                                    <br>
-                                    <span v-if="ticket.contact.user_data.contact_phone">
-                                    <v-label>
+                                    <div class="float-md-right ml-1">
+                                        {{ ticket.contact.user_data.email }}
+                                    </div>
+                                </div>
+                                <span style="padding-bottom: 5px;"></span>
+                            </div>
+                            <div v-if="ticket.contact !== null && ticket.contact.user_data.contact_phone !== null"
+                                 style="display: flex; flex-direction: column">
+                                <div>
+                                    <v-label v-if="ticket.from.name">
                                         {{ langMap.ticket.contact_phone }}:
                                     </v-label>
-                                    {{ ticket.contact.user_data.contact_phone.phone }}
-                                    </span>
-                                </span>
-                            </span>
-                            <br/>
+                                    <div class="float-md-right ml-1">
+                                        {{ ticket.contact.user_data.contact_phone.phone }}
+                                    </div>
+                                </div>
+                                <span style="padding-bottom: 5px;"></span>
+                            </div>
                             <div style="display: flex; flex-direction: column">
                                 <div>
                                     <v-label v-if="ticket.from.name">
@@ -1327,7 +1338,7 @@
                                             </v-avatar>
                                             <span class="mt-2">{{ ticket.assigned_person.user_data.full_name }}</span>
                                         </div>
-                                        <div class="d-inline-block my-2 ma-1">
+                                        <div class="d-inline-flex mb-2 mt-6">
                                             <template
                                                 v-if="ticket.followers.length"
                                             >
@@ -1346,7 +1357,7 @@
                                                                    :src="follower.avatar_url"/>
                                                             <span v-else-if="follower.full_name"
                                                                   class="white--text">
-                                                            {{
+                                                                {{
                                                                     follower.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
                                                                 }}
                                                         </span>
@@ -1357,8 +1368,8 @@
                                                     </div>
                                                 </div>
                                             </template>
-                                            <div v-else class="float-left mr-2 mt-2">No followers</div>
-                                            <div v-if="ticket.followers.length > 5" class="float-left mr-2 mt-2">
+                                            <div v-else>No followers</div>
+                                            <div v-if="ticket.followers.length > 5">
                                                 (+{{ ticket.followers.length - 5 }} others)
                                             </div>
                                         </div>
@@ -1393,8 +1404,6 @@
                                 </div>
                             </div>
                             <template v-slot:actions>
-                                &nbsp;
-                                <!--                                <v-icon>$expand</v-icon>-->
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
@@ -1428,11 +1437,9 @@
                                 >
                                     <template v-slot:selection="data">
                                         {{ data.item.employee.user_data.full_name }}
-                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                     <template v-slot:item="data">
                                         {{ data.item.employee.user_data.full_name }}
-                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                 </v-autocomplete>
                                 <v-select
