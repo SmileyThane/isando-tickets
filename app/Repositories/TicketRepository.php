@@ -275,6 +275,7 @@ class TicketRepository
             if ($ticket) {
                 $ticket->makeVisible(['to']);
             }
+
         return $ticket;
     }
 
