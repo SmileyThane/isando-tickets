@@ -13,10 +13,6 @@
         </v-row>
         <v-card v-else ref="card" outlined>
             <span id="pdf-element">
-                            <v-img v-if="article.featured_image"
-                                   :src="article.featured_image.link"
-                                   width="100%"
-                            />
             <v-card-title>
                 {{ $helpers.i18n.localized(article) }}
             </v-card-title>
