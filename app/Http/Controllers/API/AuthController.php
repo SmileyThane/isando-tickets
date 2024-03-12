@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Tremby\LaravelGitVersion\GitVersionHelper;
 
 class AuthController extends Controller
@@ -139,5 +140,12 @@ class AuthController extends Controller
             $versionStr = substr($versionStr, 0, strrpos($versionStr, '-'));
         }
         return self::showResponse(true, $versionStr);
+    }
+
+    public function registerFromExternalSource(Request $request, $id)
+    {
+        Log::info(json_encode($request));
+
+        return self::showResponse(true, 'https://buy.stripe.com/test_28odT92uP5cU59K9AA');
     }
 }

@@ -22,6 +22,7 @@ Route::post('register', 'API\AuthController@register');
 Route::post('login', 'API\AuthController@login');
 Route::post('reset_password', 'API\AuthController@resetPassword');
 Route::get('plans/{groupedBy?}', 'API\AuthController@plans');
+Route::post('register/external/{id}', 'API\AuthController@registerFromExternalSource');
 Route::get('/currencies', 'API\CurrencyController@get');
 Route::get('time_zones', 'HomeController@getTimeZones');
 Route::get('/mail/receive/{type?}', 'HomeController@receiveMail')->name('receiveEmail');
