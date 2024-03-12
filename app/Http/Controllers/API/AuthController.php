@@ -144,7 +144,7 @@ class AuthController extends Controller
 
     public function registerFromExternalSource(Request $request, $id)
     {
-        Log::info(json_encode($request));
+        Log::info(json_encode($request->all()));
 
         return self::showResponse(true, 'https://buy.stripe.com/test_28odT92uP5cU59K9AA');
     }
