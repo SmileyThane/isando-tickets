@@ -22,7 +22,6 @@ class ClientGroupController extends Controller
 
             if ($request->view_as_tree == 1) {
                 $query->where('parent_id', '=', null);
-                $query->with('children');
             }
 
             $result = $query->get();
