@@ -1429,7 +1429,7 @@
                                                                 v-model="clientFilterGroupForm.parent_id"
                                                                 :color="themeBgColor"
                                                                 :item-color="themeBgColor"
-                                                                :items="clientFilterGroups"
+                                                                :items="clientFilterGroupsRaw"
                                                                 :label="langMap.company.parent_product_category"
                                                                 item-text="name"
                                                                 item-value="id"
@@ -2657,6 +2657,7 @@ export default {
             },
             emailTrashed: false,
             clientFilterGroups: [],
+            clientFilterGroupsRaw: [],
         }
     },
     created() {
@@ -2677,6 +2678,7 @@ export default {
         this.getProductCategoriesTree();
         this.getProductCategoriesFlat();
         this.getFilterGroups()
+        this.getFilterGroupsRaw()
         this.productCategoryForm.company_id = this.$route.params.id;
         this.employeeForm.company_id = this.$route.params.id;
         let that = this;
@@ -2712,6 +2714,18 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.clientFilterGroups = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        getFilterGroupsRaw() {
+            axios.get('/api/filter_groups/client').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.clientFilterGroupsRaw = response.data
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -3575,6 +3589,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getFilterGroups()
+                    this.getFilterGroupsRaw()
                     this.snackbarMessage = this.langMap.main.added;
                     this.actionColor = 'success'
                     this.snackbar = true;
@@ -3591,6 +3606,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getFilterGroups()
+                    this.getFilterGroupsRaw()
                     this.snackbarMessage = this.langMap.main.deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
