@@ -1394,6 +1394,13 @@
                                             <v-btn
                                                 icon
                                                 small
+                                                @click=""
+                                            >
+                                                <v-icon>mdi-edit</v-icon>
+                                            </v-btn>
+                                            <v-btn
+                                                icon
+                                                small
                                                 @click="deleteClientFilterGroup(item.id)"
                                             >
                                                 <v-icon>mdi-trash-can</v-icon>
@@ -1424,7 +1431,25 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col class="pa-1" cols="6">
+                                                        <v-col class="pa-1" cols="md-6">
+                                                            <v-text-field
+                                                                v-model="clientFilterGroupForm.number"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :label="langMap.main.number"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="md-12">
+                                                            <v-textarea
+                                                                v-model="clientFilterGroupForm.description"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :label="langMap.main.description"
+                                                                dense
+                                                            ></v-textarea>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="12">
                                                             <v-select
                                                                 v-model="clientFilterGroupForm.parent_id"
                                                                 :color="themeBgColor"
