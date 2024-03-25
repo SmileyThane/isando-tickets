@@ -11,7 +11,7 @@ class ClientFilterGroup extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['company_id', 'name'];
+    protected $fillable = ['company_id', 'name', 'number', 'description'];
 
     protected $appends = ['children'];
 
