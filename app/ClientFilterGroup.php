@@ -11,14 +11,22 @@ class ClientFilterGroup extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['company_id', 'name'];
+    protected $fillable = ['company_id', 'name', 'number', 'description'];
 
-    public function children(): HasMany
+    protected $appends = ['children'];
+
+
+    public function getChildrenAttribute()
+    {
+        return $this->childrenData()->get();
+    }
+
+    public function childrenData(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id', 'id');
     }
 
-    public function parent(): HasOne
+    public function parentData(): HasOne
     {
         return $this->hasOne(self::class, 'id', 'parent_id');
     }

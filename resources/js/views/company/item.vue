@@ -1394,6 +1394,13 @@
                                             <v-btn
                                                 icon
                                                 small
+                                                @click=""
+                                            >
+                                                <v-icon>mdi-edit</v-icon>
+                                            </v-btn>
+                                            <v-btn
+                                                icon
+                                                small
                                                 @click="deleteClientFilterGroup(item.id)"
                                             >
                                                 <v-icon>mdi-trash-can</v-icon>
@@ -1424,12 +1431,30 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col class="pa-1" cols="6">
+                                                        <v-col class="pa-1" cols="md-6">
+                                                            <v-text-field
+                                                                v-model="clientFilterGroupForm.number"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :label="langMap.main.number"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="md-12">
+                                                            <v-textarea
+                                                                v-model="clientFilterGroupForm.description"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :label="langMap.main.description"
+                                                                dense
+                                                            ></v-textarea>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="12">
                                                             <v-select
                                                                 v-model="clientFilterGroupForm.parent_id"
                                                                 :color="themeBgColor"
                                                                 :item-color="themeBgColor"
-                                                                :items="clientFilterGroups"
+                                                                :items="clientFilterGroupsRaw"
                                                                 :label="langMap.company.parent_product_category"
                                                                 item-text="name"
                                                                 item-value="id"
@@ -2657,6 +2682,7 @@ export default {
             },
             emailTrashed: false,
             clientFilterGroups: [],
+            clientFilterGroupsRaw: [],
         }
     },
     created() {
@@ -2677,6 +2703,7 @@ export default {
         this.getProductCategoriesTree();
         this.getProductCategoriesFlat();
         this.getFilterGroups()
+        this.getFilterGroupsRaw()
         this.productCategoryForm.company_id = this.$route.params.id;
         this.employeeForm.company_id = this.$route.params.id;
         let that = this;
@@ -2712,6 +2739,18 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.clientFilterGroups = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        getFilterGroupsRaw() {
+            axios.get('/api/filter_groups/client').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.clientFilterGroupsRaw = response.data
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -3575,6 +3614,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getFilterGroups()
+                    this.getFilterGroupsRaw()
                     this.snackbarMessage = this.langMap.main.added;
                     this.actionColor = 'success'
                     this.snackbar = true;
@@ -3591,6 +3631,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getFilterGroups()
+                    this.getFilterGroupsRaw()
                     this.snackbarMessage = this.langMap.main.deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;

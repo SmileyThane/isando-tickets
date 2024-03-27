@@ -22,7 +22,6 @@ class ClientGroupController extends Controller
 
             if ($request->view_as_tree == 1) {
                 $query->where('parent_id', '=', null);
-                $query->with('children');
             }
 
             $result = $query->get();
@@ -36,6 +35,8 @@ class ClientGroupController extends Controller
         $group = new ClientFilterGroup();
         $group->parent_id = $request->parent_id;
         $group->name = $request->name;
+        $group->number = $request->number;
+        $group->description = $request->description;
         $group->company_id = $employee->company_id;
         $group->save();
 
