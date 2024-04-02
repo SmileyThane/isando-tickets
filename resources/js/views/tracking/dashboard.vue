@@ -26,9 +26,13 @@
                                 </div>
                                 <div class="d-inline-flex float-right flex-grow-1 text-center">
                                     <v-fade-transition leave-absolute>
-                                        <span v-if="open" class="d-block flex-grow-1">{{ langMap.tracking.report.choose_period }}</span>
+                                        <span v-if="open" class="d-block flex-grow-1">{{
+                                                langMap.tracking.report.choose_period
+                                            }}</span>
                                         <span v-else class="d-block flex-grow-1">
-                                            {{ periodDate.start ? moment(periodDate.start).format('ddd D MMM YYYY') : '...' }} -
+                                            {{
+                                                periodDate.start ? moment(periodDate.start).format('ddd D MMM YYYY') : '...'
+                                            }} -
                                             {{ moment(periodDate.end).format('ddd D MMM YYYY') }}
                                         </span>
                                     </v-fade-transition>
