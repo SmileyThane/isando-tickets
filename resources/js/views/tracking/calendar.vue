@@ -37,15 +37,11 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
-    methods: {
-
-    },
-    watch: {
-
-    },
+    methods: {},
+    watch: {},
 }
 </script>
