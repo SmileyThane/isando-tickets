@@ -268,15 +268,16 @@
                                             <v-spacer
                                                 v-bind="attrs"
                                                 v-on="on"
-                                            >&nbsp;</v-spacer>
+                                            >&nbsp;
+                                            </v-spacer>
                                         </template>
-                                        <div>{{user.name}} {{user.surname}} ({{user.percent}}%)</div>
+                                        <div>{{ user.name }} {{ user.surname }} ({{ user.percent }}%)</div>
                                         <hr>
                                         <div
                                             v-for="(line, ind) in user.sortedLines"
                                             :key="ind"
                                         >
-                                            {{$helpers.time.convertSecToTime(line.seconds, false)}}h {{line.entity}}
+                                            {{ $helpers.time.convertSecToTime(line.seconds, false) }}h {{ line.entity }}
                                         </div>
                                     </v-tooltip>
                                 </div>
@@ -297,16 +298,20 @@
     padding: 0 50px;
     width: 335px;
 }
+
 .v-expansion-panel:not(.v-expansion-panel--active.v-item--active) {
     max-height: 55px;
 }
+
 .v-expansion-panel {
     border: 1px solid rgba(0, 0, 0, 0.38);
 }
+
 .v-expansion-panel:hover {
     border: 1px solid rgba(0, 0, 0, 0.78);
 }
->>>*:not(.v-icon) {
+
+>>> *:not(.v-icon) {
     font-size: 12px !important;
 }
 </style>
