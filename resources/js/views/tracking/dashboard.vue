@@ -239,19 +239,20 @@
                         :items="data.lastActivity"
                     >
                         <template v-slot:item.team="{ item }">
-                            <span v-if="item.name">{{item.name}}</span>
+                            <span v-if="item.name">{{ item.name }}</span>
                             <span v-else>No team</span>
                         </template>
                         <template v-slot:item.tracker="{ item }">
-                            <span v-if="item.tracker && item.tracker.entity">{{item.tracker.entity.name}}</span>
+                            <span v-if="item.tracker && item.tracker.entity">{{ item.tracker.entity.name }}</span>
                             <span v-else>No {{ getTrackingProjectLabel }}</span>
                         </template>
                         <template v-slot:item.recently_duration="{ item }">
-                            <span v-if="item.tracker">{{$helpers.time.convertSecToTime(item.tracker.passed, false)}}</span>
+                            <span
+                                v-if="item.tracker">{{ $helpers.time.convertSecToTime(item.tracker.passed, false) }}</span>
                         </template>
                         <template v-slot:item.recently_time="{ item }">
                             <span v-if="item.tracker && item.tracker.date_from">
-                                {{$helpers.dates.someXAgo(item.tracker.date_from)}}
+                                {{ $helpers.dates.someXAgo(item.tracker.date_from) }}
                             </span>
                         </template>
                         <template v-slot:item.total_time="{ item }">
