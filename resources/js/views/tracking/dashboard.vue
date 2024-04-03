@@ -193,24 +193,24 @@
                                     style="min-width: 400px;"
                                 >
                                     <div class="flex-grow-1 text-left" style="width: 100%; overflow: hidden">
-                                        <strong>{{index+1}}.</strong>
+                                        <strong>{{ index + 1 }}.</strong>
                                         <strong v-if="!item.project_name">Without {{ getTrackingProjectLabel }}</strong>
                                         <strong v-else>
-                                            <span v-if="item.project_name">{{item.project_name}}</span>
-                                            / <span v-if="item.client_name">{{item.client_name}}</span>
+                                            <span v-if="item.project_name">{{ item.project_name }}</span>
+                                            / <span v-if="item.client_name">{{ item.client_name }}</span>
                                         </strong>
                                     </div>
                                     <div class="d-flex flex-row" style="width: 100%">
                                         <div class="d-inline-flex flex-grow-1 text-left" style="width: 50%">
-                                            Total time: {{$helpers.time.convertSecToTime(item.duration, false)}} h
+                                            Total time: {{ $helpers.time.convertSecToTime(item.duration, false) }} h
                                         </div>
                                         <div
                                             class="d-inline-flex flex-row-reverse flex-grow-1 text-right"
                                             style="width: 50%"
                                             v-if="$helpers.auth.checkPermissionByIds([59])"
                                         >
-                                            <span v-if="currentCurrency">{{currentCurrency.symbol}}</span>
-                                            <span>Revenue:&nbsp;{{$helpers.numbers.numberFormat(item.revenue, 2)}}&nbsp;</span>
+                                            <span v-if="currentCurrency">{{ currentCurrency.symbol }}</span>
+                                            <span>Revenue:&nbsp;{{ $helpers.numbers.numberFormat(item.revenue, 2) }}&nbsp;</span>
                                         </div>
                                     </div>
                                 </div>
@@ -219,7 +219,7 @@
                                 v-else
                                 class="font-italic top-projects__info"
                             >
-                                No billable {{getTrackingProjectLabel}}s were tracked in the selected period.
+                                No billable {{ getTrackingProjectLabel }}s were tracked in the selected period.
                             </div>
                         </v-card>
                     </template>
