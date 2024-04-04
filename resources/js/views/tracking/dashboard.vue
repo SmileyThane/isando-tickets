@@ -359,7 +359,7 @@ export default {
                     services: {
                         responsive: true,
                         maintainAspectRatio: true,
-                        percentageInnerCutout : 90,
+                        percentageInnerCutout: 90,
                         legend: {
                             display: false,
                             position: 'right'
@@ -369,7 +369,7 @@ export default {
                                 title: function (tooltipItem, data, a, b) {
                                     return data.labels[tooltipItem[0].index] ?? 'Title';
                                 },
-                                label: function(tooltipItem, data) {
+                                label: function (tooltipItem, data) {
                                     return self.$helpers.time.convertSecToTime(data.datasets[0].data[tooltipItem.index] * 60 * 60, false);
                                 }
                             }
@@ -378,7 +378,7 @@ export default {
                     projects: {
                         responsive: true,
                         maintainAspectRatio: true,
-                        percentageInnerCutout : 90,
+                        percentageInnerCutout: 90,
                         legend: {
                             display: false,
                             position: 'right'
@@ -388,7 +388,7 @@ export default {
                                 title: function (tooltipItem, data, a, b) {
                                     return data.labels[tooltipItem[0].index] ?? 'Title';
                                 },
-                                label: function(tooltipItem, data) {
+                                label: function (tooltipItem, data) {
                                     return self.$helpers.time.convertSecToTime(data.datasets[0].data[tooltipItem.index] * 60 * 60, false);
                                 }
                             }
@@ -412,7 +412,7 @@ export default {
             },
         }
     },
-    created () {
+    created() {
         moment.updateLocale(this.$store.state.lang.short_code, {
             week: {
                 dow: 1,
@@ -429,8 +429,8 @@ export default {
             that.themeBgColor = color;
         });
         this.getData();
-        this.$store.dispatch('Team/getManagedTeams', { withEmployee: false });
-        this.$store.dispatch('Team/getTeams', { search: null });
+        this.$store.dispatch('Team/getManagedTeams', {withEmployee: false});
+        this.$store.dispatch('Team/getTeams', {search: null});
     },
     methods: {
         onClickOutsideHandler() {
