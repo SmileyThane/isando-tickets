@@ -514,14 +514,15 @@ export default {
                 team: this.selectedTeam,
             });
             axios.get(`/api/ttmanaging/dashboard?${query.toString()}`)
-            .then(({ data }) => {
-                if (data) {
-                    this.data = data;
-                }
-            })
+                .then(({data}) => {
+                    if (data) {
+                        this.data = data;
+                    }
+                })
         },
         calculateProgressPart(users) {
-            let items = {}; let totalTime = 0;
+            let items = {};
+            let totalTime = 0;
             users.map(user => {
                 if (!items[user.user_id]) {
                     items[user.user_id] = {
@@ -540,7 +541,9 @@ export default {
             return Object.values(items).map(i => ({
                 ...i,
                 percent: (i.count / totalTime * 100).toFixed(2),
-                sortedLines: _.orderBy(i.lines, [function (o) { return parseInt(o.seconds); }], ['desc']),
+                sortedLines: _.orderBy(i.lines, [function (o) {
+                    return parseInt(o.seconds);
+                }], ['desc']),
             }));
         },
         getColor() {
