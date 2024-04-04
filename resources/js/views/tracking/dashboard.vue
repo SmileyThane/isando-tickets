@@ -547,12 +547,10 @@ export default {
             }));
         },
         getColor() {
-            return '#' + Math.floor(Math.random()*16777215).toString(16).substr(0, 6);
+            return '#' + Math.floor(Math.random() * 16777215).toString(16).substr(0, 6);
         }
     },
-    watch: {
-
-    },
+    watch: {},
     computed: {
         totalTimeByServices() {
             if (!this.data || !this.data.services) return {
@@ -619,12 +617,15 @@ export default {
             return this.$store.getters['Team/getTeams'].data;
         },
         getTrackingProjectLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.department;
-                case 2: return this.langMap.tracking.profit_center;
-                default: return this.langMap.tracking.project;
+                case 1:
+                    return this.langMap.tracking.department;
+                case 2:
+                    return this.langMap.tracking.profit_center;
+                default:
+                    return this.langMap.tracking.project;
             }
         },
         getTrackingProjectsLabel() {
