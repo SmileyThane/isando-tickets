@@ -629,12 +629,15 @@ export default {
             }
         },
         getTrackingProjectsLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.departments;
-                case 2: return this.langMap.tracking.profit_centres;
-                default: return this.langMap.tracking.projects;
+                case 1:
+                    return this.langMap.tracking.departments;
+                case 2:
+                    return this.langMap.tracking.profit_centres;
+                default:
+                    return this.langMap.tracking.projects;
             }
         },
         headers() {
