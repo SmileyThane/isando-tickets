@@ -190,10 +190,22 @@
                                         }}</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_quarter }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_quarter }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisYear')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_year }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('totalTime')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_total_time }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_quarter
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_quarter
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisYear')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_year
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('totalTime')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_total_time
+                                        }}</a>
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
@@ -201,7 +213,7 @@
                             </div>
                             <div class="d-flex flex-row">
                                 <div class="d-inline-flex flex-grow-1">
-                                    {{langMap.tracking.report.select_custom_period}}:
+                                    {{ langMap.tracking.report.select_custom_period }}:
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
@@ -252,8 +264,8 @@
                 >
                     <template v-slot:item="{ parent, item, on, attrs }">
                         <span>
-                            <v-icon>{{item.icon}}</v-icon>
-                            {{item.text}}
+                            <v-icon>{{ item.icon }}</v-icon>
+                            {{ item.text }}
                         </span>
                     </template>
                 </v-select>
