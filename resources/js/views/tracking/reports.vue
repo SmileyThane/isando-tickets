@@ -277,7 +277,7 @@
             outlined
         >
             <div class="d-inline-flex align-center order-first" style="min-width: 150px">
-                {{langMap.tracking.report.grouping}}
+                {{ langMap.tracking.report.grouping }}
             </div>
             <draggable
                 :options="{ group:'grouping' }"
@@ -299,8 +299,8 @@
                     style="border-color: rgba(0,0,0,0)"
                     @dblclick="dblClickSelectGroupItem(groupItem)"
                 >
-                    <v-icon>{{groupItem.icon}}</v-icon>
-                    {{groupItem.text}}
+                    <v-icon>{{ groupItem.icon }}</v-icon>
+                    {{ groupItem.text }}
                 </v-btn>
             </draggable>
             <draggable
@@ -324,8 +324,8 @@
                     style="border-color: rgba(0,0,0,0)"
                     @dblclick="dblClickSelectGroupItem(groupItem)"
                 >
-                    <v-icon>{{groupItem.icon}}</v-icon>
-                    {{groupItem.text}}
+                    <v-icon>{{ groupItem.icon }}</v-icon>
+                    {{ groupItem.text }}
                 </v-btn>
             </draggable>
         </v-card>
@@ -335,7 +335,7 @@
             class="d-flex px-6 py-2 mt-3 flex-row"
         >
             <div class="d-inline-flex">
-                {{langMap.tracking.report.filter}}:
+                {{ langMap.tracking.report.filter }}:
             </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
                 <div class="d-flex flex-column" style="width: 100%">
@@ -418,7 +418,7 @@
                         >
                             <div class="d-flex flex-column">
                                 <v-icon x-large class="d-inline-flex">mdi-clock-outline</v-icon>
-                                <span class="d-inline-block text-center">{{langMap.tracking.report.total_time}}</span>
+                                <span class="d-inline-block text-center">{{ langMap.tracking.report.total_time }}</span>
                                 <span class="d-inline-block text-center">
                                 {{ $helpers.time.convertSecToTime(totalTime, false) }}
                             </span>
@@ -432,9 +432,10 @@
                         >
                             <div class="d-flex flex-column">
                                 <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
-                                <span class="d-inline-block text-center">{{langMap.tracking.report.revenue}}</span>
+                                <span class="d-inline-block text-center">{{ langMap.tracking.report.revenue }}</span>
                                 <span class="d-inline-block text-center">
-                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{$helpers.numbers.numberFormat(totalRevenue, 2)}}
+                                <span
+                                    v-if="currentCurrency">{{ currentCurrency.slug }}</span> {{ $helpers.numbers.numberFormat(totalRevenue, 2) }}
                             </span>
                             </div>
                         </v-card>
@@ -474,22 +475,28 @@
                         {{ item.name }} <span v-if="item.client">({{ item.client }})</span>
                     </div>
                     <div v-else class="d-flex flex-row">
-                        <table class="v-data-table" :class="item.status === 'started' ? 'success lighten-5' : ''" border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
+                        <table class="v-data-table" :class="item.status === 'started' ? 'success lighten-5' : ''"
+                               border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
                             <tbody>
                             <tr>
                                 <td class="pa-2" align="right" width="10%">
                                     {{ moment(item.date_from).format('DD MMM YYYY') }}
                                 </td>
                                 <td class="pa-2" align="left" width="15%">
-                                    <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>{{langMap.tracking.report.none}}</span>
+                                    <span v-if="item.user">{{ item.user.full_name }}</span><span
+                                    v-else>{{ langMap.tracking.report.none }}</span>
                                 </td>
                                 <td class="pa-2" align="left">
                                         <span
                                             v-if="item.entity"
                                             :style="{ color: item.entity && item.entity.color ? item.entity.color : themeBgColor }"
                                         >
-                                            <span v-if="item.entity_type === 'App\\TrackingProject'">{{ getTrackingProjectLabel }}: </span>
-                                            <span v-if="item.entity_type === 'App\\Ticket'">{{ langMap.tracking.report.ticket }}: </span>
+                                            <span v-if="item.entity_type === 'App\\TrackingProject'">{{
+                                                    getTrackingProjectLabel
+                                                }}: </span>
+                                            <span v-if="item.entity_type === 'App\\Ticket'">{{
+                                                    langMap.tracking.report.ticket
+                                                }}: </span>
                                             {{ item.entity.name }}
                                         </span>
                                     <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
