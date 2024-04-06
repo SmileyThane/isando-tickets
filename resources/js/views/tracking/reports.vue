@@ -33,12 +33,12 @@
                             v-bind="attrs"
                             v-on="on"
                         >
-                            {{langMap.tracking.report.save_btn}}
+                            {{ langMap.tracking.report.save_btn }}
                         </v-btn>
                     </template>
                     <v-card>
                         <v-card-title class="headline">
-                            {{langMap.tracking.report.save_report}}
+                            {{ langMap.tracking.report.save_report }}
                         </v-card-title>
                         <v-card-text>
                             <div class="d-flex flex-column">
@@ -57,14 +57,14 @@
                                                 :style="{ color: $helpers.color.invertColor(themeBgColor) }"
                                                 @click="saveReport()"
                                             >
-                                                {{langMap.tracking.report.save_btn}}
+                                                {{ langMap.tracking.report.save_btn }}
                                             </v-btn>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-inline-block" v-if="$store.getters['Tracking/getReports'].length">
                                     <v-list dense>
-                                        <v-subheader>{{langMap.tracking.report.reports}}</v-subheader>
+                                        <v-subheader>{{ langMap.tracking.report.reports }}</v-subheader>
                                         <v-list-item-group
                                             color="primary"
                                         >
@@ -78,11 +78,12 @@
                                                             class="d-inline-flex flex-grow-1"
                                                             @click="selectReport(report.id)"
                                                         >
-                                                            {{report.name}}
+                                                            {{ report.name }}
                                                             <small
                                                                 style="color: gray"
                                                             >
-                                                                &nbsp;({{langMap.tracking.report.from}} {{moment(report.created_at).format('DD/MM/YYYY H:m:ss')}})
+                                                                &nbsp;({{ langMap.tracking.report.from }}
+                                                                {{ moment(report.created_at).format('DD/MM/YYYY H:m:ss') }})
                                                             </small>
                                                         </div>
                                                         <div class="d-inline-flex flex-grow-0">
@@ -113,7 +114,7 @@
                                 text
                                 @click="dialogSave = false"
                             >
-                                {{langMap.tracking.report.close_btn}}
+                                {{ langMap.tracking.report.close_btn }}
                             </v-btn>
                         </v-card-actions>
                     </v-card>
@@ -139,9 +140,13 @@
                                 </div>
                                 <div class="d-inline-flex float-right flex-grow-1 text-center">
                                     <v-fade-transition leave-absolute>
-                                        <span v-if="open" class="d-block flex-grow-1">{{ langMap.tracking.report.choose_period }}</span>
+                                        <span v-if="open" class="d-block flex-grow-1">{{
+                                                langMap.tracking.report.choose_period
+                                            }}</span>
                                         <span v-else class="d-block flex-grow-1">
-                                            {{ builder.period.start ? moment(builder.period.start).format('ddd D MMM YYYY') : '...' }} -
+                                            {{
+                                                builder.period.start ? moment(builder.period.start).format('ddd D MMM YYYY') : '...'
+                                            }} -
                                             {{ moment(builder.period.end).format('ddd D MMM YYYY') }}
                                         </span>
                                     </v-fade-transition>
@@ -153,16 +158,36 @@
                         >
                             <div class="d-flex flex-row">
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('today')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('yesterday')" :style="{ color: themeBgColor }">{{langMap.tracking.report.period_yesterday}}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last7days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last7days }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last28days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last28days }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('today')"
+                                       :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('yesterday')"
+                                       :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_yesterday }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last7days')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last7days
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last28days')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last28days
+                                        }}</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_week }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_week }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_month }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_month }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_week
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_week
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_month
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_month
+                                        }}</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
                                     <a class="text-decoration-none" @click="setPeriod('thisQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_quarter }}</a>
