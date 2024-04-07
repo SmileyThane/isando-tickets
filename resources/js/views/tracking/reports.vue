@@ -1148,7 +1148,7 @@ export default {
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    percentageInnerCutout : 90,
+                    percentageInnerCutout: 90,
                     legend: {
                         display: false,
                         position: 'right'
@@ -1165,7 +1165,7 @@ export default {
                             title: function (tooltipItem, data, a, b) {
                                 return data.labels[tooltipItem[0].index] ?? 'Title';
                             },
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 return self.$helpers.time.convertSecToTime(data.datasets[0].data[tooltipItem.index] * 60 * 60, false);
                             }
                         }
@@ -1174,19 +1174,19 @@ export default {
             },
             reportData: {
                 headers: [
-                    { text: this.$store.state.lang.lang_map.tracking.report.description, value: 'description' },
-                    { text: this.$store.state.lang.lang_map.tracking.report.client, value: 'project.client.name' },
+                    {text: this.$store.state.lang.lang_map.tracking.report.description, value: 'description'},
+                    {text: this.$store.state.lang.lang_map.tracking.report.client, value: 'project.client.name'},
                     {
                         text: this.$store.state.lang.lang_map.tracking.report.project,
                         align: 'start',
                         sortable: false,
                         value: 'project.name',
                     },
-                    { text: this.$store.state.lang.lang_map.tracking.report.billable, value: 'billable' },
-                    { text: this.$store.state.lang.lang_map.tracking.report.date_from, value: 'date_from' },
-                    { text: this.$store.state.lang.lang_map.tracking.report.date_to, value: 'date_to' },
-                    { text: this.$store.state.lang.lang_map.tracking.report.passed, value: 'passed' },
-                    { text: '', value: 'data-table-expand' },
+                    {text: this.$store.state.lang.lang_map.tracking.report.billable, value: 'billable'},
+                    {text: this.$store.state.lang.lang_map.tracking.report.date_from, value: 'date_from'},
+                    {text: this.$store.state.lang.lang_map.tracking.report.date_to, value: 'date_to'},
+                    {text: this.$store.state.lang.lang_map.tracking.report.passed, value: 'passed'},
+                    {text: '', value: 'data-table-expand'},
                 ],
                 entities: {
                     g1: [],
@@ -1349,11 +1349,11 @@ export default {
             },
         });
         moment.tz.setDefault('Etc/UTC');
-        this.$store.dispatch('Clients/getClientList', { search: null });
-        this.$store.dispatch('Services/getServicesList', { search: null });
-        this.$store.dispatch('Projects/getProjectList', { search: null, includeArchives: true });
-        this.$store.dispatch('Team/getCoworkers', { search: null });
-        this.$store.dispatch('Tags/getTagList', { search: null });
+        this.$store.dispatch('Clients/getClientList', {search: null});
+        this.$store.dispatch('Services/getServicesList', {search: null});
+        this.$store.dispatch('Projects/getProjectList', {search: null, includeArchives: true});
+        this.$store.dispatch('Team/getCoworkers', {search: null});
+        this.$store.dispatch('Tags/getTagList', {search: null});
         this.$store.dispatch('Languages/getLanguageList');
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
         this.debounceGetReports = _.debounce(this.__getReports, 1000);
@@ -1375,12 +1375,12 @@ export default {
         __getSettings() {
             this.$store.dispatch('Tracking/getSettings')
                 .then(successResult => {
-                   if (successResult) {
-                       const settings = this.$store.getters['Tracking/getSettings'];
-                       if (settings && settings.email) {
-                           this.report.pdf.email = settings.email.email;
-                       }
-                   }
+                    if (successResult) {
+                        const settings = this.$store.getters['Tracking/getSettings'];
+                        if (settings && settings.email) {
+                            this.report.pdf.email = settings.email.email;
+                        }
+                    }
                 });
         },
         __getReports() {
@@ -1475,7 +1475,7 @@ export default {
                 let queryParam = this.createQuery(this.builder.filters);
                 if (filter.dispatch) {
                     Object.keys(filter.dispatchParams).map(f => {
-                        queryParam = { ...queryParam, [f]: filter.dispatchParams[f] };
+                        queryParam = {...queryParam, [f]: filter.dispatchParams[f]};
                     });
                     this.$store.dispatch(filter.dispatch, queryParam);
                 }
