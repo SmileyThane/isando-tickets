@@ -499,9 +499,14 @@
                                                 }}: </span>
                                             {{ item.entity.name }}
                                         </span>
-                                    <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
+                                    <v-icon v-if="item.entity && item.service" class="ma-1" x-small>
+                                        mdi-checkbox-blank-circle
+                                    </v-icon>
                                     <span v-if="item.service">{{ item.service.name }}</span>
-                                    <v-icon v-if="(item.service && item.description) || (item.entity && item.description)" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
+                                    <v-icon
+                                        v-if="(item.service && item.description) || (item.entity && item.description)"
+                                        class="ma-1" x-small>mdi-checkbox-blank-circle
+                                    </v-icon>
                                     <span v-if="item.description">
                                             <v-tooltip top>
                                               <template v-slot:activator="{ on, attrs }">
@@ -910,44 +915,53 @@
 </template>
 
 <style scoped>
->>>.border-right {
-    border-right: thin solid rgba(0,0,0,.12);
+>>> .border-right {
+    border-right: thin solid rgba(0, 0, 0, .12);
 }
->>>.width-10 {
+
+>>> .width-10 {
     width: 10%;
     max-width: 10%;
     min-width: 10%;
 }
->>>.v-expansion-panel {
+
+>>> .v-expansion-panel {
     border-color: rgba(0, 0, 0, 0.42);
     border-width: 1px;
     border-style: solid;
 }
->>>.v-btn.square {
+
+>>> .v-btn.square {
     min-width: 100px !important;
     min-height: 64px !important;
 }
->>>.v-btn.square i {
+
+>>> .v-btn.square i {
     width: 100%;
     padding-bottom: 5px;
 }
->>>.v-btn.square > span {
+
+>>> .v-btn.square > span {
     flex-direction: column;
 }
->>>.dragNDrop {
+
+>>> .dragNDrop {
     border-width: 1px;
     border-style: dashed;
     border-color: white;
 }
->>>.dragNDrop button {
+
+>>> .dragNDrop button {
     cursor: move;
 }
->>>.dragNDrop.active {
+
+>>> .dragNDrop.active {
     border-width: 1px;
     border-style: dashed;
-    border-color: rgba(0,0,0,.12);
+    border-color: rgba(0, 0, 0, .12);
 }
->>>.dragNDrop:not(.common) > button:not(:last-of-type):after {
+
+>>> .dragNDrop:not(.common) > button:not(:last-of-type):after {
     font: normal normal normal 24px/1 "Material Design Icons";
     text-transform: none !important;
     speak: none;
@@ -962,11 +976,13 @@
     color: #a1a3a4;
     transform: translateY(-50%);
 }
+
 >>> *:not(.v-icon) {
-    font-size: 12px!important;
+    font-size: 12px !important;
 }
+
 >>> .v-btn__content {
-    font-size: 12px!important;
+    font-size: 12px !important;
 }
 </style>
 
