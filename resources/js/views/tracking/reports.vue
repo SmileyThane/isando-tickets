@@ -1502,7 +1502,7 @@ export default {
             let queryStr = JSON.stringify(query);
             this.loadingGeneratePreview = true;
             axios.post('/api/ttmanaging/reports/generate', query)
-                .then(({ data: { data } }) => {
+                .then(({data: {data}}) => {
                     this.loadingGeneratePreview = false;
                     if (queryStr === JSON.stringify(this.builder)) {
                         this.reportData.entities = data;
@@ -1564,7 +1564,7 @@ export default {
                     text: this.$store.state.lang.lang_map.sort_chronologically
                 };
             }
-            axios.post(`/api/ttmanaging/reports?format=${format}`, { ...this.builder, ...this.report[format] }, {
+            axios.post(`/api/ttmanaging/reports?format=${format}`, {...this.builder, ...this.report[format]}, {
                 responseType: 'blob'
             })
                 .then(res => {
