@@ -1946,20 +1946,23 @@ export default {
             const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.departments;
-                case 2: return this.langMap.tracking.profit_centres;
-                default: return this.langMap.tracking.projects;
+                case 1:
+                    return this.langMap.tracking.departments;
+                case 2:
+                    return this.langMap.tracking.profit_centres;
+                default:
+                    return this.langMap.tracking.projects;
             }
         },
     },
     watch: {
-        'builder.round': function() {
+        'builder.round': function () {
             this.debounceGenPreview();
         },
-        'builder.filters': function() {
+        'builder.filters': function () {
             this.debounceGenPreview();
         },
-        'builder.group': function() {
+        'builder.group': function () {
             this.debounceGenPreview();
         },
         'builder': function () {
