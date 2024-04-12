@@ -1657,7 +1657,7 @@ export default {
             }
         },
         deleteReport(id) {
-            this.$store.dispatch('Tracking/deleteReport', { id });
+            this.$store.dispatch('Tracking/deleteReport', {id});
         },
         selectReport(id) {
             const report = this.$store.getters['Tracking/getReports'].find(i => i.id === id);
@@ -1683,8 +1683,8 @@ export default {
             }
             const trackerDiff = moment().diff(tracker.date_from, 'seconds');
             if (
-                (this.hasPermission([64]) &&  trackerDiff > 60 * 60 * 24 * 14)
-                || (this.hasPermission([63]) &&  trackerDiff > 60 * 60 * 24 * 7)
+                (this.hasPermission([64]) && trackerDiff > 60 * 60 * 24 * 14)
+                || (this.hasPermission([63]) && trackerDiff > 60 * 60 * 24 * 7)
             ) {
                 return false;
             }
@@ -1708,16 +1708,16 @@ export default {
             return items;
         },
         createQuery(filters) {
-            let query = { force: true };
+            let query = {force: true};
             for (const i in filters) {
-                query = { ...query, [filters[i].value]: filters[i].selected };
+                query = {...query, [filters[i].value]: filters[i].selected};
             }
             return query;
         },
         clearFiltersAfter(filter) {
             const index = this.builder.filters.findIndex(i => i.value === filter.value);
             if (index >= 0) {
-                this.builder.filters.splice(index+1, this.builder.filters.length);
+                this.builder.filters.splice(index + 1, this.builder.filters.length);
             }
         }
     },
