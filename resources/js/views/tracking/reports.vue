@@ -1722,13 +1722,13 @@ export default {
         }
     },
     computed: {
-        totalTime: function() {
+        totalTime: function () {
             return this.calculateTime(this.reportData.entities.g1);
         },
-        totalRevenue: function() {
+        totalRevenue: function () {
             return this.calculateRevenue(this.reportData.entities.g1);
         },
-        doughnutData: function() {
+        doughnutData: function () {
             if (this.reportData.entities && this.reportData.entities.g1 && this.reportData.entities.g1.length) {
                 let data = {
                     labels: [],
@@ -1745,7 +1745,7 @@ export default {
                     if (i.name) {
                         labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         data.labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
-                    } else if(i.entity && i.entity.name) {
+                    } else if (i.entity && i.entity.name) {
                         labels.push(client + this.substr(i.entity.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         data.labels.push(client + this.substr(i.entity.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
@@ -1768,7 +1768,7 @@ export default {
             }
             return null;
         },
-        barData: function() {
+        barData: function () {
             if (this.reportData.entities.g2 && this.reportData.entities.g2.length) {
                 let data = {
                     labels: [],
@@ -1786,7 +1786,7 @@ export default {
                     if (i.name) {
                         data.labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
-                    } else if(i.entity && i.entity.name) {
+                    } else if (i.entity && i.entity.name) {
                         data.labels.push(client + this.substr(i.entity.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         labels.push(client + this.substr(i.entity.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
@@ -1837,7 +1837,7 @@ export default {
             }
         },
         availableRoundingItems: function () {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             let roundingItems = this.roundingItems;
             if (settings && settings.customRounding) {
                 roundingItems = roundingItems.concat(settings.customRounding.map(i => ({
@@ -1847,7 +1847,7 @@ export default {
             }
             return roundingItems;
         },
-        availableFilters () {
+        availableFilters() {
             return [
                 {
                     value: 'coworkers',
@@ -1864,7 +1864,7 @@ export default {
                     text: this.getTrackingProjectsLabel,
                     store: 'Projects/getProjects',
                     dispatch: 'Projects/getProjectList',
-                    dispatchParams: { search: null, includeArchives: true },
+                    dispatchParams: {search: null, includeArchives: true},
                     items: [],
                     selected: [],
                     multiply: true
@@ -1921,26 +1921,29 @@ export default {
             ];
         },
         groupItems: {
-            get: function() {
+            get: function () {
                 const foundItem = this.groupItemsAvailable.find(i => i.value === 'project');
                 if (foundItem) foundItem.text = this.getTrackingProjectsLabel;
                 return this.groupItemsAvailable;
             },
-            set: function(value) {
+            set: function (value) {
                 this.groupItemsAvailable = value;
             },
         },
         getTrackingProjectLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.department;
-                case 2: return this.langMap.tracking.profit_center;
-                default: return this.langMap.tracking.project;
+                case 1:
+                    return this.langMap.tracking.department;
+                case 2:
+                    return this.langMap.tracking.profit_center;
+                default:
+                    return this.langMap.tracking.project;
             }
         },
         getTrackingProjectsLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
                 case 1: return this.langMap.tracking.departments;
