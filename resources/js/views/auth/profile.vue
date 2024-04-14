@@ -1850,7 +1850,7 @@ export default {
         },
         updateUserIxarma() {
             this.snackbar = false;
-            axios.post('/api/user/ixarma/'+this.userData.id, this.userData.ixarma_link).then(response => {
+            axios.post('/api/user/ixarma/' + this.userData.id, this.userData.ixarma_link).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.snackbarMessage = this.langMap.main.update_successful;
