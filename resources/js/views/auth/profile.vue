@@ -872,7 +872,8 @@
                                 <v-list-item v-for="(item, i) in userData.billing" :key="item.id">
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.name"></v-list-item-title>
-                                        <v-list-item-subtitle v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
+                                        <v-list-item-subtitle
+                                            v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon small @click="editInternalBilling(item)">
@@ -972,7 +973,10 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.profile.link_to_ixarma }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.profile.link_to_ixarma
+                            }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-btn v-if="!enableToEditIxarma" :color="themeBgColor" icon @click="enableToEditIxarma = true">
                             <v-icon :color="themeFgColor" dense small>mdi-pencil</v-icon>
