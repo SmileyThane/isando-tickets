@@ -990,7 +990,9 @@
                         <v-row>
                             <v-col cols="6">
                                 <p class="mb-0">
-                                    <v-icon v-if="userData.ixarma_link && userData.ixarma_link.login && userData.ixarma_link.password" color="success" dense left small>
+                                    <v-icon
+                                        v-if="userData.ixarma_link && userData.ixarma_link.login && userData.ixarma_link.password"
+                                        color="success" dense left small>
                                         mdi-check-circle
                                     </v-icon>
                                     <v-icon v-else dense left small>mdi-cancel</v-icon>
@@ -1422,7 +1424,8 @@
                                                   :item-color="themeBgColor" :label="langMap.main.email" dense/>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-select v-if="emailForm.email_type === 1" v-model="emailForm.email_type" :color="themeBgColor"
+                                    <v-select v-if="emailForm.email_type === 1" v-model="emailForm.email_type"
+                                              :color="themeBgColor"
                                               :item-color="themeBgColor"
                                               :items="emailTypes" :label="langMap.main.type" dense
                                               item-value="id" readonly>
