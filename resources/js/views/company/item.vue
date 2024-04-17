@@ -2429,7 +2429,7 @@
                         <v-btn color="blue darken-1" text @click="createOrRestoreEmployee('restore')">
                             {{ langMap.individuals.restore }}
                         </v-btn>
-                        <v-btn color="grey darken-1" text  @click="emailTrashed = false">
+                        <v-btn color="grey darken-1" text @click="emailTrashed = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
                     </v-card-actions>

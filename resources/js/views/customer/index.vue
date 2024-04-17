@@ -151,7 +151,8 @@
                             </template>
                             <template v-slot:item.email="{item}">
                                 <span v-if="item.contact_email && item.contact_email.email">
-                                    <v-icon v-if="item.contact_email.type" :title="$helpers.i18n.localized(item.contact_email.type)" dense
+                                    <v-icon v-if="item.contact_email.type"
+                                            :title="$helpers.i18n.localized(item.contact_email.type)" dense
                                             x-small
                                             v-text="item.contact_email.type.icon"></v-icon>
                                     {{ item.contact_email.email }}
@@ -160,7 +161,8 @@
                             </template>
                             <template v-slot:item.phone="{item}">
                                 <span v-if="item.contact_phone && item.contact_phone.phone">
-                                    <v-icon v-if="item.contact_phone.type" :title="$helpers.i18n.localized(item.contact_phone.type)" dense
+                                    <v-icon v-if="item.contact_phone.type"
+                                            :title="$helpers.i18n.localized(item.contact_phone.type)" dense
                                             x-small
                                             v-text="item.contact_phone.type.icon"></v-icon>
                                     {{ item.contact_phone.phone }}
@@ -178,7 +180,8 @@
                                 </v-pagination>
                             </template>
                             <template v-slot:item.is_active="{ item }">
-                                <v-icon v-if="item" :style="item.is_active === 1 ?'color:#95C13D;' : 'color:red;'" class="justify-center"
+                                <v-icon v-if="item" :style="item.is_active === 1 ?'color:#95C13D;' : 'color:red;'"
+                                        class="justify-center"
                                         @click="showItem(item)"
                                 >
                                     {{
