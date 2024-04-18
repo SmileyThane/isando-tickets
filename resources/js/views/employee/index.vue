@@ -107,7 +107,8 @@
                                             right
                                             @click="addEmployee"
                                         >
-                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                            </v-icon>
                                         </v-btn>
                                     </div>
                                 </v-form>
@@ -140,7 +141,7 @@
                                                       class="mx-4" @input="debounceGetEmployees"></v-text-field>
                                     </v-col>
                                     <v-col md="4" sm="12">
-                                        <v-checkbox v-model="withTrashed"  :color="themeBgColor"
+                                        <v-checkbox v-model="withTrashed" :color="themeBgColor"
                                                     value="1"
                                                     dense
                                                     :label="langMap.individuals.with_trashed"
@@ -191,7 +192,7 @@
                                     color="grey darken-1"
                                     v-if="item.user_data && (item.user_data.avatar_url || item.user_data.full_name)"
                                 >
-                                    <v-img v-if="item.user_data.avatar_url" :src="item.user_data.avatar_url" />
+                                    <v-img v-if="item.user_data.avatar_url" :src="item.user_data.avatar_url"/>
                                     <span v-else-if="item.user_data.full_name" class="white--text">
                                             {{ item.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
                                         </span>
