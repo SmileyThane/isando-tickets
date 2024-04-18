@@ -194,7 +194,9 @@
                                 >
                                     <v-img v-if="item.user_data.avatar_url" :src="item.user_data.avatar_url"/>
                                     <span v-else-if="item.user_data.full_name" class="white--text">
-                                            {{ item.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                            {{
+                                            item.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                        }}
                                         </span>
 
                                 </v-avatar>
@@ -213,7 +215,9 @@
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.user_data.is_active="{ item }">
-                                <v-icon v-if="item && item.deleted_at" @click="showItem(item)" color="red darken" :title="langMap.individuals.deleted">mdi-cancel</v-icon>
+                                <v-icon v-if="item && item.deleted_at" @click="showItem(item)" color="red darken"
+                                        :title="langMap.individuals.deleted">mdi-cancel
+                                </v-icon>
                                 <v-icon v-if="item && !item.deleted_at" @click="showItem(item)"
                                         :style="item.user_data.is_active === 1 ?'color:#95C13D;' : 'color:red;'"
                                 >
