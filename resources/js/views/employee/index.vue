@@ -362,12 +362,25 @@ export default {
                 {text: '', value: 'data-table-expand'},
                 {text: 'ID', align: 'start', value: 'id'},
                 {text: `${this.$store.state.lang.lang_map.profile.personal_id}`, value: 'user_data.number'},
-                {text: `${this.$store.state.lang.lang_map.profile.avatar}`, value: 'avatar', align: 'center', sortable: false},
+                {
+                    text: `${this.$store.state.lang.lang_map.profile.avatar}`,
+                    value: 'avatar',
+                    align: 'center',
+                    sortable: false
+                },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'user_data.name'},
                 {text: `${this.$store.state.lang.lang_map.main.last_name}`, value: 'user_data.surname'},
                 {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'user_data.emails'},
-                {text: `${this.$store.state.lang.lang_map.individuals.is_active}`, value: 'user_data.is_active', align: 'center'},
-                {text: `${this.$store.state.lang.lang_map.individuals.status}`, value: 'user_data.status', align: 'center'},
+                {
+                    text: `${this.$store.state.lang.lang_map.individuals.is_active}`,
+                    value: 'user_data.is_active',
+                    align: 'center'
+                },
+                {
+                    text: `${this.$store.state.lang.lang_map.individuals.status}`,
+                    value: 'user_data.status',
+                    align: 'center'
+                },
                 {text: `${this.$store.state.lang.lang_map.main.client}`, value: 'assigned_to_clients.clients'},
             ],
             withTrashed: 0,
@@ -395,7 +408,7 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
