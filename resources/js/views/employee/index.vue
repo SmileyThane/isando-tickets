@@ -226,9 +226,9 @@
                             </template>
                             <template v-slot:item.user_data.status="{ item }">
                                 <v-icon v-if="item" @click="showItem(item)"
-                                :style="item.user_data.status === 1 ?'color:#95C13D;' : 'color:red;'"
+                                        :style="item.user_data.status === 1 ?'color:#95C13D;' : 'color:red;'"
                                 >
-                                    {{item.user_data.status === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
+                                    {{ item.user_data.status === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
                                 </v-icon>
                             </template>
                             <template v-slot:item.assigned_to_clients.clients="{ item }">
@@ -282,7 +282,7 @@
                         <v-btn color="blue darken-1" text @click="createOrRestoreEmployee('restore')">
                             {{ langMap.individuals.restore }}
                         </v-btn>
-                        <v-btn color="grey darken-1" text  @click="emailTrashed = false">
+                        <v-btn color="grey darken-1" text @click="emailTrashed = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
                     </v-card-actions>
