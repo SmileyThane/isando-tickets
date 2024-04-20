@@ -247,33 +247,33 @@
 </style>
 
 <script>
-    import EventBus from "../../components/EventBus";
+import EventBus from "../../components/EventBus";
 
-    export default {
+export default {
 
-        data() {
-            return {
-                clientId: 6,
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                totalProducts: 0,
-                lastPage: 0,
-                loading: this.themeBgColor,
-                expanded: [],
-                singleExpand: false,
-                langMap: this.$store.state.lang.lang_map,
-                themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
-                options: {
-                    page: 1,
-                    sortDesc: [false],
-                    sortBy: ['id'],
-                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
-                },
-                footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [
+    data() {
+        return {
+            clientId: 6,
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            totalProducts: 0,
+            lastPage: 0,
+            loading: this.themeBgColor,
+            expanded: [],
+            singleExpand: false,
+            langMap: this.$store.state.lang.lang_map,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            options: {
+                page: 1,
+                sortDesc: [false],
+                sortBy: ['id'],
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
+            },
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [
                     {
                         'text': 10,
                         'value': 10,
