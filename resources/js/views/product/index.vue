@@ -134,7 +134,8 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getProducts" v-model="productsSearch" :color="themeBgColor"
+                                        <v-text-field @input="getProducts" v-model="productsSearch"
+                                                      :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="1">
@@ -176,7 +177,7 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <p><strong>{{langMap.main.actions}}:</strong></p>
+                                    <p><strong>{{ langMap.main.actions }}:</strong></p>
                                     <p>
                                         <v-btn
                                             color="grey"
@@ -215,14 +216,15 @@
             <v-dialog v-model="removeProductDialog" persistent max-width="480">
                 <v-card>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                        {{langMap.main.delete_selected}}?
+                        {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeProductDialog = false">{{langMap.main.cancel}}
+                        <v-btn color="grey darken-1" text @click="removeProductDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn color="red darken-1" :disabled="!$helpers.auth.checkPermissionByIds([21])" text @click="deleteProduct(selectedProductId)">
-                            {{langMap.main.delete}}
+                        <v-btn color="red darken-1" :disabled="!$helpers.auth.checkPermissionByIds([21])" text
+                               @click="deleteProduct(selectedProductId)">
+                            {{ langMap.main.delete }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
