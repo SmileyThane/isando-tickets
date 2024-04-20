@@ -19,7 +19,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.product.add_new }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -89,7 +90,7 @@
                                                         <v-chip
                                                             :color="themeBgColor"
                                                             class="ma-2"
-                                                            :text-color="themeFgColor"                                                        >
+                                                            :text-color="themeFgColor">
                                                             {{ text }}
                                                         </v-chip>
                                                     </template>
@@ -105,7 +106,9 @@
                                                 :color="themeBgColor"
                                                 @click="addProduct"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
