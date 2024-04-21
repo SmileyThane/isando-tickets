@@ -327,42 +327,42 @@ export default {
         this.getProducts();
         this.getCategories();
 
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
-            });
-        },
-        methods: {
-            getProducts() {
-                this.loading = this.themeBgColor
-                if (this.options.sortDesc.length <= 0) {
-                    this.options.sortBy[0] = 'id'
-                    this.options.sortDesc[0] = false
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+    },
+    methods: {
+        getProducts() {
+            this.loading = this.themeBgColor
+            if (this.options.sortDesc.length <= 0) {
+                this.options.sortBy[0] = 'id'
+                this.options.sortDesc[0] = false
+            }
+            if (this.totalProducts < this.options.itemsPerPage) {
+                this.options.page = 1
+            }
+            axios.get('/api/product', {
+                params: {
+                    search: this.productsSearch,
+                    sort_by: this.options.sortBy[0],
+                    sort_val: this.options.sortDesc[0],
+                    per_page: this.options.itemsPerPage,
+                    page: this.options.page
                 }
-                if (this.totalProducts < this.options.itemsPerPage) {
-                    this.options.page = 1
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.products = response.data.data
+                    this.totalProducts = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.lastPage = response.data.last_page
+                    this.loading = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
                 }
-                axios.get('/api/product', {
-                    params: {
-                        search: this.productsSearch,
-                        sort_by: this.options.sortBy[0],
-                        sort_val: this.options.sortDesc[0],
-                        per_page: this.options.itemsPerPage,
-                        page: this.options.page
-                    }
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.products = response.data.data
-                        this.totalProducts = response.data.total
-                        this.lastPage = response.data.last_page
-                        this.lastPage = response.data.last_page
-                        this.loading = false
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
 
                 });
             },
