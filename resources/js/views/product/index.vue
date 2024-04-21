@@ -295,32 +295,37 @@ export default {
                         'value': 10000,
                     }
                 ],
+            },
+            headers: [
+                {text: '', value: 'data-table-expand'},
+                {text: 'ID', align: 'start', sortable: false, value: 'id'},
+                {text: `${this.$store.state.lang.lang_map.product.code}`, value: 'product_code', sortable: false},
+                {
+                    text: `${this.$store.state.lang.lang_map.main.category}`,
+                    value: 'category.full_name',
+                    sortable: false,
+                    width: '25%'
                 },
-                headers: [
-                    {text: '', value: 'data-table-expand'},
-                    {text: 'ID', align: 'start', sortable: false, value: 'id'},
-                    {text: `${this.$store.state.lang.lang_map.product.code}`, value: 'product_code', sortable: false},
-                    {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.full_name', sortable: false, width: '25%'},
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name', width: '20%'},
-                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description', width: '30%'},
-                ],
-                productsSearch: '',
-                products: [],
-                removeProductDialog: false,
-                selectedProductId: null,
-                productForm: {
-                    product_code: '',
-                    category_id: null,
-                    product_name: '',
-                    product_description: '',
-                    files: []
-                },
-                categories: []
-            }
-        },
-        mounted() {
-            this.getProducts();
-            this.getCategories();
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name', width: '20%'},
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description', width: '30%'},
+            ],
+            productsSearch: '',
+            products: [],
+            removeProductDialog: false,
+            selectedProductId: null,
+            productForm: {
+                product_code: '',
+                category_id: null,
+                product_name: '',
+                product_description: '',
+                files: []
+            },
+            categories: []
+        }
+    },
+    mounted() {
+        this.getProducts();
+        this.getCategories();
 
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
