@@ -364,94 +364,94 @@ export default {
                     this.snackbar = true;
                 }
 
-                });
-            },
-            getCategories() {
-                axios.get(`/api/main_company/product_categories/flat`).then(response => {
-                    response = response.data;
-                    if (response.success === true) {
-                        this.categories = [{
-                            id: null,
-                            name: this.langMap.main.none,
-                            full_name: this.langMap.main.none,
-                            parent_id: null
-                        }].concat(response.data);
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            onFileChange(form) {
-                this[form].files = null;
-                this[form].files = event.target.files;
-            },
-            addProduct() {
-                const config = {
-                    headers: {'content-type': 'multipart/form-data'}
-                }
-                let formData = new FormData();
-                for (let key in this.productForm) {
-                    if (key !== 'files') {
-                        formData.append(key, this.productForm[key]);
-                    }
-                }
-                Array.from(this.productForm.files).forEach(file => formData.append('files[]', file));
-                axios.post('/api/product', formData, config).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getProducts();
-                        this.snackbarMessage = this.langMap.product.product_created;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.productForm = {category_id: null, files: []}
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            showItem(item) {
-                this.$router.push(`/product/${item.id}`)
-            },
-            deleteProcess(item) {
-                this.selectedProductId = item.id
-                this.removeProductDialog = true
-            },
-            deleteProduct(id) {
-                axios.delete(`/api/product/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getProducts()
-                        this.snackbarMessage = this.langMap.customer.product_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.removeProductDialog = false
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateItemsCount(value) {
-                this.options.itemsPerPage = value
-                localStorage.itemsPerPage = value;
-                this.options.page = 1
-            },
+            });
         },
-        watch: {
-            options: {
-                handler() {
-                    this.getProducts()
-                },
-                deep: true,
-            },
-            loading(value) {
-                this.$parent.$parent.$refs.container.scrollTop = 0
+        getCategories() {
+            axios.get(`/api/main_company/product_categories/flat`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.categories = [{
+                        id: null,
+                        name: this.langMap.main.none,
+                        full_name: this.langMap.main.none,
+                        parent_id: null
+                    }].concat(response.data);
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        onFileChange(form) {
+            this[form].files = null;
+            this[form].files = event.target.files;
+        },
+        addProduct() {
+            const config = {
+                headers: {'content-type': 'multipart/form-data'}
             }
+            let formData = new FormData();
+            for (let key in this.productForm) {
+                if (key !== 'files') {
+                    formData.append(key, this.productForm[key]);
+                }
+            }
+            Array.from(this.productForm.files).forEach(file => formData.append('files[]', file));
+            axios.post('/api/product', formData, config).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getProducts();
+                    this.snackbarMessage = this.langMap.product.product_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.productForm = {category_id: null, files: []}
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
         },
-    }
+        showItem(item) {
+            this.$router.push(`/product/${item.id}`)
+        },
+        deleteProcess(item) {
+            this.selectedProductId = item.id
+            this.removeProductDialog = true
+        },
+        deleteProduct(id) {
+            axios.delete(`/api/product/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getProducts()
+                    this.snackbarMessage = this.langMap.customer.product_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeProductDialog = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateItemsCount(value) {
+            this.options.itemsPerPage = value
+            localStorage.itemsPerPage = value;
+            this.options.page = 1
+        },
+    },
+    watch: {
+        options: {
+            handler() {
+                this.getProducts()
+            },
+            deep: true,
+        },
+        loading(value) {
+            this.$parent.$parent.$refs.container.scrollTop = 0
+        }
+    },
+}
 </script>
