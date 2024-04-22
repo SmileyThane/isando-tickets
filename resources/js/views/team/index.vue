@@ -173,30 +173,30 @@
 <script>
 import EventBus from "../../components/EventBus";
 
-    export default {
+export default {
 
-        data() {
-            return {
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                totalTeams: 0,
-                lastPage: 0,
-                loading: this.themeBgColor,
-                expanded: [],
-                singleExpand: false,
-                langMap: this.$store.state.lang.lang_map,
-                themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
-                options: {
-                    page: 1,
-                    sortDesc: [false],
-                    sortBy: ['id'],
-                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
-                },
-                footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [
+    data() {
+        return {
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            totalTeams: 0,
+            lastPage: 0,
+            loading: this.themeBgColor,
+            expanded: [],
+            singleExpand: false,
+            langMap: this.$store.state.lang.lang_map,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            options: {
+                page: 1,
+                sortDesc: [false],
+                sortBy: ['id'],
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
+            },
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [
                     {
                         'text': 10,
                         'value': 10,
@@ -218,38 +218,38 @@ themeBgColor: this.$store.state.themeBgColor,
                         'value': 10000,
                     }
                 ],
+            },
+            headers: [
+                {text: '', value: 'data-table-expand'},
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'id',
                 },
-                headers: [
-                    {text: '', value: 'data-table-expand'},
-                    {
-                        text: 'ID',
-                        align: 'start',
-                        sortable: false,
-                        value: 'id',
-                    },
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
-                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
-                ],
-                teamsSearch: '',
-                teams: [],
-                teamForm: {
-                    team_name: '',
-                    team_description: '',
-                },
-                selectedTeamId: null,
-                removeTeamDialog: false
-            }
-        },
-        mounted() {
-            this.getTeams();
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
-            });
-        },
-        methods: {
-            getTeams() {
-                axios.get(`/api/team?
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+            ],
+            teamsSearch: '',
+            teams: [],
+            teamForm: {
+                team_name: '',
+                team_description: '',
+            },
+            selectedTeamId: null,
+            removeTeamDialog: false
+        }
+    },
+    mounted() {
+        this.getTeams();
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+    },
+    methods: {
+        getTeams() {
+            axios.get(`/api/team?
                 search=${this.teamsSearch}&
                 sort_by=${this.options.sortBy[0]}&
                 sort_val=${this.options.sortDesc[0]}&
