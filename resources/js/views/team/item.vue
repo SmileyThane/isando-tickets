@@ -149,7 +149,9 @@
                                                 :color="themeBgColor"
                                                 @click="addEmployee"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -164,15 +166,15 @@
             <v-dialog v-model="removeEmployeeDialog" persistent max-width="480">
                 <v-card>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                        {{langMap.main.delete_selected}}?
+                        {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
-                            {{langMap.main.cancel}}
+                            {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
-                            {{langMap.main.delete}}
+                            {{ langMap.main.delete }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
