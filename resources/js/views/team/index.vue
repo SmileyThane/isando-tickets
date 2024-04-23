@@ -255,57 +255,57 @@ export default {
                 sort_val=${this.options.sortDesc[0]}&
                 per_page=${this.options.itemsPerPage}&
                 page=${this.options.page}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.teams = response.data.data
-                        this.totalTeams = response.data.total
-                        this.lastPage = response.data.last_page
-                        this.loading = false
-                    }
-                });
-            },
-            addTeam() {
-                axios.post('/api/team', this.teamForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeams()
-                        this.teamForm = {}
-                    }
-                });
-            },
-            showItem(item) {
-                this.$router.push(`/team/${item.id}`)
-            },
-            deleteProcess(item) {
-                this.selectedTeamId = item.id
-                this.removeTeamDialog = true
-            },
-            deleteTeam(id) {
-                axios.delete(`/api/team/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeams()
-                        this.snackbarMessage = this.langMap.team.team_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.removeTeamDialog = false
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateItemsCount(value) {
-                this.options.itemsPerPage = value
-                localStorage.itemsPerPage = value;
-                this.options.page = 1
-            },
+                response = response.data
+                if (response.success === true) {
+                    this.teams = response.data.data
+                    this.totalTeams = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.loading = false
+                }
+            });
         },
-        watch: {
-            loading(value) {
-                this.$parent.$parent.$refs.container.scrollTop = 0
-            }
+        addTeam() {
+            axios.post('/api/team', this.teamForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeams()
+                    this.teamForm = {}
+                }
+            });
+        },
+        showItem(item) {
+            this.$router.push(`/team/${item.id}`)
+        },
+        deleteProcess(item) {
+            this.selectedTeamId = item.id
+            this.removeTeamDialog = true
+        },
+        deleteTeam(id) {
+            axios.delete(`/api/team/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeams()
+                    this.snackbarMessage = this.langMap.team.team_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeTeamDialog = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateItemsCount(value) {
+            this.options.itemsPerPage = value
+            localStorage.itemsPerPage = value;
+            this.options.page = 1
+        },
+    },
+    watch: {
+        loading(value) {
+            this.$parent.$parent.$refs.container.scrollTop = 0
         }
     }
+}
 </script>
