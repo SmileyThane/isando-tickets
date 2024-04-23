@@ -19,8 +19,10 @@
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.team.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateTeam">
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
+                               @click="cancelUpdateTeam">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateTeam">
@@ -94,8 +96,8 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span v-if="item.is_manager">{{langMap.main.unmark_as_manager}}</span>
-                                    <span v-else>{{langMap.main.mark_as_manager}}</span>
+                                    <span v-if="item.is_manager">{{ langMap.main.unmark_as_manager }}</span>
+                                    <span v-else>{{ langMap.main.mark_as_manager }}</span>
                                 </v-tooltip>
                             </template>
                             <template v-slot:item.actions="{ item }">
@@ -109,7 +111,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.company.delete_contact}}</span>
+                                    <span>{{ langMap.company.delete_contact }}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
@@ -121,7 +123,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.team.new_member }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
