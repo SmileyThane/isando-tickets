@@ -305,32 +305,32 @@ export default {
                     this.companies = response.data
                 }
 
-                });
-            },
-            addEmployee() {
-                axios.post(`/api/team/employee`, this.employeeForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeam()
-                    }
+            });
+        },
+        addEmployee() {
+            axios.post(`/api/team/employee`, this.employeeForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeam()
+                }
 
-                });
-            },
-            removeEmployeeProcess(item) {
-                this.selectedEmployeeId = item.id
-                this.removeEmployeeDialog = true
-            },
-            removeEmployee(id) {
-                axios.delete(`/api/team/employee/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeam()
-                        this.rolesDialog = false
-                        this.snackbarMessage = this.langMap.company.employee_deleted
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.removeEmployeeDialog = false
-                    }
+            });
+        },
+        removeEmployeeProcess(item) {
+            this.selectedEmployeeId = item.id
+            this.removeEmployeeDialog = true
+        },
+        removeEmployee(id) {
+            axios.delete(`/api/team/employee/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeam()
+                    this.rolesDialog = false
+                    this.snackbarMessage = this.langMap.company.employee_deleted
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeEmployeeDialog = false
+                }
 
                 });
             },
