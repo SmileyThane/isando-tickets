@@ -332,31 +332,31 @@ export default {
                     this.removeEmployeeDialog = false
                 }
 
-                });
-            },
-            updateTeam() {
-                axios.patch(`/api/team/${this.$route.params.id}`, this.team).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.team.team_name = response.data.name
-                        this.team.team_description = response.data.description
-                        this.enableToEdit = false
-                        this.snackbarMessage = this.langMap.main.update_successful
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    }
+            });
+        },
+        updateTeam() {
+            axios.patch(`/api/team/${this.$route.params.id}`, this.team).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.team.team_name = response.data.name
+                    this.team.team_description = response.data.description
+                    this.enableToEdit = false
+                    this.snackbarMessage = this.langMap.main.update_successful
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                }
 
-                });
-            },
-            toggleAsManager(item) {
-                axios.post(`/api/team/employee/manager`, {
-                    company_user_id: item.company_user_id,
-                    team_id: item.team_id
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeam()
-                    }
+            });
+        },
+        toggleAsManager(item) {
+            axios.post(`/api/team/employee/manager`, {
+                company_user_id: item.company_user_id,
+                team_id: item.team_id
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeam()
+                }
 
                 });
             },
