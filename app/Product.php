@@ -38,7 +38,7 @@ class Product extends Model
 
     public function getFullNameAttribute()
     {
-        if ($this->category_id) {
+        if ($this->category) {
             return $this->category->full_name . ' > ' . $this->name;
         } else {
             return $this->name;
