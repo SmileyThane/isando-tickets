@@ -225,85 +225,85 @@ export default {
                         'value': 10000,
                     }
                 ],
+            },
+            headers: [
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'employee.id',
                 },
-                headers: [
+                {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'employee.user_data.name'},
+                {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
+                {text: `${this.$store.state.lang.lang_map.main.team_manager}`, value: 'is_manager'},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions'},
+            ],
+            team: {
+                team_name: '',
+                team_description: '',
+                team_owner_id: '',
+                employees: [
                     {
-                        text: 'ID',
-                        align: 'start',
-                        sortable: false,
-                        value: 'employee.id',
-                    },
-                    {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'employee.user_data.name'},
-                    {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
-                    {text: `${this.$store.state.lang.lang_map.main.team_manager}`, value: 'is_manager'},
-                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions'},
-                ],
-                team: {
-                    team_name: '',
-                    team_description: '',
-                    team_owner_id: '',
-                    employees: [
-                        {
-                            employee: {
-                                user_id: '',
-                                company_id: '',
-                                roles: [],
-                                user_data: ''
+                        employee: {
+                            user_id: '',
+                            company_id: '',
+                            roles: [],
+                            user_data: ''
 
-                            }
                         }
-                    ]
-                },
-                removeEmployeeDialog: false,
-                selectedEmployeeId: null,
-                employeeForm: {
-                    company_user_id: '',
-                    team_id: ''
-                },
-                companies: [
-                    {
-                        id: '',
-                        name: '',
-                        employees: [
-                            {
-                                user_data:
-                                    {
-                                        email: '',
-                                        name: ''
-                                    }
-                            }
-                        ]
                     }
                 ]
-            }
-        },
-        mounted() {
-            this.getTeam();
-            this.employeeForm.team_id = this.$route.params.id;
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
+            },
+            removeEmployeeDialog: false,
+            selectedEmployeeId: null,
+            employeeForm: {
+                company_user_id: '',
+                team_id: ''
+            },
+            companies: [
+                {
+                    id: '',
+                    name: '',
+                    employees: [
+                        {
+                            user_data:
+                                {
+                                    email: '',
+                                    name: ''
+                                }
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    mounted() {
+        this.getTeam();
+        this.employeeForm.team_id = this.$route.params.id;
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+    },
+    methods: {
+        getTeam() {
+            axios.get(`/api/team/${this.$route.params.id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.team = response.data
+                    this.team.team_name = response.data.name
+                    this.team.team_description = response.data.description
+                    this.getCompanies()
+                }
+
             });
         },
-        methods: {
-            getTeam() {
-                axios.get(`/api/team/${this.$route.params.id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.team = response.data
-                        this.team.team_name = response.data.name
-                        this.team.team_description = response.data.description
-                        this.getCompanies()
-                    }
-
-                });
-            },
-            getCompanies() {
-                axios.get(`/api/company/${this.team.team_owner_id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.companies = response.data
-                    }
+        getCompanies() {
+            axios.get(`/api/company/${this.team.team_owner_id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.companies = response.data
+                }
 
                 });
             },
