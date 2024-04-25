@@ -358,15 +358,15 @@ export default {
                     this.getTeam()
                 }
 
-                });
-            },
-            cancelUpdateTeam() {
-                this.getTeam();
-                this.enableToEdit = false;
-            },
+            });
+        },
+        cancelUpdateTeam() {
+            this.getTeam();
+            this.enableToEdit = false;
+        },
         updateItemsPerPage(options) {
             localStorage.itemsPerPage = options.itemsPerPage;
         }
-        }
     }
+}
 </script>
