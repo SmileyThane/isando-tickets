@@ -598,7 +598,8 @@ class ClientRepository
         }
     }
 
-    public function syncFilterGroups($groupNames, $clientId) {
+    public function syncFilterGroups($groupNames, $clientId)
+    {
         $employee = $companyId = Auth::user()->employee;
         $groupIds = [];
         foreach ($groupNames as $groupName) {

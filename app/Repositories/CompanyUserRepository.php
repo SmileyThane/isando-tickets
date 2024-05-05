@@ -75,7 +75,7 @@ class CompanyUserRepository
                 ['company_id', $employee->company_id],
                 ['is_clientable', true]
             ]);
-            if($request->with_trashed) {
+            if ($request->with_trashed) {
                 $freeCompanyUsersQuery->withTrashed();
             }
 
@@ -83,9 +83,9 @@ class CompanyUserRepository
         }
 
         $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds);
-            if($request->with_trashed) {
-                $clientCompanyUsers->withTrashed();
-            }
+        if ($request->with_trashed) {
+            $clientCompanyUsers->withTrashed();
+        }
         $companyUsers = CompanyUser::whereIn(
             'id',
             array_merge(
@@ -106,9 +106,9 @@ class CompanyUserRepository
                 'userData.settings',
             ]);
 
-            if ($request->with_trashed) {
-                $companyUsers->withTrashed();
-            }
+        if ($request->with_trashed) {
+            $companyUsers->withTrashed();
+        }
 
         if ($request->search) {
             $request['page'] = 1;
@@ -118,7 +118,7 @@ class CompanyUserRepository
                     $query->where('name', 'like', '%' . $request->search . '%')
                         ->orWhere('number', 'like', '%' . $request->search . '%')
                         ->orWhere('surname', 'like', '%' . $request->search . '%');
-                    if($request->with_trashed) {
+                    if ($request->with_trashed) {
                         $query->withTrashed();
                     }
                 }
