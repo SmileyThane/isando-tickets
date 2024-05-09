@@ -1,4 +1,3 @@
-
 <script type="text/php">
     if (isset($pdf)) {
         $x = 550;
