@@ -339,6 +339,15 @@
                                     :color="themeBgColor"
                                     class="mr-3"
                                     dark
+                                    @click="saveAsTemplate(false)"
+                                >
+                                    {{ langMap.main.save }}
+                                </v-btn>
+
+                                <v-btn
+                                    :color="themeBgColor"
+                                    class="mr-3"
+                                    dark
                                     @click="send()"
 
                                 >
@@ -424,6 +433,58 @@
                         <v-container>
                             <div class="row">
                                 <v-col class="pa-3" cols="5">
+<!--                                    <h3>{{ langMap.notification.select_recipient }}</h3>-->
+                                    <h3>Select client groups</h3>
+                                    <v-spacer>&nbsp;</v-spacer>
+
+                                    <v-text-field
+                                        v-model="ugSearch"
+                                        :color="themeBgColor"
+                                        :label="langMap.main.search"
+                                        class="pa-3"
+                                        clear-icon="mdi-close-circle-outline"
+                                        clearable
+                                        dense
+                                        hide-details
+                                    ></v-text-field>
+                                    <perfect-scrollbar>
+                                        <v-treeview
+                                            v-model="toAdd"
+                                            :color="themeBgColor"
+                                            :items="clientGroups"
+                                            :search="ugSearch"
+                                            :selected-color="themeBgColor"
+                                            dense
+                                            hoverable
+                                            item-disabled="disabled"
+                                            open-on-click
+                                            selectable
+                                        >
+                                            <template v-slot:prepend="{ item }">
+                                                <v-icon v-if="item.entity_type === 'App\\Client'" small>
+                                                    mdi-factory
+                                                </v-icon>
+                                                <v-icon v-if="item.entity_type === 'App\\User'" small>
+                                                    mdi-account
+                                                </v-icon>
+                                                <v-icon v-if="item.entity_type === 'App\\Email' && item.type" small>
+                                                    {{ item.type.icon }}
+                                                </v-icon>
+                                                <v-icon v-else-if="item.entity_type === 'App\\Email' && !item.type"
+                                                        small>
+                                                    mdi-email
+                                                </v-icon>
+                                            </template>
+                                            <template v-slot:label="{ item }">
+                                                {{ item.name }}
+                                                <small v-if="item.type">
+                                                    ({{ $helpers.i18n.localized(item.type) }})
+                                                </small>
+                                            </template>
+                                        </v-treeview>
+                                    </perfect-scrollbar>
+                                    <v-spacer>&nbsp;</v-spacer>
+
                                     <h3>{{ langMap.notification.select_recipient }}</h3>
                                     <v-spacer>&nbsp;</v-spacer>
 
@@ -611,6 +672,7 @@ export default {
             notificationTypes: [],
             signatures: [],
             recipients: [],
+            clientGroups: [],
             newRecipients: [],
             priorities: [
                 {id: 1, name: this.$store.state.lang.lang_map.notification.priority_high},
@@ -618,6 +680,7 @@ export default {
                 {id: 3, name: this.$store.state.lang.lang_map.notification.priority_low}
             ],
             srcSearch: '',
+            ugSearch: '',
             dstSearch: '',
             toAdd: [],
             toDelete: []
@@ -628,6 +691,7 @@ export default {
         this.getNotificationTypes();
         this.getSignatures();
         this.getRecipients();
+        this.getClientGroups()
 
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
@@ -669,6 +733,18 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.signatures = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getClientGroups() {
+            axios.get('/api/filter_groups/client?view_as_tree=1&with_clients=1').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.clientGroups = response.data
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -778,7 +854,7 @@ export default {
             clear(this.newRecipients);
             this.toDelete = [];
         },
-        saveAsTemplate() {
+        saveAsTemplate(replicate = true) {
             if (!this.template.notification_type_id) {
                 this.snackbarMessage = this.langMap.notification.type_required;
                 this.actionColor = 'error';
@@ -814,19 +890,36 @@ export default {
                 this.$refs.subject.focus();
                 return false;
             }
-            axios.post('/api/notification', this.template).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.snackbarMessage = this.langMap.notification.template_saved;
-                    this.actionColor = 'success';
-                    this.snackbar = true;
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
-                }
-                return true
-            });
+            if (replicate || !this.template.id) {
+                axios.post('/api/notification', this.template).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.notification.template_saved;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
+            } else {
+                axios.patch(`/api/notification/${this.template.id}`, this.template).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.notification.template_saved;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
+            }
+
         },
         deleteTemplate() {
             axios.delete(`/api/notification/${this.template.id}`).then(response => {
