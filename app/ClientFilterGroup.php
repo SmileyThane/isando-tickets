@@ -18,7 +18,7 @@ class ClientFilterGroup extends Model
 
     public function getChildrenAttribute()
     {
-        return $this->childrenData()->get();
+        return $this->childrenData()->get()->mergeRecursive($this->clients);
     }
 
     public function childrenData(): HasMany
@@ -39,5 +39,10 @@ class ClientFilterGroup extends Model
         }
 
         return $this->attributes['name'];
+    }
+
+    public function clients()
+    {
+        return $this->belongsToMany(Client::class, 'client_filter_group_has_clients','id','client_id');
     }
 }
