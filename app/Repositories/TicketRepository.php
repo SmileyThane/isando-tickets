@@ -272,9 +272,9 @@ class TicketRepository
                 'billedBy',
                 'followers'
             )->first();
-            if ($ticket) {
-                $ticket->makeVisible(['to']);
-            }
+        if ($ticket) {
+            $ticket->makeVisible(['to']);
+        }
 
         return $ticket;
     }
@@ -364,25 +364,28 @@ class TicketRepository
         $ticket = Ticket::query()->find($id);
         $ticket->status_id = $request->status_id;
         $ticket->save();
-        $this->emailEmployees(
-            $this->filterEmailRecipients($ticket->to->employees, $ticket, $request->ticket_action ?? ''),
-            $ticket,
-            ChangedTicketStatus::class,
-        );
-        // Notify followers
-        $followers = $ticket->followers()->get()->all();
-        foreach ($followers as $follower) {
-            $follower->notify(
-                new ChangedFollowTicketStatus(
-                    $follower->employee->companyData->name,
-                    $follower->title,
-                    $follower->full_name,
-                    $ticket->name,
-                    $ticket->id,
-                    $follower->language->short_code
-                )
+        if ($request->is_internal === false) {
+            $this->emailEmployees(
+                $this->filterEmailRecipients($ticket->to->employees, $ticket, $request->ticket_action ?? ''),
+                $ticket,
+                ChangedTicketStatus::class,
             );
+            // Notify followers
+            $followers = $ticket->followers()->get()->all();
+            foreach ($followers as $follower) {
+                $follower->notify(
+                    new ChangedFollowTicketStatus(
+                        $follower->employee->companyData->name,
+                        $follower->title,
+                        $follower->full_name,
+                        $ticket->name,
+                        $ticket->id,
+                        $follower->language->short_code
+                    )
+                );
+            }
         }
+
         if ($withHistory === true) {
             if ($request->status_id === TicketStatus::CLOSED) {
                 $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_closed');
@@ -526,7 +529,7 @@ class TicketRepository
             $request->status_id = 4;
         }
 
-        if ($replyShouldBeEmailed) {
+        if ($replyShouldBeEmailed && $request->is_internal === false) {
             $this->sendEmailWithReply($id, $request->answer, $ticketAnswer->attachments);
         }
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
@@ -536,7 +539,8 @@ class TicketRepository
         return true;
     }
 
-    public function sendEmailWithReply($ticketId, $reply, $files): bool {
+    public function sendEmailWithReply($ticketId, $reply, $files): bool
+    {
         $ticket = Ticket::find($ticketId);
 
         $assignedPerson = $ticket->assignedPerson;
