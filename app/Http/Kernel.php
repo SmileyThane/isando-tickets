@@ -60,7 +60,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-          SubstituteBindings::class,
+            SubstituteBindings::class,
         ],
     ];
 

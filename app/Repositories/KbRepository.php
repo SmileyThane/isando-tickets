@@ -43,7 +43,7 @@ class KbRepository
                 ->orderBy('name', 'ASC')
                 ->orderBy('name_de', 'ASC');
 
-            if(empty($search)) {
+            if (empty($search)) {
                 $result->where('parent_id', $category_id);
             } else {
                 $result = $result->where(function ($query) use ($search) {
@@ -78,7 +78,7 @@ class KbRepository
                     $resultCategory = $resultCategory->where('is_internal', '=', false);
                 }
 
-                $result =  $resultCategory->get()->merge($result);
+                $result = $resultCategory->get()->merge($result);
             }
         }
 
@@ -226,7 +226,7 @@ class KbRepository
         $owner_id = Auth::user()->employee->id;
         $request['owner_id'] = $owner_id;
         $article = KbArticle::query()->find($id);
-        if($article) {
+        if ($article) {
             $article->update($request);
 
             foreach ($article->categories as $category) {

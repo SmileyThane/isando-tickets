@@ -184,7 +184,7 @@ class EmailReceiverRepository
             (count($userFrom->employee->roles) === 0
                 || $userFrom->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)
             )
-        ){
+        ) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $userFrom->employee->id)->first();
             if ($clientCompanyUser) {
                 $fromEntityId = $clientCompanyUser->client_id;
@@ -293,11 +293,11 @@ class EmailReceiverRepository
     {
         $result = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
 
-        if(strstr($result, self::YAHOO_QUOTED_TAG_PART_FOR_REMOVING)) {
+        if (strstr($result, self::YAHOO_QUOTED_TAG_PART_FOR_REMOVING)) {
             $result = explode(self::YAHOO_QUOTED_TAG_PART, $result)[0];
         }
 
-        if(strstr($result, self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING)) {
+        if (strstr($result, self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING)) {
             $result = explode(self::CUSTOM_QUOTED_TAG_PART_FOR_REMOVING, $result)[0];
         }
 
