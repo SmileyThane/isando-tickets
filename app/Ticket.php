@@ -273,7 +273,7 @@ class Ticket extends Model
     {
         // Prefix + Delimiter + creation_date + Delimiter + sequence
         $settings = $owner = null;
-        $ownerName = 'T';
+        $ownerName = 'E';
 
         try {
             $owner = $this->to_enity_type === Company::class ?
@@ -286,7 +286,7 @@ class Ticket extends Model
         }
 
         if ($owner) {
-            $ownerName = $owner->name;
+            $ownerName = 'M' . $owner->name;
             $settings = $owner->settings;
         }
 
