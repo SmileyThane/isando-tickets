@@ -19,7 +19,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.product.add_new }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -89,7 +90,7 @@
                                                         <v-chip
                                                             :color="themeBgColor"
                                                             class="ma-2"
-                                                            :text-color="themeFgColor"                                                        >
+                                                            :text-color="themeFgColor">
                                                             {{ text }}
                                                         </v-chip>
                                                     </template>
@@ -105,7 +106,9 @@
                                                 :color="themeBgColor"
                                                 @click="addProduct"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -131,7 +134,8 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getProducts" v-model="productsSearch" :color="themeBgColor"
+                                        <v-text-field @input="getProducts" v-model="productsSearch"
+                                                      :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="1">
@@ -173,7 +177,7 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <p><strong>{{langMap.main.actions}}:</strong></p>
+                                    <p><strong>{{ langMap.main.actions }}:</strong></p>
                                     <p>
                                         <v-btn
                                             color="grey"
@@ -212,14 +216,15 @@
             <v-dialog v-model="removeProductDialog" persistent max-width="480">
                 <v-card>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                        {{langMap.main.delete_selected}}?
+                        {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeProductDialog = false">{{langMap.main.cancel}}
+                        <v-btn color="grey darken-1" text @click="removeProductDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn color="red darken-1" :disabled="!$helpers.auth.checkPermissionByIds([21])" text @click="deleteProduct(selectedProductId)">
-                            {{langMap.main.delete}}
+                        <v-btn color="red darken-1" :disabled="!$helpers.auth.checkPermissionByIds([21])" text
+                               @click="deleteProduct(selectedProductId)">
+                            {{ langMap.main.delete }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -242,33 +247,33 @@
 </style>
 
 <script>
-    import EventBus from "../../components/EventBus";
+import EventBus from "../../components/EventBus";
 
-    export default {
+export default {
 
-        data() {
-            return {
-                clientId: 6,
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                totalProducts: 0,
-                lastPage: 0,
-                loading: this.themeBgColor,
-                expanded: [],
-                singleExpand: false,
-                langMap: this.$store.state.lang.lang_map,
-                themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
-                options: {
-                    page: 1,
-                    sortDesc: [false],
-                    sortBy: ['id'],
-                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
-                },
-                footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [
+    data() {
+        return {
+            clientId: 6,
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            totalProducts: 0,
+            lastPage: 0,
+            loading: this.themeBgColor,
+            expanded: [],
+            singleExpand: false,
+            langMap: this.$store.state.lang.lang_map,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            options: {
+                page: 1,
+                sortDesc: [false],
+                sortBy: ['id'],
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
+            },
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [
                     {
                         'text': 10,
                         'value': 10,
@@ -290,158 +295,163 @@ themeBgColor: this.$store.state.themeBgColor,
                         'value': 10000,
                     }
                 ],
+            },
+            headers: [
+                {text: '', value: 'data-table-expand'},
+                {text: 'ID', align: 'start', sortable: false, value: 'id'},
+                {text: `${this.$store.state.lang.lang_map.product.code}`, value: 'product_code', sortable: false},
+                {
+                    text: `${this.$store.state.lang.lang_map.main.category}`,
+                    value: 'category.full_name',
+                    sortable: false,
+                    width: '25%'
                 },
-                headers: [
-                    {text: '', value: 'data-table-expand'},
-                    {text: 'ID', align: 'start', sortable: false, value: 'id'},
-                    {text: `${this.$store.state.lang.lang_map.product.code}`, value: 'product_code', sortable: false},
-                    {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.full_name', sortable: false, width: '25%'},
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name', width: '20%'},
-                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description', width: '30%'},
-                ],
-                productsSearch: '',
-                products: [],
-                removeProductDialog: false,
-                selectedProductId: null,
-                productForm: {
-                    product_code: '',
-                    category_id: null,
-                    product_name: '',
-                    product_description: '',
-                    files: []
-                },
-                categories: []
-            }
-        },
-        mounted() {
-            this.getProducts();
-            this.getCategories();
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name', width: '20%'},
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description', width: '30%'},
+            ],
+            productsSearch: '',
+            products: [],
+            removeProductDialog: false,
+            selectedProductId: null,
+            productForm: {
+                product_code: '',
+                category_id: null,
+                product_name: '',
+                product_description: '',
+                files: []
+            },
+            categories: []
+        }
+    },
+    mounted() {
+        this.getProducts();
+        this.getCategories();
 
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+    },
+    methods: {
+        getProducts() {
+            this.loading = this.themeBgColor
+            if (this.options.sortDesc.length <= 0) {
+                this.options.sortBy[0] = 'id'
+                this.options.sortDesc[0] = false
+            }
+            if (this.totalProducts < this.options.itemsPerPage) {
+                this.options.page = 1
+            }
+            axios.get('/api/product', {
+                params: {
+                    search: this.productsSearch,
+                    sort_by: this.options.sortBy[0],
+                    sort_val: this.options.sortDesc[0],
+                    per_page: this.options.itemsPerPage,
+                    page: this.options.page
+                }
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.products = response.data.data
+                    this.totalProducts = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.lastPage = response.data.last_page
+                    this.loading = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+
             });
         },
-        methods: {
-            getProducts() {
-                this.loading = this.themeBgColor
-                if (this.options.sortDesc.length <= 0) {
-                    this.options.sortBy[0] = 'id'
-                    this.options.sortDesc[0] = false
+        getCategories() {
+            axios.get(`/api/main_company/product_categories/flat`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.categories = [{
+                        id: null,
+                        name: this.langMap.main.none,
+                        full_name: this.langMap.main.none,
+                        parent_id: null
+                    }].concat(response.data);
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
                 }
-                if (this.totalProducts < this.options.itemsPerPage) {
-                    this.options.page = 1
-                }
-                axios.get('/api/product', {
-                    params: {
-                        search: this.productsSearch,
-                        sort_by: this.options.sortBy[0],
-                        sort_val: this.options.sortDesc[0],
-                        per_page: this.options.itemsPerPage,
-                        page: this.options.page
-                    }
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.products = response.data.data
-                        this.totalProducts = response.data.total
-                        this.lastPage = response.data.last_page
-                        this.lastPage = response.data.last_page
-                        this.loading = false
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-
-                });
-            },
-            getCategories() {
-                axios.get(`/api/main_company/product_categories/flat`).then(response => {
-                    response = response.data;
-                    if (response.success === true) {
-                        this.categories = [{
-                            id: null,
-                            name: this.langMap.main.none,
-                            full_name: this.langMap.main.none,
-                            parent_id: null
-                        }].concat(response.data);
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            onFileChange(form) {
-                this[form].files = null;
-                this[form].files = event.target.files;
-            },
-            addProduct() {
-                const config = {
-                    headers: {'content-type': 'multipart/form-data'}
-                }
-                let formData = new FormData();
-                for (let key in this.productForm) {
-                    if (key !== 'files') {
-                        formData.append(key, this.productForm[key]);
-                    }
-                }
-                Array.from(this.productForm.files).forEach(file => formData.append('files[]', file));
-                axios.post('/api/product', formData, config).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getProducts();
-                        this.snackbarMessage = this.langMap.product.product_created;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.productForm = {category_id: null, files: []}
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            showItem(item) {
-                this.$router.push(`/product/${item.id}`)
-            },
-            deleteProcess(item) {
-                this.selectedProductId = item.id
-                this.removeProductDialog = true
-            },
-            deleteProduct(id) {
-                axios.delete(`/api/product/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getProducts()
-                        this.snackbarMessage = this.langMap.customer.product_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.removeProductDialog = false
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateItemsCount(value) {
-                this.options.itemsPerPage = value
-                localStorage.itemsPerPage = value;
-                this.options.page = 1
-            },
+            });
         },
-        watch: {
-            options: {
-                handler() {
-                    this.getProducts()
-                },
-                deep: true,
-            },
-            loading(value) {
-                this.$parent.$parent.$refs.container.scrollTop = 0
+        onFileChange(form) {
+            this[form].files = null;
+            this[form].files = event.target.files;
+        },
+        addProduct() {
+            const config = {
+                headers: {'content-type': 'multipart/form-data'}
             }
+            let formData = new FormData();
+            for (let key in this.productForm) {
+                if (key !== 'files') {
+                    formData.append(key, this.productForm[key]);
+                }
+            }
+            Array.from(this.productForm.files).forEach(file => formData.append('files[]', file));
+            axios.post('/api/product', formData, config).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getProducts();
+                    this.snackbarMessage = this.langMap.product.product_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.productForm = {category_id: null, files: []}
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
         },
-    }
+        showItem(item) {
+            this.$router.push(`/product/${item.id}`)
+        },
+        deleteProcess(item) {
+            this.selectedProductId = item.id
+            this.removeProductDialog = true
+        },
+        deleteProduct(id) {
+            axios.delete(`/api/product/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getProducts()
+                    this.snackbarMessage = this.langMap.customer.product_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeProductDialog = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateItemsCount(value) {
+            this.options.itemsPerPage = value
+            localStorage.itemsPerPage = value;
+            this.options.page = 1
+        },
+    },
+    watch: {
+        options: {
+            handler() {
+                this.getProducts()
+            },
+            deep: true,
+        },
+        loading(value) {
+            this.$parent.$parent.$refs.container.scrollTop = 0
+        }
+    },
+}
 </script>

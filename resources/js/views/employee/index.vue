@@ -107,7 +107,8 @@
                                             right
                                             @click="addEmployee"
                                         >
-                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                            </v-icon>
                                         </v-btn>
                                     </div>
                                 </v-form>
@@ -140,7 +141,7 @@
                                                       class="mx-4" @input="debounceGetEmployees"></v-text-field>
                                     </v-col>
                                     <v-col md="4" sm="12">
-                                        <v-checkbox v-model="withTrashed"  :color="themeBgColor"
+                                        <v-checkbox v-model="withTrashed" :color="themeBgColor"
                                                     value="1"
                                                     dense
                                                     :label="langMap.individuals.with_trashed"
@@ -191,9 +192,11 @@
                                     color="grey darken-1"
                                     v-if="item.user_data && (item.user_data.avatar_url || item.user_data.full_name)"
                                 >
-                                    <v-img v-if="item.user_data.avatar_url" :src="item.user_data.avatar_url" />
+                                    <v-img v-if="item.user_data.avatar_url" :src="item.user_data.avatar_url"/>
                                     <span v-else-if="item.user_data.full_name" class="white--text">
-                                            {{ item.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                            {{
+                                            item.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                        }}
                                         </span>
 
                                 </v-avatar>
@@ -212,7 +215,9 @@
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.user_data.is_active="{ item }">
-                                <v-icon v-if="item && item.deleted_at" @click="showItem(item)" color="red darken" :title="langMap.individuals.deleted">mdi-cancel</v-icon>
+                                <v-icon v-if="item && item.deleted_at" @click="showItem(item)" color="red darken"
+                                        :title="langMap.individuals.deleted">mdi-cancel
+                                </v-icon>
                                 <v-icon v-if="item && !item.deleted_at" @click="showItem(item)"
                                         :style="item.user_data.is_active === 1 ?'color:#95C13D;' : 'color:red;'"
                                 >
@@ -221,9 +226,9 @@
                             </template>
                             <template v-slot:item.user_data.status="{ item }">
                                 <v-icon v-if="item" @click="showItem(item)"
-                                :style="item.user_data.status === 1 ?'color:#95C13D;' : 'color:red;'"
+                                        :style="item.user_data.status === 1 ?'color:#95C13D;' : 'color:red;'"
                                 >
-                                    {{item.user_data.status === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
+                                    {{ item.user_data.status === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
                                 </v-icon>
                             </template>
                             <template v-slot:item.assigned_to_clients.clients="{ item }">
@@ -277,7 +282,7 @@
                         <v-btn color="blue darken-1" text @click="createOrRestoreEmployee('restore')">
                             {{ langMap.individuals.restore }}
                         </v-btn>
-                        <v-btn color="grey darken-1" text  @click="emailTrashed = false">
+                        <v-btn color="grey darken-1" text @click="emailTrashed = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
                     </v-card-actions>
@@ -357,12 +362,25 @@ export default {
                 {text: '', value: 'data-table-expand'},
                 {text: 'ID', align: 'start', value: 'id'},
                 {text: `${this.$store.state.lang.lang_map.profile.personal_id}`, value: 'user_data.number'},
-                {text: `${this.$store.state.lang.lang_map.profile.avatar}`, value: 'avatar', align: 'center', sortable: false},
+                {
+                    text: `${this.$store.state.lang.lang_map.profile.avatar}`,
+                    value: 'avatar',
+                    align: 'center',
+                    sortable: false
+                },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'user_data.name'},
                 {text: `${this.$store.state.lang.lang_map.main.last_name}`, value: 'user_data.surname'},
                 {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'user_data.emails'},
-                {text: `${this.$store.state.lang.lang_map.individuals.is_active}`, value: 'user_data.is_active', align: 'center'},
-                {text: `${this.$store.state.lang.lang_map.individuals.status}`, value: 'user_data.status', align: 'center'},
+                {
+                    text: `${this.$store.state.lang.lang_map.individuals.is_active}`,
+                    value: 'user_data.is_active',
+                    align: 'center'
+                },
+                {
+                    text: `${this.$store.state.lang.lang_map.individuals.status}`,
+                    value: 'user_data.status',
+                    align: 'center'
+                },
                 {text: `${this.$store.state.lang.lang_map.main.client}`, value: 'assigned_to_clients.clients'},
             ],
             withTrashed: 0,
@@ -390,7 +408,7 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },

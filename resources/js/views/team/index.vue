@@ -10,7 +10,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.team.add_new }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -44,7 +45,9 @@
                                                 :color="themeBgColor"
                                                 @click="addTeam"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -168,32 +171,32 @@
 
 
 <script>
-    import EventBus from "../../components/EventBus";
+import EventBus from "../../components/EventBus";
 
-    export default {
+export default {
 
-        data() {
-            return {
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                totalTeams: 0,
-                lastPage: 0,
-                loading: this.themeBgColor,
-                expanded: [],
-                singleExpand: false,
-                langMap: this.$store.state.lang.lang_map,
-                themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
-                options: {
-                    page: 1,
-                    sortDesc: [false],
-                    sortBy: ['id'],
-                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
-                },
-                footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [
+    data() {
+        return {
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            totalTeams: 0,
+            lastPage: 0,
+            loading: this.themeBgColor,
+            expanded: [],
+            singleExpand: false,
+            langMap: this.$store.state.lang.lang_map,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            options: {
+                page: 1,
+                sortDesc: [false],
+                sortBy: ['id'],
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
+            },
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [
                     {
                         'text': 10,
                         'value': 10,
@@ -215,94 +218,94 @@ themeBgColor: this.$store.state.themeBgColor,
                         'value': 10000,
                     }
                 ],
+            },
+            headers: [
+                {text: '', value: 'data-table-expand'},
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'id',
                 },
-                headers: [
-                    {text: '', value: 'data-table-expand'},
-                    {
-                        text: 'ID',
-                        align: 'start',
-                        sortable: false,
-                        value: 'id',
-                    },
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
-                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
-                ],
-                teamsSearch: '',
-                teams: [],
-                teamForm: {
-                    team_name: '',
-                    team_description: '',
-                },
-                selectedTeamId: null,
-                removeTeamDialog: false
-            }
-        },
-        mounted() {
-            this.getTeams();
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
-            });
-        },
-        methods: {
-            getTeams() {
-                axios.get(`/api/team?
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+            ],
+            teamsSearch: '',
+            teams: [],
+            teamForm: {
+                team_name: '',
+                team_description: '',
+            },
+            selectedTeamId: null,
+            removeTeamDialog: false
+        }
+    },
+    mounted() {
+        this.getTeams();
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+    },
+    methods: {
+        getTeams() {
+            axios.get(`/api/team?
                 search=${this.teamsSearch}&
                 sort_by=${this.options.sortBy[0]}&
                 sort_val=${this.options.sortDesc[0]}&
                 per_page=${this.options.itemsPerPage}&
                 page=${this.options.page}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.teams = response.data.data
-                        this.totalTeams = response.data.total
-                        this.lastPage = response.data.last_page
-                        this.loading = false
-                    }
-                });
-            },
-            addTeam() {
-                axios.post('/api/team', this.teamForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeams()
-                        this.teamForm = {}
-                    }
-                });
-            },
-            showItem(item) {
-                this.$router.push(`/team/${item.id}`)
-            },
-            deleteProcess(item) {
-                this.selectedTeamId = item.id
-                this.removeTeamDialog = true
-            },
-            deleteTeam(id) {
-                axios.delete(`/api/team/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeams()
-                        this.snackbarMessage = this.langMap.team.team_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.removeTeamDialog = false
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateItemsCount(value) {
-                this.options.itemsPerPage = value
-                localStorage.itemsPerPage = value;
-                this.options.page = 1
-            },
+                response = response.data
+                if (response.success === true) {
+                    this.teams = response.data.data
+                    this.totalTeams = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.loading = false
+                }
+            });
         },
-        watch: {
-            loading(value) {
-                this.$parent.$parent.$refs.container.scrollTop = 0
-            }
+        addTeam() {
+            axios.post('/api/team', this.teamForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeams()
+                    this.teamForm = {}
+                }
+            });
+        },
+        showItem(item) {
+            this.$router.push(`/team/${item.id}`)
+        },
+        deleteProcess(item) {
+            this.selectedTeamId = item.id
+            this.removeTeamDialog = true
+        },
+        deleteTeam(id) {
+            axios.delete(`/api/team/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeams()
+                    this.snackbarMessage = this.langMap.team.team_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeTeamDialog = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateItemsCount(value) {
+            this.options.itemsPerPage = value
+            localStorage.itemsPerPage = value;
+            this.options.page = 1
+        },
+    },
+    watch: {
+        loading(value) {
+            this.$parent.$parent.$refs.container.scrollTop = 0
         }
     }
+}
 </script>

@@ -33,12 +33,12 @@
                             v-bind="attrs"
                             v-on="on"
                         >
-                            {{langMap.tracking.report.save_btn}}
+                            {{ langMap.tracking.report.save_btn }}
                         </v-btn>
                     </template>
                     <v-card>
                         <v-card-title class="headline">
-                            {{langMap.tracking.report.save_report}}
+                            {{ langMap.tracking.report.save_report }}
                         </v-card-title>
                         <v-card-text>
                             <div class="d-flex flex-column">
@@ -57,14 +57,14 @@
                                                 :style="{ color: $helpers.color.invertColor(themeBgColor) }"
                                                 @click="saveReport()"
                                             >
-                                                {{langMap.tracking.report.save_btn}}
+                                                {{ langMap.tracking.report.save_btn }}
                                             </v-btn>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-inline-block" v-if="$store.getters['Tracking/getReports'].length">
                                     <v-list dense>
-                                        <v-subheader>{{langMap.tracking.report.reports}}</v-subheader>
+                                        <v-subheader>{{ langMap.tracking.report.reports }}</v-subheader>
                                         <v-list-item-group
                                             color="primary"
                                         >
@@ -78,11 +78,12 @@
                                                             class="d-inline-flex flex-grow-1"
                                                             @click="selectReport(report.id)"
                                                         >
-                                                            {{report.name}}
+                                                            {{ report.name }}
                                                             <small
                                                                 style="color: gray"
                                                             >
-                                                                &nbsp;({{langMap.tracking.report.from}} {{moment(report.created_at).format('DD/MM/YYYY H:m:ss')}})
+                                                                &nbsp;({{ langMap.tracking.report.from }}
+                                                                {{ moment(report.created_at).format('DD/MM/YYYY H:m:ss') }})
                                                             </small>
                                                         </div>
                                                         <div class="d-inline-flex flex-grow-0">
@@ -113,7 +114,7 @@
                                 text
                                 @click="dialogSave = false"
                             >
-                                {{langMap.tracking.report.close_btn}}
+                                {{ langMap.tracking.report.close_btn }}
                             </v-btn>
                         </v-card-actions>
                     </v-card>
@@ -139,9 +140,13 @@
                                 </div>
                                 <div class="d-inline-flex float-right flex-grow-1 text-center">
                                     <v-fade-transition leave-absolute>
-                                        <span v-if="open" class="d-block flex-grow-1">{{ langMap.tracking.report.choose_period }}</span>
+                                        <span v-if="open" class="d-block flex-grow-1">{{
+                                                langMap.tracking.report.choose_period
+                                            }}</span>
                                         <span v-else class="d-block flex-grow-1">
-                                            {{ builder.period.start ? moment(builder.period.start).format('ddd D MMM YYYY') : '...' }} -
+                                            {{
+                                                builder.period.start ? moment(builder.period.start).format('ddd D MMM YYYY') : '...'
+                                            }} -
                                             {{ moment(builder.period.end).format('ddd D MMM YYYY') }}
                                         </span>
                                     </v-fade-transition>
@@ -153,22 +158,54 @@
                         >
                             <div class="d-flex flex-row">
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('today')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('yesterday')" :style="{ color: themeBgColor }">{{langMap.tracking.report.period_yesterday}}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last7days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last7days }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last28days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last28days }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('today')"
+                                       :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('yesterday')"
+                                       :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_yesterday }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last7days')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last7days
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last28days')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last28days
+                                        }}</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_week }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_week }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_month }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_month }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_week
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_week
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_month
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_month
+                                        }}</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_quarter }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_quarter }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisYear')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_year }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('totalTime')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_total_time }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_quarter
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_quarter
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisYear')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_year
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('totalTime')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_total_time
+                                        }}</a>
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
@@ -176,7 +213,7 @@
                             </div>
                             <div class="d-flex flex-row">
                                 <div class="d-inline-flex flex-grow-1">
-                                    {{langMap.tracking.report.select_custom_period}}:
+                                    {{ langMap.tracking.report.select_custom_period }}:
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
@@ -227,8 +264,8 @@
                 >
                     <template v-slot:item="{ parent, item, on, attrs }">
                         <span>
-                            <v-icon>{{item.icon}}</v-icon>
-                            {{item.text}}
+                            <v-icon>{{ item.icon }}</v-icon>
+                            {{ item.text }}
                         </span>
                     </template>
                 </v-select>
@@ -240,7 +277,7 @@
             outlined
         >
             <div class="d-inline-flex align-center order-first" style="min-width: 150px">
-                {{langMap.tracking.report.grouping}}
+                {{ langMap.tracking.report.grouping }}
             </div>
             <draggable
                 :options="{ group:'grouping' }"
@@ -262,8 +299,8 @@
                     style="border-color: rgba(0,0,0,0)"
                     @dblclick="dblClickSelectGroupItem(groupItem)"
                 >
-                    <v-icon>{{groupItem.icon}}</v-icon>
-                    {{groupItem.text}}
+                    <v-icon>{{ groupItem.icon }}</v-icon>
+                    {{ groupItem.text }}
                 </v-btn>
             </draggable>
             <draggable
@@ -287,8 +324,8 @@
                     style="border-color: rgba(0,0,0,0)"
                     @dblclick="dblClickSelectGroupItem(groupItem)"
                 >
-                    <v-icon>{{groupItem.icon}}</v-icon>
-                    {{groupItem.text}}
+                    <v-icon>{{ groupItem.icon }}</v-icon>
+                    {{ groupItem.text }}
                 </v-btn>
             </draggable>
         </v-card>
@@ -298,7 +335,7 @@
             class="d-flex px-6 py-2 mt-3 flex-row"
         >
             <div class="d-inline-flex">
-                {{langMap.tracking.report.filter}}:
+                {{ langMap.tracking.report.filter }}:
             </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
                 <div class="d-flex flex-column" style="width: 100%">
@@ -381,7 +418,7 @@
                         >
                             <div class="d-flex flex-column">
                                 <v-icon x-large class="d-inline-flex">mdi-clock-outline</v-icon>
-                                <span class="d-inline-block text-center">{{langMap.tracking.report.total_time}}</span>
+                                <span class="d-inline-block text-center">{{ langMap.tracking.report.total_time }}</span>
                                 <span class="d-inline-block text-center">
                                 {{ $helpers.time.convertSecToTime(totalTime, false) }}
                             </span>
@@ -395,9 +432,10 @@
                         >
                             <div class="d-flex flex-column">
                                 <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
-                                <span class="d-inline-block text-center">{{langMap.tracking.report.revenue}}</span>
+                                <span class="d-inline-block text-center">{{ langMap.tracking.report.revenue }}</span>
                                 <span class="d-inline-block text-center">
-                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{$helpers.numbers.numberFormat(totalRevenue, 2)}}
+                                <span
+                                    v-if="currentCurrency">{{ currentCurrency.slug }}</span> {{ $helpers.numbers.numberFormat(totalRevenue, 2) }}
                             </span>
                             </div>
                         </v-card>
@@ -437,27 +475,38 @@
                         {{ item.name }} <span v-if="item.client">({{ item.client }})</span>
                     </div>
                     <div v-else class="d-flex flex-row">
-                        <table class="v-data-table" :class="item.status === 'started' ? 'success lighten-5' : ''" border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
+                        <table class="v-data-table" :class="item.status === 'started' ? 'success lighten-5' : ''"
+                               border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
                             <tbody>
                             <tr>
                                 <td class="pa-2" align="right" width="10%">
                                     {{ moment(item.date_from).format('DD MMM YYYY') }}
                                 </td>
                                 <td class="pa-2" align="left" width="15%">
-                                    <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>{{langMap.tracking.report.none}}</span>
+                                    <span v-if="item.user">{{ item.user.full_name }}</span><span
+                                    v-else>{{ langMap.tracking.report.none }}</span>
                                 </td>
                                 <td class="pa-2" align="left">
                                         <span
                                             v-if="item.entity"
                                             :style="{ color: item.entity && item.entity.color ? item.entity.color : themeBgColor }"
                                         >
-                                            <span v-if="item.entity_type === 'App\\TrackingProject'">{{ getTrackingProjectLabel }}: </span>
-                                            <span v-if="item.entity_type === 'App\\Ticket'">{{ langMap.tracking.report.ticket }}: </span>
+                                            <span v-if="item.entity_type === 'App\\TrackingProject'">{{
+                                                    getTrackingProjectLabel
+                                                }}: </span>
+                                            <span v-if="item.entity_type === 'App\\Ticket'">{{
+                                                    langMap.tracking.report.ticket
+                                                }}: </span>
                                             {{ item.entity.name }}
                                         </span>
-                                    <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
+                                    <v-icon v-if="item.entity && item.service" class="ma-1" x-small>
+                                        mdi-checkbox-blank-circle
+                                    </v-icon>
                                     <span v-if="item.service">{{ item.service.name }}</span>
-                                    <v-icon v-if="(item.service && item.description) || (item.entity && item.description)" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
+                                    <v-icon
+                                        v-if="(item.service && item.description) || (item.entity && item.description)"
+                                        class="ma-1" x-small>mdi-checkbox-blank-circle
+                                    </v-icon>
                                     <span v-if="item.description">
                                             <v-tooltip top>
                                               <template v-slot:activator="{ on, attrs }">
@@ -866,44 +915,53 @@
 </template>
 
 <style scoped>
->>>.border-right {
-    border-right: thin solid rgba(0,0,0,.12);
+>>> .border-right {
+    border-right: thin solid rgba(0, 0, 0, .12);
 }
->>>.width-10 {
+
+>>> .width-10 {
     width: 10%;
     max-width: 10%;
     min-width: 10%;
 }
->>>.v-expansion-panel {
+
+>>> .v-expansion-panel {
     border-color: rgba(0, 0, 0, 0.42);
     border-width: 1px;
     border-style: solid;
 }
->>>.v-btn.square {
+
+>>> .v-btn.square {
     min-width: 100px !important;
     min-height: 64px !important;
 }
->>>.v-btn.square i {
+
+>>> .v-btn.square i {
     width: 100%;
     padding-bottom: 5px;
 }
->>>.v-btn.square > span {
+
+>>> .v-btn.square > span {
     flex-direction: column;
 }
->>>.dragNDrop {
+
+>>> .dragNDrop {
     border-width: 1px;
     border-style: dashed;
     border-color: white;
 }
->>>.dragNDrop button {
+
+>>> .dragNDrop button {
     cursor: move;
 }
->>>.dragNDrop.active {
+
+>>> .dragNDrop.active {
     border-width: 1px;
     border-style: dashed;
-    border-color: rgba(0,0,0,.12);
+    border-color: rgba(0, 0, 0, .12);
 }
->>>.dragNDrop:not(.common) > button:not(:last-of-type):after {
+
+>>> .dragNDrop:not(.common) > button:not(:last-of-type):after {
     font: normal normal normal 24px/1 "Material Design Icons";
     text-transform: none !important;
     speak: none;
@@ -918,11 +976,13 @@
     color: #a1a3a4;
     transform: translateY(-50%);
 }
+
 >>> *:not(.v-icon) {
-    font-size: 12px!important;
+    font-size: 12px !important;
 }
+
 >>> .v-btn__content {
-    font-size: 12px!important;
+    font-size: 12px !important;
 }
 </style>
 
@@ -1088,7 +1148,7 @@ export default {
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    percentageInnerCutout : 90,
+                    percentageInnerCutout: 90,
                     legend: {
                         display: false,
                         position: 'right'
@@ -1105,7 +1165,7 @@ export default {
                             title: function (tooltipItem, data, a, b) {
                                 return data.labels[tooltipItem[0].index] ?? 'Title';
                             },
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 return self.$helpers.time.convertSecToTime(data.datasets[0].data[tooltipItem.index] * 60 * 60, false);
                             }
                         }
@@ -1114,19 +1174,19 @@ export default {
             },
             reportData: {
                 headers: [
-                    { text: this.$store.state.lang.lang_map.tracking.report.description, value: 'description' },
-                    { text: this.$store.state.lang.lang_map.tracking.report.client, value: 'project.client.name' },
+                    {text: this.$store.state.lang.lang_map.tracking.report.description, value: 'description'},
+                    {text: this.$store.state.lang.lang_map.tracking.report.client, value: 'project.client.name'},
                     {
                         text: this.$store.state.lang.lang_map.tracking.report.project,
                         align: 'start',
                         sortable: false,
                         value: 'project.name',
                     },
-                    { text: this.$store.state.lang.lang_map.tracking.report.billable, value: 'billable' },
-                    { text: this.$store.state.lang.lang_map.tracking.report.date_from, value: 'date_from' },
-                    { text: this.$store.state.lang.lang_map.tracking.report.date_to, value: 'date_to' },
-                    { text: this.$store.state.lang.lang_map.tracking.report.passed, value: 'passed' },
-                    { text: '', value: 'data-table-expand' },
+                    {text: this.$store.state.lang.lang_map.tracking.report.billable, value: 'billable'},
+                    {text: this.$store.state.lang.lang_map.tracking.report.date_from, value: 'date_from'},
+                    {text: this.$store.state.lang.lang_map.tracking.report.date_to, value: 'date_to'},
+                    {text: this.$store.state.lang.lang_map.tracking.report.passed, value: 'passed'},
+                    {text: '', value: 'data-table-expand'},
                 ],
                 entities: {
                     g1: [],
@@ -1289,11 +1349,11 @@ export default {
             },
         });
         moment.tz.setDefault('Etc/UTC');
-        this.$store.dispatch('Clients/getClientList', { search: null });
-        this.$store.dispatch('Services/getServicesList', { search: null });
-        this.$store.dispatch('Projects/getProjectList', { search: null, includeArchives: true });
-        this.$store.dispatch('Team/getCoworkers', { search: null });
-        this.$store.dispatch('Tags/getTagList', { search: null });
+        this.$store.dispatch('Clients/getClientList', {search: null});
+        this.$store.dispatch('Services/getServicesList', {search: null});
+        this.$store.dispatch('Projects/getProjectList', {search: null, includeArchives: true});
+        this.$store.dispatch('Team/getCoworkers', {search: null});
+        this.$store.dispatch('Tags/getTagList', {search: null});
         this.$store.dispatch('Languages/getLanguageList');
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
         this.debounceGetReports = _.debounce(this.__getReports, 1000);
@@ -1315,12 +1375,12 @@ export default {
         __getSettings() {
             this.$store.dispatch('Tracking/getSettings')
                 .then(successResult => {
-                   if (successResult) {
-                       const settings = this.$store.getters['Tracking/getSettings'];
-                       if (settings && settings.email) {
-                           this.report.pdf.email = settings.email.email;
-                       }
-                   }
+                    if (successResult) {
+                        const settings = this.$store.getters['Tracking/getSettings'];
+                        if (settings && settings.email) {
+                            this.report.pdf.email = settings.email.email;
+                        }
+                    }
                 });
         },
         __getReports() {
@@ -1415,7 +1475,7 @@ export default {
                 let queryParam = this.createQuery(this.builder.filters);
                 if (filter.dispatch) {
                     Object.keys(filter.dispatchParams).map(f => {
-                        queryParam = { ...queryParam, [f]: filter.dispatchParams[f] };
+                        queryParam = {...queryParam, [f]: filter.dispatchParams[f]};
                     });
                     this.$store.dispatch(filter.dispatch, queryParam);
                 }
@@ -1442,7 +1502,7 @@ export default {
             let queryStr = JSON.stringify(query);
             this.loadingGeneratePreview = true;
             axios.post('/api/ttmanaging/reports/generate', query)
-                .then(({ data: { data } }) => {
+                .then(({data: {data}}) => {
                     this.loadingGeneratePreview = false;
                     if (queryStr === JSON.stringify(this.builder)) {
                         this.reportData.entities = data;
@@ -1504,7 +1564,7 @@ export default {
                     text: this.$store.state.lang.lang_map.sort_chronologically
                 };
             }
-            axios.post(`/api/ttmanaging/reports?format=${format}`, { ...this.builder, ...this.report[format] }, {
+            axios.post(`/api/ttmanaging/reports?format=${format}`, {...this.builder, ...this.report[format]}, {
                 responseType: 'blob'
             })
                 .then(res => {
@@ -1597,7 +1657,7 @@ export default {
             }
         },
         deleteReport(id) {
-            this.$store.dispatch('Tracking/deleteReport', { id });
+            this.$store.dispatch('Tracking/deleteReport', {id});
         },
         selectReport(id) {
             const report = this.$store.getters['Tracking/getReports'].find(i => i.id === id);
@@ -1623,8 +1683,8 @@ export default {
             }
             const trackerDiff = moment().diff(tracker.date_from, 'seconds');
             if (
-                (this.hasPermission([64]) &&  trackerDiff > 60 * 60 * 24 * 14)
-                || (this.hasPermission([63]) &&  trackerDiff > 60 * 60 * 24 * 7)
+                (this.hasPermission([64]) && trackerDiff > 60 * 60 * 24 * 14)
+                || (this.hasPermission([63]) && trackerDiff > 60 * 60 * 24 * 7)
             ) {
                 return false;
             }
@@ -1648,27 +1708,27 @@ export default {
             return items;
         },
         createQuery(filters) {
-            let query = { force: true };
+            let query = {force: true};
             for (const i in filters) {
-                query = { ...query, [filters[i].value]: filters[i].selected };
+                query = {...query, [filters[i].value]: filters[i].selected};
             }
             return query;
         },
         clearFiltersAfter(filter) {
             const index = this.builder.filters.findIndex(i => i.value === filter.value);
             if (index >= 0) {
-                this.builder.filters.splice(index+1, this.builder.filters.length);
+                this.builder.filters.splice(index + 1, this.builder.filters.length);
             }
         }
     },
     computed: {
-        totalTime: function() {
+        totalTime: function () {
             return this.calculateTime(this.reportData.entities.g1);
         },
-        totalRevenue: function() {
+        totalRevenue: function () {
             return this.calculateRevenue(this.reportData.entities.g1);
         },
-        doughnutData: function() {
+        doughnutData: function () {
             if (this.reportData.entities && this.reportData.entities.g1 && this.reportData.entities.g1.length) {
                 let data = {
                     labels: [],
@@ -1685,7 +1745,7 @@ export default {
                     if (i.name) {
                         labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         data.labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
-                    } else if(i.entity && i.entity.name) {
+                    } else if (i.entity && i.entity.name) {
                         labels.push(client + this.substr(i.entity.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         data.labels.push(client + this.substr(i.entity.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
@@ -1708,7 +1768,7 @@ export default {
             }
             return null;
         },
-        barData: function() {
+        barData: function () {
             if (this.reportData.entities.g2 && this.reportData.entities.g2.length) {
                 let data = {
                     labels: [],
@@ -1726,7 +1786,7 @@ export default {
                     if (i.name) {
                         data.labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
-                    } else if(i.entity && i.entity.name) {
+                    } else if (i.entity && i.entity.name) {
                         data.labels.push(client + this.substr(i.entity.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         labels.push(client + this.substr(i.entity.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
@@ -1777,7 +1837,7 @@ export default {
             }
         },
         availableRoundingItems: function () {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             let roundingItems = this.roundingItems;
             if (settings && settings.customRounding) {
                 roundingItems = roundingItems.concat(settings.customRounding.map(i => ({
@@ -1787,7 +1847,7 @@ export default {
             }
             return roundingItems;
         },
-        availableFilters () {
+        availableFilters() {
             return [
                 {
                     value: 'coworkers',
@@ -1804,7 +1864,7 @@ export default {
                     text: this.getTrackingProjectsLabel,
                     store: 'Projects/getProjects',
                     dispatch: 'Projects/getProjectList',
-                    dispatchParams: { search: null, includeArchives: true },
+                    dispatchParams: {search: null, includeArchives: true},
                     items: [],
                     selected: [],
                     multiply: true
@@ -1861,42 +1921,48 @@ export default {
             ];
         },
         groupItems: {
-            get: function() {
+            get: function () {
                 const foundItem = this.groupItemsAvailable.find(i => i.value === 'project');
                 if (foundItem) foundItem.text = this.getTrackingProjectsLabel;
                 return this.groupItemsAvailable;
             },
-            set: function(value) {
+            set: function (value) {
                 this.groupItemsAvailable = value;
             },
         },
         getTrackingProjectLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.department;
-                case 2: return this.langMap.tracking.profit_center;
-                default: return this.langMap.tracking.project;
+                case 1:
+                    return this.langMap.tracking.department;
+                case 2:
+                    return this.langMap.tracking.profit_center;
+                default:
+                    return this.langMap.tracking.project;
             }
         },
         getTrackingProjectsLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.departments;
-                case 2: return this.langMap.tracking.profit_centres;
-                default: return this.langMap.tracking.projects;
+                case 1:
+                    return this.langMap.tracking.departments;
+                case 2:
+                    return this.langMap.tracking.profit_centres;
+                default:
+                    return this.langMap.tracking.projects;
             }
         },
     },
     watch: {
-        'builder.round': function() {
+        'builder.round': function () {
             this.debounceGenPreview();
         },
-        'builder.filters': function() {
+        'builder.filters': function () {
             this.debounceGenPreview();
         },
-        'builder.group': function() {
+        'builder.group': function () {
             this.debounceGenPreview();
         },
         'builder': function () {

@@ -19,8 +19,10 @@
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.team.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateTeam">
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
+                               @click="cancelUpdateTeam">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateTeam">
@@ -94,8 +96,8 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span v-if="item.is_manager">{{langMap.main.unmark_as_manager}}</span>
-                                    <span v-else>{{langMap.main.mark_as_manager}}</span>
+                                    <span v-if="item.is_manager">{{ langMap.main.unmark_as_manager }}</span>
+                                    <span v-else>{{ langMap.main.mark_as_manager }}</span>
                                 </v-tooltip>
                             </template>
                             <template v-slot:item.actions="{ item }">
@@ -109,7 +111,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.company.delete_contact}}</span>
+                                    <span>{{ langMap.company.delete_contact }}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
@@ -121,7 +123,8 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.team.new_member }}
                                     <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -146,7 +149,9 @@
                                                 :color="themeBgColor"
                                                 @click="addEmployee"
                                             >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -161,15 +166,15 @@
             <v-dialog v-model="removeEmployeeDialog" persistent max-width="480">
                 <v-card>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                        {{langMap.main.delete_selected}}?
+                        {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
-                            {{langMap.main.cancel}}
+                            {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
-                            {{langMap.main.delete}}
+                            {{ langMap.main.delete }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -180,25 +185,25 @@
 
 
 <script>
-    import EventBus from "../../components/EventBus";
+import EventBus from "../../components/EventBus";
 
-    export default {
+export default {
 
-        data() {
-            return {
-                snackbar: false,
-                actionColor: '',
-                themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
-                snackbarMessage: '',
-                enableToEdit: false,
-                langMap: this.$store.state.lang.lang_map,
-                options: {
-                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
-                },
-                footerProps: {
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [
+    data() {
+        return {
+            snackbar: false,
+            actionColor: '',
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
+            snackbarMessage: '',
+            enableToEdit: false,
+            langMap: this.$store.state.lang.lang_map,
+            options: {
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
+            },
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [
                     {
                         'text': 10,
                         'value': 10,
@@ -220,148 +225,148 @@ themeBgColor: this.$store.state.themeBgColor,
                         'value': 10000,
                     }
                 ],
+            },
+            headers: [
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'employee.id',
                 },
-                headers: [
+                {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'employee.user_data.name'},
+                {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
+                {text: `${this.$store.state.lang.lang_map.main.team_manager}`, value: 'is_manager'},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions'},
+            ],
+            team: {
+                team_name: '',
+                team_description: '',
+                team_owner_id: '',
+                employees: [
                     {
-                        text: 'ID',
-                        align: 'start',
-                        sortable: false,
-                        value: 'employee.id',
-                    },
-                    {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'employee.user_data.name'},
-                    {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
-                    {text: `${this.$store.state.lang.lang_map.main.team_manager}`, value: 'is_manager'},
-                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions'},
-                ],
-                team: {
-                    team_name: '',
-                    team_description: '',
-                    team_owner_id: '',
-                    employees: [
-                        {
-                            employee: {
-                                user_id: '',
-                                company_id: '',
-                                roles: [],
-                                user_data: ''
+                        employee: {
+                            user_id: '',
+                            company_id: '',
+                            roles: [],
+                            user_data: ''
 
-                            }
                         }
-                    ]
-                },
-                removeEmployeeDialog: false,
-                selectedEmployeeId: null,
-                employeeForm: {
-                    company_user_id: '',
-                    team_id: ''
-                },
-                companies: [
-                    {
-                        id: '',
-                        name: '',
-                        employees: [
-                            {
-                                user_data:
-                                    {
-                                        email: '',
-                                        name: ''
-                                    }
-                            }
-                        ]
                     }
                 ]
-            }
-        },
-        mounted() {
-            this.getTeam();
-            this.employeeForm.team_id = this.$route.params.id;
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeBgColor = color;
+            },
+            removeEmployeeDialog: false,
+            selectedEmployeeId: null,
+            employeeForm: {
+                company_user_id: '',
+                team_id: ''
+            },
+            companies: [
+                {
+                    id: '',
+                    name: '',
+                    employees: [
+                        {
+                            user_data:
+                                {
+                                    email: '',
+                                    name: ''
+                                }
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    mounted() {
+        this.getTeam();
+        this.employeeForm.team_id = this.$route.params.id;
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeBgColor = color;
+        });
+    },
+    methods: {
+        getTeam() {
+            axios.get(`/api/team/${this.$route.params.id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.team = response.data
+                    this.team.team_name = response.data.name
+                    this.team.team_description = response.data.description
+                    this.getCompanies()
+                }
+
             });
         },
-        methods: {
-            getTeam() {
-                axios.get(`/api/team/${this.$route.params.id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.team = response.data
-                        this.team.team_name = response.data.name
-                        this.team.team_description = response.data.description
-                        this.getCompanies()
-                    }
+        getCompanies() {
+            axios.get(`/api/company/${this.team.team_owner_id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.companies = response.data
+                }
 
-                });
-            },
-            getCompanies() {
-                axios.get(`/api/company/${this.team.team_owner_id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.companies = response.data
-                    }
+            });
+        },
+        addEmployee() {
+            axios.post(`/api/team/employee`, this.employeeForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeam()
+                }
 
-                });
-            },
-            addEmployee() {
-                axios.post(`/api/team/employee`, this.employeeForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeam()
-                    }
+            });
+        },
+        removeEmployeeProcess(item) {
+            this.selectedEmployeeId = item.id
+            this.removeEmployeeDialog = true
+        },
+        removeEmployee(id) {
+            axios.delete(`/api/team/employee/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeam()
+                    this.rolesDialog = false
+                    this.snackbarMessage = this.langMap.company.employee_deleted
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeEmployeeDialog = false
+                }
 
-                });
-            },
-            removeEmployeeProcess(item) {
-                this.selectedEmployeeId = item.id
-                this.removeEmployeeDialog = true
-            },
-            removeEmployee(id) {
-                axios.delete(`/api/team/employee/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeam()
-                        this.rolesDialog = false
-                        this.snackbarMessage = this.langMap.company.employee_deleted
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.removeEmployeeDialog = false
-                    }
+            });
+        },
+        updateTeam() {
+            axios.patch(`/api/team/${this.$route.params.id}`, this.team).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.team.team_name = response.data.name
+                    this.team.team_description = response.data.description
+                    this.enableToEdit = false
+                    this.snackbarMessage = this.langMap.main.update_successful
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                }
 
-                });
-            },
-            updateTeam() {
-                axios.patch(`/api/team/${this.$route.params.id}`, this.team).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.team.team_name = response.data.name
-                        this.team.team_description = response.data.description
-                        this.enableToEdit = false
-                        this.snackbarMessage = this.langMap.main.update_successful
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    }
+            });
+        },
+        toggleAsManager(item) {
+            axios.post(`/api/team/employee/manager`, {
+                company_user_id: item.company_user_id,
+                team_id: item.team_id
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeam()
+                }
 
-                });
-            },
-            toggleAsManager(item) {
-                axios.post(`/api/team/employee/manager`, {
-                    company_user_id: item.company_user_id,
-                    team_id: item.team_id
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeam()
-                    }
-
-                });
-            },
-            cancelUpdateTeam() {
-                this.getTeam();
-                this.enableToEdit = false;
-            },
+            });
+        },
+        cancelUpdateTeam() {
+            this.getTeam();
+            this.enableToEdit = false;
+        },
         updateItemsPerPage(options) {
             localStorage.itemsPerPage = options.itemsPerPage;
         }
-        }
     }
+}
 </script>

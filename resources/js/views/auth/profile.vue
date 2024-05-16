@@ -872,7 +872,8 @@
                                 <v-list-item v-for="(item, i) in userData.billing" :key="item.id">
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.name"></v-list-item-title>
-                                        <v-list-item-subtitle v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
+                                        <v-list-item-subtitle
+                                            v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon small @click="editInternalBilling(item)">
@@ -972,7 +973,10 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.profile.link_to_ixarma }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.profile.link_to_ixarma
+                            }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-btn v-if="!enableToEditIxarma" :color="themeBgColor" icon @click="enableToEditIxarma = true">
                             <v-icon :color="themeFgColor" dense small>mdi-pencil</v-icon>
@@ -986,7 +990,9 @@
                         <v-row>
                             <v-col cols="6">
                                 <p class="mb-0">
-                                    <v-icon v-if="userData.ixarma_link && userData.ixarma_link.login && userData.ixarma_link.password" color="success" dense left small>
+                                    <v-icon
+                                        v-if="userData.ixarma_link && userData.ixarma_link.login && userData.ixarma_link.password"
+                                        color="success" dense left small>
                                         mdi-check-circle
                                     </v-icon>
                                     <v-icon v-else dense left small>mdi-cancel</v-icon>
@@ -1418,7 +1424,8 @@
                                                   :item-color="themeBgColor" :label="langMap.main.email" dense/>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-select v-if="emailForm.email_type === 1" v-model="emailForm.email_type" :color="themeBgColor"
+                                    <v-select v-if="emailForm.email_type === 1" v-model="emailForm.email_type"
+                                              :color="themeBgColor"
                                               :item-color="themeBgColor"
                                               :items="emailTypes" :label="langMap.main.type" dense
                                               item-value="id" readonly>
@@ -1843,7 +1850,7 @@ export default {
         },
         updateUserIxarma() {
             this.snackbar = false;
-            axios.post('/api/user/ixarma/'+this.userData.id, this.userData.ixarma_link).then(response => {
+            axios.post('/api/user/ixarma/' + this.userData.id, this.userData.ixarma_link).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.snackbarMessage = this.langMap.main.update_successful;

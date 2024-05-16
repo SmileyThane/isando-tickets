@@ -71,7 +71,8 @@ class IxarmaServiceProvider extends ServiceProvider
         return $link && !empty($link->password);
     }
 
-    public function request($userId, $uri, $data, $method = 'GET', $withAuth = true) {
+    public function request($userId, $uri, $data, $method = 'GET', $withAuth = true)
+    {
         $token = $withAuth ? $this->auth($userId) : null;
 
         $response = $this->client->request($method, $uri, $this->getHeaders($token, $data));
@@ -82,7 +83,8 @@ class IxarmaServiceProvider extends ServiceProvider
         return json_decode($response->getBody(), true);
     }
 
-    protected function auth($userId) {
+    protected function auth($userId)
+    {
         if (!$this->isLoggedIn($userId)) {
             return false;
         }
