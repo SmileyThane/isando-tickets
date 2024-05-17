@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\Auth;
 class TicketAnswer extends Model
 {
 //    use SoftDeletes;
-    protected $fillable = ['answer'];
+    protected $fillable = ['answer', 'is_internal'];
 
     protected $appends = ['created_at_time', 'updated_at_time'];
+
+    protected $casts = [
+        'is_internal' => 'boolean'
+    ];
 
     public function getCreatedAtAttribute()
     {

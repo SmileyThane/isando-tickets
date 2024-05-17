@@ -260,6 +260,9 @@
                         <v-btn :color="themeBgColor" dark @click="addTicketAnswer">
                             {{ ticketAnswer.id ? langMap.main.update : langMap.main.create }}
                         </v-btn>
+                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer(true)">
+                            {{ ticketAnswer.id ? langMap.ticket.edit_internal_note : langMap.ticket.add_internal_note }}
+                        </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -820,7 +823,7 @@
                                 <v-list-item>
                                     <v-list-item-content>
                                         <v-col
-                                            :cols="index == 0 && currentUser.id == answer.employee.user_data.id ? 11 : 12">
+                                            :cols="11">
                                         <span class="text-left" style="font-weight: bold;">
                                             <v-avatar
                                                 v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
@@ -849,13 +852,15 @@
                                             :
                                         </span>
                                         </v-col>
-                                        <v-col v-if="index == 0 && currentUser.id == answer.employee.user_data.id"
+                                        <v-col v-if="currentUser.id == answer.employee.user_data.id"
                                                cols="1">
                                             <v-btn :color="themeBgColor" :title="langMap.ticket.edit_answer" icon right
                                                    @click="editAnswer(answer)">
                                                 <v-icon>mdi-pencil</v-icon>
                                             </v-btn>
                                         </v-col>
+                                        <strong v-if="answer.is_internal">[{{langMap.ticket.internal_notes}}]</strong>
+                                        <br class="pb-2">
                                         <div v-html="answer.answer"></div>
                                         <v-col v-if="answer.attachments.length > 0 " cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
@@ -2331,7 +2336,8 @@ export default {
                                 surname: ''
                             }
                         },
-                        answer: ''
+                        answer: '',
+                        is_internal: false
                     }
                 ],
                 histories: [
@@ -2673,7 +2679,7 @@ export default {
         showTicket(item) {
             window.location.href = `/ticket/${item}`
         },
-        addTicketAnswer() {
+        addTicketAnswer(isInternal = false) {
             const config = {
                 headers: {'content-type': 'multipart/form-data'}
             }
@@ -2693,6 +2699,9 @@ export default {
                     formData.delete(name)
                 }
             }
+
+            formData.append('is_internal', isInternal);
+
             if (this.ticketAnswer.id) {
                 axios.post(`/api/ticket/${this.$route.params.id}/answer/${this.ticketAnswer.id}`, formData, config).then(response => {
                     response = response.data

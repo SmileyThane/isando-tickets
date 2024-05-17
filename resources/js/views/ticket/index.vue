@@ -264,21 +264,22 @@
                 </v-pagination>
             </template>
             <template v-slot:item.ticket_type_id="{ item }">
-                <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-icon v-if="item.ticket_type.icon" small
-                                v-on="on"
-                                v-text="item.ticket_type.icon"/>
-                        <v-icon v-else
-                                :title="$helpers.i18n.localized(item.ticket_type)"
-                                small
-                                v-on="on"
-                        >
-                            mdi-alert
-                        </v-icon>
-                    </template>
-                    {{ $helpers.i18n.localized(item.ticket_type) }}
-                </v-tooltip>
+                {{$helpers.i18n.localized(item.ticket_type)}}
+<!--                <v-tooltip top>-->
+<!--                    <template v-slot:activator="{ on, attrs }">-->
+<!--                        <v-icon v-if="item.ticket_type.icon" small-->
+<!--                                v-on="on"-->
+<!--                                v-text="item.ticket_type.icon"/>-->
+<!--                        <v-icon v-else-->
+<!--                                :title="$helpers.i18n.localized(item.ticket_type)"-->
+<!--                                small-->
+<!--                                v-on="on"-->
+<!--                        >-->
+<!--                            mdi-alert-->
+<!--                        </v-icon>-->
+<!--                    </template>-->
+<!--                    {{ $helpers.i18n.localized(item.ticket_type) }}-->
+<!--                </v-tooltip>-->
             </template>
             <template v-slot:item.status.name="{ item }">
             </template>
@@ -294,7 +295,10 @@
                             @click.prevent.stop="expandItem(item)"
                         >
                             <v-icon>
-                                {{ expanded.indexOf(item) === -1 ? 'mdi-arrow-down-bold-circle' : 'mdi-arrow-up-bold-circle' }}
+                                mdi-checkbox-blank-circle
+<!--                                {{-->
+<!--                                    expanded.indexOf(item) === -1 ? 'mdi-lol' : 'mdi-arrow-up-bold-circle'-->
+<!--                                }}-->
                             </v-icon>
                         </v-btn>
                     </template>
@@ -302,15 +306,20 @@
                 </v-tooltip>
             </template>
             <template v-slot:item.last_update="{ item }">
-                {{ moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY HH:mm') : item.last_update }}
+                {{
+                    moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY HH:mm') : item.last_update
+                }}
             </template>
             <template v-slot:item.number="{ item }">
                 <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
-                        <div v-on="on">{{ item.number }}</div>
-                        <v-badge :color="item.status.color" dot inline @click="showItem(item)">
-                            <div v-on="on">#{{ item.id }}</div>
-                        </v-badge>
+                        <div v-on="on">
+                            {{ item.number }}
+                            <v-badge :color="item.status.color" dot inline @click="showItem(item)">
+                                <div v-on="on">#{{ item.id }}</div>
+                            </v-badge>
+                        </div>
+
 
                     </template>
                     {{ item.priority.name }}.{{ item.status.name }}
@@ -564,13 +573,14 @@ export default {
                 // {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update'},
                 // {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
-                {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.contact_name}`, value: 'contact.user_data.full_name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.product_name}`, value: 'product.name'},
-                {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person'},
                 {text: `${this.$store.state.lang.lang_map.ticket.type}`, value: 'ticket_type_id'},
+                // {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
+                {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
+                {text: `${this.$store.state.lang.lang_map.main.contact}`, value: 'contact.user_data.full_name'},
+                {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.main.product}`, value: 'product.name'},
+                {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person'},
+
             ],
             mergeTicketForm: {
                 parent_ticket_id: null,

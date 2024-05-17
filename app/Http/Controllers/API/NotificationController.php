@@ -30,7 +30,7 @@ class NotificationController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $notification = $this->notificationRepo->updateTemplate($id, $request['notification_type'], $request['name'], $request['description'], $request['text'], $request['priority'], $request['recipients']);
+        $notification = $this->notificationRepo->updateTemplate($id, $request['notification_type_id'], $request['name'], $request['description'], $request['text'], $request['priority'], $request['recipients']);
         return self::showResponse(true, $notification);
     }
 

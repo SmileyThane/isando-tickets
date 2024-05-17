@@ -94,7 +94,8 @@
                     </v-toolbar>
 
                     <v-card-text>
-                        <v-chip v-for="item in template.recipients" :key="item.address" :color="themeBgColor" class="ma-1"
+                        <v-chip v-for="item in template.recipients" :key="item.address" :color="themeBgColor"
+                                class="ma-1"
                                 outlined>
                             <v-icon :color="themeBgColor" dense left x-small>mdi-email</v-icon>
                             {{ item.address }}

@@ -24,6 +24,10 @@ class ClientGroupController extends Controller
                 $query->where('parent_id', '=', null);
             }
 
+            if ($request->with_clients == 1) {
+                $query->with('clients');
+            }
+
             $result = $query->get();
         }
         return self::showResponse(true, $result);

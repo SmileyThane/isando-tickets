@@ -32,7 +32,8 @@
                         </template>
 
                         <v-list>
-                            <v-list-item link @click.prevent="$store.getters['IncidentReporting/getIRType'] === 3 ? show() : setIsEditable()">
+                            <v-list-item link
+                                         @click.prevent="$store.getters['IncidentReporting/getIRType'] === 3 ? show() : setIsEditable()">
                                 <v-list-item-title>{{ langMap.main.edit }}</v-list-item-title>
                                 <v-list-item-action>
                                     <v-icon :color="themeBgColor">mdi-pencil</v-icon>
@@ -88,8 +89,14 @@
                                 langMap.ir.ab.title
                         }}
                     </v-tab>
-                    <v-tab v-if="$store.getters['IncidentReporting/getIRType'] !== 3">{{ langMap.ir.ab.version }}</v-tab>
-                    <v-tab v-if="$store.getters['IncidentReporting/getIRType'] === 3">{{ langMap.ir.ab.actions }}</v-tab>
+                    <v-tab v-if="$store.getters['IncidentReporting/getIRType'] !== 3">{{
+                            langMap.ir.ab.version
+                        }}
+                    </v-tab>
+                    <v-tab v-if="$store.getters['IncidentReporting/getIRType'] === 3">{{
+                            langMap.ir.ab.actions
+                        }}
+                    </v-tab>
                     <v-tab v-if="$store.getters['IncidentReporting/getIRType'] === 3">{{ langMap.ir.ab.logs }}</v-tab>
                 </v-tabs>
                 <v-tabs-items v-model="tab">
