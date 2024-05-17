@@ -1329,29 +1329,27 @@
                                                     item-value="id"
                                                 />
                                             </v-col>
-
-                                            <v-col cols="md-12">
-                                                <v-autocomplete
-                                                    v-model="employeeProductForm.company_user_id"
-                                                    :color="themeBgColor"
-                                                    :item-color="themeBgColor"
-                                                    :items="companies"
-                                                    :label="langMap.main.activity_company"
-                                                    prepend-icon="mdi-account-outline"
-                                                    dense
-                                                    item-value="company_user_id"
-                                                >
-                                                    <template v-slot:selection="data">
-                                                        {{ data.item.clients.name }}
-                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
-                                                    </template>
-                                                    <template v-slot:item="data">
-                                                        {{ data.item.clients.name }}
-                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
-                                                    </template>
-                                                </v-autocomplete>
-                                            </v-col>
-
+<!--                                            <v-col cols="md-12">-->
+<!--                                                <v-autocomplete-->
+<!--                                                    v-model="employeeProductForm.company_user_id"-->
+<!--                                                    :color="themeBgColor"-->
+<!--                                                    :item-color="themeBgColor"-->
+<!--                                                    :items="companies"-->
+<!--                                                    :label="langMap.main.activity_company"-->
+<!--                                                    prepend-icon="mdi-account-outline"-->
+<!--                                                    dense-->
+<!--                                                    item-value="company_user_id"-->
+<!--                                                >-->
+<!--                                                    <template v-slot:selection="data">-->
+<!--                                                        {{ data.item.clients.name }}-->
+<!--                                                        &lt;!&ndash;                                        ({{ data.item.employee.user_data.email }})&ndash;&gt;-->
+<!--                                                    </template>-->
+<!--                                                    <template v-slot:item="data">-->
+<!--                                                        {{ data.item.clients.name }}-->
+<!--                                                        &lt;!&ndash;                                        ({{ data.item.employee.user_data.email }})&ndash;&gt;-->
+<!--                                                    </template>-->
+<!--                                                </v-autocomplete>-->
+<!--                                            </v-col>-->
                                             <v-btn
                                                 :color="themeBgColor"
                                                 bottom
@@ -1998,11 +1996,10 @@ export default {
                     this.userData = response.data
                     this.primaryEmailId = this.userData.email_id
                     const employeeCompanies = this.userData.employee.assigned_to_clients.filter(item => item.deleted_at === null)
-                    this.companies = employeeCompanies.length > 0 ? employeeCompanies : this.userData.employee.companies
+                    this.companies = employeeCompanies.length > 0 ? employeeCompanies : this.userData.companies
                     // console.log(this.companies);
                     this.employeeForm.company_user_id = this.userData.employee.id
                     this.activityForm.model_id = this.userData.employee.id
-
                     if (this.userData.notification_statuses.length) {
                         let that = this;
                         this.userData.notification_statuses.forEach(function (item) {
@@ -2737,10 +2734,8 @@ export default {
             this.deleteProductDlg = true;
         },
         resetProduct() {
-            this.employeeProductForm = {
-                company_user_id: null,
-                product_id: null
-            }
+            this.employeeProductForm.product_id = null
+            this.employeeProductForm.company_user_id = this.userData.employee.id
         },
         getProducts() {
             this.loadingProducts = this.themeBgColor
