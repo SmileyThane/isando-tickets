@@ -20,6 +20,7 @@
             :single-expand="singleExpand"
             class="elevation-4"
             fixed-header
+            dense
             hide-default-footer
             item-key="id"
             show-expand
@@ -294,7 +295,7 @@
                             v-on="on"
                             @click.prevent.stop="expandItem(item)"
                         >
-                            <v-icon>
+                            <v-icon x-small>
                                 mdi-checkbox-blank-circle
 <!--                                {{-->
 <!--                                    expanded.indexOf(item) === -1 ? 'mdi-lol' : 'mdi-arrow-up-bold-circle'-->
@@ -842,5 +843,10 @@ export default {
 <style>
 .v-data-table-header th {
     white-space: nowrap;
+}
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td,
+.v-data-table > .v-data-table__wrapper > table > tfoot > tr > td,
+.v-data-table > .v-data-table__wrapper > table > thead > tr > td {
+    height: 0px;
 }
 </style>
