@@ -586,7 +586,7 @@ export default {
                 //     sortable: false,
                 //     value: 'id',
                 // },
-                {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number', width: '150px'},
+                {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number', width: '200px'},
                 // {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update', width: '150px'},
                 // {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
