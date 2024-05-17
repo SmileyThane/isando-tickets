@@ -284,6 +284,22 @@
             </template>
             <template v-slot:item.status.name="{ item }">
             </template>
+            <template v-slot:item.name="{ index, item }">
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <span
+                            v-bind="attrs"
+                            v-on="on"
+                            style="display:block; max-width: 350px; text-overflow: ellipsis;overflow: hidden;white-space: nowrap;"
+                        >
+                            {{item.name}}
+                        </span>
+                    </template>
+                    <span>
+                        {{ item.name }}
+                    </span>
+                </v-tooltip>
+            </template>
             <template v-slot:item.data-table-expand="{ index, item }">
                 <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
@@ -570,15 +586,15 @@ export default {
                 //     sortable: false,
                 //     value: 'id',
                 // },
-                {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number'},
+                {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number', width: '150px'},
                 // {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update'},
+                {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update', width: '150px'},
                 // {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.type}`, value: 'ticket_type_id'},
                 // {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
+                {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name', width: '300px'},
                 {text: `${this.$store.state.lang.lang_map.main.contact}`, value: 'contact.user_data.full_name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name', width: '380px'},
                 {text: `${this.$store.state.lang.lang_map.main.product}`, value: 'product.name'},
                 {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person'},
 
