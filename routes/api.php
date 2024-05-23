@@ -419,6 +419,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('filter_groups/client', [ClientGroupController::class, 'all']);
     Route::post('filter_groups/client', [ClientGroupController::class, 'create']);
+    Route::patch('filter_groups/client/{id}', [ClientGroupController::class, 'update']);
     Route::delete('filter_groups/client/{id}', [ClientGroupController::class, 'delete']);
 });
 
