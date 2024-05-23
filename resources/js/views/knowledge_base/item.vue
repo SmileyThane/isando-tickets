@@ -12,6 +12,27 @@
             ></v-progress-circular>
         </v-row>
         <v-card v-else ref="card" outlined>
+            <v-tooltip
+                v-if="$helpers.auth.checkKbPermissionsByType(
+                                                getRouteAlias,
+                                                kbPermissionsTypes.edit)"
+                top>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        fab
+                        small
+                        class="ma-1 float-right"
+                        :color="themeBgColor"
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="editArticle(article.id)">
+                        <v-icon :color="themeFgColor" dense small>mdi-file-edit-outline</v-icon>
+                    </v-btn>
+                </template>
+                {{
+                    langMap.kb.edit
+                }}
+            </v-tooltip>
             <span id="pdf-element">
             <v-card-title>
                 {{ $helpers.i18n.localized(article) }}
@@ -257,7 +278,10 @@ export default {
             }
 
             return 'mdi-file';
-        }
+        },
+        editArticle(id) {
+            this.$router.push(`/${this.$route.params.alias}/${id}/edit`);
+        },
     }
 }
 </script>
