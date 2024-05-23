@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -32,5 +33,10 @@ class Activity extends Model
     public function attachments(): MorphMany
     {
         return $this->morphMany(File::class, 'model');
+    }
+
+    public function getUpdatedAtAttribute()
+    {
+        return $this->attributes['updated_at'] ? Carbon::parse($this->attributes['updated_at'])->format('Y-m-d') : null;
     }
 }

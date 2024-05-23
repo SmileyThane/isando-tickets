@@ -2011,6 +2011,7 @@ export default {
                 },
                 {text: `${this.$store.state.lang.lang_map.tracking.tracker.date}`, value: 'datetime'},
                 {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.name'},
+                {text: `${this.$store.state.lang.lang_map.main.updated}`, value: 'updated_at'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
             snackbar: false,
