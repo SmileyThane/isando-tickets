@@ -1394,14 +1394,14 @@
                                             <v-btn
                                                 icon
                                                 small
-                                                @click=""
+                                                @click="editClientFilterGroupsDialog = true; selectedClientGroup = item;"
                                             >
-                                                <v-icon>mdi-edit</v-icon>
+                                                <v-icon>mdi-pencil</v-icon>
                                             </v-btn>
                                             <v-btn
                                                 icon
                                                 small
-                                                @click="deleteClientFilterGroup(item.id)"
+                                                @click="removeClientFilterGroupsDialog = true; selectedClientGroup = item;"
                                             >
                                                 <v-icon>mdi-trash-can</v-icon>
                                             </v-btn>
@@ -2436,6 +2436,59 @@
                 </v-card>
             </v-dialog>
         </template>
+
+        <template>
+            <v-dialog v-model="editClientFilterGroupsDialog" max-width="440" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.main.remove_client_group }}
+                    </v-card-title>
+                    <v-card-text>
+                        <div class="col-md-6">
+                            <v-text-field
+                                v-model="productForm.product_name"
+                                :color="themeBgColor"
+                                :label="langMap.main.name"
+                                name="product_name"
+                                required
+                                type="text"
+                            ></v-text-field>
+                        </div>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="editClientFilterGroupsDialog = false">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="editClientFilterGroupsDialog = false; editClientFilterGroup(selectedClientGroup)">
+                            {{ langMap.main.edit }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
+
+        <template>
+            <v-dialog v-model="removeClientFilterGroupsDialog" max-width="440" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.main.remove_client_group }}
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeClientFilterGroupsDialog = false">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="removeEmployeeDlg = false; deleteClientFilterGroup(selectedClientGroup)">
+                            {{ langMap.main.delete }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
+
     </v-container>
 </template>
 
@@ -2683,6 +2736,9 @@ export default {
             emailTrashed: false,
             clientFilterGroups: [],
             clientFilterGroupsRaw: [],
+            removeClientFilterGroupsDialog: false,
+            editClientFilterGroupsDialog: false,
+            selectedClientGroup: null
         }
     },
     created() {
@@ -3626,17 +3682,19 @@ export default {
                 return true
             });
         },
+        editClientFilterGroup(){},
         deleteClientFilterGroup(id) {
             axios.delete(`/api/filter_groups/client/${id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getFilterGroups()
                     this.getFilterGroupsRaw()
-                    this.snackbarMessage = this.langMap.main.deleted;
+                    this.snackbarMessage = this.langMap.main.remove_client_group_success;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.selectedClientGroup = null
                 } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.snackbarMessage = this.langMap.main.remove_client_group_error;
                     this.actionColor = 'error';
                     this.snackbar = true;
                 }
