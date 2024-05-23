@@ -1729,6 +1729,7 @@
 
 <script>
 import EventBus from "../../components/EventBus";
+import moment from "moment-timezone";
 
 export default {
     data() {
@@ -1883,8 +1884,8 @@ export default {
             activityForm: {
                 model_id: null,
                 model_type: 'App\\CompanyUser',
-                date: null,
-                time: null,
+                date: moment().format('YYYY-MM-DD'),
+                time: moment().format('H:m'),
                 files: null,
             },
             activityTypes: [],
@@ -1900,6 +1901,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.activity_company}`, value: 'client.name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.tracker.date}`, value: 'datetime'},
                 {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.name'},
+                {text: `${this.$store.state.lang.lang_map.main.updated}`, value: 'updated_at'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
             activitySearch: '',

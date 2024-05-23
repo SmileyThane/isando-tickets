@@ -70,5 +70,8 @@ export default {
     }
 }
 </script>
-
-
+<style scoped>
+>>> .v-main__wrap {
+    max-width: initial;
+}
+</style>

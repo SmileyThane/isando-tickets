@@ -307,6 +307,7 @@
                             :style="`color: ${item.priority.color === 'amber' ? '#FEBE00' : item.priority.color}`"
                             dark
                             icon
+                            x-small
                             v-bind="attrs"
                             v-on="on"
                             @click.prevent.stop="expandItem(item)"
@@ -324,7 +325,7 @@
             </template>
             <template v-slot:item.last_update="{ item }">
                 {{
-                    moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY HH:mm') : item.last_update
+                    moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM.YYYY') : item.last_update
                 }}
             </template>
             <template v-slot:item.number="{ item }">
@@ -579,24 +580,24 @@ export default {
                 }
             ],
             headers: [
-                {text: '', value: 'data-table-expand'},
+                {text: '', value: 'data-table-expand', width: '20px'},
                 // {
                 //     text: 'ID',
                 //     align: 'start',
                 //     sortable: false,
                 //     value: 'id',
                 // },
-                {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number', width: '200px'},
+                {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number', width: '160px'},
                 // {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update', width: '150px'},
+                {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update', width: '100px'},
                 // {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.type}`, value: 'ticket_type_id'},
+                {text: `${this.$store.state.lang.lang_map.ticket.type}`, value: 'ticket_type_id', width: '150px'},
                 // {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name', width: '300px'},
-                {text: `${this.$store.state.lang.lang_map.main.contact}`, value: 'contact.user_data.full_name'},
-                {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name', width: '380px'},
-                {text: `${this.$store.state.lang.lang_map.main.product}`, value: 'product.name'},
-                {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person'},
+                {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name', width: '250px'},
+                {text: `${this.$store.state.lang.lang_map.main.contact}`, value: 'contact.user_data.full_name', width: '150px'},
+                {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name', width: '260px'},
+                {text: `${this.$store.state.lang.lang_map.main.product}`, value: 'product.name', width: '200px'},
+                {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person', width: '150px'},
 
             ],
             mergeTicketForm: {
@@ -865,4 +866,5 @@ export default {
 .v-data-table > .v-data-table__wrapper > table > thead > tr > td {
     height: 0px;
 }
+
 </style>
