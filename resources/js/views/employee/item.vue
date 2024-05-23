@@ -1729,6 +1729,7 @@
 
 <script>
 import EventBus from "../../components/EventBus";
+import moment from "moment-timezone";
 
 export default {
     data() {
@@ -1883,8 +1884,8 @@ export default {
             activityForm: {
                 model_id: null,
                 model_type: 'App\\CompanyUser',
-                date: null,
-                time: null,
+                date: moment().format('YYYY-MM-DD'),
+                time: moment().format('H:m'),
                 files: null,
             },
             activityTypes: [],
