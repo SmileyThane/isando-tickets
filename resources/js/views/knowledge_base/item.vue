@@ -16,7 +16,8 @@
                 v-if="$helpers.auth.checkKbPermissionsByType(
                                                 getRouteAlias,
                                                 kbPermissionsTypes.edit)"
-                top>
+                top
+            >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
                         fab
