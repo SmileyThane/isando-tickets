@@ -28,17 +28,33 @@
 
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <v-select
+                                                <v-text-field
+                                                    v-model="srcSearch"
                                                     :color="themeBgColor"
-                                                    :label="langMap.main.category"
-                                                    name="category_id"
-                                                    prepend-icon="mdi-rename-box"
-                                                    v-model="productForm.category_id"
-                                                    :items="categories"
-                                                    :item-color="themeBgColor"
-                                                    item-value="id"
-                                                    item-text="full_name"
-                                                />
+                                                    :label="langMap.main.search"
+                                                    class="pa-3 pt-5"
+                                                    clear-icon="mdi-close-circle-outline"
+                                                    clearable
+                                                    dense
+                                                    hide-details
+                                                ></v-text-field>
+                                                <perfect-scrollbar>
+                                                    <v-treeview
+                                                        v-model="productForm.category_id"
+                                                        :color="themeBgColor"
+                                                        :items="categories"
+                                                        :search="srcSearch"
+                                                        :selected-color="themeBgColor"
+                                                        item-disabled="disabled"
+                                                        dense
+                                                        hoverable
+                                                        selectable
+                                                    >
+                                                        <template v-slot:label="{ item }">
+                                                            <small>{{ item.name }}</small>
+                                                        </template>
+                                                    </v-treeview>
+                                                </perfect-scrollbar>
                                             </div>
                                             <div class="col-md-4">
                                                 <v-text-field
@@ -320,7 +336,8 @@ export default {
                 product_description: '',
                 files: []
             },
-            categories: []
+            categories: [],
+            srcSearch: '',
         }
     },
     mounted() {
@@ -367,15 +384,10 @@ export default {
             });
         },
         getCategories() {
-            axios.get(`/api/main_company/product_categories/flat`).then(response => {
+            axios.get(`/api/main_company/product_categories/tree`).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    this.categories = [{
-                        id: null,
-                        name: this.langMap.main.none,
-                        full_name: this.langMap.main.none,
-                        parent_id: null
-                    }].concat(response.data);
+                    this.categories = response.data;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
