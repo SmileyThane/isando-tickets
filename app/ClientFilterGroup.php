@@ -15,10 +15,22 @@ class ClientFilterGroup extends Model
 
     protected $appends = ['children'];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(static function (ClientFilterGroup $item)
+        {
+            foreach($item->childrenData as $childItem) {
+                $childItem->delete();
+            }
+        });
+    }
+
 
     public function getChildrenAttribute()
     {
-        return $this->childrenData()->get()->mergeRecursive($this->clients);
+        return $this->childrenData()->get();
     }
 
     public function childrenData(): HasMany

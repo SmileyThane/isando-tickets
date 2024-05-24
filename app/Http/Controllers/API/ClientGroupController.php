@@ -63,9 +63,9 @@ class ClientGroupController extends Controller
 
     public function delete($id)
     {
-        ClientFilterGroup::query()->where('id', '=', $id)->delete();
+        $item = ClientFilterGroup::query()->find($id);
+        $item->delete();
 
         return self::showResponse(true);
     }
-
 }
