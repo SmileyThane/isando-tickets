@@ -890,6 +890,33 @@
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
+                <v-card>
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{
+                                langMap.main.notes
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn v-if="userData.employee.notes" :color="themeBgColor" icon @click="saveNote()">
+                            <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
+                        </v-btn>
+                    </v-toolbar>
+                    <v-card-text>
+                        <Tinymce
+                            v-model="userData.employee.notes"
+                            :placeholder="langMap.main.notes"
+                        />
+                    </v-card-text>
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
                 <v-card v-if="$helpers.auth.checkPermissionByIds([105])">
                     <v-toolbar
                         :color="themeBgColor"
@@ -1843,7 +1870,10 @@ export default {
                 number: '',
                 avatar_url: '',
                 deleted_at: null,
-                filter_groups: []
+                filter_groups: [],
+                employee: {
+                    notes: ''
+                },
             },
             notificationStatuses: [],
             singleUserForm: {
@@ -2707,6 +2737,13 @@ export default {
                     this.actionColor = 'error';
                     this.snackbar = true;
                 }
+            });
+        },
+        saveNote() {
+            axios.patch(`/api/company/employee/${this.$route.params.id}/notes`, {notes: this.userData.employee.notes}).then(response => {
+                this.snackbarMessage = this.langMap.main.update_successful;
+                this.actionColor = 'success'
+                this.snackbar = true
             });
         },
         selectActivity(item) {
