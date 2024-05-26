@@ -1,5 +1,6 @@
 <template>
     <v-footer
+        style="z-index: 5;"
         :color="themeBgColor"
         app
     >

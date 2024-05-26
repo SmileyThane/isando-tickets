@@ -7,14 +7,20 @@
 
         <sidebar v-if="isLoaded && isAuthorized === true" v-model="drawer"></sidebar>
         <app-header v-if="isLoaded && isAuthorized === true" v-model="drawer"></app-header>
-        <perfect-scrollbar style="height: 100vh;" ref="mainScrollbar" watchOptions>
-            <v-main v-if="isLoaded"
-                    :style="isAuthorized === false ? 'background-image: url(/login_bg.jpg); background-size: cover; height: 100vh;' : ''">
-                <router-view></router-view>
-            </v-main>
-        </perfect-scrollbar>
-        <speed-panel v-if="isLoaded && isAuthorized === true" v-model="drawer"></speed-panel>
-        <appFooter v-if="isAuthorized === true"></appFooter>
+
+
+                <perfect-scrollbar :style="`height: ${mainBlockHeight}px; margin-top: 70px;`" ref="mainScrollbar" watchOptions>
+                    <v-main v-if="isLoaded"
+                            ref="mainBlock"
+                            :style="isAuthorized === false ? 'background-image: url(/login_bg.jpg); background-size: cover; height: 100vh;' : 'padding-top:0px'">
+                    <router-view></router-view>
+                    <speed-panel v-if="isLoaded && isAuthorized === true" v-model="drawer"></speed-panel>
+                    <appFooter v-if="isAuthorized === true"></appFooter>
+                    </v-main>
+                </perfect-scrollbar>
+
+
+
     </v-app>
 </template>
 
@@ -31,7 +37,8 @@ export default {
     data: () => ({
         drawer: false,
         isAuthorized: localStorage.getItem('auth_token') !== null,
-        isLoaded: false
+        isLoaded: false,
+        mainBlockHeight: 0
     }),
     components: {
         'sidebar': Sidebar,
@@ -44,12 +51,27 @@ export default {
             this.isLoaded = true;
         }
     },
+    mounted() {
+        this.setMainBlockHeight()
+        window.onresize = () => {
+            this.setMainBlockHeight()
+        }
+    },
     computed: {
         checkPreloaded: function () {
             return this.$store.state.roles && this.$store.state.lang
         }
+    },
+    methods: {
+        setMainBlockHeight()
+        {
+            this.mainBlockHeight = window.innerHeight - 70
+        }
     }
 }
 </script>
-
-
+<style scoped>
+>>> .v-main__wrap {
+    max-width: initial;
+}
+</style>

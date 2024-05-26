@@ -62,13 +62,14 @@ class RegularInviteEmail extends Notification
         if ($this->language == 'en') {
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
+                ->greeting(' ')
                 ->subject('You have been invited to INAX online support!')
                 ->line('Dear ' . $this->name . ', ')
                 ->line("Welcome to our $this->from online support. Your account has been created.")
                 ->line("Please use below credentials to log into your account:")
                 ->line('Your login name:' . $this->email)
                 ->line('Your password: ' . $this->password)
-                ->action("Link to $this->from online support: ", env('APP_URL'))
+                ->action("Link to $this->from online support ", env('APP_URL'))
                 ->line('Have a Good Day!')
                 ->line('')
                 ->salutation('Best Wishes, ' . $this->from);
@@ -82,7 +83,7 @@ class RegularInviteEmail extends Notification
                 ->line("Bitte benutzen Sie Ihr neues Passwort, um sich in Ihr Konto anzumelden:")
                 ->line('Ihr Login-Name: ' . $this->email)
                 ->line('Ihr Passwort: ' . $this->password)
-                ->action('Link zu unserem $this->from Online Support: ', env('APP_URL'))
+                ->action('Link zu unserem ' . $this->from . ' Online Support ', env('APP_URL'))
                 ->line('Wir wünschen Ihnen einen schönen Tag!')
                 ->line('')
                 ->salutation('Freundliche Grüße, ' . $this->from);

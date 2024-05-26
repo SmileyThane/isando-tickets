@@ -86,7 +86,9 @@
         </v-row>
 
         <v-row>
-            <v-col class="col-md-4">
+            <v-col
+                :class="!getCategoryIdFromQuery && (search.length > 0 || activeTags.length > 0) ? 'd-none' : 'col-md-4'"
+            >
                 <v-row class="flex-row justify-center align-items-center">
                     <v-progress-circular class="mt-4" indeterminate :value="20" color="#40613e"
                                          v-if="isCategoriesLoading"></v-progress-circular>
@@ -191,7 +193,9 @@
                     </perfect-scrollbar>
                 </v-row>
             </v-col>
-            <v-col class="col-md-8">
+            <v-col
+                :class="!getCategoryIdFromQuery && (search.length > 0 || activeTags.length > 0) ? 'col-md-12' : 'col-md-8'"
+            >
                 <v-row class="flex-row justify-center align-items-center">
                     <perfect-scrollbar style="height: 100vh; width: 100vw;">
                         <v-col v-if="isArticlesLoading" cols="12" class="pb-1 pt-1">
@@ -478,6 +482,7 @@
 <script>
 import EventBus from '../../components/EventBus';
 import * as _ from 'lodash';
+import tags from "../../modules/tags";
 
 export default {
     data() {
@@ -702,10 +707,7 @@ export default {
     created() {
         this.debounceOpenCategory = _.debounce(
             () => {
-                this.$router.push(`/${this.$route.params.alias}`, () => {
-                });
-                this.getCategories();
-                this.getArticles();
+                this.openCategory(this.getCategoryIdFromQuery, this.$route.query.parent_category, Boolean(this.category?.children.length))
             }, 500);
     },
     mounted() {
@@ -770,13 +772,16 @@ export default {
         },
         getArticles(search = true) {
             this.isArticlesLoading = true;
-            axios.get(`/api/kb/articles?type=${this.$route.params.alias}`, {
-                params: {
-                    search: search && (this.searchWhere.includes(2) || this.searchWhere.includes(3)) ? this.search : '',
+            let params = {
+                search: search && (this.searchWhere.includes(2) || this.searchWhere.includes(3)) ? this.search : '',
                     search_in_text: this.searchWhere.includes(3),
-                    category_id: this.getCategoryIdFromQuery,
                     tags: this.activeTags
-                }
+            }
+            if (this.getCategoryIdFromQuery !== 'null' && this.getCategoryIdFromQuery !== null) {
+                params.category_id = this.getCategoryIdFromQuery
+            }
+            axios.get(`/api/kb/articles?type=${this.$route.params.alias}`, {
+                params
             }).then(response => {
                 response = response.data;
                 if (response.success === true) {
@@ -795,14 +800,16 @@ export default {
         },
         openCategory(id = null, parent_id = null, subCategories = true) {
             let query = '';
-            if (this.search) {
-                query = `category=${id}`;
-            } else if (id && parent_id && !subCategories) {
-                query = `parent_category=${parent_id}&category=${id}`
-            } else if (id && subCategories) {
-                query = `parent_category=${id}`;
-            } else if (id) {
-                query = `category=${id}`;
+            if (id !== 'null' && id !== null) {
+                if (this.search) {
+                    query = `parent_category=${parent_id}&category=${id}`;
+                } else if (id && parent_id && !subCategories) {
+                    query = `parent_category=${parent_id}&category=${id}`
+                } else if (id && subCategories) {
+                    query = `parent_category=${id}`;
+                } else if (id) {
+                    query = `category=${id}`;
+                }
             }
             if (query) {
                 this.$router.push(`/${this.$route.params.alias}?${query}`, () => {
@@ -814,7 +821,7 @@ export default {
             if (subCategories && !this.search) {
                 this.getCategories();
             }
-            this.getArticles(false);
+            this.getArticles();
         },
         clearCategoryForm() {
             this.categoryForm = {
@@ -977,6 +984,9 @@ export default {
         },
     },
     computed: {
+        tags() {
+            return tags
+        },
         getRouteAlias() {
             return this.$route.params.alias;
         },

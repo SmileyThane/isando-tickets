@@ -117,26 +117,20 @@ class KbRepository
             ->with(['tags', 'attachments'])
             ->where('type_id', $typeId);
 
-        if ($category_id) {
-            $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
-                $query->where('category_id', $category_id);
-            });
-        } else {
-            $articles = $articles->whereDoesntHave('categories');
-        }
 
         if (!empty($search)) {
-            $articles = $articles->where(function ($query) use ($search, $search_in_text) {
+            $articles->where(function ($query) use ($search, $search_in_text) {
                 $query->where('name', 'like', '%' . $search . '%')->orWhere('name_de', 'like', '%' . $search . '%')
                     ->orWhere('summary', 'like', '%' . $search . '%')->orWhere('summary_de', 'like', '%' . $search . '%');
+                if ($search_in_text) {
+                    $query->orWhere(function ($query) use ($search) {
+                        $query->orWhere('keywords', 'like', '%' . $search . '%')->orWhere('keywords_de', 'like', '%' . $search . '%')
+                            ->orWhere('content', 'like', '%' . $search . '%')->orWhere('content_de', 'like', '%' . $search . '%');
+                    });
+                }
             });
 
-            if ($search_in_text) {
-                $articles = $articles->orWhere(function ($query) use ($search) {
-                    $query->orWhere('keywords', 'like', '%' . $search . '%')->orWhere('keywords_de', 'like', '%' . $search . '%')
-                        ->orWhere('content', 'like', '%' . $search . '%')->orWhere('content_de', 'like', '%' . $search . '%');
-                });
-            }
+
         }
 
         if (!empty($tags)) {
@@ -151,6 +145,14 @@ class KbRepository
 
         if (Auth::user()->employee->assignedToClients()->exists()) {
             $articles->where('is_internal', '=', false);
+        }
+
+        if ($category_id) {
+            $articles->whereHas('categories', function (Builder $query) use ($category_id) {
+                $query->where('category_id', $category_id);
+            });
+        } elseif(empty($tags) && empty($search)) {
+            $articles->whereDoesntHave('categories');
         }
 
         return $articles->get();
