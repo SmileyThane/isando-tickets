@@ -783,6 +783,14 @@ class LanguageSeeder extends Seeder
                             'client_number' => 'Client No.',
                             'client_groups' => 'Client groups',
                             'add_client_group' => 'Add client group',
+                            'add_client_group_success' => 'Client group was successfully added',
+                            'add_client_group_error' => 'Client group adding error',
+                            'edit_client_group' => 'Edit client group',
+                            'edit_client_group_success' => 'Client group was successfully edited',
+                            'edit_client_group_error' => 'Client group editing error',
+                            'remove_client_group' => 'Are you sure that you want to remove this client group?',
+                            'remove_client_group_success' => 'Client group was successfully removed',
+                            'remove_client_group_error' => 'Client group removal error'
                         ],
                     'system_settings' =>
                         [
@@ -1794,7 +1802,15 @@ class LanguageSeeder extends Seeder
                             'clone' => 'Klon',
                             'client_number' => 'Kunden-Nr.',
                             'client_groups' => 'Client groups',
-                            'add_client_group' => 'Add client group',
+                            'add_client_group' => 'Kundengruppe hinzufügen',
+                            'add_client_group_success' => 'Kundengruppe wurde erfolgreich hinzugefügt',
+                            'add_client_group_error' => 'Fehler beim Hinzufügen von Clientgruppen',
+                            'edit_client_group' => 'Kundengruppe bearbeiten',
+                            'edit_client_group_success' => 'Kundengruppe wurde erfolgreich bearbeitet',
+                            'edit_client_group_error' => 'Bearbeitungsfehler bei der Clientgruppe',
+                            'remove_client_group' => 'Sind Sie sicher, dass Sie diese Kundengruppe entfernen möchten?',
+                            'remove_client_group_success' => 'Kundengruppe wurde erfolgreich entfernt',
+                            'remove_client_group_error' => 'Fehler beim Entfernen von Clientgruppen'
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
