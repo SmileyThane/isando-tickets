@@ -39,19 +39,18 @@
                                                     hide-details
                                                 ></v-text-field>
                                                 <perfect-scrollbar>
-                                                    <v-treeview
-                                                        v-model="productForm.category_id"
-                                                        :color="themeBgColor"
-                                                        :items="categories"
-                                                        :search="srcSearch"
-                                                        :selected-color="themeBgColor"
-                                                        item-disabled="disabled"
-                                                        dense
-                                                        hoverable
-                                                        selectable
-                                                    >
+                                                    <v-treeview :color="themeBgColor"
+                                                                :items="categories"
+                                                                :search="srcSearch"
+                                                                :active.sync="productForm.category_id"
+                                                                activatable
+                                                                dense
+                                                                @update:active="refreshCategoryForm">
+                                                        <template v-slot:prepend="{ item }">
+                                                            <v-icon>mdi-folder</v-icon>
+                                                        </template>
                                                         <template v-slot:label="{ item }">
-                                                            <small>{{ item.name }}</small>
+                                                            {{ $helpers.i18n.localized(item) }}
                                                         </template>
                                                     </v-treeview>
                                                 </perfect-scrollbar>
@@ -452,6 +451,30 @@ export default {
             this.options.itemsPerPage = value
             localStorage.itemsPerPage = value;
             this.options.page = 1
+        },
+        refreshCategoryForm(parent) {
+            if (parent.length > 0) {
+                const selectedId = parent[0];
+                this.productForm.category_id = this.findCategoryById(this.categories, selectedId)?.id;
+            } else {
+                this.productForm.category_id = null;
+            }
+
+            this.$forceUpdate();
+        },
+        findCategoryById(categories, id) {
+            for (const category of categories) {
+                if (category.id === id) {
+                    return category;
+                }
+                if (category.children) {
+                    const found = this.findCategoryById(category.children, id);
+                    if (found) {
+                        return found;
+                    }
+                }
+            }
+            return null;
         },
     },
     watch: {

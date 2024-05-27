@@ -2837,7 +2837,7 @@ export default {
             });
         },
         getProductCategoriesTree() {
-            axios.get(`/api/company/${this.$route.params.id}/product_categories/tree`).then(response => {
+            axios.get(`/api/main_company/product_categories/tree`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.productCategoriesTree = response.data;
@@ -2847,7 +2847,6 @@ export default {
                     this.snackbar = true;
                 }
             });
-
         },
         getProductCategoriesFlat() {
             axios.get(`/api/company/${this.$route.params.id}/product_categories/flat`).then(response => {
@@ -2884,7 +2883,6 @@ export default {
                     this.snackbar = true;
                 }
             });
-
         },
         deleteProductCategory(id) {
             this.snackbar = false;
