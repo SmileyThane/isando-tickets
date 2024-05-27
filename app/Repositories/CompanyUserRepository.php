@@ -313,4 +313,14 @@ class CompanyUserRepository
         $companyUser->save();
         return $companyUser;
     }
+
+    public function updateNotes($id, $notes)
+    {
+        $user = CompanyUser::find($id);
+
+        if ($user && $notes) {
+            $user->notes = $notes;
+            $user->save();
+        }
+    }
 }
