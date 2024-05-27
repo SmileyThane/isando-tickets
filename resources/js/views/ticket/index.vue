@@ -386,20 +386,23 @@
                             </v-icon>
                         </v-btn>
 
-                        <v-tooltip top>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    :color="themeBgColor"
-                                    dark
-                                    fab
-                                    x-small
-                                    @click="mergeTicketProcess(item.id)"
-                                >
-                                    <v-icon dark>mdi-clipboard-flow</v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Link tickets</span>
-                        </v-tooltip>
+                        <template>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        :color="themeBgColor"
+                                        v-on="on"
+                                        dark
+                                        fab
+                                        x-small
+                                        @click="mergeTicketProcess(item.id)"
+                                    >
+                                        <v-icon dark>mdi-clipboard-flow</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Link tickets</span>
+                            </v-tooltip>
+                        </template>
                         <v-btn
                             color="error"
                             dark
@@ -412,6 +415,27 @@
                                 mdi-delete
                             </v-icon>
                         </v-btn>
+
+                        <template>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        color="grey"
+                                        v-on="on"
+                                        dark
+                                        fab
+                                        x-small
+                                        @click="expanded = []"
+                                    >
+                                        <v-icon
+                                        >
+                                            mdi-close
+                                        </v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{langMap.main.close}}</span>
+                            </v-tooltip>
+                        </template>
                     </p>
                 </td>
             </template>
