@@ -78,7 +78,7 @@ class EmailReceiverRepository
             if ($userGlobal) {
                 Log::info('email from ' . $userGlobal->name);
                 try {
-                    $ticketSubject = trim(str_replace(["Re:", "Fwd:"], "", $rawSubject));
+                    $ticketSubject = trim(str_replace(["Re:", "Fwd:", "AW:", "Fw:", "FW:"], "", $rawSubject));
                     Log::info("subject is $ticketSubject");
                     $cachedCount = MailCache::where('message_key', $key)->count();
                     if ($cachedCount === 0) {
