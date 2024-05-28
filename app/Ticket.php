@@ -276,7 +276,8 @@ class Ticket extends Model
     {
         // Prefix + Delimiter + creation_date + Delimiter + sequence
         $settings = $owner = null;
-        $ownerName = 'E';
+        $ownerName = '';
+        $prefixTmp = 'E';
 
         try {
             $owner = $this->to_enity_type === Company::class ?
@@ -289,14 +290,15 @@ class Ticket extends Model
         }
 
         if ($owner) {
-            $ownerName = 'M' . $owner->name;
+            $prefixTmp = 'M';
+            $ownerName = '' . $owner->name;
             $settings = $owner->settings;
         }
 
         if (!$settings || empty($settings->data['ticket_number_format']) ||
             count(explode('｜', $settings->data['ticket_number_format'])) != 5
         ) {
-            $format = strtoupper(substr(str_replace(' ', '', $ownerName), 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
+            $format = strtoupper(substr(str_replace(' ', '', $ownerName), 0, 6)) . '｜-｜MMDD｜-｜###';
         } else {
             $format = $settings->data['ticket_number_format'];
         }
@@ -304,7 +306,11 @@ class Ticket extends Model
         list($prefix, $delim1, $date, $delim2, $suffix) = explode('｜', $format);
 
         // prepare date format for PHP
-        $date = str_replace(array('YYYY', 'YY', 'MM', 'DD'), array('Y', 'y', 'm', 'd'), $date);
+        $date = str_replace(array('YYYY', 'YY', 'MM', 'DD'), array('', '', 'm', 'd'), $date);
+
+        if (!$prefix) {
+            $prefix = $prefixTmp;
+        }
 
         // prepare suffix for PHP
         $suffix = '%0' . strlen($suffix) . 'd';
