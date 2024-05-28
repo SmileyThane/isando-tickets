@@ -354,7 +354,7 @@
                      @click="showItem(item)">
                     {{ item.assigned_person.user_data.full_name }}
                 </div>
-                <div v-else> {{ langMap.ticket.no_assigned }}</div>
+                <div v-else> </div>
             </template>
             <!--            <template v-slot:item.actions="{ item }">-->
             <!--            </template>-->
@@ -621,7 +621,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.contact}`, value: 'contact.user_data.full_name', width: '150px'},
                 {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name', width: '260px'},
                 {text: `${this.$store.state.lang.lang_map.main.product}`, value: 'product.name', width: '200px'},
-                {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person', width: '150px'},
+                {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person', width: '80px'},
 
             ],
             mergeTicketForm: {
