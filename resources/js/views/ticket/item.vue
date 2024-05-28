@@ -258,10 +258,10 @@
                         <v-btn color="grey darken-1" text @click="answerDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn :color="themeBgColor" dark @click="addTicketAnswer">
-                            {{ ticketAnswer.id ? langMap.main.update : langMap.main.create }}
+                            {{ ticketAnswer.id ? langMap.main.update : langMap.ticket.send_to_client }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer(true)">
-                            {{ ticketAnswer.id ? langMap.ticket.edit_internal_note : langMap.ticket.add_internal_note }}
+                        <v-btn color="grey darken-1" text @click="addTicketAnswer(true)">
+                            {{ ticketAnswer.id ? langMap.ticket.edit_internal_note : langMap.ticket.internal_note }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -3127,5 +3127,12 @@ export default {
 <style>
 .custom-small-text {
     font-size: .875rem;
+}
+.ticket--answer p {
+    margin-bottom: 0px!important;
+}
+
+.ticket--answer * {
+    font-family: Roboto, sans-serif!important;
 }
 </style>

@@ -354,7 +354,7 @@
                      @click="showItem(item)">
                     {{ item.assigned_person.user_data.full_name }}
                 </div>
-                <div v-else> {{ langMap.ticket.no_assigned }}</div>
+                <div v-else> </div>
             </template>
             <!--            <template v-slot:item.actions="{ item }">-->
             <!--            </template>-->
@@ -386,20 +386,23 @@
                             </v-icon>
                         </v-btn>
 
-                        <v-tooltip top>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    :color="themeBgColor"
-                                    dark
-                                    fab
-                                    x-small
-                                    @click="mergeTicketProcess(item.id)"
-                                >
-                                    <v-icon dark>mdi-clipboard-flow</v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Link tickets</span>
-                        </v-tooltip>
+                        <template>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        :color="themeBgColor"
+                                        v-on="on"
+                                        dark
+                                        fab
+                                        x-small
+                                        @click="mergeTicketProcess(item.id)"
+                                    >
+                                        <v-icon dark>mdi-clipboard-flow</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Link tickets</span>
+                            </v-tooltip>
+                        </template>
                         <v-btn
                             color="error"
                             dark
@@ -412,6 +415,27 @@
                                 mdi-delete
                             </v-icon>
                         </v-btn>
+
+                        <template>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        color="grey"
+                                        v-on="on"
+                                        dark
+                                        fab
+                                        x-small
+                                        @click="expanded = []"
+                                    >
+                                        <v-icon
+                                        >
+                                            mdi-close
+                                        </v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{langMap.main.close}}</span>
+                            </v-tooltip>
+                        </template>
                     </p>
                 </td>
             </template>
@@ -597,7 +621,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.contact}`, value: 'contact.user_data.full_name', width: '150px'},
                 {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name', width: '260px'},
                 {text: `${this.$store.state.lang.lang_map.main.product}`, value: 'product.name', width: '200px'},
-                {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person', width: '150px'},
+                {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person', width: '80px'},
 
             ],
             mergeTicketForm: {

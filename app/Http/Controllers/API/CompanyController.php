@@ -119,6 +119,20 @@ class CompanyController extends Controller
         return self::showResponse(false);
     }
 
+    public function updateProductCategory(Request $request, $id): JsonResponse
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
+            return self::showResponse($this->companyRepo->updateProductCategory(
+                $id,
+                $request->name,
+                $request->company_id,
+                $request->parent_id
+            ));
+        }
+
+        return self::showResponse(false);
+    }
+
     public function detachProductCategory($id): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
