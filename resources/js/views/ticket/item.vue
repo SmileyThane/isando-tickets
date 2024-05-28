@@ -3131,4 +3131,8 @@ export default {
 .ticket--answer p {
     margin-bottom: 0px!important;
 }
+
+.ticket--answer * {
+    font-family: Roboto, sans-serif!important;
+}
 </style>
