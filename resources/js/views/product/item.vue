@@ -285,7 +285,22 @@
                                         <v-icon>mdi-folder</v-icon>
                                     </template>
                                     <template v-slot:label="{ item }">
-                                        {{ $helpers.i18n.localized(item) }}
+                                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 12px;" @mouseenter="showPencilId = item.id"
+                                             @mouseleave="showPencilId = 0">
+                                            {{ $helpers.i18n.localized(item) }}
+                                            <div>
+                                                <v-btn v-if="showPencilId === item.id"
+                                                       @click="isCanEditCategory = true; editableCategoryItem = item"
+                                                       class="cursor-pointer" icon>
+                                                    <v-icon>mdi-pencil</v-icon>
+                                                </v-btn>
+                                                <v-btn v-if="showPencilId === item.id"
+                                                       @click="isCanRemoveCategory = true; removeCategoryItem = item"
+                                                       class="cursor-pointer" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </div>
+                                        </div>
                                     </template>
                                 </v-treeview>
                             </perfect-scrollbar>
@@ -355,11 +370,67 @@
                     </v-row>
                 </v-card-text>
                 <v-card-actions style="justify-content: flex-end">
-                    <v-btn text @click="cancelUpdateProduct;"
+                    <v-btn text @click="cancelUpdateProduct"
                            v-text="langMap.main.cancel"/>
                     <v-btn :color="themeBgColor" text
                            @click="updateProduct"
                            v-text="langMap.main.update"/>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="isCanEditCategory" max-width="480" persistent>
+            <v-card>
+                <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                    {{ langMap.company.edit_category }}: {{ editableCategoryItem.name }}
+                </v-card-title>
+                <v-card-text class="mt-6">
+                    <v-text-field
+                        v-model="editableCategoryItem.name"
+                        :color="themeBgColor"
+                        :label="langMap.main.name"
+                        type="text"
+                        dense
+                    ></v-text-field>
+                    <v-select
+                        v-model="editableCategoryItem.parent_id"
+                        :color="themeBgColor"
+                        :item-color="themeBgColor"
+                        :items="productCategoriesFlat"
+                        :label="langMap.company.parent_product_category"
+                        item-text="full_name"
+                        item-value="id"
+                        dense
+                    >
+                    </v-select>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey darken-1" text @click="clearEditableCategory">
+                        {{ langMap.main.cancel }}
+                    </v-btn>
+                    <v-btn color="red darken-1" text
+                           @click="editCategory()">
+                        {{ langMap.main.edit }}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="isCanRemoveCategory" max-width="480" persistent>
+            <v-card>
+                <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                    {{ langMap.kb.delete_category }}
+                </v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey darken-1" text @click="clearRemoveCategoryItem">
+                        {{ langMap.main.cancel }}
+                    </v-btn>
+                    <v-btn color="red darken-1" text
+                           @click="removeCategory()">
+                        {{ langMap.main.delete }}
+                    </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -372,7 +443,6 @@
 import EventBus from "../../components/EventBus";
 
 export default {
-
     data() {
         return {
             snackbar: false,
@@ -462,6 +532,17 @@ export default {
             },
             productCategoriesFlat: [],
             productCategoriesTree: [],
+            showPencilId: 0,
+            editableCategoryItem: {
+                name: '',
+                parent_id: ''
+            },
+            removeCategoryItem: {
+                name: '',
+                parent_id: ''
+            },
+            isCanEditCategory: false,
+            isCanRemoveCategory: false,
         }
     },
     mounted() {
@@ -717,6 +798,62 @@ export default {
         submitNewData(id, data, method) {
             data.entity_id = id
             this[method](data)
+        },
+        editCategory(){
+            axios.patch(`/api/product_category/${this.editableCategoryItem.id}`, {
+                name: this.editableCategoryItem.name,
+                company_id: this.editableCategoryItem.company_id,
+                parent_id: this.editableCategoryItem.parent_id,
+            }).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getProduct();
+                    this.getCategories();
+                    this.clearEditableCategory();
+                    this.snackbarMessage = this.langMap.company.product_category_edited;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        removeCategory() {
+            axios.delete(`/api/product_category/${this.removeCategoryItem.id}`, {
+                name: this.removeCategoryItem.name,
+                company_id: this.removeCategoryItem.company_id,
+                parent_id: this.removeCategoryItem.parent_id,
+            }).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getProduct();
+                    this.getCategories();
+                    this.clearRemoveCategoryItem();
+                    this.snackbarMessage = this.langMap.company.product_category_deleted;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        clearEditableCategory() {
+            this.isCanEditCategory = false;
+            this.editableCategoryItem = {
+                name: '',
+                category_id: ''
+            }
+        },
+        clearRemoveCategoryItem() {
+            this.isCanRemoveCategory = false;
+            this.removeCategoryItem = {
+                name: '',
+                category_id: ''
+            }
         },
     },
 }
