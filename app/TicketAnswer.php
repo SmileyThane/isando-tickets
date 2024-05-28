@@ -49,6 +49,11 @@ class TicketAnswer extends Model
         return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
     }
 
+    public function getAnswerAttribute()
+    {
+        $content = str_replace(["\n", "<br>", "<br/>"], "", $this->attributes['answer']);
+        return preg_replace("/<img[^>]+\>/i", "<b>[image from attachments]</b> ", $content);
+    }
 
     public function employee(): HasOne
     {
