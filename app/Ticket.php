@@ -65,7 +65,10 @@ class Ticket extends Model
 
     public function getDescriptionAttribute()
     {
-        return str_replace("\n", "<br>", $this->attributes['description']);
+        $content = str_replace(["\n", "<br>", "<br/>"], "", $this->attributes['description']);
+        $content = preg_replace("/<img[^>]+\>/i", "<b>[image from attachments]</b> ", $content);
+
+        return $content;
     }
 
     public function getFromAttribute()

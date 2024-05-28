@@ -180,6 +180,21 @@ class CompanyRepository
         return true;
     }
 
+    public function updateProductCategory($id, $name, $companyId = null, $parentId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
+        ProductCategory::query()
+            ->where(['id' => $id])
+            ->update([
+            'name' => $name,
+            'company_id' => $companyId,
+            'parent_id' => $parentId,
+        ]);
+
+        return true;
+    }
+
     public function detachProductCategory($id)
     {
         $result = false;

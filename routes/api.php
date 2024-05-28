@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('company/{id?}/product_categories/tree', 'API\CompanyController@getProductCategoriesTree');
         Route::get('company/{id?}/product_categories/flat', 'API\CompanyController@getProductCategoriesFlat');
         Route::post('company/{id}/product_category', 'API\CompanyController@attachProductCategory');
+        Route::patch('product_category/{id}', 'API\CompanyController@updateProductCategory');
         Route::delete('product_category/{id}', 'API\CompanyController@detachProductCategory');
         Route::post('main_company/settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/settings', 'API\CompanyController@updateSettings');
