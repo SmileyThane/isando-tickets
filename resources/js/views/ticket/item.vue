@@ -3128,4 +3128,7 @@ export default {
 .custom-small-text {
     font-size: .875rem;
 }
+.ticket--answer p {
+    margin-bottom: 0px!important;
+}
 </style>
