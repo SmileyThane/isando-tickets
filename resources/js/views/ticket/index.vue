@@ -354,7 +354,7 @@
                      @click="showItem(item)">
                     {{ item.assigned_person.user_data.full_name }}
                 </div>
-                <div v-else> {{ langMap.ticket.no_assigned }}</div>
+                <div v-else> </div>
             </template>
             <!--            <template v-slot:item.actions="{ item }">-->
             <!--            </template>-->
