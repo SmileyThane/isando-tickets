@@ -2106,7 +2106,6 @@
                                                     </v-list-item-group>
                                                 </v-list>
                                             </div>
-
                                         </perfect-scrollbar>
                                         <br/>
                                         <v-textarea
@@ -2517,7 +2516,7 @@ export default {
             }).then(response => {
                 if (this.ticketsSearch === search) {
                     response = response.data
-                    let result = response.data.data
+                    let result = response.data.data.sort((a, b) => new Date(b.last_update) - new Date(a.last_update))
                     if (result.length > 1) {
                         let elementPos = result.map(function (x) {
                             return x.id;
