@@ -64,7 +64,8 @@ export default [
     {
         path: '/home',
         name: 'home',
-        component: Ticket
+        component: Ticket,
+        props: route => ({ page: route.query.page }),
     },
     {
         path: '/user',
@@ -120,7 +121,8 @@ export default [
         meta: {
             requiresAuth: true,
         },
-        component: Customer
+        component: Customer,
+        props: route => ({ page: route.query.page }),
     },
     {
         path: '/all',
@@ -152,7 +154,8 @@ export default [
         meta: {
             requiresAuth: true,
         },
-        component: Employee
+        component: Employee,
+        props: route => ({ page: route.query.page }),
     },
     {
         path: '/employee/:id',
@@ -168,7 +171,8 @@ export default [
         meta: {
             requiresAuth: true,
         },
-        component: Ticket
+        component: Ticket,
+        props: route => ({ page: route.query.page }),
     },
     {
         path: '/ticket_create',

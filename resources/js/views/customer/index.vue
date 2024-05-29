@@ -145,7 +145,7 @@
                                         ></v-select>
                                     </v-col>
                                     <v-col md="1" sm="12">
-                                        <v-pagination v-model="options.page"
+                                        <v-pagination v-model="tablePage"
                                                       :color="themeBgColor"
                                                       :length="lastPage"
                                                       :page="options.page"
@@ -191,7 +191,7 @@
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination v-model="options.page"
+                                <v-pagination v-model="tablePage"
                                               :color="themeBgColor"
                                               :length="lastPage"
                                               :page="options.page"
@@ -290,7 +290,12 @@ import EventBus from "../../components/EventBus";
 import _ from "lodash";
 
 export default {
-
+    props: {
+        page: {
+            type: [String, Number],
+            default: 1
+        }
+    },
     data() {
         return {
             snackbar: false,
@@ -304,8 +309,9 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             expanded: [],
             singleExpand: false,
+            tablePage: 1,
             options: {
-                page: 1,
+                page: this.page ? parseInt(this.page) : 1,
                 sortDesc: [false],
                 sortBy: ['name'],
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
@@ -381,6 +387,7 @@ export default {
         this.debounceGetClients = _.debounce(this.getClients, 500);
     },
     mounted() {
+        this.updatePageFromRoute();
         this.getSuppliers();
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
@@ -388,6 +395,14 @@ export default {
         });
     },
     methods: {
+        updatePageFromRoute() {
+            if (this.page) {
+                this.tablePage = parseInt(this.page) || 1
+                this.options.page = parseInt(this.page) || 1;
+                this.getClients();
+                this.$router.push({ name: 'customers', query: { page: this.page } })
+            }
+        },
         getClients() {
             this.customers = [];
             this.loading = this.themeBgColor
@@ -404,7 +419,7 @@ export default {
                     sort_by: this.options.sortBy[0],
                     sort_val: this.options.sortDesc[0],
                     per_page: this.options.itemsPerPage,
-                    page: this.options.page
+                    page: this.page
                 }
             }).then(response => {
                 this.loading = false
@@ -421,7 +436,6 @@ export default {
             });
         },
         addClient() {
-            // console.log(this.clientForm.supplier_object);
             this.clientForm.supplier_type = Object.keys(this.clientForm.supplier_object).shift()
             this.clientForm.supplier_id = Object.values(this.clientForm.supplier_object).shift()
             axios.post('/api/client', this.clientForm).then(response => {
@@ -436,7 +450,6 @@ export default {
                     this.snackbar = true;
                 }
             });
-            // console.log(this.clientForm);
         },
         getSuppliers() {
             axios.get('/api/supplier').then(response => {
@@ -489,7 +502,17 @@ export default {
         },
         loading(value) {
             this.$parent.$parent.$refs.container.scrollTop = 0
-        }
+        },
+        page(newValue) {
+            this.options.page = parseInt(newValue) || 1;
+            this.tablePage = parseInt(newValue) || 1;
+            this.getClients();
+        },
+        tablePage: function(newValue, oldValue) {
+            if (newValue !== oldValue) {
+                this.$router.push({ name: 'customers', query: { page: newValue } });
+            }
+        },
     },
 }
 </script>
