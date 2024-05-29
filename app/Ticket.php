@@ -66,7 +66,12 @@ class Ticket extends Model
     public function getDescriptionAttribute()
     {
         $content = str_replace(["\n", "<br>", "<br/>"], "", $this->attributes['description']);
-        $content = preg_replace("/<img[^>]+\>/i", "<b>[image from attachments]</b> ", $content);
+        $content = preg_replace("/<img[^cid:][^>]+\>/i", "[[image from attachments]]", $content);
+        foreach ($this->attachments as $attachment)
+        {
+            $content = preg_replace('/\[\[image from attachments\]\]/', '<img src="' . $attachment->link . '"/>', $content, 1);
+        }
+        $content = preg_replace('/\[\[image from attachments\]\]/', '', $content);
 
         return $content;
     }
