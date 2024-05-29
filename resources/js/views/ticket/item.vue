@@ -857,6 +857,8 @@
                                                 answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? moment(answer.updated_at_time).isValid() ? moment(answer.updated_at_time).format('DD.MM.YYYY HH:mm') : answer.updated_at_time : moment(answer.updated_at).format('DD.MM.YYYY HH:mm')) : ''
                                             }}
                                             :
+                                            <span style="color: grey;"><strong
+                                                v-if="answer.is_internal">[{{ langMap.ticket.internal_note }}]</strong></span>
                                         </span>
                                         </v-col>
                                         <v-col v-if="currentUser.id == answer.employee.user_data.id"
@@ -866,9 +868,8 @@
                                                 <v-icon>mdi-pencil</v-icon>
                                             </v-btn>
                                         </v-col>
-                                        <strong v-if="answer.is_internal">[{{langMap.ticket.internal_notes}}]</strong>
                                         <br class="pb-2">
-                                        <div v-html="answer.answer"></div>
+                                        <div style="color: #82B541;" v-html="answer.answer"></div>
                                         <v-col v-if="answer.attachments.length > 0 " cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
                                             <div
