@@ -480,7 +480,9 @@
                     </v-btn>
                     <v-btn
                         v-show="!thirdColumn"
-                        class="ma-2" color="#f2f2f2" small
+                        class="ma-2 d-sm-none d-md-flex"
+                        color="#f2f2f2"
+                        small
                         @click="manageThirdColumn"
                     >
                         {{ langMap.ticket.ticket_history }}
@@ -681,6 +683,11 @@
                             dense
                         >
                             <v-list-item
+                                @click="manageThirdColumn"
+                            >
+                                <v-list-item-title>{{ langMap.ticket.ticket_history }}</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
                                 @click="showLinkBlock"
                             >
                                 <v-list-item-title>{{ langMap.main.link }}</v-list-item-title>
@@ -689,7 +696,7 @@
                                 v-if="ticket.parent_id !== null || ticket.child_tickets !== null"
                                 @click="showMergeBlock"
                             >
-                                <v-list-item-title>{{ langMap.ticket.megre }}</v-list-item-title>
+                                <v-list-item-title>{{ langMap.ticket.merge }}</v-list-item-title>
                             </v-list-item>
                             <v-list-item
                             >
@@ -850,6 +857,8 @@
                                                 answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? moment(answer.updated_at_time).isValid() ? moment(answer.updated_at_time).format('DD.MM.YYYY HH:mm') : answer.updated_at_time : moment(answer.updated_at).format('DD.MM.YYYY HH:mm')) : ''
                                             }}
                                             :
+                                            <span style="color: grey;"><strong
+                                                v-if="answer.is_internal">[{{ langMap.ticket.internal_note }}]</strong></span>
                                         </span>
                                         </v-col>
                                         <v-col v-if="currentUser.id == answer.employee.user_data.id"
@@ -859,9 +868,8 @@
                                                 <v-icon>mdi-pencil</v-icon>
                                             </v-btn>
                                         </v-col>
-                                        <strong v-if="answer.is_internal">[{{langMap.ticket.internal_notes}}]</strong>
                                         <br class="pb-2">
-                                        <div v-html="answer.answer"></div>
+                                        <div style="color: #82B541;" v-html="answer.answer"></div>
                                         <v-col v-if="answer.attachments.length > 0 " cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
                                             <div
@@ -2106,7 +2114,6 @@
                                                     </v-list-item-group>
                                                 </v-list>
                                             </div>
-
                                         </perfect-scrollbar>
                                         <br/>
                                         <v-textarea
@@ -2517,7 +2524,7 @@ export default {
             }).then(response => {
                 if (this.ticketsSearch === search) {
                     response = response.data
-                    let result = response.data.data
+                    let result = response.data.data.sort((a, b) => new Date(b.last_update) - new Date(a.last_update))
                     if (result.length > 1) {
                         let elementPos = result.map(function (x) {
                             return x.id;

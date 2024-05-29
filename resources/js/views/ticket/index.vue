@@ -90,7 +90,7 @@
                         ></v-select>
                     </v-col>
                     <v-col md="1" sm="12">
-                        <v-pagination v-model="options.page"
+                        <v-pagination v-model="tablePage"
                                       :color="themeBgColor"
                                       :length="lastPage"
                                       :page="options.page"
@@ -255,7 +255,7 @@
                 </v-expand-transition>
             </template>
             <template v-slot:footer>
-                <v-pagination v-model="options.page"
+                <v-pagination v-model="tablePage"
                               :color="themeBgColor"
                               :length="lastPage"
                               :page="options.page"
@@ -529,6 +529,12 @@
 import EventBus from "../../components/EventBus";
 
 export default {
+    props: {
+        page: {
+            type: [String, Number],
+            default: 1
+        }
+    },
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
@@ -546,8 +552,9 @@ export default {
             products: [],
             priorities: [],
             types: [],
+            tablePage: 1,
             options: {
-                page: 1,
+                page: this.page ? parseInt(this.page) : 1,
                 sortDesc: [true],
                 sortBy: ['id'],
                 withSpam: false,
@@ -645,6 +652,7 @@ export default {
     },
     mounted() {
         let that = this;
+        this.updatePageFromRoute();
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
@@ -664,6 +672,14 @@ export default {
         }, 500);
     },
     methods: {
+        updatePageFromRoute() {
+            if (this.page) {
+                this.tablePage = parseInt(this.page) || 1
+                this.options.page = parseInt(this.page) || 1;
+                this.getTickets();
+                this.$router.push({ name: 'ticket_list', query: { page: this.page } })
+            }
+        },
         manageFilter() {
             this.queryArray = [];
             this.filterParams.forEach(filterParam => {
@@ -778,8 +794,8 @@ export default {
                     only_open: this.options.onlyOpen,
                     per_page: this.options.itemsPerPage,
                     minified: this.minifiedTickets,
-                    page: this.options.page,
-                    filter_id: this.filterId
+                    filter_id: this.filterId,
+                    page: this.page
                 }
             }).then(
                 response => {
@@ -876,7 +892,17 @@ export default {
         },
         loading(value) {
             this.$parent.$parent.$refs.container.scrollTop = 0
-        }
+        },
+        page(newValue) {
+            this.options.page = parseInt(newValue) || 1;
+            this.tablePage = parseInt(newValue) || 1;
+            this.getTickets();
+        },
+        tablePage: function(newValue, oldValue) {
+            if (newValue !== oldValue) {
+                this.$router.push({ name: 'ticket_list', query: { page: newValue } });
+            }
+        },
     },
 }
 </script>

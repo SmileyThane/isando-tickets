@@ -159,7 +159,7 @@
                                         ></v-select>
                                     </v-col>
                                     <v-col md="1" sm="12">
-                                        <v-pagination v-model="options.page"
+                                        <v-pagination v-model="tablePage"
                                                       :color="themeBgColor"
                                                       :length="lastPage"
                                                       :page="options.page"
@@ -172,7 +172,7 @@
                                 </v-row>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination v-model="options.page"
+                                <v-pagination v-model="tablePage"
                                               :color="themeBgColor"
                                               :length="lastPage"
                                               :page="options.page"
@@ -309,7 +309,12 @@
 import EventBus from "../../components/EventBus";
 
 export default {
-
+    props: {
+        page: {
+            type: [String, Number],
+            default: 1
+        }
+    },
     data() {
         return {
             snackbar: false,
@@ -326,8 +331,9 @@ export default {
             isLoading: false,
             selectedEmployeeId: null,
             removeEmployeeDialog: false,
+            tablePage: 1,
             options: {
-                page: 1,
+                page: this.page ? parseInt(this.page) : 1,
                 sortDesc: [false],
                 sortBy: ['id'],
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
@@ -402,6 +408,7 @@ export default {
         this.debounceGetEmployees = _.debounce(this.getEmployees, 500);
     },
     mounted() {
+        this.updatePageFromRoute();
         this.getClients();
         this.getLanguages();
         let that = this;
@@ -413,6 +420,14 @@ export default {
         });
     },
     methods: {
+        updatePageFromRoute() {
+            if (this.page) {
+                this.tablePage = parseInt(this.page) || 1
+                this.options.page = parseInt(this.page) || 1;
+                this.getEmployees();
+                this.$router.push({ name: 'individuals', query: { page: this.page } })
+            }
+        },
         getEmployees() {
             this.contacts = [];
             this.loading = this.themeBgColor
@@ -430,8 +445,8 @@ export default {
                     sort_by: this.options.sortBy[0],
                     sort_val: this.options.sortDesc[0],
                     per_page: this.options.itemsPerPage,
-                    page: this.options.page,
-                    with_trashed: this.withTrashed
+                    with_trashed: this.withTrashed,
+                    page: this.page
                 }
             }).then(
                 response => {
@@ -542,7 +557,17 @@ export default {
         },
         loading(value) {
             this.$parent.$parent.$refs.container.scrollTop = 0
-        }
+        },
+        page(newValue) {
+            this.options.page = parseInt(newValue) || 1;
+            this.tablePage = parseInt(newValue) || 1;
+            this.getEmployees();
+        },
+        tablePage: function(newValue, oldValue) {
+            if (newValue !== oldValue) {
+                this.$router.push({ name: 'individuals', query: { page: newValue } });
+            }
+        },
     },
 }
 </script>
