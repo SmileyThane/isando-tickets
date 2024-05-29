@@ -480,7 +480,9 @@
                     </v-btn>
                     <v-btn
                         v-show="!thirdColumn"
-                        class="ma-2" color="#f2f2f2" small
+                        class="ma-2 d-sm-none d-md-flex"
+                        color="#f2f2f2"
+                        small
                         @click="manageThirdColumn"
                     >
                         {{ langMap.ticket.ticket_history }}
@@ -681,6 +683,11 @@
                             dense
                         >
                             <v-list-item
+                                @click="manageThirdColumn"
+                            >
+                                <v-list-item-title>{{ langMap.ticket.ticket_history }}</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
                                 @click="showLinkBlock"
                             >
                                 <v-list-item-title>{{ langMap.main.link }}</v-list-item-title>
@@ -689,7 +696,7 @@
                                 v-if="ticket.parent_id !== null || ticket.child_tickets !== null"
                                 @click="showMergeBlock"
                             >
-                                <v-list-item-title>{{ langMap.ticket.megre }}</v-list-item-title>
+                                <v-list-item-title>{{ langMap.ticket.merge }}</v-list-item-title>
                             </v-list-item>
                             <v-list-item
                             >
