@@ -28,17 +28,32 @@
 
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <v-select
+                                                <v-text-field
+                                                    v-model="srcSearch"
                                                     :color="themeBgColor"
-                                                    :label="langMap.main.category"
-                                                    name="category_id"
-                                                    prepend-icon="mdi-rename-box"
-                                                    v-model="productForm.category_id"
-                                                    :items="categories"
-                                                    :item-color="themeBgColor"
-                                                    item-value="id"
-                                                    item-text="full_name"
-                                                />
+                                                    :label="langMap.main.search"
+                                                    class="pa-3 pt-5"
+                                                    clear-icon="mdi-close-circle-outline"
+                                                    clearable
+                                                    dense
+                                                    hide-details
+                                                ></v-text-field>
+                                                <perfect-scrollbar>
+                                                    <v-treeview :color="themeBgColor"
+                                                                :items="categories"
+                                                                :search="srcSearch"
+                                                                :active.sync="productForm.category_id"
+                                                                activatable
+                                                                dense
+                                                                @update:active="refreshCategoryForm">
+                                                        <template v-slot:prepend="{ item }">
+                                                            <v-icon>mdi-folder</v-icon>
+                                                        </template>
+                                                        <template v-slot:label="{ item }">
+                                                            {{ $helpers.i18n.localized(item) }}
+                                                        </template>
+                                                    </v-treeview>
+                                                </perfect-scrollbar>
                                             </div>
                                             <div class="col-md-4">
                                                 <v-text-field
@@ -320,7 +335,8 @@ export default {
                 product_description: '',
                 files: []
             },
-            categories: []
+            categories: [],
+            srcSearch: '',
         }
     },
     mounted() {
@@ -367,15 +383,10 @@ export default {
             });
         },
         getCategories() {
-            axios.get(`/api/main_company/product_categories/flat`).then(response => {
+            axios.get(`/api/main_company/product_categories/tree`).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    this.categories = [{
-                        id: null,
-                        name: this.langMap.main.none,
-                        full_name: this.langMap.main.none,
-                        parent_id: null
-                    }].concat(response.data);
+                    this.categories = response.data;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -440,6 +451,30 @@ export default {
             this.options.itemsPerPage = value
             localStorage.itemsPerPage = value;
             this.options.page = 1
+        },
+        refreshCategoryForm(parent) {
+            if (parent.length > 0) {
+                const selectedId = parent[0];
+                this.productForm.category_id = this.findCategoryById(this.categories, selectedId)?.id;
+            } else {
+                this.productForm.category_id = null;
+            }
+
+            this.$forceUpdate();
+        },
+        findCategoryById(categories, id) {
+            for (const category of categories) {
+                if (category.id === id) {
+                    return category;
+                }
+                if (category.children) {
+                    const found = this.findCategoryById(category.children, id);
+                    if (found) {
+                        return found;
+                    }
+                }
+            }
+            return null;
         },
     },
     watch: {
