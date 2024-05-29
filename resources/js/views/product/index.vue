@@ -42,7 +42,7 @@
                                                     <v-treeview :color="themeBgColor"
                                                                 :items="categories"
                                                                 :search="srcSearch"
-                                                                :active.sync="productForm.category_id"
+                                                                :active.sync="productForm.id"
                                                                 activatable
                                                                 dense
                                                                 @update:active="refreshCategoryForm">
