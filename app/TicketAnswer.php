@@ -51,7 +51,7 @@ class TicketAnswer extends Model
 
     public function getAnswerAttribute()
     {
-        $content = str_replace(["\n", "<br>", "<br/>"], "", $this->attributes['description']);
+        $content = str_replace(["\n", "<br>", "<br/>"], "", $this->attributes['answer']);
         $content = preg_replace("/<img[^cid:][^>]+\>/i", "[[image from attachments]]", $content);
         foreach ($this->attachments as $attachment)
         {
