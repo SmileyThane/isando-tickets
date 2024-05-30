@@ -676,7 +676,7 @@ export default {
             if (this.page) {
                 this.tablePage = parseInt(this.page) || 1
                 this.options.page = parseInt(this.page) || 1;
-                this.getTickets();
+                // this.getTickets();
                 this.$router.push({ name: 'ticket_list', query: { page: this.page } })
             }
         },
