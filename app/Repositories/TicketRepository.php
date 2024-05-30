@@ -361,10 +361,11 @@ class TicketRepository
 
     public function updateStatus(Request $request, $id, $employeeId = null, $withHistory = true): bool
     {
+        $isInternal = ($request->is_internal === "true");
         $ticket = Ticket::query()->find($id);
         $ticket->status_id = $request->status_id;
         $ticket->save();
-        if ($request->is_internal === false) {
+        if ($isInternal === false) {
             $this->emailEmployees(
                 $this->filterEmailRecipients($ticket->to->employees, $ticket, $request->ticket_action ?? ''),
                 $ticket,
@@ -513,11 +514,12 @@ class TicketRepository
 
     public function addAnswer(Request $request, $id, $employeeId = null, $replyShouldBeEmailed = true): bool
     {
+        $isInternal = ($request->is_internal === "true") ? 1 : 0;
         $ticketAnswer = new TicketAnswer();
         $ticketAnswer->ticket_id = $id;
         $ticketAnswer->company_user_id = $employeeId ?? Auth::user()->employee->id;
         $ticketAnswer->answer = $request->answer;
-        $ticketAnswer->is_internal = $request->is_internal === "true" ? 1 : 0;
+        $ticketAnswer->is_internal = $isInternal;
         $ticketAnswer->save();
 
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
@@ -531,7 +533,7 @@ class TicketRepository
             $request->status_id = 4;
         }
 
-        if ($replyShouldBeEmailed && $request->is_internal === false) {
+        if ($replyShouldBeEmailed && (bool)$isInternal === false) {
             $this->sendEmailWithReply($id, $request->answer, $ticketAnswer->attachments);
         }
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
