@@ -896,7 +896,7 @@ export default {
         page(newValue) {
             this.options.page = parseInt(newValue) || 1;
             this.tablePage = parseInt(newValue) || 1;
-            this.getTickets();
+            // this.getTickets();
         },
         tablePage: function(newValue, oldValue) {
             if (newValue !== oldValue) {
