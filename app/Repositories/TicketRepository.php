@@ -517,7 +517,7 @@ class TicketRepository
         $ticketAnswer->ticket_id = $id;
         $ticketAnswer->company_user_id = $employeeId ?? Auth::user()->employee->id;
         $ticketAnswer->answer = $request->answer;
-        $ticketAnswer->is_internal = $request->is_internal ? 1 : 0;
+        $ticketAnswer->is_internal = $request->is_internal === "true" ? 1 : 0;
         $ticketAnswer->save();
 
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
