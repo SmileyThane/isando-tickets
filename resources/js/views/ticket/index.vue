@@ -325,7 +325,7 @@
             </template>
             <template v-slot:item.last_update="{ item }">
                 {{
-                    item.last_update
+                    moment(item.last_update).isValid() ? moment(item.last_update).format('DD.MM hh:mm') : item.last_update
                 }}
             </template>
             <template v-slot:item.number="{ item }">
