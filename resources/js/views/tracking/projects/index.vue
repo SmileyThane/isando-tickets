@@ -63,7 +63,8 @@
                             :item-color="themeBgColor"
                             elevation="2"
                             @click="dialog=true"
-                        >{{ langMap.tracking.create_project.btn_title }} {{ getTrackingProjectLabel }}</v-btn>
+                        >{{ langMap.tracking.create_project.btn_title }} {{ getTrackingProjectLabel }}
+                        </v-btn>
                     </v-col>
                 </v-row>
             </template>
@@ -78,7 +79,8 @@
                 </v-pagination>
             </template>
             <template v-slot:item.name="props">
-                {{ props.item.name }} <v-chip small v-if="props.item.status === 'archived'">Archived</v-chip>
+                {{ props.item.name }}
+                <v-chip small v-if="props.item.status === 'archived'">Archived</v-chip>
             </template>
             <template v-slot:item.is_favorite="props">
                 <v-icon v-if="props.item.is_favorite" @click.stop="toggleFavorite(props.item)">mdi-star</v-icon>
@@ -179,7 +181,8 @@
                     max-width="520"
                 >
                     <v-card v-if="$helpers.auth.checkPermissionByIds([53])">
-                        <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        <v-card-title class="mb-5"
+                                      :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                             {{ langMap.tracking.create_project.modal_title }}
                         </v-card-title>
                         <v-card-text>
@@ -189,18 +192,6 @@
                                 :label="`${getTrackingProjectLabel} name*`"
                                 v-model="project.project"
                             ></v-text-field>
-<!--                            <v-text-field-->
-<!--                                :color="themeBgColor"-->
-<!--                                :item-color="themeBgColor"-->
-<!--                                label="Department*"-->
-<!--                                v-model="project.department"-->
-<!--                            ></v-text-field>-->
-<!--                            <v-text-field-->
-<!--                                :color="themeBgColor"-->
-<!--                                :item-color="themeBgColor"-->
-<!--                                label="Profit center*"-->
-<!--                                v-model="project.profit_center"-->
-<!--                            ></v-text-field>-->
                             <v-select
                                 :items="$store.getters['Products/getProducts']"
                                 item-text="name"
@@ -224,13 +215,14 @@
                             ></v-select>
                             <v-text-field v-model="project.color" hide-details class="ma-0 pa-0" solo>
                                 <template v-slot:append>
-                                    <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                                    <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16"
+                                            :close-on-content-click="false">
                                         <template v-slot:activator="{ on }">
-                                            <div :style="switchColor" v-on="on" />
+                                            <div :style="switchColor" v-on="on"/>
                                         </template>
                                         <v-card>
                                             <v-card-text class="pa-0">
-                                                <v-color-picker v-model="project.color" flat />
+                                                <v-color-picker v-model="project.color" flat/>
                                             </v-card-text>
                                         </v-card>
                                     </v-menu>
@@ -383,7 +375,7 @@ export default {
                 column: this.options.sortBy[0],
                 includeArchives: this.includeArchives,
             })
-                .then(({ data, total, last_page }) => {
+                .then(({data, total, last_page}) => {
                     this.projects = data
                     this.totalProjects = total
                     this.lastPage = last_page
@@ -471,7 +463,7 @@ export default {
     },
     computed: {
         switchColor() {
-            const { project: { color }, menu } = this
+            const {project: {color}, menu} = this
             return {
                 backgroundColor: color,
                 cursor: 'pointer',
