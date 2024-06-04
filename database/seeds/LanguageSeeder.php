@@ -604,7 +604,7 @@ class LanguageSeeder extends Seeder
                         'send_to_client' => 'Send to client',
                         'subject' => 'Subject',
                         'internal_notes' => 'Internal notes',
-                        'internal_note' => 'Internal note',
+                        'internal_note' => 'INTERNAL NOTE',
                         'ticket_history' => 'History',
                         'access_data' => 'Access data',
                         'merged_tickets' => 'Merged tickets',
@@ -622,7 +622,8 @@ class LanguageSeeder extends Seeder
                         'clear_agent' => 'Unassign agent',
                         'create_and_assign' => 'Create and assign',
                         'followers' => 'Followers',
-                        'save_for_later' => 'Do you want to save the content of the form for later?'
+                        'save_for_later' => 'Do you want to save the content of the form for later?',
+                        'close_ticket_title' => 'Are you sure that you want to close this ticket?'
                     ],
                     'main' =>
                         [
@@ -1657,7 +1658,8 @@ class LanguageSeeder extends Seeder
                             'clear_agent' => 'Agent abmelden',
                             'create_and_assign' => 'Erstellen und zuordnen',
                             'followers' => 'Followers',
-                            'save_for_later' => 'Möchten Sie den Inhalt des Formulars für später speichern?'
+                            'save_for_later' => 'Möchten Sie den Inhalt des Formulars für später speichern?',
+                            'close_ticket_title' => 'Sind Sie sicher, dass Sie dieses Ticket schließen möchten?'
                         ],
                         'main' => [
                             'create' => 'erstellen',

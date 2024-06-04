@@ -869,7 +869,7 @@
                                             </v-btn>
                                         </v-col>
                                         <br class="pb-2">
-                                        <div style="color: #82B541;" v-html="answer.answer"></div>
+                                        <div v-html="answer.answer"></div>
                                         <v-col v-if="answer.attachments.length > 0 " cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
                                             <div
@@ -1105,7 +1105,7 @@
                                             <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
                                     </v-col>
-                                    <div v-html="ticket.description"></div>
+                                    <div style="color: #82B541;" v-html="ticket.description"></div>
                                     <v-col v-if="ticket.attachments && ticket.attachments.length > 0 " cols="12">
                                         <h4>{{ langMap.main.attachments }}</h4>
                                         <div
