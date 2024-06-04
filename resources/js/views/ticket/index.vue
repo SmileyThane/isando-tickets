@@ -425,11 +425,11 @@
                                         dark
                                         fab
                                         x-small
-                                        @click="expanded = []"
+                                        @click="closeTicketDialog = true"
                                     >
                                         <v-icon
                                         >
-                                            mdi-close
+                                            mdi-check
                                         </v-icon>
                                     </v-btn>
                                 </template>
@@ -504,6 +504,23 @@
                         </v-btn>
                         <v-btn :color="themeBgColor" darken-1 text @click="mergeTicket()">
                             {{ langMap.main.link }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
+        <template>
+            <v-dialog v-model="closeTicketDialog" max-width="540" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.ticket.close_ticket_title }}
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="closeTicketDialog = false">{{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="closeTicket()">
+                            {{ langMap.ticket.close_ticket }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -647,7 +664,106 @@ export default {
             filters: [],
             queryArray: [],
             tempFilter: [],
-            filterId: ''
+            filterId: '',
+            ticket: {
+                status_id: null,
+                to_company_user_id: null,
+                attachments: [{
+                    name: '',
+                    link: ''
+                },
+                ],
+                files: [],
+                from: {
+                    name: ''
+                },
+                from_entity_type: '',
+                from_entity_id: '',
+                to: {
+                    name: ''
+                },
+                priority: {
+                    name: ''
+                },
+                can_be_edited: '',
+                contact: {
+                    user_data: {
+                        name: '',
+                        surname: '',
+                        email: ''
+                    }
+                },
+                status: {
+                    name: ''
+                },
+                to_entity_type: '',
+                to_entity_id: null,
+                to_team_id: null,
+                contact_company_user_id: null,
+                to_product_id: null,
+                priority_id: null,
+                name: '',
+                description: '',
+                availability: '',
+                connection_details: '',
+                access_details: '',
+                merge_comment: '',
+                answers: [
+                    {
+                        created_at: '',
+                        files: [],
+                        attachments: [{
+                            name: '',
+                            link: ''
+                        }],
+                        employee: {
+                            user_data: {
+                                name: '',
+                                email: '',
+                                surname: ''
+                            }
+                        },
+                        answer: '',
+                        is_internal: false
+                    }
+                ],
+                histories: [
+                    {
+                        created_at: '',
+                        files: [],
+                        attachments: [{
+                            name: '',
+                            link: ''
+                        }],
+                        employee: {
+                            user_data: {
+                                name: '',
+                                email: ''
+                            }
+                        },
+                        description: ''
+                    }
+                ],
+                notices: [
+                    {
+                        created_at: '',
+                        files: [],
+                        attachments: [{
+                            name: '',
+                            link: ''
+                        }],
+                        employee: {
+                            user_data: {
+                                name: '',
+                                email: ''
+                            }
+                        },
+                        description: ''
+                    }
+                ],
+                followers: [],
+            },
+            closeTicketDialog: false
         }
     },
     mounted() {
@@ -697,6 +813,7 @@ export default {
             });
         },
         expandItem(item) {
+            this.ticket = item;
             if (this.expanded.indexOf(item) !== -1) {
                 this.expanded = [];
             } else {
@@ -881,7 +998,26 @@ export default {
             if (value === 'to.name') return 'to_entity_id'
             if (value === 'priority.name') return 'priority_id'
             return value
-        }
+        },
+        updateTicket() {
+            axios.patch(`/api/ticket/${this.ticket.id}`, this.ticket).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTickets()
+                    this.updateDialog = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        closeTicket() {
+            this.ticket.status_id = 5;
+            this.updateTicket();
+            this.expanded = [];
+            this.closeTicketDialog = false
+        },
     },
     watch: {
         options: {
