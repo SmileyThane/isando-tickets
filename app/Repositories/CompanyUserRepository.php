@@ -205,7 +205,7 @@ class CompanyUserRepository
                         $email->editExistingEmail();
                         $isValid = $this->userRepo->validate($request, $new = true);
                         if ($isValid !== true) {
-                            return Controller::showResponse(false, $isValid);
+                            return $isValid;
                         }
                         $user = $this->userRepo->create($request);
                         $isNew = true;
@@ -219,7 +219,7 @@ class CompanyUserRepository
         } else {
             $isValid = $this->userRepo->validate($request, $new = true);
             if ($isValid !== true) {
-                return Controller::showResponse(false, $isValid);
+                return $isValid;
             }
             $user = $this->userRepo->create($request);
             $isNew = true;
