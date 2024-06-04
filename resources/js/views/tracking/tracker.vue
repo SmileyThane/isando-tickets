@@ -949,6 +949,7 @@ export default {
                 date: moment()
             },
             globalTimer: null,
+            intervalId: null,
             isLoadingTags: false,
             isLoadingProject: false,
             teamFilter: [],
@@ -1009,9 +1010,8 @@ export default {
     },
     methods: {
         __globalTimer() {
-            return setTimeout(() => {
+            this.intervalId = setInterval(() => {
                 this.globalTimer = moment();
-                this.__globalTimer();
             }, 1000);
         },
         __getTracking() {
@@ -1349,6 +1349,9 @@ export default {
                 });
             }
         }
+    },
+    beforeDestroy(){
+        clearInterval(this.intervalId)
     },
     computed: {
         timeAdd () {
