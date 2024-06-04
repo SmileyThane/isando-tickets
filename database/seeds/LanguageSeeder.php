@@ -103,7 +103,7 @@ class LanguageSeeder extends Seeder
                                 'settings' => 'Settings',
                                 'project' => 'Project',
                             ],
-                            'tracker' => [
+                                'tracker' => [
                                 'start' => 'Start',
                                 'stop' => 'Stop',
                                 'timer_panel_description' => 'What are you working on?',
