@@ -495,11 +495,17 @@ export default {
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
             search: '',
-            searchWhere: [1, 2, 3],
+            searchWhere: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             searchOptions: [
                 {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_category_names},
                 {id: 2, name: this.$store.state.lang.lang_map.kb.search_in_article_names},
-                {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_article_names_and_contents}
+                {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_article_names_and_contents},
+                {id: 4, name: this.$store.state.lang.lang_map.kb.search_in_company_name},
+                {id: 5, name: this.$store.state.lang.lang_map.kb.search_in_client_number},
+                {id: 6, name: this.$store.state.lang.lang_map.kb.search_in_email},
+                {id: 7, name: this.$store.state.lang.lang_map.kb.search_in_description},
+                {id: 8, name: this.$store.state.lang.lang_map.kb.search_in_supplier},
+                {id: 9, name: this.$store.state.lang.lang_map.kb.search_in_client_groups},
             ],
             categories: [],
             categoriesTree: [],
@@ -774,8 +780,14 @@ export default {
             this.isArticlesLoading = true;
             let params = {
                 search: search && (this.searchWhere.includes(2) || this.searchWhere.includes(3)) ? this.search : '',
-                    search_in_text: this.searchWhere.includes(3),
-                    tags: this.activeTags
+                search_in_text: this.searchWhere.includes(3),
+                tags: this.activeTags,
+                company_name: this.searchWhere.includes(4),
+                client_number: this.searchWhere.includes(5),
+                email: this.searchWhere.includes(6),
+                description: this.searchWhere.includes(7),
+                supplier: this.searchWhere.includes(8),
+                client_groups: this.searchWhere.includes(9),
             }
             if (this.getCategoryIdFromQuery !== 'null' && this.getCategoryIdFromQuery !== null) {
                 params.category_id = this.getCategoryIdFromQuery
