@@ -90,7 +90,7 @@ class KbController extends Controller
 
     public function listArticles(Request $request)
     {
-        return self::showResponse(true, $this->kbRepo->getArticles($this->getTypeByAlias($request->type), $request->category_id, $request->search, $request->search_in_text, $request->tags));
+        return self::showResponse(true, $this->kbRepo->getArticles($request, $this->getTypeByAlias($request->type), $request->category_id, $request->search, $request->search_in_text, $request->tags));
     }
 
     public function allArticles(Request $request)

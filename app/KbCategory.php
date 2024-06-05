@@ -48,7 +48,7 @@ class KbCategory extends Model
 
     private function getTranslatedName()
     {
-        if(Auth::user()->language_id === 2) {
+        if (Auth::user()->language_id === 2) {
             return $this->name_de;
         }
 

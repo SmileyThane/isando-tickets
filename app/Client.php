@@ -60,7 +60,7 @@ class Client extends Model
 
     public function employeesWithoutPivot(): BelongsToMany
     {
-        return $this->belongsToMany(CompanyUser::class, 'client_company_users','client_id', 'company_user_id');
+        return $this->belongsToMany(CompanyUser::class, 'client_company_users', 'client_id', 'company_user_id');
     }
 
     public function addresses(): MorphMany
@@ -96,7 +96,7 @@ class Client extends Model
     public function getSupplierNameAttribute()
     {
         if ($supplier = $this->supplier) {
-                return $supplier->name;
+            return $supplier->name;
         }
 
         return null;

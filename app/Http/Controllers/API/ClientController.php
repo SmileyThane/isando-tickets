@@ -16,6 +16,7 @@ use App\RoleHasPermission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ClientController extends Controller
 {
@@ -113,6 +114,12 @@ class ClientController extends Controller
         $result = false;
         $clientRole = null;
         $companyUser = null;
+
+        $validator = Validator::make($request->all(), ['client_id' => 'required']);
+        if ($validator->fails()) {
+            return self::showResponse(false, $validator->errors());
+        }
+
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
             $roles = Role::query()->where('company_id', Auth::user()->employee->company_id)->get();
             if ($roles) {
