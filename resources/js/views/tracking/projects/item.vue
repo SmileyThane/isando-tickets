@@ -495,7 +495,7 @@ export default {
         },
         __updateProjectById(projectId, data) {
             axios.patch(`/api/ttmanaging/projects/${projectId}`, data)
-                .then(({ data }) => {
+                .then(({data}) => {
                     if (data.success) {
                         this.__getProject(projectId);
                     }
@@ -512,19 +512,19 @@ export default {
         }
     },
     watch: {
-        searchProduct () {
+        searchProduct() {
             this.__getProducts();
         },
-        searchClient () {
+        searchClient() {
             this.__getClients();
         },
-        searchTeam () {
+        searchTeam() {
             this.__getTeams();
         }
     },
     computed: {
         switchColor() {
-            const { project: { color }, menu } = this
+            const {project: {color}, menu} = this
             return {
                 backgroundColor: color,
                 cursor: 'pointer',
@@ -540,7 +540,7 @@ export default {
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
 
-                return Object.assign({}, entry, { name })
+                return Object.assign({}, entry, {name})
             })
         },
         getFilteredClients() {
@@ -549,7 +549,7 @@ export default {
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
 
-                return Object.assign({}, entry, { name })
+                return Object.assign({}, entry, {name})
             })
         },
         getFilteredTeams() {
@@ -559,12 +559,12 @@ export default {
                         ? entry.name.slice(0, this.nameLimit) + '...'
                         : entry.name
 
-                    return Object.assign({}, entry, { name })
+                    return Object.assign({}, entry, {name})
                 });
             }
             return [];
         },
-        currentCurrency () {
+        currentCurrency() {
             const settings = this.$store.getters['Tracking/getSettings'];
             return settings.currency ?? null;
         },
@@ -574,21 +574,27 @@ export default {
             return moment().add(1, 'days').format('YYYY-MM-DD');
         },
         getTrackingProjectLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.department;
-                case 2: return this.langMap.tracking.profit_center;
-                default: return this.langMap.tracking.project;
+                case 1:
+                    return this.langMap.tracking.department;
+                case 2:
+                    return this.langMap.tracking.profit_center;
+                default:
+                    return this.langMap.tracking.project;
             }
         },
         getTrackingProjectsLabel() {
             const { settings } = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.departments;
-                case 2: return this.langMap.tracking.profit_centres;
-                default: return this.langMap.tracking.projects;
+                case 1:
+                    return this.langMap.tracking.departments;
+                case 2:
+                    return this.langMap.tracking.profit_centres;
+                default:
+                    return this.langMap.tracking.projects;
             }
         },
 
