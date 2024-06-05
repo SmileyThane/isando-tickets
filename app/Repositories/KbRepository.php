@@ -101,7 +101,7 @@ class KbRepository
         return $category ? $category->delete() : false;
     }
 
-    public function getArticles($typeId, $category_id, $search, $search_in_text = false, $tags = [])
+    public function getArticles($request, $typeId, $category_id, $search, $search_in_text = false, $tags = [])
     {
         $articles = KbArticle::query()
             ->select([
@@ -119,13 +119,43 @@ class KbRepository
 
 
         if (!empty($search)) {
-            $articles->where(function ($query) use ($search, $search_in_text) {
+            $articles->where(function ($query) use ($search, $search_in_text, $request) {
                 $query->where('name', 'like', '%' . $search . '%')->orWhere('name_de', 'like', '%' . $search . '%')
                     ->orWhere('summary', 'like', '%' . $search . '%')->orWhere('summary_de', 'like', '%' . $search . '%');
                 if ($search_in_text) {
                     $query->orWhere(function ($query) use ($search) {
                         $query->orWhere('keywords', 'like', '%' . $search . '%')->orWhere('keywords_de', 'like', '%' . $search . '%')
                             ->orWhere('content', 'like', '%' . $search . '%')->orWhere('content_de', 'like', '%' . $search . '%');
+                    });
+                }
+
+                if (!empty($request->company_name)) {
+                    $query->orWhereHas('clients', function ($query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%');
+                    });
+                }
+
+                if (!empty($request->client_number)) {
+                    $query->orWhereHas('clients', function ($query) use ($search) {
+                        $query->where('number', 'like', '%' . $search . '%');
+                    });
+                }
+
+                if (!empty($request->description)) {
+                    $query->orWhereHas('clients', function ($query) use ($search) {
+                        $query->where('description', 'like', '%' . $search . '%');
+                    });
+                }
+
+                if (!empty($request->description)) {
+                    $query->orWhereHas('clients', function ($query) use ($search) {
+                        $query->where('description', 'like', '%' . $search . '%');
+                    });
+                }
+
+                if (!empty($request->email)) {
+                    $query->orWhereHas('clients.emails', function ($query) use ($search) {
+                        $query->where('email', 'like', '%' . $search . '%');
                     });
                 }
             });
