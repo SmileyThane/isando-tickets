@@ -451,12 +451,12 @@ export default {
     methods: {
         __getProject(projectId) {
             axios.get(`/api/ttmanaging/projects/${projectId}`)
-            .then(({data}) => {
-                if (data.success) {
-                    if (!data.data.rate_from_date) data.data.rate_from_date = moment().add(1, 'days').format('YYYY-MM-DD');
-                    this.project = {...data.data, rate_type_from: 1};
-                }
-            });
+                .then(({data}) => {
+                    if (data.success) {
+                        if (!data.data.rate_from_date) data.data.rate_from_date = moment().add(1, 'days').format('YYYY-MM-DD');
+                        this.project = {...data.data, rate_type_from: 1};
+                    }
+                });
         },
         __getProducts() {
             if (this.isLoadingSearchProduct) return;
@@ -586,7 +586,7 @@ export default {
             }
         },
         getTrackingProjectsLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
                 case 1:
