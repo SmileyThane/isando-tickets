@@ -207,20 +207,26 @@
                                                 </div>
                                             </div>
                                         </div>
-<!--                                        from/to block-->
                                         <div class="d-inline-flex flex-grow-1">
                                             <div class="d-flex flex-column">
                                                 <div class="d-inline-flex mx-3">
-                                                    <div class="d-flex flex-column"><div class="d-inline-flex" style="min-width: 100px">From</div></div>
-                                                    <div class="d-flex flex-column"><div class="d-inline-flex" style="min-width: 100px">To</div></div>
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-inline-flex" style="min-width: 100px">From</div>
+                                                    </div>
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-inline-flex" style="min-width: 100px">To</div>
+                                                    </div>
                                                 </div>
                                                 <div class="d-inline-flex mx-3">
                                                     <div class="d-flex flex-column">
-                                                        <div class="d-inline-flex" style="min-width: 100px">The start</div>
+                                                        <div class="d-inline-flex" style="min-width: 100px">The start
+                                                        </div>
                                                     </div>
                                                     <div class="d-flex flex-column">
                                                         <div class="d-inline-flex" style="min-width: 100px">
-                                                            <span v-if="project.rate_from && project.rate_from_date">{{ moment(project.rate_from_date).subtract(1, 'days').format('DD/MM/YYYY') }}</span>
+                                                            <span v-if="project.rate_from && project.rate_from_date">{{
+                                                                    moment(project.rate_from_date).subtract(1, 'days').format('DD/MM/YYYY')
+                                                                }}</span>
                                                             <span v-else>Current date</span>
                                                         </div>
                                                     </div>
@@ -229,12 +235,15 @@
                                                 <div class="d-inline-flex mx-3 mt-2" v-if="project.rate_from_date">
                                                     <div class="d-flex flex-column">
                                                         <div class="d-inline-flex" style="min-width: 100px">
-                                                            <span v-if="project.rate_from && project.rate_from_date">{{ moment(project.rate_from_date).format('DD/MM/YYYY') }}</span>
+                                                            <span v-if="project.rate_from && project.rate_from_date">{{
+                                                                    moment(project.rate_from_date).format('DD/MM/YYYY')
+                                                                }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="d-flex flex-column">
                                                         <div class="d-inline-flex" style="min-width: 100px">
-                                                            <span v-if="project.rate_from && moment(project.rate_from_date).isBefore(moment.now())">Current date</span>
+                                                            <span
+                                                                v-if="project.rate_from && moment(project.rate_from_date).isBefore(moment.now())">Current date</span>
                                                             <span v-else-if="project.rate_from">Future dates</span>
                                                         </div>
                                                     </div>
@@ -262,7 +271,8 @@
                                             </v-btn>
                                         </template>
                                         <v-card>
-                                            <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                                            <v-card-title class="mb-5"
+                                                          :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                                                 Set rate
                                             </v-card-title>
 
@@ -365,6 +375,7 @@
 >>> *:not(.v-icon) {
     font-size: 12px !important;
 }
+
 >>> .project {
     font-size: 18px !important;
     font-weight: 500;
@@ -421,7 +432,7 @@ export default {
             nameLimit: 255
         }
     },
-    created () {
+    created() {
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
     },
     mounted() {
