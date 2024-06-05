@@ -96,7 +96,7 @@ class KbArticle extends Model
 
     public function getNameAttribute($value): ?string
     {
-        if(Auth::user()->language_id === 2) {
+        if (Auth::user()->language_id === 2) {
             return $this->name_de;
         }
 
