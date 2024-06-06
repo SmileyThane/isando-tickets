@@ -39,7 +39,6 @@
                 v-model="tab"
                 :color="themeBgColor"
             >
-<!--                <v-tab>{{ langMap.tracking.create_project.status }}</v-tab>-->
                 <v-tab>{{ langMap.tracking.create_project.settings }}</v-tab>
 
                 <v-tabs-items
@@ -145,13 +144,14 @@
                                         @blur="actionSave()"
                                     >
                                         <template v-slot:append>
-                                            <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                                            <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16"
+                                                    :close-on-content-click="false">
                                                 <template v-slot:activator="{ on }">
-                                                    <div :style="switchColor" v-on="on" />
+                                                    <div :style="switchColor" v-on="on"/>
                                                 </template>
                                                 <v-card>
                                                     <v-card-text class="pa-0">
-                                                        <v-color-picker v-model="project.color" flat />
+                                                        <v-color-picker v-model="project.color" flat/>
                                                     </v-card-text>
                                                 </v-card>
                                             </v-menu>
@@ -183,7 +183,6 @@
                                 </v-col>
                                 <div class="d-inline-flex">
                                     <div class="d-flex flex-row">
-<!--                                        rank block-->
                                         <div class="d-inline-flex">
                                             <div class="d-flex flex-column mt-6">
                                                 <div class="d-inline-flex mx-2">
@@ -191,17 +190,18 @@
                                                         class=""
                                                         v-if="currentCurrency"
                                                     >
-                                                        {{currentCurrency.slug}}
+                                                        {{ currentCurrency.slug }}
                                                     </span>
                                                     <span class="mx-2">{{ project.rate }}</span>
                                                 </div>
                                                 <v-divider></v-divider>
-                                                <div class="d-inline-flex mt-2 mx-2" v-if="project.rate_from && project.rate_from_date">
+                                                <div class="d-inline-flex mt-2 mx-2"
+                                                     v-if="project.rate_from && project.rate_from_date">
                                                     <span
                                                         class=""
                                                         v-if="currentCurrency"
                                                     >
-                                                        {{currentCurrency.slug}}
+                                                        {{ currentCurrency.slug }}
                                                     </span>
                                                     <span class="mx-2">{{ project.rate_from }}</span>
                                                 </div>
