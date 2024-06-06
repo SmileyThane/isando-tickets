@@ -27,7 +27,7 @@
                             </span>
                         </v-list-item-title>
                         <v-list-item-subtitle v-if="project.client">
-                            {{project.client.name}}
+                            {{ project.client.name }}
                         </v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
@@ -45,14 +45,6 @@
                 <v-tabs-items
                     v-model="tab"
                 >
-<!--                    <v-tab-item>-->
-<!--                        <v-alert-->
-<!--                            outlined-->
-<!--                            type="info"-->
-<!--                        >-->
-<!--                            Coming soon-->
-<!--                        </v-alert>-->
-<!--                    </v-tab-item>-->
                     <v-tab-item>
                         <v-container fluid>
                             <v-row>
@@ -65,35 +57,9 @@
                                         v-model="project.project"
                                         @blur="actionSave()"
                                     ></v-text-field>
-                                    <div class="mt-3" v-else>{{project.project}}</div>
+                                    <div class="mt-3" v-else>{{ project.project }}</div>
                                 </v-col>
                             </v-row>
-<!--                            <v-row>-->
-<!--                                <v-col cols="2" lg="1">-->
-<!--                                    <v-subheader class="float-right">Department name</v-subheader>-->
-<!--                                </v-col>-->
-<!--                                <v-col cols="10" lg="4" md="6">-->
-<!--                                    <v-text-field-->
-<!--                                        v-if="$helpers.auth.checkPermissionByIds([57])"-->
-<!--                                        v-model="project.department"-->
-<!--                                        @blur="actionSave()"-->
-<!--                                    ></v-text-field>-->
-<!--                                    <div class="mt-3" v-else>{{project.department}}</div>-->
-<!--                                </v-col>-->
-<!--                            </v-row>-->
-<!--                            <v-row>-->
-<!--                                <v-col cols="2" lg="1">-->
-<!--                                    <v-subheader class="float-right">Profit center</v-subheader>-->
-<!--                                </v-col>-->
-<!--                                <v-col cols="10" lg="4" md="6">-->
-<!--                                    <v-text-field-->
-<!--                                        v-if="$helpers.auth.checkPermissionByIds([57])"-->
-<!--                                        v-model="project.profit_center"-->
-<!--                                        @blur="actionSave()"-->
-<!--                                    ></v-text-field>-->
-<!--                                    <div class="mt-3" v-else>{{project.profit_center}}</div>-->
-<!--                                </v-col>-->
-<!--                            </v-row>-->
                             <v-row>
                                 <v-col cols="2" lg="1">
                                     <v-subheader class="float-right">Product</v-subheader>
@@ -114,7 +80,7 @@
                                             @change="actionSave()"
                                             clearable
                                         ></v-autocomplete>
-                                        <div class="mt-3" v-else>{{project.product.name}}</div>
+                                        <div class="mt-3" v-else>{{ project.product.name }}</div>
                                     </template>
                                 </v-col>
                             </v-row>
@@ -137,7 +103,7 @@
                                             return-object
                                             @change="actionSave()"
                                         ></v-autocomplete>
-                                        <div class="mt-3" v-else>{{project.client.name}}</div>
+                                        <div class="mt-3" v-else>{{ project.client.name }}</div>
                                     </template>
                                 </v-col>
                             </v-row>
@@ -161,7 +127,7 @@
                                             clearable
                                             @change="actionSave()"
                                         ></v-autocomplete>
-                                        <div class="mt-3" v-else>{{project.team.name}}</div>
+                                        <div class="mt-3" v-else>{{ project.team.name }}</div>
                                     </template>
                                 </v-col>
                             </v-row>
