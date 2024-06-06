@@ -126,6 +126,7 @@
                                                     </div>
                                                     <div class="col-md-12">
                                                         <v-autocomplete
+                                                            v-if="$helpers.auth.checkPermissionByIds([20])"
                                                             v-model="ticketForm.to_product_id"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
@@ -248,6 +249,7 @@
                                 </v-btn>
 
                                 <v-btn
+                                    v-if="$helpers.auth.checkPermissionByIds([31])"
                                     class="ml-2"
                                     color="#4caf50"
                                     style="color: white;"
