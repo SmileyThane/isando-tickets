@@ -718,7 +718,7 @@
                     :value="sidebarGroups"
                     color="#757575"
                     no-action
-                    v-if="$helpers.auth.checkPermissionByIds([13, 28, 31])"
+                    v-if="$helpers.auth.checkPermissionByIds([13, 28, 31], 'all')"
                 >
                     <template
                         v-slot:activator
