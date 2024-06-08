@@ -100,11 +100,10 @@
                                     :item-color="themeBgColor"
                                     :items="filterGroups"
                                     dense
-                                    disabled
+                                    readonly
                                     multiple
                                     chips
                                     item-value="id"
-                                    prepend-icon="mdi-group"
                                 >
                                 </v-combobox>
                             </v-col>
