@@ -623,7 +623,9 @@ class LanguageSeeder extends Seeder
                         'create_and_assign' => 'Create and assign',
                         'followers' => 'Followers',
                         'save_for_later' => 'Do you want to save the content of the form for later?',
-                        'close_ticket_title' => 'Are you sure that you want to close this ticket?'
+                        'close_ticket_title' => 'Close the ticket?',
+                        'link_tickets' => 'Link tickets',
+                        'view' => 'View'
                     ],
                     'main' =>
                         [
@@ -1665,7 +1667,9 @@ class LanguageSeeder extends Seeder
                             'create_and_assign' => 'Erstellen und zuordnen',
                             'followers' => 'Followers',
                             'save_for_later' => 'Möchten Sie den Inhalt des Formulars für später speichern?',
-                            'close_ticket_title' => 'Sind Sie sicher, dass Sie dieses Ticket schließen möchten?'
+                            'close_ticket_title' => 'Das Ticket schliessen?',
+                            'link_tickets' => 'Tickets verknüpfen',
+                            'view' => 'Anzeigen'
                         ],
                         'main' => [
                             'create' => 'erstellen',
@@ -1779,7 +1783,7 @@ class LanguageSeeder extends Seeder
                             'continue' => 'fortsetzen',
                             'supplier' => 'lieferant',
                             'responded' => 'antwortete',
-                            'close' => 'schließen',
+                            'close' => 'Schliessen',
                             'assign' => 'zuordnen',
                             'unassign' => 'Fjern tildeling',
                             'timezone' => 'Zeitzone',
