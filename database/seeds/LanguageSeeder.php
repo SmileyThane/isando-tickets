@@ -1089,7 +1089,7 @@ class LanguageSeeder extends Seeder
                             'product' => 'Produkt',
                             'team' => 'Team',
                             'ticket' => 'Ticket',
-                            'ticket_list_menu' => 'Unterstützung',
+                            'ticket_list_menu' => 'Support',
                             'ticket_list' => 'Ticket Liste',
                             'create_ticket' => 'Neues Ticket',
                             'notifications' => 'Benachrichtigungen',
