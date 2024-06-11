@@ -70,7 +70,10 @@ class LanguageSeeder extends Seeder
                             'incident_reporting_scenarios' => 'Scenarios',
                             'incident_reporting_action_boards' => 'Action boards',
                             'risk_repository' => 'Risk repository',
-                            'create_incident' => 'Create incident'
+                            'create_incident' => 'Create incident',
+                            'crm' => 'CRM',
+                            'sidebar_access' => 'Sidebar access',
+                            'roles' => 'Roles'
                         ],
                     'tracking' =>
                         [
@@ -623,7 +626,9 @@ class LanguageSeeder extends Seeder
                         'create_and_assign' => 'Create and assign',
                         'followers' => 'Followers',
                         'save_for_later' => 'Do you want to save the content of the form for later?',
-                        'close_ticket_title' => 'Are you sure that you want to close this ticket?'
+                        'close_ticket_title' => 'Close the ticket?',
+                        'link_tickets' => 'Link tickets',
+                        'view' => 'View'
                     ],
                     'main' =>
                         [
@@ -782,6 +787,7 @@ class LanguageSeeder extends Seeder
                             'updated_activity' => 'Activity was updated',
                             'yes' => 'Yes',
                             'no' => 'No',
+                            'sidebar' => 'Sidebar',
                             'unlink' => 'Unlink',
                             'useful_links' => 'Useful links',
                             'clone' => 'Clone',
@@ -1089,7 +1095,7 @@ class LanguageSeeder extends Seeder
                             'product' => 'Produkt',
                             'team' => 'Team',
                             'ticket' => 'Ticket',
-                            'ticket_list_menu' => 'Unterstützung',
+                            'ticket_list_menu' => 'Support',
                             'ticket_list' => 'Ticket Liste',
                             'create_ticket' => 'Neues Ticket',
                             'notifications' => 'Benachrichtigungen',
@@ -1123,7 +1129,10 @@ class LanguageSeeder extends Seeder
                             'incident_reporting_scenarios' => 'Scenarios',
                             'incident_reporting_action_boards' => 'Action boards',
                             'risk_repository' => 'Risk repository',
-                            'create_incident' => 'Vorfall erstellen'
+                            'create_incident' => 'Vorfall erstellen',
+                            'crm' => 'CRM',
+                            'sidebar_access' => 'Zugriff auf die Seitenleiste',
+                            'roles' => 'Rollen'
                         ],
                         'tracking' => [
                             'name' => 'Name',
@@ -1665,7 +1674,9 @@ class LanguageSeeder extends Seeder
                             'create_and_assign' => 'Erstellen und zuordnen',
                             'followers' => 'Followers',
                             'save_for_later' => 'Möchten Sie den Inhalt des Formulars für später speichern?',
-                            'close_ticket_title' => 'Sind Sie sicher, dass Sie dieses Ticket schließen möchten?'
+                            'close_ticket_title' => 'Das Ticket schliessen?',
+                            'link_tickets' => 'Tickets verknüpfen',
+                            'view' => 'Anzeigen'
                         ],
                         'main' => [
                             'create' => 'erstellen',
@@ -1779,7 +1790,7 @@ class LanguageSeeder extends Seeder
                             'continue' => 'fortsetzen',
                             'supplier' => 'lieferant',
                             'responded' => 'antwortete',
-                            'close' => 'schließen',
+                            'close' => 'Schliessen',
                             'assign' => 'zuordnen',
                             'unassign' => 'Fjern tildeling',
                             'timezone' => 'Zeitzone',
@@ -1819,6 +1830,7 @@ class LanguageSeeder extends Seeder
                             'updated_activity' => 'Aktivität wurde aktualisiert',
                             'yes' => 'Ja',
                             'no' => 'Nein',
+                            'sidebar' => 'Seitenleiste',
                             'unlink' => 'Verknüpfung aufheben',
                             'useful_links' => 'Nützliche Links',
                             'clone' => 'Klon',

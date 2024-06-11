@@ -135,17 +135,15 @@
                         >
                             <template v-slot:top>
                                 <v-row>
-                                    <v-col md="6" sm="12">
+                                    <v-col md="4" sm="12">
                                         <v-text-field v-model="employeesSearch" :color="themeBgColor"
                                                       :label="langMap.main.search"
                                                       class="mx-4" @input="debounceGetEmployees"></v-text-field>
                                     </v-col>
-                                    <v-col md="4" sm="12">
-                                        <v-checkbox v-model="withTrashed" :color="themeBgColor"
-                                                    value="1"
-                                                    dense
-                                                    :label="langMap.individuals.with_trashed"
-                                                    class="mx-4" @change="debounceGetEmployees"/>
+                                    <v-col md="3" sm="12">
+                                        <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
+                                                  item-text="name" item-value="id" label="Search in" multiple
+                                                  v-on:change="debounceGetEmployees"/>
                                     </v-col>
                                     <v-col md="1" sm="12">
                                         <v-select
@@ -158,7 +156,14 @@
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
-                                    <v-col md="1" sm="12">
+                                    <v-col md="2" sm="12">
+                                        <v-checkbox v-model="withTrashed" :color="themeBgColor"
+                                                    value="1"
+                                                    dense
+                                                    :label="langMap.individuals.with_trashed"
+                                                    class="mx-4" @change="debounceGetEmployees"/>
+                                    </v-col>
+                                    <v-col md="2" sm="12">
                                         <v-pagination v-model="tablePage"
                                                       :color="themeBgColor"
                                                       :length="lastPage"
@@ -402,6 +407,10 @@ export default {
             },
             suppliers: [],
             emailTrashed: false,
+            searchWhere: [1],
+            searchOptions: [
+                {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_client_groups},
+            ],
         }
     },
     created() {
@@ -446,7 +455,8 @@ export default {
                     sort_val: this.options.sortDesc[0],
                     per_page: this.options.itemsPerPage,
                     with_trashed: this.withTrashed,
-                    page: this.page
+                    page: this.page,
+                    client_groups: this.searchWhere.includes(1),
                 }
             }).then(
                 response => {
