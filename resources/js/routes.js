@@ -42,6 +42,7 @@ import RiskRepositoryMore from './views/risk_repository/more-page'
 import IncidentReportingCreate from './views/incident_reporting/create'
 import IncidentReportingActionBoards from './views/incident_reporting/action-boards'
 import SettingsIncidentSettings from './views/settings/incident_settings'
+import SidebarPage from "./views/sidebar/index";
 
 import store from './store';
 
@@ -205,6 +206,14 @@ export default [
             requiresAuth: true,
         },
         component: SettingsIncidentSettings
+    },
+    {
+        path: '/settings/sidebar',
+        name: 'sidebar-page',
+        meta: {
+            requiresAuth: true,
+        },
+        component: SidebarPage
     },
     {
         path: '/notify',
@@ -464,6 +473,14 @@ export default [
     {
         path: '/incident_reporting/action_boards',
         name: 'incident_reporting_action_boards',
+        meta: {
+            requiresAuth: true,
+        },
+        component: IncidentReportingActionBoards
+    },
+    {
+        path: '/settings/sidebar',
+        name: 'sidebar',
         meta: {
             requiresAuth: true,
         },

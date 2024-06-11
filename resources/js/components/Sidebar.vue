@@ -842,6 +842,27 @@
                         </template>
                         <span>{{ langMap.main.roles }}</span>
                     </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="roles.includes(21)"
+                                link
+                                style="background-color:white;"
+                                to="/settings/sidebar"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi mdi-security</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.main.sidebar }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.main.sidebar }}</span>
+                    </v-tooltip>
                 </v-list-group>
             </v-list>
         </perfect-scrollbar>
@@ -896,6 +917,7 @@ export default {
             timeTracking: '',
             sidebarGroups: false,
             countTimesheetForApproval: 0,
+            roles: []
         }
     },
     watch: {
@@ -910,6 +932,7 @@ export default {
         }
     },
     mounted() {
+        this.getRoles();
         this.getCompanyName();
         this.getCompanyLogo();
         this.getCompanySettings();
@@ -968,6 +991,19 @@ export default {
         },
         getTrackingSettings() {
             return this.$store.dispatch('Tracking/getSettings');
+        },
+        getRoles() {
+            axios.get('/api/roles').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.roles = response.data.map((res) => res.id)
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+
+            });
         },
     },
     computed: {

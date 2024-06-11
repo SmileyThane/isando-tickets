@@ -70,7 +70,10 @@ class LanguageSeeder extends Seeder
                             'incident_reporting_scenarios' => 'Scenarios',
                             'incident_reporting_action_boards' => 'Action boards',
                             'risk_repository' => 'Risk repository',
-                            'create_incident' => 'Create incident'
+                            'create_incident' => 'Create incident',
+                            'crm' => 'CRM',
+                            'sidebar_access' => 'Sidebar access',
+                            'roles' => 'Roles'
                         ],
                     'tracking' =>
                         [
@@ -782,6 +785,7 @@ class LanguageSeeder extends Seeder
                             'updated_activity' => 'Activity was updated',
                             'yes' => 'Yes',
                             'no' => 'No',
+                            'sidebar' => 'Sidebar',
                             'unlink' => 'Unlink',
                             'useful_links' => 'Useful links',
                             'clone' => 'Clone',
@@ -1123,7 +1127,10 @@ class LanguageSeeder extends Seeder
                             'incident_reporting_scenarios' => 'Scenarios',
                             'incident_reporting_action_boards' => 'Action boards',
                             'risk_repository' => 'Risk repository',
-                            'create_incident' => 'Vorfall erstellen'
+                            'create_incident' => 'Vorfall erstellen',
+                            'crm' => 'CRM',
+                            'sidebar_access' => 'Zugriff auf die Seitenleiste',
+                            'roles' => 'Rollen'
                         ],
                         'tracking' => [
                             'name' => 'Name',
@@ -1819,6 +1826,7 @@ class LanguageSeeder extends Seeder
                             'updated_activity' => 'Aktivität wurde aktualisiert',
                             'yes' => 'Ja',
                             'no' => 'Nein',
+                            'sidebar' => 'Seitenleiste',
                             'unlink' => 'Verknüpfung aufheben',
                             'useful_links' => 'Nützliche Links',
                             'clone' => 'Klon',
