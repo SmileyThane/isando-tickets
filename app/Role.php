@@ -46,7 +46,7 @@ class Role extends Model
     protected function name(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => Str::snake($value),
+            set: fn(string $value) => Str::snake($value),
         );
     }
 }

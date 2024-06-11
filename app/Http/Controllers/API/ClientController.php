@@ -174,10 +174,10 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
-    public function recipientsTree(): JsonResponse
+    public function recipientsTree(Request $request): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
-            return self::showResponse(true, $this->clientRepo->getClientsAsRecipientsTree());
+            return self::showResponse(true, $this->clientRepo->getClientsAsRecipientsTree($request));
         }
 
         return self::showResponse(false);

@@ -488,7 +488,7 @@ class ClientRepository
         return $result;
     }
 
-    public function getClientsAsRecipientsTree(): array
+    public function getClientsAsRecipientsTree($request): array
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
@@ -501,6 +501,11 @@ class ClientRepository
             $company = Company::where('id', $companyId);
         }
 
+        if ($request->client_groups) {
+            $clients = $clients->whereHas('clientFilterGroups', function ($query) use ($request) {
+                $query->whereIn('id', $request->client_groups);
+            });
+        }
         $clients = $clients->with('employees.employee.userData.emails.type', 'clients', 'emails.type')->orderBy('name', 'asc')->get();
 
         $company = $company->with(['employees' => function ($query) {
