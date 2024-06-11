@@ -373,18 +373,26 @@
                     <p><strong>{{ langMap.ticket.access_details }}:</strong> {{ item.access_details }}</p>
                     <p><strong>{{ langMap.main.actions }}:</strong></p>
                     <p>
-                        <v-btn
-                            color="grey"
-                            dark
-                            fab
-                            x-small
-                            @click="showItem(item)"
-                        >
-                            <v-icon
-                            >
-                                mdi-eye
-                            </v-icon>
-                        </v-btn>
+                        <template>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        color="grey"
+                                        v-on="on"
+                                        dark
+                                        fab
+                                        x-small
+                                        @click="showItem(item)"
+                                    >
+                                        <v-icon
+                                        >
+                                            mdi-eye
+                                        </v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{langMap.ticket.view}}</span>
+                            </v-tooltip>
+                        </template>
 
                         <template>
                             <v-tooltip top>
@@ -400,21 +408,30 @@
                                         <v-icon dark>mdi-clipboard-flow</v-icon>
                                     </v-btn>
                                 </template>
-                                <span>Link tickets</span>
+                                <span>{{langMap.ticket.link_tickets}}</span>
                             </v-tooltip>
                         </template>
-                        <v-btn
-                            color="error"
-                            dark
-                            fab
-                            x-small
-                            @click="ticketDeleteProcess(item)"
-                        >
-                            <v-icon
-                            >
-                                mdi-delete
-                            </v-icon>
-                        </v-btn>
+
+                        <template>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        color="error"
+                                        v-on="on"
+                                        dark
+                                        fab
+                                        x-small
+                                        @click="ticketDeleteProcess(item)"
+                                    >
+                                        <v-icon
+                                        >
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{langMap.individuals.delete}}</span>
+                            </v-tooltip>
+                        </template>
 
                         <template>
                             <v-tooltip top>
