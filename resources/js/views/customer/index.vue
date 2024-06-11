@@ -116,11 +116,16 @@
                             @click:row="showItem"
                         >
                             <template v-slot:top>
-                                <v-row>
-                                    <v-col md="10" sm="12">
+                                <v-row class="mt-2">
+                                    <v-col cols="4" class="pb-0">
                                         <v-text-field v-model="customersSearch" :color="themeBgColor"
                                                       :label="langMap.main.search"
                                                       class="mx-4" @input="debounceGetClients"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="4" class="pb-0">
+                                        <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
+                                                  item-text="name" item-value="id" label="Search in" multiple
+                                                  v-on:change="debounceGetClients"/>
                                     </v-col>
 <!--                                    <v-col md="2" sm="12">-->
 <!--                                        <v-select-->
@@ -133,7 +138,7 @@
 <!--                                            @change="updateItemsCount"-->
 <!--                                        ></v-select>-->
 <!--                                    </v-col>-->
-                                    <v-col md="1" sm="12">
+                                    <v-col cols="2">
                                         <v-select
                                             v-model="options.itemsPerPage"
                                             :color="themeBgColor"
@@ -144,7 +149,7 @@
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
-                                    <v-col md="1" sm="12">
+                                    <v-col cols="2">
                                         <v-pagination v-model="tablePage"
                                                       :color="themeBgColor"
                                                       :length="lastPage"
@@ -380,7 +385,11 @@ export default {
             errors: {},
             currency: {
                 symbol: ''
-            }
+            },
+            searchWhere: [1],
+            searchOptions: [
+                {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_client_groups},
+            ],
         }
     },
     created() {
@@ -419,7 +428,8 @@ export default {
                     sort_by: this.options.sortBy[0],
                     sort_val: this.options.sortDesc[0],
                     per_page: this.options.itemsPerPage,
-                    page: this.page
+                    page: this.page,
+                    client_groups: this.searchWhere.includes(1),
                 }
             }).then(response => {
                 this.loading = false
