@@ -12,6 +12,8 @@
                 <perfect-scrollbar :style="`height: ${mainBlockHeight}px; margin-top: 70px;`" ref="mainScrollbar" watchOptions>
                     <v-main v-if="isLoaded"
                             ref="mainBlock"
+                            :key="$route.name"
+                            :class="$route.name.includes('knowledge') ? 'initial' : 'custom'"
                             :style="isAuthorized === false ? 'background-image: url(/login_bg.jpg); background-size: cover; height: 100vh;' : 'padding-top:0px'">
                     <router-view></router-view>
                     <speed-panel v-if="isLoaded && isAuthorized === true" v-model="drawer"></speed-panel>
@@ -73,5 +75,11 @@ export default {
 <style scoped>
 >>> .v-main__wrap {
     max-width: initial;
+}
+.custom >>> .v-main__wrap {
+    max-width: initial;
+}
+.initial >>> .v-main__wrap {
+    max-width: inherit;
 }
 </style>
