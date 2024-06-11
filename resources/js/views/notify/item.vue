@@ -449,7 +449,7 @@
                                     ></v-text-field>
                                     <perfect-scrollbar>
                                         <v-treeview
-                                            v-model="toAdd"
+                                            v-model="selectedClientGroups"
                                             :color="themeBgColor"
                                             :items="clientGroups"
                                             :search="ugSearch"
@@ -461,25 +461,12 @@
                                             selectable
                                         >
                                             <template v-slot:prepend="{ item }">
-                                                <v-icon v-if="item.entity_type === 'App\\Client'" small>
-                                                    mdi-factory
-                                                </v-icon>
-                                                <v-icon v-if="item.entity_type === 'App\\User'" small>
+                                                <v-icon small>
                                                     mdi-account
-                                                </v-icon>
-                                                <v-icon v-if="item.entity_type === 'App\\Email' && item.type" small>
-                                                    {{ item.type.icon }}
-                                                </v-icon>
-                                                <v-icon v-else-if="item.entity_type === 'App\\Email' && !item.type"
-                                                        small>
-                                                    mdi-email
                                                 </v-icon>
                                             </template>
                                             <template v-slot:label="{ item }">
                                                 {{ item.name }}
-                                                <small v-if="item.type">
-                                                    ({{ $helpers.i18n.localized(item.type) }})
-                                                </small>
                                             </template>
                                         </v-treeview>
                                     </perfect-scrollbar>
@@ -673,6 +660,7 @@ export default {
             signatures: [],
             recipients: [],
             clientGroups: [],
+            selectedClientGroups: [],
             newRecipients: [],
             priorities: [
                 {id: 1, name: this.$store.state.lang.lang_map.notification.priority_high},
@@ -765,7 +753,11 @@ export default {
             });
         },
         getRecipients() {
-            axios.get('/api/recipients').then(response => {
+            axios.get('/api/recipients', {
+                params: {
+                    'client_groups': this.selectedClientGroups
+                }
+            }).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.recipients = response.data;
@@ -986,6 +978,12 @@ export default {
         },
         cancel() {
             this.$router.push('/notify');
+        }
+    },
+    watch: {
+        selectedClientGroups(value) {
+            console.log(value)
+            this.getRecipients()
         }
     }
 }
