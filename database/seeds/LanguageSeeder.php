@@ -801,7 +801,8 @@ class LanguageSeeder extends Seeder
                             'edit_client_group_error' => 'Client group editing error',
                             'remove_client_group' => 'Are you sure that you want to remove this client group?',
                             'remove_client_group_success' => 'Client group was successfully removed',
-                            'remove_client_group_error' => 'Client group removal error'
+                            'remove_client_group_error' => 'Client group removal error',
+                            'client_groups' => 'Client groups'
                         ],
                     'system_settings' =>
                         [
@@ -1844,7 +1845,8 @@ class LanguageSeeder extends Seeder
                             'edit_client_group_error' => 'Bearbeitungsfehler bei der Clientgruppe',
                             'remove_client_group' => 'Sind Sie sicher, dass Sie diese Kundengruppe entfernen möchten?',
                             'remove_client_group_success' => 'Kundengruppe wurde erfolgreich entfernt',
-                            'remove_client_group_error' => 'Fehler beim Entfernen von Clientgruppen'
+                            'remove_client_group_error' => 'Fehler beim Entfernen von Clientgruppen',
+                            'client_groups' => 'Kundengruppen'
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
