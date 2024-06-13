@@ -1,5 +1,6 @@
 <template>
     <tinymce
+        tinymce-script-src="/js/tinymce.min.js"
         :init="{
          height: 300,
          content_style: 'body { font-family:  Roboto, sans-serif; font-size: 10pt; font-weight: 400; line-height: 1rem; letter-spacing: .0071428571em; color: #00000099; } a { color: #1976d2; }',
