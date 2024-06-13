@@ -175,25 +175,15 @@
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
-                            <template v-slot:item.phone="{item}">
-
-                                <span v-if="item.phones.length === 2" v-for="phone in item.phones.slice(0, 2)">
-                                    <v-icon v-if="phone.type"
-                                            :title="$helpers.i18n.localized(phone.type)" dense
-                                            x-small
-                                            v-text="phone.type.icon"></v-icon>
-                                    {{ phone.phone }}
-                                    <br>
-                                </span>
-
-                                <span v-if="item.phones.length === 1 && item.contact_phone && item.contact_phone.phone">
+                            <template v-slot:item.contact_phone="{item}">
+                                <span v-if="item.contact_phone" style="display: flex; align-items: center; gap: 8px;">
                                     <v-icon v-if="item.contact_phone.type"
                                             :title="$helpers.i18n.localized(item.contact_phone.type)" dense
                                             x-small
                                             v-text="item.contact_phone.type.icon"></v-icon>
                                     {{ item.contact_phone.phone }}
+                                    <br>
                                 </span>
-                                <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:footer>
                                 <v-pagination v-model="tablePage"
@@ -288,6 +278,14 @@
     position: relative;
     background: #fff;
 }
+
+.v-data-table /deep/ .text-start {
+    padding: 0 8px;
+}
+
+.v-data-table /deep/ .text-center {
+    padding: 0 8px;
+}
 </style>
 
 <script>
@@ -362,8 +360,8 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
                 {text: `${this.$store.state.lang.lang_map.main.client_number}`, value: 'company_external_id'},
                 {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
-                {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false, width: '170px'},
-                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+                {text: this.$store.state.lang.lang_map.main.phone, value: 'contact_phone', sortable: false, width: '150px'},
+                {text: `${this.$store.state.lang.lang_map.main.client_groups}`, value: 'clients'},
                 {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
                 {text: `${this.$store.state.lang.lang_map.customer.supplier}`, value: 'supplier_name'},
                 {text: `${this.$store.state.lang.lang_map.main.last_activity}`, value: 'last_activity'},
