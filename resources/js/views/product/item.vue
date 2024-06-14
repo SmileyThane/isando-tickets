@@ -274,7 +274,7 @@
                                 </v-expansion-panel>
                             </v-expansion-panels>
                             <perfect-scrollbar>
-                                <v-treeview :active="product.category_id"
+                                <v-treeview :active="[product.category.id]"
                                             :color="themeBgColor"
                                             :items="categories"
                                             activatable
