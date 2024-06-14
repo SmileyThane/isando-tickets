@@ -384,9 +384,14 @@ export default {
             currency: {
                 symbol: ''
             },
-            searchWhere: [1],
+            searchWhere: [1, 2, 3, 4, 5, 6],
             searchOptions: [
                 {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_client_groups},
+                {id: 2, name: this.$store.state.lang.lang_map.kb.search_in_company_name},
+                {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_client_number},
+                {id: 4, name: this.$store.state.lang.lang_map.kb.search_in_email},
+                {id: 5, name: this.$store.state.lang.lang_map.kb.search_in_description},
+                {id: 6, name: this.$store.state.lang.lang_map.kb.search_in_supplier},
             ],
         }
     },
@@ -428,6 +433,11 @@ export default {
                     per_page: this.options.itemsPerPage,
                     page: this.page,
                     client_groups: this.searchWhere.includes(1),
+                    company_name: this.searchWhere.includes(2),
+                    client_number: this.searchWhere.includes(3),
+                    email: this.searchWhere.includes(4),
+                    description: this.searchWhere.includes(5),
+                    supplier: this.searchWhere.includes(6),
                 }
             }).then(response => {
                 this.loading = false
