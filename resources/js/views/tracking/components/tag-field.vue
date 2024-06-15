@@ -44,13 +44,14 @@
                     @click="colorMenu = !colorMenu"
                 >
                     <template v-slot:default>
-                        <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                        <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16"
+                                :close-on-content-click="false">
                             <template v-slot:activator="{ on }">
-                                <div :style="switchColor" v-on="on" />
+                                <div :style="switchColor" v-on="on"/>
                             </template>
                             <v-card>
                                 <v-card-text class="pa-0">
-                                    <v-color-picker v-model="form.color" flat />
+                                    <v-color-picker v-model="form.color" flat/>
                                 </v-card-text>
                             </v-card>
                         </v-menu>
@@ -102,33 +103,40 @@
 </template>
 
 <style scoped>
->>>.v-select__slot {
+>>> .v-select__slot {
     max-width: 100%;
     overflow: hidden;
 }
->>>.v-select__selections {
+
+>>> .v-select__selections {
     flex-wrap: nowrap;
     flex-grow: 1;
     overflow: hidden;
 }
->>>.v-chip__content {
+
+>>> .v-chip__content {
     overflow: hidden;
 }
->>>.v-chip--label {
+
+>>> .v-chip--label {
     min-width: 35px;
 }
->>>.v-input--is-disabled .v-input__append-inner {
+
+>>> .v-input--is-disabled .v-input__append-inner {
     display: none;
 }
+
 >>> .tag-field * {
     border: none !important;
 }
->>> .v-input--is-disabled.v-text-field>.v-input__control>.v-input__slot:after,
-.v-input--is-disabled.v-text-field>.v-input__control>.v-input__slot:before {
+
+>>> .v-input--is-disabled.v-text-field > .v-input__control > .v-input__slot:after,
+.v-input--is-disabled.v-text-field > .v-input__control > .v-input__slot:before {
     border: none !important;
 }
+
 >>> *:not(.v-icon) {
- font-size: 12px !important;
+    font-size: 12px !important;
 }
 </style>
 
@@ -203,7 +211,7 @@ export default {
             });
         },
         switchColor() {
-            const { form: { color }, colorMenu } = this
+            const {form: {color}, colorMenu} = this
             return {
                 backgroundColor: color,
                 cursor: 'pointer',
