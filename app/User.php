@@ -242,4 +242,9 @@ class User extends Authenticatable
     {
         return $this->notificationStatuses->containsStrict('status', $status);
     }
+
+    public function clientFilterGroups(): HasMany
+    {
+        return $this->hasMany(ClientFilterGroupHasUsers::class, 'user_id', 'id');
+    }
 }
