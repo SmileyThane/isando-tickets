@@ -186,12 +186,14 @@
                                 </span>
                             </template>
                             <template v-slot:item.client_filter_groups="{item}">
-                                <p v-for="group in item.client_filter_groups" :key="group.id" class="mb-0">
-                                    <v-icon v-if="group.data" :title="group.data.name"
-                                            class="mr-2"
-                                    />
-                                    {{ group.data.name }}
-                                </p>
+                                <span v-if="item.client_filter_groups.length" style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                    <v-icon x-small
+                                    >mdi mdi-account-multiple</v-icon>
+                                    <p v-for="(group, index) in item.client_filter_groups.slice(0, 6)" :key="group.id" class="mb-0">
+                                        <span v-if="index !== item.client_filter_groups.slice(0, 6).length - 1">{{ group.data.name + ', ' }}</span>
+                                        <span v-if="index === item.client_filter_groups.slice(0, 6).length - 1">{{ group.data.name + ' ...'}}</span>
+                                    </p>
+                                </span>
                             </template>
                             <template v-slot:footer>
                                 <v-pagination v-model="tablePage"
