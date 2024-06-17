@@ -185,6 +185,15 @@
                                     <br>
                                 </span>
                             </template>
+                            <template v-slot:item.clients="{item}">
+                                <span v-if="item.clients" style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                    <span v-for="(client, index) in item.clients.slice(0, 6)">
+                                        <span v-if="index !== item.clients.slice(0, 6).length - 1">{{ client.name + ', ' }}</span>
+                                        <span v-if="index === item.clients.slice(0, 6).length - 1">{{ client.name + ' ...'}}</span>
+                                    </span>
+                                    <br>
+                                </span>
+                            </template>
                             <template v-slot:footer>
                                 <v-pagination v-model="tablePage"
                                               :color="themeBgColor"
