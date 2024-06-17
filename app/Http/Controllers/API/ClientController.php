@@ -115,11 +115,6 @@ class ClientController extends Controller
         $clientRole = null;
         $companyUser = null;
 
-        $validator = Validator::make($request->all(), ['client_id' => 'required']);
-        if ($validator->fails()) {
-            return self::showResponse(false, $validator->errors());
-        }
-
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
             $roles = Role::query()->where('company_id', Auth::user()->employee->company_id)->get();
             if ($roles) {
@@ -134,11 +129,11 @@ class ClientController extends Controller
 
 
             if (!$request->company_user_id) {
-                $invite = $this->companyUserRepo->invite($request);
-                if ($invite instanceof CompanyUser) {
-                    $request['company_user_id'] = $invite->id;
+                $companyUser = $this->companyUserRepo->invite($request);
+                if ($companyUser instanceof CompanyUser) {
+                    $request['company_user_id'] = $companyUser->id;
                 } else {
-                    return self::showResponse(false, $invite);
+                    return self::showResponse(false, $companyUser);
                 }
             }
 
@@ -147,9 +142,11 @@ class ClientController extends Controller
                 'company_user_id' => $request->company_user_id
             ])->exists();
 
-            $companyUser = $existingClient ?
-                $this->clientRepo->updateDescription($request) :
-                $this->clientRepo->attach($request);
+            if ($request['client_id']) {
+                $companyUser = $existingClient ?
+                    $this->clientRepo->updateDescription($request) :
+                    $this->clientRepo->attach($request);
+            }
             $result = !is_null($companyUser);
         }
 
