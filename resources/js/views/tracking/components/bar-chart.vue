@@ -1,6 +1,6 @@
 <script>
 
-import { Bar } from 'vue-chartjs';
+import {Bar} from 'vue-chartjs';
 
 export default {
     extends: Bar,
@@ -9,10 +9,10 @@ export default {
         this.renderChart(this.data, this.options);
     },
     watch: {
-        data () {
+        data() {
             this.renderChart(this.data, this.options);
         },
-        options () {
+        options() {
             this.renderChart(this.data, this.options);
         },
     }
