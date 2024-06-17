@@ -191,7 +191,9 @@
                                     >mdi mdi-account-multiple</v-icon>
                                     <p v-for="(group, index) in item.client_filter_groups.slice(0, 6)" :key="group.id" class="mb-0">
                                         <span v-if="index !== item.client_filter_groups.slice(0, 6).length - 1">{{ group.data.name + ', ' }}</span>
-                                        <span v-if="index === item.client_filter_groups.slice(0, 6).length - 1">{{ group.data.name + ' ...'}}</span>
+                                        <span v-if="index === item.client_filter_groups.slice(0, 6).length - 1">
+                                            {{ group.data.name + `${item.client_filter_groups.slice(0, 6).length < item.client_filter_groups.length ? ' ...' : ''}`}}
+                                        </span>
                                     </p>
                                 </span>
                             </template>
