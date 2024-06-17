@@ -185,14 +185,13 @@
                                     <br>
                                 </span>
                             </template>
-                            <template v-slot:item.clients="{item}">
-                                <span v-if="item.clients" style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
-                                    <span v-for="(client, index) in item.clients.slice(0, 6)">
-                                        <span v-if="index !== item.clients.slice(0, 6).length - 1">{{ client.name + ', ' }}</span>
-                                        <span v-if="index === item.clients.slice(0, 6).length - 1">{{ client.name + ' ...'}}</span>
-                                    </span>
-                                    <br>
-                                </span>
+                            <template v-slot:item.client_filter_groups="{item}">
+                                <p v-for="group in item.client_filter_groups" :key="group.id" class="mb-0">
+                                    <v-icon v-if="group.data" :title="group.data.name"
+                                            class="mr-2"
+                                    />
+                                    {{ group.data.name }}
+                                </p>
                             </template>
                             <template v-slot:footer>
                                 <v-pagination v-model="tablePage"
@@ -370,7 +369,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.client_number}`, value: 'company_external_id'},
                 {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
                 {text: this.$store.state.lang.lang_map.main.phone, value: 'contact_phone', sortable: false, width: '150px'},
-                {text: `${this.$store.state.lang.lang_map.main.client_groups}`, value: 'clients'},
+                {text: `${this.$store.state.lang.lang_map.main.client_groups}`, value: 'client_filter_groups'},
                 {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
                 {text: `${this.$store.state.lang.lang_map.customer.supplier}`, value: 'supplier_name'},
                 {text: `${this.$store.state.lang.lang_map.main.last_activity}`, value: 'last_activity'},

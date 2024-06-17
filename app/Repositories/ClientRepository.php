@@ -54,7 +54,7 @@ class ClientRepository
         $childClientIds = $this->getRecursiveChildClientIds($clients->with(['clients'])->get());
         $clients = $clients->orWhereIn('id', $childClientIds)
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
-        return $clients->with('owner.userData')->paginate($request->per_page ?? $clients->count());
+        return $clients->with('owner.userData', 'clientFilterGroups.data')->paginate($request->per_page ?? $clients->count());
     }
 
     public function getClients($request)
