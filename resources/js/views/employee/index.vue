@@ -407,9 +407,12 @@ export default {
             },
             suppliers: [],
             emailTrashed: false,
-            searchWhere: [1],
+            searchWhere: [1, 2, 3, 4],
             searchOptions: [
                 {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_client_groups},
+                {id: 2, name: this.$store.state.lang.lang_map.kb.search_in_email},
+                {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_company_name},
+                {id: 4, name: this.$store.state.lang.lang_map.kb.search_in_phones},
             ],
         }
     },
@@ -457,6 +460,9 @@ export default {
                     with_trashed: this.withTrashed,
                     page: this.page,
                     client_groups: this.searchWhere.includes(1),
+                    email: this.searchWhere.includes(2),
+                    company_name: this.searchWhere.includes(3),
+                    phone: this.searchWhere.includes(4),
                 }
             }).then(
                 response => {

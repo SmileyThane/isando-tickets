@@ -186,12 +186,16 @@
                                 </span>
                             </template>
                             <template v-slot:item.client_filter_groups="{item}">
-                                <p v-for="group in item.client_filter_groups" :key="group.id" class="mb-0">
-                                    <v-icon v-if="group.data" :title="group.data.name"
-                                            class="mr-2"
-                                    />
-                                    {{ group.data.name }}
-                                </p>
+                                <span v-if="item.client_filter_groups.length" style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                    <v-icon x-small
+                                    >mdi mdi-account-multiple</v-icon>
+                                    <p v-for="(group, index) in item.client_filter_groups.slice(0, 6)" :key="group.id" class="mb-0">
+                                        <span v-if="index !== item.client_filter_groups.slice(0, 6).length - 1">{{ group.data.name + ', ' }}</span>
+                                        <span v-if="index === item.client_filter_groups.slice(0, 6).length - 1">
+                                            {{ group.data.name + `${item.client_filter_groups.slice(0, 6).length < item.client_filter_groups.length ? ' ...' : ''}`}}
+                                        </span>
+                                    </p>
+                                </span>
                             </template>
                             <template v-slot:footer>
                                 <v-pagination v-model="tablePage"
@@ -392,9 +396,14 @@ export default {
             currency: {
                 symbol: ''
             },
-            searchWhere: [1],
+            searchWhere: [1, 2, 3, 4, 5, 6],
             searchOptions: [
                 {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_client_groups},
+                {id: 2, name: this.$store.state.lang.lang_map.kb.search_in_company_name},
+                {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_client_number},
+                {id: 4, name: this.$store.state.lang.lang_map.kb.search_in_email},
+                {id: 5, name: this.$store.state.lang.lang_map.kb.search_in_description},
+                {id: 6, name: this.$store.state.lang.lang_map.kb.search_in_supplier},
             ],
         }
     },
@@ -436,6 +445,11 @@ export default {
                     per_page: this.options.itemsPerPage,
                     page: this.page,
                     client_groups: this.searchWhere.includes(1),
+                    company_name: this.searchWhere.includes(2),
+                    client_number: this.searchWhere.includes(3),
+                    email: this.searchWhere.includes(4),
+                    description: this.searchWhere.includes(5),
+                    supplier: this.searchWhere.includes(6),
                 }
             }).then(response => {
                 this.loading = false
