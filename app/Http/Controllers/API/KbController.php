@@ -12,6 +12,7 @@ use App\KnowledgeBaseType;
 use App\Permission;
 use App\Repositories\FileRepository;
 use App\Repositories\KbRepository;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -222,4 +223,16 @@ class KbController extends Controller
 
         return self::showResponse($this->kbRepo->delete($knowledgeBaseType));
     }
+
+    public function getArticlePdf($id)
+    {
+        $article = $this->kbRepo->getArticle($id);
+        $content = $article->content;
+        if (Auth::user()->language_id === 2) {
+            $content = $this->content_de;
+        }
+
+        return base64_encode(Pdf::loadHTML($this->kbRepo->prettifyArticlePdf($content))->download());
+    }
+
 }
