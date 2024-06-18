@@ -636,19 +636,22 @@
                                     <h3>{{ langMap.main.client_groups }}</h3>
                                     <v-row>
                                         <v-col cols="12">
-                                            <v-combobox
-                                                v-model="client.filter_groups"
-                                                :color="themeBgColor"
-                                                :item-color="themeBgColor"
-                                                :items="filterGroups"
-                                                dense
-                                                clearable
-                                                multiple
-                                                chips
-                                                item-value="id"
-                                                prepend-icon="mdi-group"
-                                            >
-                                            </v-combobox>
+                                            <div id="attach-target" style="position: relative">
+                                                <v-combobox
+                                                    v-model="client.filter_groups"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="filterGroups"
+                                                    dense
+                                                    clearable
+                                                    multiple
+                                                    chips
+                                                    item-value="id"
+                                                    prepend-icon="mdi-group"
+                                                    attach="#attach-target"
+                                                >
+                                                </v-combobox>
+                                            </div>
                                         </v-col>
                                     </v-row>
 

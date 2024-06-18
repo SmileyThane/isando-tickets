@@ -186,22 +186,37 @@ export default {
     },
     methods: {
         exportToPdf() {
-            html2pdf(document.getElementById("pdf-element"), {
-                margin: 1,
-                filename: `${this.$helpers.i18n.localized(this.article)}.pdf`,
-                image: {
-                    quality: 10
-                },
-                html2canvas: {scale: 2},
-                pagebreak: {
-                    mode: ['avoid-all']
-                },
-                jsPDF: {
-                    unit: 'in',
-                    format: 'letter',
-                    orientation: 'portrait'
-                }
-            });
+            this.isArticleLoading = true;
+            axios.get(`/api/kb/article/${this.$route.params.id}/pdf?type=${this.$route.params.alias}`).then(res => {
+                const linkSource = `data:application/pdf;base64,${res.data}`;
+                const downloadLink = document.createElement("a");
+                const fileName = "article.pdf";
+                downloadLink.href = linkSource;
+                downloadLink.download = fileName;
+                downloadLink.click();
+                this.isArticleLoading = false;
+            })
+                .catch(err => {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                })
+            // html2pdf(document.getElementById("pdf-element"), {
+            //     margin: 1,
+            //     filename: `${this.$helpers.i18n.localized(this.article)}.pdf`,
+            //     image: {
+            //         quality: 10
+            //     },
+            //     html2canvas: {scale: 2},
+            //     pagebreak: {
+            //         mode: ['avoid-all']
+            //     },
+            //     jsPDF: {
+            //         unit: 'in',
+            //         format: 'letter',
+            //         orientation: 'portrait'
+            //     }
+            // });
         },
         back() {
             window.history.back()

@@ -274,7 +274,7 @@
                                 </v-expansion-panel>
                             </v-expansion-panels>
                             <perfect-scrollbar>
-                                <v-treeview :active="product.category_id"
+                                <v-treeview :active="[product.category.id]"
                                             :color="themeBgColor"
                                             :items="categories"
                                             activatable
@@ -705,16 +705,20 @@ export default {
             localStorage.itemsPerPage = options.itemsPerPage;
         },
         refreshCategoryForm(parent) {
-            this.categoryForm.parent_id = parent.length > 0 ? parent[0] : null;
-
-            if (parent.length > 0) {
-                const selectedId = parent[0];
-                this.product.category = this.findCategoryById(this.categories, selectedId);
+            if(this.editableCategoryItem?.name || this.removeCategoryItem?.name) {
+                return
             } else {
-                this.product.category = null;
-            }
+                this.categoryForm.parent_id = parent.length > 0 ? parent[0] : null;
 
-            this.$forceUpdate();
+                if (parent.length > 0) {
+                    const selectedId = parent[0];
+                    this.product.category = this.findCategoryById(this.categories, selectedId);
+                } else {
+                    this.product.category = null;
+                }
+
+                this.$forceUpdate();
+            }
         },
         findCategoryById(categories, id) {
             for (const category of categories) {
@@ -850,10 +854,7 @@ export default {
         },
         clearRemoveCategoryItem() {
             this.isCanRemoveCategory = false;
-            this.removeCategoryItem = {
-                name: '',
-                category_id: ''
-            }
+            this.removeCategoryItem = null;
         },
     },
 }
