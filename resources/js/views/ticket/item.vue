@@ -282,7 +282,7 @@
             <v-btn color="grey darken-1" text @click="answerDialog = false"
               >{{ langMap.main.cancel }}
             </v-btn>
-            <v-btn :color="themeBgColor" dark @click="addTicketAnswer">
+            <v-btn :color="themeBgColor" dark @click="addTicketAnswer(false)">
               {{
                 ticketAnswer.id
                   ? langMap.main.update
@@ -3586,7 +3586,7 @@ export default {
     showTicket(item) {
       window.location.href = `/ticket/${item}`;
     },
-    addTicketAnswer(isInternal = false) {
+    addTicketAnswer(isInternal) {
       const config = {
         headers: { 'content-type': 'multipart/form-data' },
       };
@@ -3609,8 +3609,7 @@ export default {
         }
       }
 
-      formData.append('is_internal', isInternal);
-
+      formData.append('is_internal', Boolean(isInternal));
       if (this.ticketAnswer.id) {
         axios
           .post(
