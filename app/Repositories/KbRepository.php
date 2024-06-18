@@ -391,4 +391,14 @@ class KbRepository
     {
         return $knowledgeBaseType->delete();
     }
+
+    public function prettifyArticlePdf(string $content):string
+    {
+        $styles = '<style>
+                        img {max-width: 100%;}
+                        * {font-family: Roboto, sans-serif;}
+                  </style>';
+
+        return $styles . '<div style="padding: 10px;">' . $content . '</div>';
+    }
 }
