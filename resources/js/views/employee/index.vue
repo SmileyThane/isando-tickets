@@ -219,6 +219,18 @@
 
                                 <span v-else>&nbsp;</span>
                             </template>
+                            <template v-slot:item.user_data.client_filter_groups="{item}">
+                                <span v-if="item.user_data.client_filter_groups.length" style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                    <v-icon x-small
+                                    >mdi mdi-account-multiple</v-icon>
+                                    <p v-for="(group, index) in item.user_data.client_filter_groups.slice(0, 6)" :key="group.id" class="mb-0">
+                                        <span v-if="index !== item.user_data.client_filter_groups.slice(0, 6).length - 1">{{ group.data.name + ', ' }}</span>
+                                        <span v-if="index === item.user_data.client_filter_groups.slice(0, 6).length - 1">
+                                            {{ group.data.name + `${item.user_data.client_filter_groups.slice(0, 6).length < item.user_data.client_filter_groups.length ? ' ...' : ''}`}}
+                                        </span>
+                                    </p>
+                                </span>
+                            </template>
                             <template v-slot:item.user_data.is_active="{ item }">
                                 <v-icon v-if="item && item.deleted_at" @click="showItem(item)" color="red darken"
                                         :title="langMap.individuals.deleted">mdi-cancel
@@ -382,6 +394,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'user_data.name'},
                 {text: `${this.$store.state.lang.lang_map.main.last_name}`, value: 'user_data.surname'},
                 {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'user_data.emails'},
+                {text: `${this.$store.state.lang.lang_map.main.client_groups}`, value: 'user_data.client_filter_groups'},
                 {
                     text: `${this.$store.state.lang.lang_map.individuals.is_active}`,
                     value: 'user_data.is_active',
