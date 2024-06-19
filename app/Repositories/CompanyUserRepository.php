@@ -104,6 +104,7 @@ class CompanyUserRepository
                 'userData.phones.type',
                 'userData.companies',
                 'userData.settings',
+                'userData.clientFilterGroups.data',
             ]);
 
         if ($request->with_trashed) {
