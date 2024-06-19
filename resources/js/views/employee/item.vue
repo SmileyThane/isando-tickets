@@ -100,6 +100,20 @@
                                 </div>
                             </v-col>
                         </v-row>
+                        <v-col cols="12">
+                            <v-combobox
+                                v-model="userData.filter_groups"
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                :items="filterGroups"
+                                dense
+                                readonly
+                                multiple
+                                chips
+                                item-value="id"
+                            >
+                            </v-combobox>
+                        </v-col>
                         <v-row>
                             <v-col cols="6">
                                 <hr class="lighten"/>
@@ -273,6 +287,26 @@
                                         </v-col>
                                     </v-row>
 
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <div id="attach-target" style="position: relative">
+                                                <v-combobox
+                                                    v-model="userData.filter_groups"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="filterGroups"
+                                                    dense
+                                                    clearable
+                                                    multiple
+                                                    chips
+                                                    item-value="id"
+                                                    prepend-icon="mdi-group"
+                                                    attach="#attach-target"
+                                                >
+                                                </v-combobox>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
                                     <v-row>
                                         <v-col cols="6">
                                             <hr class="lighten"/>
@@ -1808,7 +1842,8 @@ export default {
                 notification_statuses: [],
                 number: '',
                 avatar_url: '',
-                deleted_at: null
+                deleted_at: null,
+                filter_groups: []
             },
             notificationStatuses: [],
             singleUserForm: {
@@ -1915,6 +1950,7 @@ export default {
             },
             products: [],
             productsSearch: '',
+            filterGroups: [],
         }
     },
     mounted() {
@@ -1930,6 +1966,7 @@ export default {
         this.getEmployees();
         this.getActivityTypes();
         this.getProducts();
+        this.getFilterGroups();
         // if (localStorage.getItem('auth_token')) {
         //     this.$router.push('tickets')
         // }
@@ -2018,6 +2055,9 @@ export default {
                     } else {
                         this.avatar = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
                     }
+                    this.userData.filter_groups = this.userData.client_filter_groups.map(group => {
+                        return group.data.name;
+                    })
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -2788,7 +2828,20 @@ export default {
                 }
             });
         },
-
+        getFilterGroups() {
+            axios.get('/api/filter_groups/client').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.filterGroups = response.data.map(group => {
+                        return group.name;
+                    })
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
 
     }
 }
