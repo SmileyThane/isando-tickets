@@ -5,6 +5,8 @@ namespace App\Repositories;
 
 use App\Address;
 use App\ClientCompanyUser;
+use App\ClientFilterGroup;
+use App\ClientFilterGroupHasUsers;
 use App\Company;
 use App\CompanyUser;
 use App\CompanyUserNotification;
@@ -100,6 +102,9 @@ class UserRepository
             $user->password = bcrypt($request->password);
             $user->save();
         }
+
+        $this->syncFilterGroups($request->filter_groups, $id);
+
         return $user;
     }
 
@@ -294,5 +299,27 @@ class UserRepository
         $user->avatar_url = Storage::url($file);
         $user->save();
         return $user;
+    }
+
+    public function syncFilterGroups($groupNames, $userId)
+    {
+        $employee = Auth::user()->employee;
+        $groupIds = [];
+        foreach ($groupNames as $groupName) {
+            if ($employee) {
+                $group = ClientFilterGroup::query()
+                    ->firstOrCreate(['name' => $groupName, 'company_id' => $employee->company_id]);
+                if ($group) {
+                    ClientFilterGroupHasUsers::query()
+                        ->firstOrCreate(['user_id' => $userId, 'group_id' => $group->id]);
+                    $groupIds[] = $group->id;
+                }
+            }
+        }
+
+        ClientFilterGroupHasUsers::query()
+            ->where('user_id', '=', $userId)
+            ->whereNotIn('group_id', $groupIds)
+            ->delete();
     }
 }
