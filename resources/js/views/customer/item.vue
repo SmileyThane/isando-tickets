@@ -9,6 +9,7 @@
             {{ snackbarMessage }}
         </v-snackbar>
         <v-row>
+
             <v-col cols="6">
                 <v-card>
                     <v-toolbar
@@ -692,353 +693,9 @@
                         </v-card>
                     </v-expand-transition>
                 </v-card>
-
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
-                <v-card>
-                    <v-toolbar
-                        :color="themeBgColor"
-                        dark
-                        dense
-                        flat
-                    >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">
-                            {{
-                                langMap.main.notes
-                            }}
-                        </v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-btn v-if="client.notes" :color="themeBgColor" icon @click="saveNote()">
-                            <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
-                        </v-btn>
-                    </v-toolbar>
-                    <v-card-text>
-                        <Tinymce
-                            v-model="client.notes"
-                            :placeholder="langMap.main.notes"
-                        />
-                    </v-card-text>
-                </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-
-                <v-card v-if="$helpers.auth.checkPermissionByIds([105])">
-                    <v-toolbar
-                        :color="themeBgColor"
-                        dark
-                        dense
-                        flat
-                    >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
-                                langMap.main.activities
-                            }}
-                        </v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-card-title>
-                            <v-text-field
-                                v-model="activitySearch"
-                                :color="themeBgColor"
-                                :label="langMap.main.search"
-                                append-icon="mdi-magnify"
-                                hide-details
-                                single-line
-                            ></v-text-field>
-                        </v-card-title>
-                        <v-data-table
-                            :expanded.sync="activityExpanded"
-                            :footer-props="footerProps"
-                            :headers="activityHeaders"
-                            :items="client.activities"
-                            :loading="loadingActivities"
-                            :options.sync="options"
-                            :search="activitySearch"
-                            class="elevation-1"
-                            dense
-                            item-key="id"
-                            show-expand
-                            single-expand
-                            @update:options="updateItemsPerPage"
-                        >
-                            <template v-if="$helpers.auth.checkPermissionByIds([106])" v-slot:item.actions="{ item }">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn icon v-bind="attrs" @click="selectActivity(item)" v-on="on">
-                                            <v-icon small>mdi-pencil</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.main.update_activity }}</span>
-                                </v-tooltip>
-                                <v-tooltip top>
-                                    <template v-if="$helpers.auth.checkPermissionByIds([107])"
-                                              v-slot:activator="{ on, attrs }">
-                                        <v-btn icon v-bind="attrs" @click="deleteActivity(item.id)" v-on="on">
-                                            <v-icon small>mdi-trash-can</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.main.delete_activity }}</span>
-                                </v-tooltip>
-                            </template>
-                            <template v-slot:expanded-item="{ headers, item }">
-                                <td :colspan="headers.length">
-                                    <v-spacer>
-                                        &nbsp;
-                                    </v-spacer>
-                                    <span class="ml-2">
-                                    {{ item.content }}
-                                </span>
-                                    <v-spacer>
-                                        &nbsp;
-                                    </v-spacer>
-                                    <v-col
-                                        v-if="item.attachments && item.attachments.length > 0"
-                                        cols="12">
-                                        <h4>{{ langMap.main.attachments }}</h4>
-                                        <div
-                                            v-for="attachment in item.attachments"
-                                        >
-                                            <v-chip
-                                                :color="themeBgColor"
-                                                :href="attachment.link"
-                                                :text-color="themeFgColor"
-                                                class="ma-2"
-
-                                            >
-                                                {{ attachment.name }}
-                                            </v-chip>
-                                        </div>
-                                    </v-col>
-                                </td>
-                            </template>
-                        </v-data-table>
-
-                        <v-spacer>&nbsp;</v-spacer>
-
-                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([106])"
-                                            v-model="activityFormPanel">
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    {{ langMap.main.add_activity }}
-                                    <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
-                                        </v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col cols="md-12">
-                                                <v-text-field
-                                                    v-model="activityForm.title"
-                                                    :color="themeBgColor"
-                                                    :label="langMap.main.subject"
-                                                    dense
-                                                    prepend-icon="mdi-book-account-outline"
-                                                    required
-                                                    type="text"
-                                                />
-                                            </v-col>
-                                            <v-col cols="md-12">
-                                                <v-textarea
-                                                    v-model="activityForm.content"
-                                                    :color="themeBgColor"
-                                                    :label="langMap.main.description"
-                                                    dense
-                                                    prepend-icon="mdi-book-account-outline"
-                                                    required
-                                                    type="text"
-                                                />
-                                            </v-col>
-                                            <v-col cols="md-6">
-                                                <v-select v-model="activityForm.type_id"
-                                                          :color="themeBgColor"
-                                                          :item-color="themeBgColor"
-                                                          :items="activityTypes"
-                                                          :label="langMap.main.type"
-                                                          dense
-                                                          item-text="name" item-value="id"
-                                                >
-                                                </v-select>
-                                            </v-col>
-                                            <v-col cols="md-6">
-                                                <v-autocomplete
-                                                    v-model="activityForm.company_user_id"
-                                                    :color="themeBgColor"
-                                                    :item-color="themeBgColor"
-                                                    :items="client.employees"
-                                                    :label="langMap.main.activity_contact"
-                                                    dense
-                                                    item-value="employee.id"
-                                                    prepend-icon="mdi-account-outline"
-                                                >
-                                                    <template v-slot:selection="data">
-                                                        {{ data.item.employee.user_data.full_name }}
-                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
-                                                    </template>
-                                                    <template v-slot:item="data">
-                                                        {{ data.item.employee.user_data.full_name }}
-                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
-                                                    </template>
-                                                </v-autocomplete>
-                                            </v-col>
-                                            <v-col cols="md-6">
-                                                <v-menu
-                                                    ref="menuActivityDateRef"
-                                                    v-model="menuActivityDate"
-                                                    :close-on-content-click="false"
-                                                    :return-value.sync="activityForm.date"
-                                                    min-width="auto"
-                                                    offset-y
-                                                    transition="scale-transition"
-                                                >
-                                                    <template v-slot:activator="{ on, attrs }">
-                                                        <v-text-field
-                                                            v-model="activityForm.date"
-                                                            :color="themeBgColor"
-                                                            label="Date"
-                                                            prepend-icon="mdi-calendar"
-                                                            readonly
-                                                            v-bind="attrs"
-                                                            v-on="on"
-                                                        ></v-text-field>
-                                                    </template>
-                                                    <v-date-picker
-                                                        v-model="activityForm.date"
-                                                        :color="themeBgColor"
-                                                        first-day-of-week="1"
-                                                        no-title
-                                                        scrollable
-                                                    >
-                                                        <v-spacer></v-spacer>
-                                                        <v-btn
-                                                            color="primary"
-                                                            text
-                                                            @click="menuActivityDate = false"
-                                                        >
-                                                            Cancel
-                                                        </v-btn>
-                                                        <v-btn
-                                                            color="primary"
-                                                            text
-                                                            @click="$refs.menuActivityDateRef.save(activityForm.date)"
-                                                        >
-                                                            OK
-                                                        </v-btn>
-                                                    </v-date-picker>
-                                                </v-menu>
-                                            </v-col>
-                                            <v-col cols="md-6">
-                                                <v-menu
-                                                    ref="menuActivityTimeRef"
-                                                    v-model="menuActivityTime"
-                                                    :close-on-content-click="false"
-                                                    :nudge-right="40"
-                                                    :return-value.sync="activityForm.time"
-                                                    max-width="290px"
-                                                    min-width="290px"
-                                                    offset-y
-                                                    transition="scale-transition"
-                                                >
-                                                    <template v-slot:activator="{ on, attrs }">
-                                                        <v-text-field
-                                                            v-model="activityForm.time"
-                                                            :color="themeBgColor"
-                                                            label="Time"
-                                                            prepend-icon="mdi-clock-time-four-outline"
-                                                            readonly
-                                                            v-bind="attrs"
-                                                            v-on="on"
-                                                        ></v-text-field>
-                                                    </template>
-                                                    <v-time-picker
-                                                        v-if="menuActivityTime"
-                                                        v-model="activityForm.time"
-                                                        :color="themeBgColor"
-                                                        full-width
-                                                        @click:minute="$refs.menuActivityTimeRef.save(activityForm.time)"
-                                                    ></v-time-picker>
-                                                </v-menu>
-                                            </v-col>
-                                            <v-col cols="md-12">
-                                                <v-file-input
-                                                    v-model="activityForm.files"
-                                                    :color="themeBgColor"
-                                                    :item-color="themeBgColor"
-                                                    :label="langMap.main.attachments"
-                                                    :show-size="1000"
-                                                    F
-                                                    chips
-                                                    multiple prepend-icon="mdi-paperclip"
-                                                >
-                                                    <template v-slot:selection="{ index, text }">
-                                                        <v-chip
-                                                            :color="themeBgColor"
-                                                            :text-color="themeFgColor"
-                                                            class="ma-2"
-                                                        >
-                                                            {{ text }}
-                                                        </v-chip>
-                                                    </template>
-                                                </v-file-input>
-                                            </v-col>
-                                            <v-col
-                                                v-if="activityForm.attachments && activityForm.attachments.length > 0"
-                                                cols="12">
-                                                <h4>{{ langMap.main.attachments }}</h4>
-                                                <div
-                                                    v-for="attachment in activityForm.attachments"
-                                                >
-                                                    <v-chip
-                                                        :color="themeBgColor"
-                                                        :href="attachment.link"
-                                                        :text-color="themeFgColor"
-                                                        class="ma-2"
-                                                        close
-                                                        @click:close="removeAttachment(attachment.id)"
-                                                    >
-                                                        {{ attachment.name }}
-                                                    </v-chip>
-                                                </div>
-                                            </v-col>
-                                            <v-btn
-                                                :color="themeBgColor"
-                                                bottom
-                                                dark
-                                                fab
-                                                right
-                                                small
-                                                @click="addActivity"
-                                            >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
-                                                    mdi-plus
-                                                </v-icon>
-                                            </v-btn>
-                                            &nbsp;
-                                            <v-btn
-                                                bottom
-                                                color="#f1f1f1"
-                                                dark
-                                                fab
-                                                right
-                                                small
-                                                @click="resetActivity"
-                                            >
-                                                <v-icon :color="themeBgColor" :style="`color: red;`">
-                                                    mdi-cancel
-                                                </v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col cols="6">
                 <v-card>
                     <v-toolbar
                         :color="themeBgColor"
@@ -1453,7 +1110,9 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-                <br>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
                 <v-card
                     v-if="$helpers.auth.checkPermissionByIds([88])"
                 >
@@ -1569,9 +1228,9 @@
                         </v-row>
                     </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
+
+            </v-col>
+            <v-col cols="6">
                 <v-card>
                     <v-toolbar
                         :color="themeBgColor"
@@ -1650,6 +1309,349 @@
                                             >
                                                 <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
                                                     mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card>
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{
+                                langMap.main.notes
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn v-if="client.notes" :color="themeBgColor" icon @click="saveNote()">
+                            <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
+                        </v-btn>
+                    </v-toolbar>
+                    <v-card-text>
+                        <Tinymce
+                            v-model="client.notes"
+                            :placeholder="langMap.main.notes"
+                        />
+                    </v-card-text>
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card v-if="$helpers.auth.checkPermissionByIds([105])">
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.main.activities
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-card-title>
+                            <v-text-field
+                                v-model="activitySearch"
+                                :color="themeBgColor"
+                                :label="langMap.main.search"
+                                append-icon="mdi-magnify"
+                                hide-details
+                                single-line
+                            ></v-text-field>
+                        </v-card-title>
+                        <v-data-table
+                            :expanded.sync="activityExpanded"
+                            :footer-props="footerProps"
+                            :headers="activityHeaders"
+                            :items="client.activities"
+                            :loading="loadingActivities"
+                            :options.sync="options"
+                            :search="activitySearch"
+                            class="elevation-1"
+                            dense
+                            item-key="id"
+                            show-expand
+                            single-expand
+                            @update:options="updateItemsPerPage"
+                        >
+                            <template v-if="$helpers.auth.checkPermissionByIds([106])" v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn icon v-bind="attrs" @click="selectActivity(item)" v-on="on">
+                                            <v-icon small>mdi-pencil</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.main.update_activity }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-if="$helpers.auth.checkPermissionByIds([107])"
+                                              v-slot:activator="{ on, attrs }">
+                                        <v-btn icon v-bind="attrs" @click="deleteActivity(item.id)" v-on="on">
+                                            <v-icon small>mdi-trash-can</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.main.delete_activity }}</span>
+                                </v-tooltip>
+                            </template>
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <td :colspan="headers.length">
+                                    <v-spacer>
+                                        &nbsp;
+                                    </v-spacer>
+                                    <span class="ml-2">
+                                    {{ item.content }}
+                                </span>
+                                    <v-spacer>
+                                        &nbsp;
+                                    </v-spacer>
+                                    <v-col
+                                        v-if="item.attachments && item.attachments.length > 0"
+                                        cols="12">
+                                        <h4>{{ langMap.main.attachments }}</h4>
+                                        <div
+                                            v-for="attachment in item.attachments"
+                                        >
+                                            <v-chip
+                                                :color="themeBgColor"
+                                                :href="attachment.link"
+                                                :text-color="themeFgColor"
+                                                class="ma-2"
+
+                                            >
+                                                {{ attachment.name }}
+                                            </v-chip>
+                                        </div>
+                                    </v-col>
+                                </td>
+                            </template>
+                        </v-data-table>
+
+                        <v-spacer>&nbsp;</v-spacer>
+
+                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([106])"
+                                            v-model="activityFormPanel">
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.main.add_activity }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12">
+                                                <v-text-field
+                                                    v-model="activityForm.title"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.main.subject"
+                                                    dense
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    required
+                                                    type="text"
+                                                />
+                                            </v-col>
+                                            <v-col cols="md-12">
+                                                <v-textarea
+                                                    v-model="activityForm.content"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.main.description"
+                                                    dense
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    required
+                                                    type="text"
+                                                />
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-select v-model="activityForm.type_id"
+                                                          :color="themeBgColor"
+                                                          :item-color="themeBgColor"
+                                                          :items="activityTypes"
+                                                          :label="langMap.main.type"
+                                                          dense
+                                                          item-text="name" item-value="id"
+                                                >
+                                                </v-select>
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-autocomplete
+                                                    v-model="activityForm.company_user_id"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="client.employees"
+                                                    :label="langMap.main.activity_contact"
+                                                    dense
+                                                    item-value="employee.id"
+                                                    prepend-icon="mdi-account-outline"
+                                                >
+                                                    <template v-slot:selection="data">
+                                                        {{ data.item.employee.user_data.full_name }}
+                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                                    </template>
+                                                    <template v-slot:item="data">
+                                                        {{ data.item.employee.user_data.full_name }}
+                                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                                    </template>
+                                                </v-autocomplete>
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-menu
+                                                    ref="menuActivityDateRef"
+                                                    v-model="menuActivityDate"
+                                                    :close-on-content-click="false"
+                                                    :return-value.sync="activityForm.date"
+                                                    min-width="auto"
+                                                    offset-y
+                                                    transition="scale-transition"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-text-field
+                                                            v-model="activityForm.date"
+                                                            :color="themeBgColor"
+                                                            label="Date"
+                                                            prepend-icon="mdi-calendar"
+                                                            readonly
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-date-picker
+                                                        v-model="activityForm.date"
+                                                        :color="themeBgColor"
+                                                        first-day-of-week="1"
+                                                        no-title
+                                                        scrollable
+                                                    >
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn
+                                                            color="primary"
+                                                            text
+                                                            @click="menuActivityDate = false"
+                                                        >
+                                                            Cancel
+                                                        </v-btn>
+                                                        <v-btn
+                                                            color="primary"
+                                                            text
+                                                            @click="$refs.menuActivityDateRef.save(activityForm.date)"
+                                                        >
+                                                            OK
+                                                        </v-btn>
+                                                    </v-date-picker>
+                                                </v-menu>
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-menu
+                                                    ref="menuActivityTimeRef"
+                                                    v-model="menuActivityTime"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    :return-value.sync="activityForm.time"
+                                                    max-width="290px"
+                                                    min-width="290px"
+                                                    offset-y
+                                                    transition="scale-transition"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-text-field
+                                                            v-model="activityForm.time"
+                                                            :color="themeBgColor"
+                                                            label="Time"
+                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                            readonly
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-time-picker
+                                                        v-if="menuActivityTime"
+                                                        v-model="activityForm.time"
+                                                        :color="themeBgColor"
+                                                        full-width
+                                                        @click:minute="$refs.menuActivityTimeRef.save(activityForm.time)"
+                                                    ></v-time-picker>
+                                                </v-menu>
+                                            </v-col>
+                                            <v-col cols="md-12">
+                                                <v-file-input
+                                                    v-model="activityForm.files"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :label="langMap.main.attachments"
+                                                    :show-size="1000"
+                                                    F
+                                                    chips
+                                                    multiple prepend-icon="mdi-paperclip"
+                                                >
+                                                    <template v-slot:selection="{ index, text }">
+                                                        <v-chip
+                                                            :color="themeBgColor"
+                                                            :text-color="themeFgColor"
+                                                            class="ma-2"
+                                                        >
+                                                            {{ text }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-file-input>
+                                            </v-col>
+                                            <v-col
+                                                v-if="activityForm.attachments && activityForm.attachments.length > 0"
+                                                cols="12">
+                                                <h4>{{ langMap.main.attachments }}</h4>
+                                                <div
+                                                    v-for="attachment in activityForm.attachments"
+                                                >
+                                                    <v-chip
+                                                        :color="themeBgColor"
+                                                        :href="attachment.link"
+                                                        :text-color="themeFgColor"
+                                                        class="ma-2"
+                                                        close
+                                                        @click:close="removeAttachment(attachment.id)"
+                                                    >
+                                                        {{ attachment.name }}
+                                                    </v-chip>
+                                                </div>
+                                            </v-col>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                small
+                                                @click="addActivity"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                            &nbsp;
+                                            <v-btn
+                                                bottom
+                                                color="#f1f1f1"
+                                                dark
+                                                fab
+                                                right
+                                                small
+                                                @click="resetActivity"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: red;`">
+                                                    mdi-cancel
                                                 </v-icon>
                                             </v-btn>
                                         </div>
