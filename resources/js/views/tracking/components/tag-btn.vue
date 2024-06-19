@@ -16,7 +16,8 @@
                 <v-icon
                     v-if="selectedTags.length"
                     style="color: white"
-                >mdi-tag</v-icon>
+                >mdi-tag
+                </v-icon>
                 <v-icon v-else center>
                     mdi-tag-outline
                 </v-icon>
@@ -68,13 +69,14 @@
                                 @click="colorMenu = !colorMenu"
                             >
                                 <template v-slot:default>
-                                    <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                                    <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16"
+                                            :close-on-content-click="false">
                                         <template v-slot:activator="{ on }">
-                                            <div :style="switchColor" v-on="on" />
+                                            <div :style="switchColor" v-on="on"/>
                                         </template>
                                         <v-card>
                                             <v-card-text class="pa-0">
-                                                <v-color-picker v-model="form.color" flat />
+                                                <v-color-picker v-model="form.color" flat/>
                                             </v-card-text>
                                         </v-card>
                                     </v-menu>
@@ -199,7 +201,7 @@ export default {
             });
         },
         switchColor() {
-            const { form: { color }, colorMenu } = this
+            const {form: {color}, colorMenu} = this
             return {
                 backgroundColor: color,
                 cursor: 'pointer',

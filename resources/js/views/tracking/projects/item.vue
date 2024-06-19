@@ -27,7 +27,7 @@
                             </span>
                         </v-list-item-title>
                         <v-list-item-subtitle v-if="project.client">
-                            {{project.client.name}}
+                            {{ project.client.name }}
                         </v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
@@ -39,20 +39,11 @@
                 v-model="tab"
                 :color="themeBgColor"
             >
-<!--                <v-tab>{{ langMap.tracking.create_project.status }}</v-tab>-->
                 <v-tab>{{ langMap.tracking.create_project.settings }}</v-tab>
 
                 <v-tabs-items
                     v-model="tab"
                 >
-<!--                    <v-tab-item>-->
-<!--                        <v-alert-->
-<!--                            outlined-->
-<!--                            type="info"-->
-<!--                        >-->
-<!--                            Coming soon-->
-<!--                        </v-alert>-->
-<!--                    </v-tab-item>-->
                     <v-tab-item>
                         <v-container fluid>
                             <v-row>
@@ -65,35 +56,9 @@
                                         v-model="project.project"
                                         @blur="actionSave()"
                                     ></v-text-field>
-                                    <div class="mt-3" v-else>{{project.project}}</div>
+                                    <div class="mt-3" v-else>{{ project.project }}</div>
                                 </v-col>
                             </v-row>
-<!--                            <v-row>-->
-<!--                                <v-col cols="2" lg="1">-->
-<!--                                    <v-subheader class="float-right">Department name</v-subheader>-->
-<!--                                </v-col>-->
-<!--                                <v-col cols="10" lg="4" md="6">-->
-<!--                                    <v-text-field-->
-<!--                                        v-if="$helpers.auth.checkPermissionByIds([57])"-->
-<!--                                        v-model="project.department"-->
-<!--                                        @blur="actionSave()"-->
-<!--                                    ></v-text-field>-->
-<!--                                    <div class="mt-3" v-else>{{project.department}}</div>-->
-<!--                                </v-col>-->
-<!--                            </v-row>-->
-<!--                            <v-row>-->
-<!--                                <v-col cols="2" lg="1">-->
-<!--                                    <v-subheader class="float-right">Profit center</v-subheader>-->
-<!--                                </v-col>-->
-<!--                                <v-col cols="10" lg="4" md="6">-->
-<!--                                    <v-text-field-->
-<!--                                        v-if="$helpers.auth.checkPermissionByIds([57])"-->
-<!--                                        v-model="project.profit_center"-->
-<!--                                        @blur="actionSave()"-->
-<!--                                    ></v-text-field>-->
-<!--                                    <div class="mt-3" v-else>{{project.profit_center}}</div>-->
-<!--                                </v-col>-->
-<!--                            </v-row>-->
                             <v-row>
                                 <v-col cols="2" lg="1">
                                     <v-subheader class="float-right">Product</v-subheader>
@@ -114,7 +79,7 @@
                                             @change="actionSave()"
                                             clearable
                                         ></v-autocomplete>
-                                        <div class="mt-3" v-else>{{project.product.name}}</div>
+                                        <div class="mt-3" v-else>{{ project.product.name }}</div>
                                     </template>
                                 </v-col>
                             </v-row>
@@ -137,7 +102,7 @@
                                             return-object
                                             @change="actionSave()"
                                         ></v-autocomplete>
-                                        <div class="mt-3" v-else>{{project.client.name}}</div>
+                                        <div class="mt-3" v-else>{{ project.client.name }}</div>
                                     </template>
                                 </v-col>
                             </v-row>
@@ -161,7 +126,7 @@
                                             clearable
                                             @change="actionSave()"
                                         ></v-autocomplete>
-                                        <div class="mt-3" v-else>{{project.team.name}}</div>
+                                        <div class="mt-3" v-else>{{ project.team.name }}</div>
                                     </template>
                                 </v-col>
                             </v-row>
@@ -179,13 +144,14 @@
                                         @blur="actionSave()"
                                     >
                                         <template v-slot:append>
-                                            <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                                            <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16"
+                                                    :close-on-content-click="false">
                                                 <template v-slot:activator="{ on }">
-                                                    <div :style="switchColor" v-on="on" />
+                                                    <div :style="switchColor" v-on="on"/>
                                                 </template>
                                                 <v-card>
                                                     <v-card-text class="pa-0">
-                                                        <v-color-picker v-model="project.color" flat />
+                                                        <v-color-picker v-model="project.color" flat/>
                                                     </v-card-text>
                                                 </v-card>
                                             </v-menu>
@@ -217,7 +183,6 @@
                                 </v-col>
                                 <div class="d-inline-flex">
                                     <div class="d-flex flex-row">
-<!--                                        rank block-->
                                         <div class="d-inline-flex">
                                             <div class="d-flex flex-column mt-6">
                                                 <div class="d-inline-flex mx-2">
@@ -225,36 +190,43 @@
                                                         class=""
                                                         v-if="currentCurrency"
                                                     >
-                                                        {{currentCurrency.slug}}
+                                                        {{ currentCurrency.slug }}
                                                     </span>
                                                     <span class="mx-2">{{ project.rate }}</span>
                                                 </div>
                                                 <v-divider></v-divider>
-                                                <div class="d-inline-flex mt-2 mx-2" v-if="project.rate_from && project.rate_from_date">
+                                                <div class="d-inline-flex mt-2 mx-2"
+                                                     v-if="project.rate_from && project.rate_from_date">
                                                     <span
                                                         class=""
                                                         v-if="currentCurrency"
                                                     >
-                                                        {{currentCurrency.slug}}
+                                                        {{ currentCurrency.slug }}
                                                     </span>
                                                     <span class="mx-2">{{ project.rate_from }}</span>
                                                 </div>
                                             </div>
                                         </div>
-<!--                                        from/to block-->
                                         <div class="d-inline-flex flex-grow-1">
                                             <div class="d-flex flex-column">
                                                 <div class="d-inline-flex mx-3">
-                                                    <div class="d-flex flex-column"><div class="d-inline-flex" style="min-width: 100px">From</div></div>
-                                                    <div class="d-flex flex-column"><div class="d-inline-flex" style="min-width: 100px">To</div></div>
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-inline-flex" style="min-width: 100px">From</div>
+                                                    </div>
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-inline-flex" style="min-width: 100px">To</div>
+                                                    </div>
                                                 </div>
                                                 <div class="d-inline-flex mx-3">
                                                     <div class="d-flex flex-column">
-                                                        <div class="d-inline-flex" style="min-width: 100px">The start</div>
+                                                        <div class="d-inline-flex" style="min-width: 100px">The start
+                                                        </div>
                                                     </div>
                                                     <div class="d-flex flex-column">
                                                         <div class="d-inline-flex" style="min-width: 100px">
-                                                            <span v-if="project.rate_from && project.rate_from_date">{{ moment(project.rate_from_date).subtract(1, 'days').format('DD/MM/YYYY') }}</span>
+                                                            <span v-if="project.rate_from && project.rate_from_date">{{
+                                                                    moment(project.rate_from_date).subtract(1, 'days').format('DD/MM/YYYY')
+                                                                }}</span>
                                                             <span v-else>Current date</span>
                                                         </div>
                                                     </div>
@@ -263,12 +235,15 @@
                                                 <div class="d-inline-flex mx-3 mt-2" v-if="project.rate_from_date">
                                                     <div class="d-flex flex-column">
                                                         <div class="d-inline-flex" style="min-width: 100px">
-                                                            <span v-if="project.rate_from && project.rate_from_date">{{ moment(project.rate_from_date).format('DD/MM/YYYY') }}</span>
+                                                            <span v-if="project.rate_from && project.rate_from_date">{{
+                                                                    moment(project.rate_from_date).format('DD/MM/YYYY')
+                                                                }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="d-flex flex-column">
                                                         <div class="d-inline-flex" style="min-width: 100px">
-                                                            <span v-if="project.rate_from && moment(project.rate_from_date).isBefore(moment.now())">Current date</span>
+                                                            <span
+                                                                v-if="project.rate_from && moment(project.rate_from_date).isBefore(moment.now())">Current date</span>
                                                             <span v-else-if="project.rate_from">Future dates</span>
                                                         </div>
                                                     </div>
@@ -296,7 +271,8 @@
                                             </v-btn>
                                         </template>
                                         <v-card>
-                                            <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                                            <v-card-title class="mb-5"
+                                                          :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                                                 Set rate
                                             </v-card-title>
 
@@ -399,6 +375,7 @@
 >>> *:not(.v-icon) {
     font-size: 12px !important;
 }
+
 >>> .project {
     font-size: 18px !important;
     font-weight: 500;
@@ -455,7 +432,7 @@ export default {
             nameLimit: 255
         }
     },
-    created () {
+    created() {
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
     },
     mounted() {
@@ -474,12 +451,12 @@ export default {
     methods: {
         __getProject(projectId) {
             axios.get(`/api/ttmanaging/projects/${projectId}`)
-            .then(({data}) => {
-                if (data.success) {
-                    if (!data.data.rate_from_date) data.data.rate_from_date = moment().add(1, 'days').format('YYYY-MM-DD');
-                    this.project = {...data.data, rate_type_from: 1};
-                }
-            });
+                .then(({data}) => {
+                    if (data.success) {
+                        if (!data.data.rate_from_date) data.data.rate_from_date = moment().add(1, 'days').format('YYYY-MM-DD');
+                        this.project = {...data.data, rate_type_from: 1};
+                    }
+                });
         },
         __getProducts() {
             if (this.isLoadingSearchProduct) return;
@@ -518,7 +495,7 @@ export default {
         },
         __updateProjectById(projectId, data) {
             axios.patch(`/api/ttmanaging/projects/${projectId}`, data)
-                .then(({ data }) => {
+                .then(({data}) => {
                     if (data.success) {
                         this.__getProject(projectId);
                     }
@@ -535,19 +512,19 @@ export default {
         }
     },
     watch: {
-        searchProduct () {
+        searchProduct() {
             this.__getProducts();
         },
-        searchClient () {
+        searchClient() {
             this.__getClients();
         },
-        searchTeam () {
+        searchTeam() {
             this.__getTeams();
         }
     },
     computed: {
         switchColor() {
-            const { project: { color }, menu } = this
+            const {project: {color}, menu} = this
             return {
                 backgroundColor: color,
                 cursor: 'pointer',
@@ -563,7 +540,7 @@ export default {
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
 
-                return Object.assign({}, entry, { name })
+                return Object.assign({}, entry, {name})
             })
         },
         getFilteredClients() {
@@ -572,7 +549,7 @@ export default {
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
 
-                return Object.assign({}, entry, { name })
+                return Object.assign({}, entry, {name})
             })
         },
         getFilteredTeams() {
@@ -582,12 +559,12 @@ export default {
                         ? entry.name.slice(0, this.nameLimit) + '...'
                         : entry.name
 
-                    return Object.assign({}, entry, { name })
+                    return Object.assign({}, entry, {name})
                 });
             }
             return [];
         },
-        currentCurrency () {
+        currentCurrency() {
             const settings = this.$store.getters['Tracking/getSettings'];
             return settings.currency ?? null;
         },
@@ -597,21 +574,27 @@ export default {
             return moment().add(1, 'days').format('YYYY-MM-DD');
         },
         getTrackingProjectLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.department;
-                case 2: return this.langMap.tracking.profit_center;
-                default: return this.langMap.tracking.project;
+                case 1:
+                    return this.langMap.tracking.department;
+                case 2:
+                    return this.langMap.tracking.profit_center;
+                default:
+                    return this.langMap.tracking.project;
             }
         },
         getTrackingProjectsLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.departments;
-                case 2: return this.langMap.tracking.profit_centres;
-                default: return this.langMap.tracking.projects;
+                case 1:
+                    return this.langMap.tracking.departments;
+                case 2:
+                    return this.langMap.tracking.profit_centres;
+                default:
+                    return this.langMap.tracking.projects;
             }
         },
 

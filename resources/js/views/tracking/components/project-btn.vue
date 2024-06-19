@@ -20,7 +20,7 @@
                     <v-icon>
                         mdi-plus-circle-outline
                     </v-icon>
-                    &nbsp;{{getTrackingProjectLabel}}/{{langMap.tracking.project_btn.ticket}}
+                    &nbsp;{{ getTrackingProjectLabel }}/{{ langMap.tracking.project_btn.ticket }}
                 </span>
                 <span v-if="selectedProject">
                     <span
@@ -29,7 +29,7 @@
                         {{ $helpers.string.shortenText(selectedProject.name, 20) }}
                     </span>
                     <span v-else>
-                        {{getTrackingProjectLabel}}:<br>{{ $helpers.string.shortenText(selectedProject.name, 35) }}
+                        {{ getTrackingProjectLabel }}:<br>{{ $helpers.string.shortenText(selectedProject.name, 35) }}
                     </span>
                 </span>
             </v-btn>
@@ -53,7 +53,7 @@
             >
                 <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([49])">
                     <v-expansion-panel-header>
-                        {{langMap.tracking.project_btn.choose}} {{getTrackingProjectLabel}}
+                        {{ langMap.tracking.project_btn.choose }} {{ getTrackingProjectLabel }}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content
                         style="min-height: 380px; max-height: 380px"
@@ -94,7 +94,8 @@
                                         {{ item.name }}
                                     </span>
                                     <span v-else>
-                                        <v-icon v-if="item.is_favorite" @click.stop="toggleFavorite(item)">mdi-star</v-icon>
+                                        <v-icon v-if="item.is_favorite"
+                                                @click.stop="toggleFavorite(item)">mdi-star</v-icon>
                                         <v-icon v-else @click.stop="toggleFavorite(item)">mdi-star-outline</v-icon>
                                         {{ item.name }}
                                         <small v-if="item.product">({{ item.product.name }})</small>
@@ -106,7 +107,7 @@
                 </v-expansion-panel>
                 <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([48])">
                     <v-expansion-panel-header>
-                        {{langMap.tracking.project_btn.create_new}} {{getTrackingProjectLabel}}
+                        {{ langMap.tracking.project_btn.create_new }} {{ getTrackingProjectLabel }}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content
                         style="min-height: 380px;"
@@ -122,28 +123,28 @@
                                     full-width
                                 ></v-text-field>
                             </v-list-item>
-<!--                            <v-list-item>-->
-<!--                                <v-text-field-->
-<!--                                    v-model="form.department"-->
-<!--                                    label="Department"-->
-<!--                                    placeholder="Type text here"-->
-<!--                                    clearable-->
-<!--                                    required-->
-<!--                                    full-width-->
-<!--                                    class="my-n2 py-0"-->
-<!--                                ></v-text-field>-->
-<!--                            </v-list-item>-->
-<!--                            <v-list-item>-->
-<!--                                <v-text-field-->
-<!--                                    v-model="form.profit_center"-->
-<!--                                    label="Profit center"-->
-<!--                                    placeholder="Type text here"-->
-<!--                                    clearable-->
-<!--                                    required-->
-<!--                                    full-width-->
-<!--                                    class="my-n2 py-0"-->
-<!--                                ></v-text-field>-->
-<!--                            </v-list-item>-->
+                            <!--                            <v-list-item>-->
+                            <!--                                <v-text-field-->
+                            <!--                                    v-model="form.department"-->
+                            <!--                                    label="Department"-->
+                            <!--                                    placeholder="Type text here"-->
+                            <!--                                    clearable-->
+                            <!--                                    required-->
+                            <!--                                    full-width-->
+                            <!--                                    class="my-n2 py-0"-->
+                            <!--                                ></v-text-field>-->
+                            <!--                            </v-list-item>-->
+                            <!--                            <v-list-item>-->
+                            <!--                                <v-text-field-->
+                            <!--                                    v-model="form.profit_center"-->
+                            <!--                                    label="Profit center"-->
+                            <!--                                    placeholder="Type text here"-->
+                            <!--                                    clearable-->
+                            <!--                                    required-->
+                            <!--                                    full-width-->
+                            <!--                                    class="my-n2 py-0"-->
+                            <!--                                ></v-text-field>-->
+                            <!--                            </v-list-item>-->
                             <v-list-item>
                                 <v-autocomplete
                                     v-model="form.product"
@@ -200,13 +201,14 @@
                                     required
                                 >
                                     <template v-slot:append>
-                                        <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                                        <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16"
+                                                :close-on-content-click="false">
                                             <template v-slot:activator="{ on }">
-                                                <div :style="switchColor" v-on="on" />
+                                                <div :style="switchColor" v-on="on"/>
                                             </template>
                                             <v-card>
                                                 <v-card-text class="pa-0">
-                                                    <v-color-picker v-model="form.color" flat />
+                                                    <v-color-picker v-model="form.color" flat/>
                                                 </v-card-text>
                                             </v-card>
                                         </v-menu>
@@ -222,7 +224,7 @@
                                 text
                                 @click="resetNewProjectForm(); menu = false"
                             >
-                                {{langMap.tracking.project_btn.cancel}}
+                                {{ langMap.tracking.project_btn.cancel }}
                             </v-btn>
                             <v-btn
                                 color="success"
@@ -230,14 +232,15 @@
                                 :disabled="!createProjectValid"
                                 @click="createNewProject"
                             >
-                                {{langMap.tracking.project_btn.save}}
+                                {{ langMap.tracking.project_btn.save }}
                             </v-btn>
                         </v-card-actions>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([50]) && $store.getters['Tickets/getTreeTickets'].length">
+                <v-expansion-panel
+                    v-if="$helpers.auth.checkPermissionByIds([50]) && $store.getters['Tickets/getTreeTickets'].length">
                     <v-expansion-panel-header>
-                        {{langMap.tracking.project_btn.choose_ticket}}
+                        {{ langMap.tracking.project_btn.choose_ticket }}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content
                         style="min-height: 380px; max-height: 380px;"
@@ -295,16 +298,19 @@
 </template>
 
 <style scoped>
->>>.v-treeview--dense .v-treeview-node__root {
+>>> .v-treeview--dense .v-treeview-node__root {
     min-height: 1.1em;
 }
->>>.v-treeview-node__root .v-icon {
+
+>>> .v-treeview-node__root .v-icon {
     font-size: 20px;
 }
->>>.v-treeview--dense .v-treeview-node__label {
+
+>>> .v-treeview--dense .v-treeview-node__label {
     max-width: 80%;
 }
->>>*:not(.v-icon) {
+
+>>> *:not(.v-icon) {
     font-size: 12px !important;
 }
 </style>
@@ -314,7 +320,7 @@
 <script>
 
 import _ from 'lodash';
-import { PerfectScrollbar } from 'vue2-perfect-scrollbar';
+import {PerfectScrollbar} from 'vue2-perfect-scrollbar';
 
 export default {
     components: {
@@ -378,19 +384,19 @@ export default {
             this.$store.dispatch('Tracking/getSettings');
         },
         __getProjects() {
-            this.$store.dispatch('Projects/getProjectList', { search: this.search });
+            this.$store.dispatch('Projects/getProjectList', {search: this.search});
         },
         __getProducts() {
-            this.$store.dispatch('Products/getProductList', { search: this.searchProduct });
+            this.$store.dispatch('Products/getProductList', {search: this.searchProduct});
         },
         __getClients() {
-            this.$store.dispatch('Clients/getClientList', { search: this.searchClient });
+            this.$store.dispatch('Clients/getClientList', {search: this.searchClient});
         },
         __getTeams() {
-            this.$store.dispatch('Team/getTeams', { search: null });
+            this.$store.dispatch('Team/getTeams', {search: null});
         },
         __getTickets() {
-            this.$store.dispatch('Tickets/getTicketList', { search: this.searchTicket });
+            this.$store.dispatch('Tickets/getTicketList', {search: this.searchTicket});
         },
         resetNewProjectForm() {
             this.form = {
@@ -453,7 +459,7 @@ export default {
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
 
-                return Object.assign({}, entry, { name })
+                return Object.assign({}, entry, {name})
             })
         },
         getFilteredClients() {
@@ -462,7 +468,7 @@ export default {
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
 
-                return Object.assign({}, entry, { name })
+                return Object.assign({}, entry, {name})
             })
         },
         getFilteredTeams() {
@@ -472,13 +478,13 @@ export default {
                         ? entry.name.slice(0, this.nameLimit) + '...'
                         : entry.name
 
-                    return Object.assign({}, entry, { name })
+                    return Object.assign({}, entry, {name})
                 })
             }
             return [];
         },
         switchColor() {
-            const { form: { color }, colorMenu } = this
+            const {form: {color}, colorMenu} = this
             return {
                 backgroundColor: color,
                 cursor: 'pointer',
@@ -492,21 +498,27 @@ export default {
             return this.form.project && this.form.client && this.form.color;
         },
         getTrackingProjectLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.department;
-                case 2: return this.langMap.tracking.profit_center;
-                default: return this.langMap.tracking.project;
+                case 1:
+                    return this.langMap.tracking.department;
+                case 2:
+                    return this.langMap.tracking.profit_center;
+                default:
+                    return this.langMap.tracking.project;
             }
         },
         getTrackingProjectsLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.departments;
-                case 2: return this.langMap.tracking.profit_centres;
-                default: return this.langMap.tracking.projects;
+                case 1:
+                    return this.langMap.tracking.departments;
+                case 2:
+                    return this.langMap.tracking.profit_centres;
+                default:
+                    return this.langMap.tracking.projects;
             }
         },
     },

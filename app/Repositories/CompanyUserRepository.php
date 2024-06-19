@@ -104,6 +104,7 @@ class CompanyUserRepository
                 'userData.phones.type',
                 'userData.companies',
                 'userData.settings',
+                'userData.clientFilterGroups.data',
             ]);
 
         if ($request->with_trashed) {
@@ -312,5 +313,15 @@ class CompanyUserRepository
         $companyUser->description = $description;
         $companyUser->save();
         return $companyUser;
+    }
+
+    public function updateNotes($id, $notes)
+    {
+        $user = CompanyUser::find($id);
+
+        if ($user && $notes) {
+            $user->notes = $notes;
+            $user->save();
+        }
     }
 }

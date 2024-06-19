@@ -33,7 +33,8 @@ class UserController extends Controller
         $with = $id ? [
             'employee.companyData',
             'employee.assignedToClients.clients',
-            'employee.assignedToProducts.productData'
+            'employee.assignedToProducts.productData',
+            'clientFilterGroups.data'
         ]
             : [];
         $id = $id ?? Auth::id();

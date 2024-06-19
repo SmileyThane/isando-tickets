@@ -100,6 +100,20 @@
                                 </div>
                             </v-col>
                         </v-row>
+                        <v-col cols="12">
+                            <v-combobox
+                                v-model="userData.filter_groups"
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                :items="filterGroups"
+                                dense
+                                readonly
+                                multiple
+                                chips
+                                item-value="id"
+                            >
+                            </v-combobox>
+                        </v-col>
                         <v-row>
                             <v-col cols="6">
                                 <hr class="lighten"/>
@@ -273,6 +287,26 @@
                                         </v-col>
                                     </v-row>
 
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <div id="attach-target" style="position: relative">
+                                                <v-combobox
+                                                    v-model="userData.filter_groups"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="filterGroups"
+                                                    dense
+                                                    clearable
+                                                    multiple
+                                                    chips
+                                                    item-value="id"
+                                                    prepend-icon="mdi-group"
+                                                    attach="#attach-target"
+                                                >
+                                                </v-combobox>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
                                     <v-row>
                                         <v-col cols="6">
                                             <hr class="lighten"/>
@@ -856,6 +890,33 @@
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
+                <v-card>
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{
+                                langMap.main.notes
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn v-if="userData.employee.notes" :color="themeBgColor" icon @click="saveNote()">
+                            <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
+                        </v-btn>
+                    </v-toolbar>
+                    <v-card-text>
+                        <Tinymce
+                            v-model="userData.employee.notes"
+                            :placeholder="langMap.main.notes"
+                        />
+                    </v-card-text>
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
                 <v-card v-if="$helpers.auth.checkPermissionByIds([105])">
                     <v-toolbar
                         :color="themeBgColor"
@@ -1263,6 +1324,124 @@
                     </v-card-text>
                 </v-card>
 
+                <v-card
+                    v-if="$helpers.auth.checkPermissionByIds([88])"
+                >
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.profile.internal_billing
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-list-item v-for="item in userData.billing" :key="item.id">
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.name"></v-list-item-title>
+                                        <v-list-item-subtitle
+                                            v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon small @click="editInternalBilling(item)">
+                                            mdi-pencil
+                                        </v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-action>
+                                        <v-icon small @click="deleteInternalBilling(item.id)">
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-expansion-panels v-model="internalBillingEditor" accordion multiple>
+                                    <v-expansion-panel>
+                                        <v-expansion-panel-header>
+                                            {{ langMap.main.add }}
+                                            <template v-slot:actions>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
+                                            </template>
+                                        </v-expansion-panel-header>
+                                        <v-expansion-panel-content>
+                                            <v-form>
+                                                <v-row>
+                                                    <v-col cols="8">
+                                                        <v-text-field
+                                                            v-model="internalBillingForm.name"
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :label="langMap.main.name"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-col cols="3">
+                                                        <v-text-field
+                                                            v-model="internalBillingForm.cost"
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :label="langMap.main.cost"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-col v-if="currency" cols="1">
+                                                        <v-text-field
+                                                            v-model="currency.symbol"
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :label="langMap.tracking.settings.currency"
+                                                            dense
+                                                            readonly
+                                                        />
+                                                    </v-col>
+                                                    <v-btn
+                                                        v-if="!internalBillingForm.id"
+                                                        :color="themeBgColor"
+                                                        bottom
+                                                        dark
+                                                        fab
+                                                        right
+                                                        small
+                                                        @click="createInternalBilling"
+                                                    >
+                                                        <v-icon :color="themeBgColor"
+                                                                :style="`color: ${themeFgColor};`">mdi-plus
+                                                        </v-icon>
+                                                    </v-btn>
+                                                    <v-btn
+                                                        v-if="internalBillingForm.id"
+                                                        :color="themeBgColor"
+                                                        bottom
+                                                        dark
+                                                        fab
+                                                        right
+                                                        small
+                                                        @click="updateInternalBilling(internalBillingForm.id)"
+                                                    >
+                                                        <v-icon :color="themeBgColor"
+                                                                :style="`color: ${themeFgColor};`">mdi-update
+                                                        </v-icon>
+                                                    </v-btn>
+                                                </v-row>
+                                            </v-form>
+                                        </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                </v-expansion-panels>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
                 <v-card>
                     <v-toolbar
                         :color="themeBgColor"
@@ -1808,7 +1987,12 @@ export default {
                 notification_statuses: [],
                 number: '',
                 avatar_url: '',
-                deleted_at: null
+                deleted_at: null,
+                filter_groups: [],
+                employee: {
+                    notes: ''
+                },
+                billing: null
             },
             notificationStatuses: [],
             singleUserForm: {
@@ -1915,6 +2099,12 @@ export default {
             },
             products: [],
             productsSearch: '',
+            filterGroups: [],
+            internalBillingEditor: null,
+            internalBillingForm: {},
+            currency: {
+                symbol: ''
+            },
         }
     },
     mounted() {
@@ -1930,9 +2120,11 @@ export default {
         this.getEmployees();
         this.getActivityTypes();
         this.getProducts();
+        this.getFilterGroups();
         // if (localStorage.getItem('auth_token')) {
         //     this.$router.push('tickets')
         // }
+        this.$store.dispatch('getMainCompany');
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1946,6 +2138,14 @@ export default {
             if (this.newAvatar !== null) {
                 this.avatar = URL.createObjectURL(this.newAvatar)
             }
+        },
+        mainCompany() {
+            this.currency = this.$store.state.mainCompany.currency;
+        },
+    },
+    computed: {
+        mainCompany: function () {
+            return this.$store.state.mainCompany;
         }
     },
     methods: {
@@ -2018,6 +2218,9 @@ export default {
                     } else {
                         this.avatar = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
                     }
+                    this.userData.filter_groups = this.userData.client_filter_groups.map(group => {
+                        return group.data.name;
+                    })
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -2669,6 +2872,13 @@ export default {
                 }
             });
         },
+        saveNote() {
+            axios.patch(`/api/company/employee/${this.$route.params.id}/notes`, {notes: this.userData.employee.notes}).then(response => {
+                this.snackbarMessage = this.langMap.main.update_successful;
+                this.actionColor = 'success'
+                this.snackbar = true
+            });
+        },
         selectActivity(item) {
             this.activityForm = item
             this.activityFormPanel = 0
@@ -2788,7 +2998,83 @@ export default {
                 }
             });
         },
+        getFilterGroups() {
+            axios.get('/api/filter_groups/client').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.filterGroups = response.data.map(group => {
+                        return group.name;
+                    })
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        editInternalBilling(item) {
+            if (this.internalBillingEditor === null) {
 
+                this.internalBillingEditor = [0]
+                this.internalBillingForm.id = item.id
+                this.internalBillingForm.name = item.name
+                this.internalBillingForm.cost = item.cost
+            } else {
+                this.internalBillingEditor = null
+                this.internalBillingForm = {}
+            }
+        },
+        deleteInternalBilling(id) {
+            axios.delete(`/api/billing/internal/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.getUser()
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateInternalBilling(id) {
+            axios.put(`/api/billing/internal/${id}`, this.internalBillingForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.internalBillingEditor = null
+                    this.internalBillingForm = {}
+                    this.getUser()
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        createInternalBilling() {
+            this.internalBillingForm.entity_id = this.userData.id
+            this.internalBillingForm.entity_type = 'App\\User'
+            axios.post(`/api/billing/internal`, this.internalBillingForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.internalBillingEditor = null
+                    this.internalBillingForm = {}
+                    this.getUser()
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
 
     }
 }

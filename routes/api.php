@@ -80,6 +80,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         //employee management
         Route::get('employee', 'API\CompanyController@getIndividuals');
         Route::post('company/{id}/employee', 'API\CompanyController@invite');
+        Route::patch('company/employee/{id}/notes', 'API\CompanyController@updateEmployeeNotes');
         Route::delete('company/employee/{id}', 'API\CompanyController@removeEmployee');
 
         //phone management

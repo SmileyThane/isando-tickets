@@ -179,4 +179,11 @@ class CompanyController extends Controller
         }
         return self::showResponse(false);
     }
+
+    public function updateEmployeeNotes(Request $request, $id)
+    {
+        $this->companyUserRepo->updateNotes($id, $request->notes);
+
+        return self::showResponse(true);
+    }
 }
