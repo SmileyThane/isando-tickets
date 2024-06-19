@@ -7,7 +7,7 @@
             v-if="prependIcon"
             class="v-input__prepend-outer">
             <div class="v-input__icon v-input__icon--prepend">
-                <v-icon>{{prependIcon}}</v-icon>
+                <v-icon>{{ prependIcon }}</v-icon>
             </div>
         </div>
         <div class="v-input__control">
@@ -17,7 +17,7 @@
                         v-if="label"
                         class="v-label v-label--active theme--light"
                         style="left: 0px; right: auto; position: absolute;"
-                    >{{label}}</label>
+                    >{{ label }}</label>
                     <input
                         type="time"
                         autofocus
@@ -68,16 +68,19 @@
 </template>
 
 <style scoped>
-.v-text-field.time-field__flat>.v-input__control>.v-input__slot:before {
+.v-text-field.time-field__flat > .v-input__control > .v-input__slot:before {
     border: none;
 }
-.v-text-field.time-field__flat>.v-input__control>.v-input__slot>.v-text-field__slot {
+
+.v-text-field.time-field__flat > .v-input__control > .v-input__slot > .v-text-field__slot {
     flex: inherit;
 }
+
 input[type="time"]::-webkit-calendar-picker-indicator {
     background: none;
     display: none;
 }
+
 *:not(.v-icon) {
     font-size: 14px !important;
 }
@@ -109,7 +112,7 @@ export default {
             date: null,
         };
     },
-    created () {
+    created() {
         moment.updateLocale(this.$store.state.lang.short_code, {
             week: {
                 dow: 1,
@@ -141,7 +144,7 @@ export default {
         //     this.$emit('onchange', time);
         // },
         helperAddZeros(num, len) {
-            while( ("" + num).length < len ) num = "0" + num;
+            while (("" + num).length < len) num = "0" + num;
             return num.toString();
         },
         onKeyDown($event) {
@@ -151,7 +154,7 @@ export default {
             }
             const keyCodes = [8, 46, 37, 38, 39, 40, 13, 27];
             if (
-                    ($event.keyCode >= 48 && $event.keyCode <= 57)
+                ($event.keyCode >= 48 && $event.keyCode <= 57)
                 || ($event.keyCode >= 96 && $event.keyCode <= 105)
                 || (keyCodes.indexOf($event.keyCode) !== -1)
             ) {
@@ -212,7 +215,7 @@ export default {
             }
 
         },
-        classes: () =>{
+        classes: () => {
             return ['v-input', 'v-input--hide-details', 'v-input--is-label-active',
                 'v-input--is-dirty', 'theme--light', 'v-text-field',
                 'v-text-field--is-booted', 'v-text-field--placeholder', 'v-input--dense', 'time-field__flat'];
