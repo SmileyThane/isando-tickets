@@ -4,6 +4,8 @@
 namespace App\Http\Controllers\API;
 
 use App\ClientFilterGroup;
+use App\ClientFilterGroupHasClients;
+use App\ClientFilterGroupHasUsers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -64,6 +66,8 @@ class ClientGroupController extends Controller
     public function delete($id)
     {
         $item = ClientFilterGroup::query()->find($id);
+        ClientFilterGroupHasUsers::query()->where('group_id', '=', $id)->delete();
+        ClientFilterGroupHasClients::query()->where('group_id', '=', $id)->delete();
         $item->delete();
 
         return self::showResponse(true);
