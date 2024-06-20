@@ -104,17 +104,19 @@ class TicketRepository
                                 break;
                             case 'company':
                                 $search = trim($request->search);
-                                $query->whereHas('toCompany', static function ($q) use ($search) {
-                                    $q->where('name', '=', $search);
-                                });
-                                $query->orWhereHas('toClient', static function ($q) use ($search) {
-                                    $q->where('name', '=', $search);
-                                });
-                                $query->orWhereHas('fromCompany', static function ($q) use ($search) {
-                                    $q->where('name', '=', $search);
-                                });
-                                $query->orWhereHas('fromClient', static function ($q) use ($search) {
-                                    $q->where('name', '=', $search);
+                                $query->where(static function ($ticketsQuery) use ($search) {
+                                    $ticketsQuery->whereHas('toCompany', static function ($q) use ($search) {
+                                        $q->where('name', '=', $search);
+                                    });
+                                    $ticketsQuery->orWhereHas('toClient', static function ($q) use ($search) {
+                                        $q->where('name', '=', $search);
+                                    });
+                                    $ticketsQuery->orWhereHas('fromCompany', static function ($q) use ($search) {
+                                        $q->where('name', '=', $search);
+                                    });
+                                    $ticketsQuery->orWhereHas('fromClient', static function ($q) use ($search) {
+                                        $q->where('name', '=', $search);
+                                    });
                                 });
                                 break;
                             default:
