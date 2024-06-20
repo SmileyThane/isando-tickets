@@ -642,6 +642,10 @@ export default {
                 {
                     id: 3,
                     name: 'Contact'
+                },
+                {
+                    id: 3,
+                    name: 'Company'
                 }
             ],
             headers: [
