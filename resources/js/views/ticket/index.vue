@@ -38,8 +38,7 @@
                             class="ma-2"
                             hide-details
                             prepend-icon="mdi-magnify"
-                            @input="getTickets"
-
+                            @input="getTickets(); updateUrl();"
                         >
                             <template slot="prepend">
                                 <v-menu
@@ -593,6 +592,7 @@ export default {
                 sortBy: ['id'],
                 withSpam: false,
                 onlyOpen: true,
+                onlyForUser: false,
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
             },
             footerProps: {
@@ -805,6 +805,41 @@ export default {
         }, 500);
     },
     methods: {
+        updateUrl() {
+            const query = { ...this.$route.query };
+
+            if (this.options.withSpam) {
+                query.withSpam = true;
+            } else {
+                delete query.withSpam;
+            }
+
+            if (this.options.onlyOpen) {
+                query.onlyOpen = true;
+            } else {
+                delete query.onlyOpen;
+            }
+
+            if (this.options.onlyForUser) {
+                query.onlyForUser = true;
+            } else {
+                delete query.onlyForUser;
+            }
+
+            if(this.ticketsSearch?.length) {
+                query.search = this.ticketsSearch
+            } else {
+                delete query.search
+            }
+
+            if(this.searchLabel?.length) {
+                query.searchLabel = this.searchLabel
+            } else {
+                delete query.searchLabel
+            }
+
+            this.$router.push({ query });
+        },
         updatePageFromRoute() {
             if (this.page) {
                 this.tablePage = parseInt(this.page) || 1
@@ -831,10 +866,14 @@ export default {
         },
         expandItem(item) {
             this.ticket = item;
+            const query = { ...this.$route.query };
             if (this.expanded.indexOf(item) !== -1) {
+                delete query.expanded
                 this.expanded = [];
+                this.$router.push({ query });
             } else {
                 this.expanded.splice(0, 1, item);
+                this.$router.push({ query: {...query, expanded: item.id} })
             }
         },
         saveFilter() {
@@ -1037,9 +1076,46 @@ export default {
         },
     },
     watch: {
+        '$route.query': function() {
+          if(this.options.withSpam !== this.$route.query.withSpam) {
+              this.options.withSpam = this.$route.query.withSpam;
+          }
+          if(this.options.onlyOpen !== this.$route.query.onlyOpen) {
+            this.options.onlyOpen = this.$route.query.onlyOpen
+          }
+          if(this.options.onlyForUser !== this.$route.query.onlyForUser) {
+            this.options.onlyForUser = this.$route.query.onlyForUser
+          }
+          if(this.ticketsSearch !== this.$route.query.search) {
+            this.ticketsSearch = this.$route.query.search
+          }
+          if(!!this.searchLabel && this.searchLabel !== this.$route.query.searchLabel) {
+            this.searchLabel = this.$route.query.searchLabel
+          }
+        },
+        searchLabel: {
+            handler: _.debounce(function (v) {
+                this.updateUrl();
+                this.getTickets();
+            }, 500),
+            deep: true,
+        },
+        ticketsSearch: {
+            handler: _.debounce(function (v) {
+                this.updateUrl();
+                this.getTickets();
+            }, 500),
+                deep: true,
+        },
+        tickets(){
+            if(this.$route.query.expanded && this.tickets.length){
+                this.expanded = this.tickets.filter((ticket) => ticket.id.toString() === this.$route.query.expanded.toString())
+            }
+        },
         options: {
             handler: _.debounce(function (v) {
-                this.getTickets()
+                this.updateUrl();
+                this.getTickets();
             }, 500),
             deep: true,
         },
@@ -1049,7 +1125,6 @@ export default {
         page(newValue) {
             this.options.page = parseInt(newValue) || 1;
             this.tablePage = parseInt(newValue) || 1;
-            // this.getTickets();
         },
         tablePage: function(newValue, oldValue) {
             if (newValue !== oldValue) {
