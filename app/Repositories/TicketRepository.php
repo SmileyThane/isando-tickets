@@ -145,6 +145,7 @@ class TicketRepository
         if ($request->only_for_user === "true") {
             $ticketResult->where('to_company_user_id', Auth::user()->employee->id);
         }
+//        TODO: remove when UI will be switched to tabs with statuses
         if ($request->only_open === "true") {
             $ticketResult->whereIn('status_id', [1, 2, 3, 4]);
         }
