@@ -146,6 +146,9 @@ class TicketRepository
         if ($request->only_open === "true") {
             $ticketResult->whereIn('status_id', [1, 2, 3, 4]);
         }
+        if ($request->status) {
+            $ticketResult->where('status_id', '=', $request->status);
+        }
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
                 ->with('creator.userData')
