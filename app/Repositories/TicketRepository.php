@@ -152,6 +152,10 @@ class TicketRepository
         if ($request->status) {
             $ticketResult->where('status_id', '=', $request->status);
         }
+
+        if ($request->type) {
+            $ticketResult->where('type_id', '=', $request->type);
+        }
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
                 ->with('creator.userData')
