@@ -1323,7 +1323,9 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
                 <v-card
                     v-if="$helpers.auth.checkPermissionByIds([88])"
                 >
