@@ -158,6 +158,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         //ticket management
         Route::get('ticket', 'API\TicketController@get');
+        Route::get('ticket_statuses', 'API\TicketController@getStatuses');
         Route::post('ticket', 'API\TicketController@create');
         Route::get('ticket/{id}', 'API\TicketController@find');
         Route::patch('ticket/{id}', 'API\TicketController@update');

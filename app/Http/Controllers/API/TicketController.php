@@ -12,6 +12,7 @@ use App\Team;
 use App\Ticket;
 use App\TicketCategory;
 use App\TicketPriority;
+use App\TicketStatus;
 use App\TicketType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -44,6 +45,11 @@ class TicketController extends Controller
     {
         return self::showResponse(true, TicketCategory::all());
 
+    }
+
+    public function getStatuses()
+    {
+        return self::showResponse(true, TicketStatus::all());
     }
 
     public function getTypes()
