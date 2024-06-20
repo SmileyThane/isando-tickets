@@ -102,6 +102,21 @@ class TicketRepository
                                     });
                                 });
                                 break;
+                            case 'company':
+                                $search = trim($request->search);
+                                $query->whereHas('toCompany', static function ($q) use ($search) {
+                                    $q->where('name', '=', $search);
+                                });
+                                $query->orWhereHas('toClient', static function ($q) use ($search) {
+                                    $q->where('name', '=', $search);
+                                });
+                                $query->orWhereHas('fromCompany', static function ($q) use ($search) {
+                                    $q->where('name', '=', $search);
+                                });
+                                $query->orWhereHas('fromClient', static function ($q) use ($search) {
+                                    $q->where('name', '=', $search);
+                                });
+                                break;
                             default:
                                 $query->where('name', 'like', '%' . trim($request->search) . '%')
                                     ->orWhere('number', 'like', '%' . trim($request->search) . '%');
