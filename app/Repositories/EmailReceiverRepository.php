@@ -205,7 +205,7 @@ class EmailReceiverRepository
         if (!$userFrom) {
             Log::info($senderEmail . ' not found');
         }
-        if ($fromEntityId && $fromEntityType && $toEntityId && $toEntityType && $productId) {
+        if ($fromEntityId && $fromEntityType && $toEntityId && $toEntityType) {
             $params = new Request();
             $params['from_entity_id'] = $fromEntityId;
             $params['from_entity_type'] = $fromEntityType;
