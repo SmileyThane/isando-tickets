@@ -16,7 +16,7 @@
                             :class="$route.name.includes('knowledge') ? 'initial' : 'custom'"
                             :style="isAuthorized === false ? 'background-image: url(/login_bg.jpg); background-size: cover; height: 100vh;' : 'padding-top:0px'">
                     <router-view></router-view>
-                    <speed-panel v-if="isLoaded && isAuthorized === true" v-model="drawer"></speed-panel>
+<!--                    <speed-panel v-if="isLoaded && isAuthorized === true" v-model="drawer"></speed-panel>-->
                     <appFooter v-if="isAuthorized === true"></appFooter>
                     </v-main>
                 </perfect-scrollbar>
