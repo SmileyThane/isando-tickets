@@ -102,6 +102,23 @@ class TicketRepository
                                     });
                                 });
                                 break;
+                            case 'company':
+                                $search = trim($request->search);
+                                $query->where(static function ($ticketsQuery) use ($search) {
+                                    $ticketsQuery->whereHas('toCompany', static function ($q) use ($search) {
+                                        $q->where('name', '=', $search);
+                                    });
+                                    $ticketsQuery->orWhereHas('toClient', static function ($q) use ($search) {
+                                        $q->where('name', '=', $search);
+                                    });
+                                    $ticketsQuery->orWhereHas('fromCompany', static function ($q) use ($search) {
+                                        $q->where('name', '=', $search);
+                                    });
+                                    $ticketsQuery->orWhereHas('fromClient', static function ($q) use ($search) {
+                                        $q->where('name', '=', $search);
+                                    });
+                                });
+                                break;
                             default:
                                 $query->where('name', 'like', '%' . trim($request->search) . '%')
                                     ->orWhere('number', 'like', '%' . trim($request->search) . '%');
@@ -128,9 +145,22 @@ class TicketRepository
         if ($request->only_for_user === "true") {
             $ticketResult->where('to_company_user_id', Auth::user()->employee->id);
         }
+
         if ($request->only_open === "true") {
             $ticketResult->whereIn('status_id', [1, 2, 3, 4]);
         }
+        if ($request->status) {
+            $ticketResult->where('status_id', '=', $request->status);
+        }
+
+        if ($request->type) {
+            $ticketResult->where('type_id', '=', $request->type);
+        }
+
+        if ($request->priority) {
+            $ticketResult->where('priority_id', '=', $request->priority);
+        }
+
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
                 ->with('creator.userData')

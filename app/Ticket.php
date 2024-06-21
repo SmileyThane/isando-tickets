@@ -94,6 +94,26 @@ class Ticket extends Model
         return $this->attributes['to_entity_type']::where('id', $this->attributes['to_entity_id'])->withTrashed()->first();
     }
 
+    public function toCompany()
+    {
+        return $this->morphTo(Company::class, 'to_entity_type', 'to_entity_id');
+    }
+
+    public function toClient()
+    {
+        return $this->morphTo(Client::class, 'to_entity_type', 'to_entity_id');
+    }
+
+    public function fromCompany()
+    {
+        return $this->morphTo(Company::class, 'from_entity_type', 'from_entity_id');
+    }
+
+    public function fromClient()
+    {
+        return $this->morphTo(Client::class, 'from_entity_type', 'from_entity_id');
+    }
+
     public function getReplicatedToAttribute()
     {
         return $this->replicated_to_entity_type !== null ?
