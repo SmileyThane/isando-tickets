@@ -2431,7 +2431,7 @@ export default {
             this.client.supplier_type = Object.keys(this.client.supplier_object).shift()
             this.client.supplier_id = Object.values(this.client.supplier_object).shift()
             console.log(this.client)
-            this.client.client_filter_groups = this.client_groups;
+            this.client.filter_groups = this.client_groups?.map((group) => group.name);
             axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
                 response = response.data
                 if (response.success === true) {
