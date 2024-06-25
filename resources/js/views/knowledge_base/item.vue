@@ -190,7 +190,7 @@ export default {
             axios.get(`/api/kb/article/${this.$route.params.id}/pdf?type=${this.$route.params.alias}`).then(res => {
                 const linkSource = `data:application/pdf;base64,${res.data}`;
                 const downloadLink = document.createElement("a");
-                const fileName = "article.pdf";
+                const fileName = `${this.article.name}.pdf`;
                 downloadLink.href = linkSource;
                 downloadLink.download = fileName;
                 downloadLink.click();
