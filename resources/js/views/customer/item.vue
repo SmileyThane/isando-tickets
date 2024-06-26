@@ -96,15 +96,14 @@
                             </v-col>
                             <v-col cols="12">
                                 <v-combobox
-                                    v-model="client.filter_groups"
+                                    v-model="client_groups"
                                     :color="themeBgColor"
                                     :item-color="themeBgColor"
-                                    :items="filterGroups"
                                     dense
                                     readonly
                                     multiple
                                     chips
-                                    item-value="id"
+                                    item-text="name"
                                 >
                                 </v-combobox>
                             </v-col>
@@ -636,22 +635,20 @@
                                     <h3>{{ langMap.main.client_groups }}</h3>
                                     <v-row>
                                         <v-col cols="12">
-                                            <div id="attach-target" style="position: relative">
-                                                <v-combobox
-                                                    v-model="client.filter_groups"
-                                                    :color="themeBgColor"
-                                                    :item-color="themeBgColor"
-                                                    :items="filterGroups"
-                                                    dense
-                                                    clearable
-                                                    multiple
-                                                    chips
-                                                    item-value="id"
-                                                    prepend-icon="mdi-group"
-                                                    attach="#attach-target"
-                                                >
-                                                </v-combobox>
-                                            </div>
+                                            <v-treeview
+                                                v-model="client_groups"
+                                                :color="themeBgColor"
+                                                :selected-color="themeBgColor"
+                                                :items="clientFilterGroupsTree"
+                                                activatable
+                                                selectable
+                                                multiple
+                                                item-value="id"
+                                                item-text="name"
+                                                item-children="children"
+                                                return-object
+                                                dense
+                                            />
                                         </v-col>
                                     </v-row>
 
@@ -2196,6 +2193,10 @@ export default {
             supplierEmployees: [],
             emailTrashed: false,
             isCompanyContactsLoading: false,
+            clientFilterGroupsTree: [],
+            open: [],
+            client_groups: [],
+            qwerty: []
         }
     },
     mounted() {
@@ -2214,6 +2215,7 @@ export default {
         this.$store.dispatch('getMainCompany');
         this.getEmployees();
         this.getFilterGroups();
+        this.getFilterGroupsTree();
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -2243,9 +2245,8 @@ export default {
                     this.isCompanyContactsLoading = false
                     this.loadingEmployees = false
                     this.loadingActivities = false
-                    this.client.filter_groups = this.client.client_filter_groups.map(group => {
-                        return group.data.name;
-                    })
+                    this.client.filter_groups = response.data.client_filter_groups;
+                    this.client_groups = response.data.client_filter_groups.map((group) => group.data)
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -2261,6 +2262,18 @@ export default {
                     this.filterGroups = response.data.map(group => {
                         return group.name;
                     })
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        getFilterGroupsTree() {
+            axios.get('/api/filter_groups/client?view_as_tree=1').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.clientFilterGroupsTree = response.data
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -2418,6 +2431,7 @@ export default {
             this.client.supplier_type = Object.keys(this.client.supplier_object).shift()
             this.client.supplier_id = Object.values(this.client.supplier_object).shift()
             console.log(this.client)
+            this.client.filter_groups = this.client_groups?.map((group) => group.name);
             axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -3151,7 +3165,7 @@ export default {
         },
         mainCompany: function () {
             return this.$store.state.mainCompany;
-        }
+        },
     }
 }
 </script>
