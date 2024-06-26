@@ -187,10 +187,10 @@ class CompanyRepository
         ProductCategory::query()
             ->where(['id' => $id])
             ->update([
-            'name' => $name,
-            'company_id' => $companyId,
-            'parent_id' => $parentId,
-        ]);
+                'name' => $name,
+                'company_id' => $companyId,
+                'parent_id' => $parentId,
+            ]);
 
         return true;
     }
@@ -206,14 +206,18 @@ class CompanyRepository
         return $result;
     }
 
-    public function getProductCategoriesTree($companyId = null, $showFullNames = false)
+    public function getProductCategoriesTree($companyId = null, $showFullNames = false, $withProduct = false)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
 
         $result = [];
         $company = Company::find($companyId);
         if ($company) {
-            $result = $company->productCategories()->orderBy('name', 'ASC')->get()->toTree();
+            $companyRequest = $company->productCategories();
+            if ($withProduct) {
+                $companyRequest->with('products');
+            }
+            $result = $companyRequest->orderBy('name', 'ASC')->get()->toTree();
         }
         return $result;
     }
