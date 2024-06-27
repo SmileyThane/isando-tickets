@@ -18,6 +18,7 @@ import Login from './views/auth/login'
 import Register from './views/auth/register'
 import Profile from './views/auth/profile'
 import SystemSettings from './views/settings/system'
+import Hosting from './views/hosting/index'
 import AllCustomers from './views/customer/all'
 import Notifications from './views/notify/index'
 import SingleNotification from './views/notify/item'
@@ -198,6 +199,14 @@ export default [
             requiresAuth: true,
         },
         component: SystemSettings
+    },
+    {
+        path: '/hosting',
+        name: 'hosting',
+        meta: {
+            requiresAuth: true,
+        },
+        component: Hosting
     },
     {
         path: '/settings/incident',

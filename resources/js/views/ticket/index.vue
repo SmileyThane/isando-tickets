@@ -538,7 +538,6 @@
                 </template>
             </v-tab-item>
         </v-tabs-items>
-
     </v-container>
 </template>
 

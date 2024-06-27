@@ -73,7 +73,8 @@ class LanguageSeeder extends Seeder
                             'create_incident' => 'Create incident',
                             'crm' => 'CRM',
                             'sidebar_access' => 'Sidebar access',
-                            'roles' => 'Roles'
+                            'roles' => 'Roles',
+                            'hosting' => 'Hosting',
                         ],
                     'tracking' =>
                         [
@@ -1144,7 +1145,8 @@ class LanguageSeeder extends Seeder
                             'create_incident' => 'Vorfall erstellen',
                             'crm' => 'CRM',
                             'sidebar_access' => 'Zugriff auf die Seitenleiste',
-                            'roles' => 'Rollen'
+                            'roles' => 'Rollen',
+                            'hosting' => 'Webhosting',
                         ],
                         'tracking' => [
                             'name' => 'Name',
