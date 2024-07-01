@@ -790,8 +790,7 @@ export default {
             axios.get(`/api/main_company/product_categories/flat`).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    console.log('success flat', response.data)
-                    this.productCategoriesFlat = response.data;
+                    this.productCategoriesFlat = [{ id: 0, parent_id: 0, name: 'None', full_name: 'None' }, ...response.data];
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
