@@ -53,7 +53,7 @@
                     @click:row="showItem"
                 >
                     <template v-slot:top>
-                        <v-row>
+                        <v-row style="padding-top: 10px;">
                             <v-col md="4" sm="12">
                                 <v-text-field
                                     v-model="ticketsSearch"
@@ -62,6 +62,7 @@
                                     :label="langMap.main.search"
                                     hide-details
                                     prepend-icon="mdi-magnify"
+                                    style="padding-top: 4px;"
                                     @input="getTickets(); updateUrl();"
                                 >
                                     <template slot="prepend">
@@ -75,6 +76,7 @@
                                                     text
                                                     v-bind="attrs"
                                                     v-on="{...menu}"
+                                                    small
                                                 >
                                                 <span v-if="searchLabel !== ''">
                                                     {{ searchLabel }}
@@ -134,6 +136,7 @@
                                                 <v-btn
                                                     text
                                                     v-if="!filterPanel"
+                                                    small
                                                     @click="filterPanel = true"
                                                 >
                                                     <v-icon>mdi-filter</v-icon>
@@ -147,6 +150,7 @@
                                     v-model="filterName"
                                     :color="themeBgColor"
                                     :label="langMap.main.name"
+                                    style="margin-bottom: 0;"
                                     dense
                                 >
                                     <template slot="prepend">
@@ -159,6 +163,7 @@
                                                 <v-btn
                                                     v-if="filterPanel"
                                                     text
+                                                    small
                                                     @click="saveFilter"
                                                 >
                                                     <v-icon>mdi-filter-plus</v-icon>
@@ -176,6 +181,7 @@
                                     :items="footerProps.itemsPerPageOptions"
                                     :label="langMap.main.items_per_page"
                                     hide-details
+                                    style="padding-top: 4px;"
                                     @change="updateItemsCount"
                                 ></v-select>
                             </v-col>
@@ -185,7 +191,7 @@
                                               :length="lastPage"
                                               :page="options.page"
                                               :total-visible="0"
-                                              class="mx-4 mt-2 d-flex"
+                                              class="mx-4 d-flex"
                                               circle
                                 >
                                 </v-pagination>
