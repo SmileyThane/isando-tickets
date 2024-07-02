@@ -39,4 +39,9 @@ class Activity extends Model
     {
         return $this->attributes['updated_at'] ? Carbon::parse($this->attributes['updated_at'])->format('Y-m-d H:i') : null;
     }
+
+    public function getDatetimeAttribute()
+    {
+        return $this->attributes['datetime'] ? Carbon::parse($this->attributes['datetime'])->format('Y-m-d H:i') : null;
+    }
 }
