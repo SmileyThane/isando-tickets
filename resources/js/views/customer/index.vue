@@ -124,7 +124,8 @@
                                     </v-col>
                                     <v-col cols="4" class="pb-0">
                                         <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
-                                                  item-text="name" item-value="id" label="Search in" multiple
+                                                  item-text="name" item-value="id" label="Search in"  multiple clearable
+                                                  :menu-props="{ bottom: true, offsetY: true }"
                                                   v-on:change="debounceGetClients"/>
                                     </v-col>
 <!--                                    <v-col md="2" sm="12">-->
@@ -145,6 +146,7 @@
                                             :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
+                                            :menu-props="{ bottom: true, offsetY: true }"
                                             class="mx-4 d-flex"
                                             @change="updateItemsCount"
                                         ></v-select>
@@ -398,12 +400,12 @@ export default {
             },
             searchWhere: [1, 2, 3, 4, 5, 6],
             searchOptions: [
-                {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_client_groups},
-                {id: 2, name: this.$store.state.lang.lang_map.kb.search_in_company_name},
-                {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_client_number},
-                {id: 4, name: this.$store.state.lang.lang_map.kb.search_in_email},
-                {id: 5, name: this.$store.state.lang.lang_map.kb.search_in_description},
-                {id: 6, name: this.$store.state.lang.lang_map.kb.search_in_supplier},
+                {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_company_name},
+                {id: 2, name: this.$store.state.lang.lang_map.kb.search_in_client_number},
+                {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_email},
+                {id: 4, name: this.$store.state.lang.lang_map.kb.search_in_description},
+                {id: 5, name: this.$store.state.lang.lang_map.kb.search_in_supplier},
+                {id: 6, name: this.$store.state.lang.lang_map.kb.search_in_client_groups},
             ],
         }
     },
@@ -444,12 +446,12 @@ export default {
                     sort_val: this.options.sortDesc[0],
                     per_page: this.options.itemsPerPage,
                     page: this.page,
-                    client_groups: this.searchWhere.includes(1),
-                    company_name: this.searchWhere.includes(2),
-                    client_number: this.searchWhere.includes(3),
-                    email: this.searchWhere.includes(4),
-                    description: this.searchWhere.includes(5),
-                    supplier: this.searchWhere.includes(6),
+                    company_name: this.searchWhere.includes(1),
+                    client_number: this.searchWhere.includes(2),
+                    email: this.searchWhere.includes(3),
+                    description: this.searchWhere.includes(4),
+                    supplier: this.searchWhere.includes(5),
+                    client_groups: this.searchWhere.includes(6),
                 }
             }).then(response => {
                 this.loading = false
