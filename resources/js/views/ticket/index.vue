@@ -54,7 +54,7 @@
                 >
                     <template v-slot:top>
                         <v-row style="padding-top: 10px;">
-                            <v-col md="4" sm="12">
+                            <v-col md="5" sm="12">
                                 <v-text-field
                                     v-model="ticketsSearch"
                                     :color="themeBgColor"
@@ -102,7 +102,7 @@
                                     </template>
                                 </v-text-field>
                             </v-col>
-                            <v-col md="4" sm="12">
+                            <v-col md="5" sm="12">
                                 <v-autocomplete
                                     v-if="!filterPanel"
                                     v-model="filterId"
@@ -638,7 +638,7 @@ export default {
                     compareParams: []
                 }
             ],
-            searchLabel: '',
+            searchLabel: 'Subject',
             searchCategories: [
                 {
                     id: 1,
