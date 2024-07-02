@@ -375,7 +375,7 @@ export default {
     },
     methods: {
         getProductCategoriesTree() {
-            axios.get(`/api/main_company/product_categories/tree?with_product=true`).then(response => {
+            axios.get(`/api/main_company/product_categories/tree?with_product=true&sort=code`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.categoriesTreeWithProducts = response.data;
