@@ -313,6 +313,10 @@ class TicketRepository
 
     public function create(Request $request, $employeeId = null): Ticket
     {
+        if ($request->from_entity_type === CompanyUser::class) {
+            $request->request->add(['contact_company_user_id' => $request->from_entity_id]);
+            $employeeId = $request->from_entity_id;
+        }
         $ticket = new Ticket();
         $ticket->name = $request->name;
         $ticket->description = $request->description;
