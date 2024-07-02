@@ -78,7 +78,7 @@ class TicketRepository
         if ($tickets) {
             $ticketIds = $tickets->pluck('id')->toArray();
         }
-        $ticketResult = Ticket::whereIn('id', $ticketIds);
+        $ticketResult = Ticket::query()->whereIn('id', $ticketIds)->whereNull('parent_id');
         if (($request->has('search') && !empty($request->search)) ||
             ($request->has('filter_id') && $request->filter_id !== null)
         ) {
@@ -151,6 +151,8 @@ class TicketRepository
         }
         if ($request->status) {
             $ticketResult->where('status_id', '=', $request->status);
+        } else {
+            $ticketResult->where('status_id', '<>', Ticket::STATUS_CLOSED);
         }
 
         if ($request->type) {

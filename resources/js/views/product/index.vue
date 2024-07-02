@@ -31,16 +31,18 @@
                                                 <v-text-field
                                                     v-model="srcSearch"
                                                     :color="themeBgColor"
-                                                    :label="langMap.main.search"
+                                                    label="Product category"
                                                     class="pa-3 pt-5"
                                                     clear-icon="mdi-close-circle-outline"
                                                     clearable
                                                     dense
                                                     hide-details
+                                                    prepend-icon="mdi mdi-magnify"
+                                                    style="align-items: flex-start;"
                                                 ></v-text-field>
                                                 <perfect-scrollbar>
                                                     <v-treeview :color="themeBgColor"
-                                                                :items="categories"
+                                                                :items="categoriesTreeWithProducts"
                                                                 :search="srcSearch"
                                                                 :active.sync="productForm.id"
                                                                 activatable
@@ -50,7 +52,17 @@
                                                             <v-icon>mdi-folder</v-icon>
                                                         </template>
                                                         <template v-slot:label="{ item }">
-                                                            {{ $helpers.i18n.localized(item) }}
+                                                            <div style="display: flex; flex-direction: column; font-size: 12px;">
+                                                                <span>
+                                                                    <strong>[{{ item.id }}]</strong>
+                                                                    -
+                                                                    {{ $helpers.i18n.localized(item) }}
+                                                                </span>
+
+                                                                <span v-if="!!item.products.length" v-for="product in item.products" style="color: grey; font-size: 10px; line-height: 17px">
+                                                                    <strong>[{{ product.product_code || '-' }}]</strong> - {{ product.name }}
+                                                                </span>
+                                                            </div>
                                                         </template>
                                                     </v-treeview>
                                                 </perfect-scrollbar>
@@ -77,6 +89,7 @@
                                                     rows="1"
                                                     auto-grow
                                                     required
+                                                    prepend-icon="mdi mdi-receipt-text-outline"
                                                 ></v-textarea>
                                             </div>
                                             <div class="col-md-4">
@@ -86,6 +99,7 @@
                                                     :label="langMap.product.code"
                                                     name="product_code"
                                                     v-model="productForm.product_code"
+                                                    prepend-icon="mdi mdi-numeric"
                                                     required
                                                 ></v-text-field>
                                             </div>
@@ -249,6 +263,15 @@
 </template>
 
 <style scoped>
+>>> .v-treeview-node__root {
+    align-items: flex-start;
+    min-height: auto!important;
+}
+
+>>> .v-treeview-node__content {
+    align-items: flex-start;
+}
+
 .v-data-table /deep/ .sticky-header {
     position: sticky;
 }
@@ -336,12 +359,14 @@ export default {
                 files: []
             },
             categories: [],
+            categoriesTreeWithProducts: [],
             srcSearch: '',
         }
     },
     mounted() {
         this.getProducts();
         this.getCategories();
+        this.getProductCategoriesTree()
 
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
@@ -349,6 +374,18 @@ export default {
         });
     },
     methods: {
+        getProductCategoriesTree() {
+            axios.get(`/api/main_company/product_categories/tree?with_product=true`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.categoriesTreeWithProducts = response.data;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
         getProducts() {
             this.loading = this.themeBgColor
             if (this.options.sortDesc.length <= 0) {

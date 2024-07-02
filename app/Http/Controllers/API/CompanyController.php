@@ -141,10 +141,10 @@ class CompanyController extends Controller
         return self::showResponse(false);
     }
 
-    public function getProductCategoriesTree($id = null): JsonResponse
+    public function getProductCategoriesTree(Request $request, $id = null): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
-            return self::showResponse(true, $this->companyRepo->getProductCategoriesTree($id));
+            return self::showResponse(true, $this->companyRepo->getProductCategoriesTree($id, false, (bool)$request->with_product));
         }
 
         return self::showResponse(false);

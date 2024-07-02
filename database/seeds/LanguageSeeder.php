@@ -355,6 +355,16 @@ class LanguageSeeder extends Seeder
                             'quote_request' => 'Quote request',
                             'internal' => 'Internal',
                         ],
+                    'ticket_tabs' =>
+                        [
+                            'all' => 'All',
+                            'open' => 'OPEN',
+                            'my_tickets' => 'MY TICKETS',
+                            'urgent_open' => 'URGENT-OPEN',
+                            'internal_open' => 'INTERNAL-OPEN',
+                            'projects' => 'PROJECTS',
+                            'spam' => 'SPAM',
+                        ],
                     'filter' => [
                         'saved_filteds' => 'Saved filters',
                         'compare_param' => 'Parameter to compare',
@@ -1412,6 +1422,15 @@ class LanguageSeeder extends Seeder
                             'issue' => 'Problem',
                             'quote_request' => 'Angebotsanfrage',
                             'internal' => 'Intern',
+                        ],
+                        'ticket_tabs' => [
+                            'all' => 'ALLER',
+                            'open' => 'ÖFFNEN',
+                            'my_tickets' => 'MEINE TICKETS',
+                            'urgent_open' => 'DRINGEND-OFFEN',
+                            'internal_open' => 'INTERN-OFFEN',
+                            'projects' => 'FORSCHUNGSPROJEKTE',
+                            'spam' => 'SPAM',
                         ],
                         'filter' => [
                             'saved_filters' => 'gespeicherte Filter',

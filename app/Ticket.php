@@ -19,6 +19,8 @@ class Ticket extends Model
     const ACTION_UPDATE_TICKET = 'update_ticket';
     const ACTION_ATTACH_TEAM_TO_TICKET = 'attach_team_to_ticket';
 
+    const STATUS_CLOSED = 5;
+
     protected $fillable = [
         'id', 'number', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
         'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment',
