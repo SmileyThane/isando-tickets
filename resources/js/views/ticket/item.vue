@@ -1250,7 +1250,7 @@
                       </span>
                                         </v-col>
                                         <v-col
-                                            v-if="currentUser.id == answer.employee.user_data.id"
+                                            v-if="currentUser.id == answer.employee.user_data.id && answer.is_internal"
                                             cols="1"
                                         >
                                             <v-btn
