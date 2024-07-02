@@ -324,4 +324,18 @@ class CompanyUserRepository
             $user->save();
         }
     }
+
+    public function getMinified()
+    {
+        $result = [];
+        $employee = Auth::user()->employee;
+        $companyUsers = CompanyUser::query()->where('company_id', $employee->company_id)->with('userData')->get();
+        foreach ($companyUsers as $companyUser) {
+            $result[] = [
+                'name' => $companyUser->userData->full_name,
+                'item' => [CompanyUser::class => $companyUser->id]
+            ];
+        }
+        return $result;
+    }
 }
