@@ -106,6 +106,14 @@ class CompanyController extends Controller
         return self::showResponse(false);
     }
 
+    public function getIndividualsMinified(Request $request): JsonResponse
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::INDIVIDUAL_READ_ACCESS)) {
+            return self::showResponse(true, $this->companyUserRepo->getMinified());
+        }
+        return self::showResponse(false);
+    }
+
     public function attachProductCategory(Request $request): JsonResponse
     {
         if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
