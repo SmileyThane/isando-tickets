@@ -78,6 +78,11 @@ class ClientRepository
         }
 
         if ($request->search) {
+            $clients = Client::query()->where(
+                function ($query) use ($companyId) {
+                    $query->where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
+                    $query->orWhere(['supplier_type' => Client::class]);
+                });
             $clients->where(
                 function ($query) use ($request) {
 
