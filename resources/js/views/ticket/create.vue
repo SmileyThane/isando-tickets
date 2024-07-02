@@ -646,6 +646,7 @@ export default {
     },
     mounted() {
         this.getSuppliers()
+        this.getIndividuals()
         this.getProducts()
         this.getPriorities()
         this.getTypes()
@@ -687,6 +688,14 @@ export default {
                     this.ticketForm.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1].item : this.suppliers[0].item;
                     this.ticketForm.to = this.suppliers[0].item
                     this.getContacts(this.ticketForm.from)
+                }
+            });
+        },
+        getIndividuals() {
+            axios.get('/api/employee/minified').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.globalEmployees = response.data
                 }
             });
         },
