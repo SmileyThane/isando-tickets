@@ -24,21 +24,35 @@
                         <v-card class="pa-2">
                             <v-card-text>
                                 <div class="row">
+                                    <v-col cols="12">
+                                        <v-select
+                                            v-model="fromType"
+                                            :items="fromTypeVariants"
+                                            item-text="label"
+                                            item-value="value"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
+                                            dence
+                                            hide-details
+                                        ></v-select>
+                                    </v-col>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-4 col-sm-12">
                                         <v-autocomplete
                                             v-model="ticketForm.from"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
-                                            :items="suppliers"
+                                            :items="fromType === 1 ? suppliers : globalEmployees"
                                             hide-details
                                             item-text="name"
                                             item-value="item"
                                             label="Ticket is submitted by"
-                                            @input="getContacts"
                                         />
                                     </div>
                                     <v-col class="col-md-4 col-sm-12">
                                         <v-autocomplete
+                                            v-if="fromType === 1"
                                             v-model="ticketForm.contact_company_user_id"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
@@ -567,7 +581,10 @@ export default {
                 to_company_user_id: null,
                 can_be_edited: true
             },
+            fromType: 1,
+            fromTypeVariants: [{'label': 'Company', 'value': 1}, {'label': 'Individual', 'value': 2}],
             suppliers: [],
+            globalEmployees: [],
             products: [],
             priorities: [],
             categories: [],
