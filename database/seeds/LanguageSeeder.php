@@ -364,6 +364,7 @@ class LanguageSeeder extends Seeder
                             'internal_open' => 'INTERNAL-OPEN',
                             'projects' => 'PROJECTS',
                             'spam' => 'SPAM',
+                            'closed' => 'CLOSED'
                         ],
                     'filter' => [
                         'saved_filteds' => 'Saved filters',
@@ -1431,6 +1432,7 @@ class LanguageSeeder extends Seeder
                             'internal_open' => 'INTERN-OFFEN',
                             'projects' => 'FORSCHUNGSPROJEKTE',
                             'spam' => 'SPAM',
+                            'closed' => 'Geschlossen'
                         ],
                         'filter' => [
                             'saved_filters' => 'gespeicherte Filter',
