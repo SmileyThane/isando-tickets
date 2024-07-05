@@ -7,6 +7,7 @@ use App\ClientCompanyUser;
 use App\ClientFilterGroup;
 use App\ClientFilterGroupHasClients;
 use App\Company;
+use App\CompanyUser;
 use App\Email;
 use App\LimitationGroup;
 use App\LimitationGroupHasModel;
@@ -302,6 +303,10 @@ class ClientRepository
             ],
             ['description' => $request->description]
         );
+
+        if($request->role_id) {
+            (new RoleRepository())->attach($request->company_user_id, CompanyUser::class, $request->role_id);
+        }
 
         return $clientCompanyUser->employee;
     }
