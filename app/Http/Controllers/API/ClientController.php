@@ -116,14 +116,16 @@ class ClientController extends Controller
         $companyUser = null;
 
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
-            $roles = Role::query()->where('company_id', Auth::user()->employee->company_id)->get();
-            if ($roles) {
-                $clientRole = RoleHasPermission::query()
-                    ->whereIn('role_id', $roles->pluck('id')->toArray())
-                    ->where('permission_id', Permission::EMPLOYEE_CLIENT_ACCESS)
-                    ->first();
+            if (!$request->role_id) {
+                $roles = Role::query()->where('company_id', Auth::user()->employee->company_id)->get();
+                if ($roles) {
+                    $clientRole = RoleHasPermission::query()
+                        ->whereIn('role_id', $roles->pluck('id')->toArray())
+                        ->where('permission_id', Permission::EMPLOYEE_CLIENT_ACCESS)
+                        ->first();
+                }
+                $request['role_id'] = $clientRole ? $clientRole->role_id : Role::COMPANY_CLIENT;
             }
-            $request['role_id'] = $clientRole ? $clientRole->role_id : Role::COMPANY_CLIENT;
             $request['company_id'] = Auth::user()->employee->company_id;
             $request['is_clientable'] = true;
 
@@ -143,9 +145,7 @@ class ClientController extends Controller
             ])->exists();
 
             if ($request['client_id']) {
-                $companyUser = $existingClient ?
-                    $this->clientRepo->updateDescription($request) :
-                    $this->clientRepo->attach($request);
+                $companyUser = $this->clientRepo->attach($request);
             }
             $result = !is_null($companyUser);
         }
