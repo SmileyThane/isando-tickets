@@ -150,17 +150,29 @@ class TicketRepository
             $ticketResult->whereIn('status_id', [1, 2, 3, 4]);
         }
         if ($request->status) {
-            $ticketResult->where('status_id', '=', $request->status);
+            if (is_array($request->status)) {
+                $ticketResult->whereIn('status_id', $request->status);
+            } else {
+                $ticketResult->where('status_id', '=', $request->status);
+            }
         } else {
             $ticketResult->where('status_id', '<>', Ticket::STATUS_CLOSED);
         }
 
         if ($request->type) {
-            $ticketResult->where('type_id', '=', $request->type);
+            if (is_array($request->type)) {
+                $ticketResult->whereIn('type_id', $request->type);
+            } else {
+                $ticketResult->where('type_id', '=', $request->type);
+            }
         }
 
         if ($request->priority) {
-            $ticketResult->where('priority_id', '=', $request->priority);
+            if (is_array($request->priority)) {
+                $ticketResult->whereIn('priority_id', $request->priority);
+            } else {
+                $ticketResult->where('priority_id', '=', $request->priority);
+            }
         }
 
         if ($request->minified && $request->minified === "true") {
