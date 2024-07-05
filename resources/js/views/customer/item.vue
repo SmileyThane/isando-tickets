@@ -822,6 +822,45 @@
                                                 mdi-card-account-details-outline
                                             </v-icon>
                                             <v-divider></v-divider>
+                                            <br>
+                                            <span>
+                                                {{langMap.main.name}}
+                                            </span>
+                                            <br>
+                                            <strong>
+                                                {{contactInfoForm.employee.user_data?.full_name}}
+                                            </strong>
+                                            <br>
+                                            <span v-if="!contactInfoEditBtn">
+                                                {{ langMap.main.description }}
+                                            </span>
+                                            <br>
+                                            <strong v-if="!contactInfoEditBtn">
+                                                {{ contactInfoForm.description }}
+                                            </strong>
+                                            <v-text-field v-model="contactInfoForm.description"
+                                                          :color="themeBgColor"
+                                                          label="Description"
+                                                          type="text"
+                                                          v-else></v-text-field>
+                                            <br>
+                                            <span v-if="!contactInfoEditBtn">
+                                                {{ langMap.main.roles }}
+                                            </span>
+                                            <br>
+                                            <strong v-if="!contactInfoEditBtn">
+                                                {{ contactInfoForm.employee.role_names }}
+                                            </strong>
+                                            <div v-else>
+                                                <v-select
+                                                    :items="[{label: 'Company client', value: 'company_client'}]"
+                                                    v-model="contactInfoForm.employee.role_names"
+                                                    item-value="value"
+                                                    item-text="label"
+                                                    :menu-props="{ bottom: true, offsetY: true }"
+                                                    label="Roles"
+                                                ></v-select>
+                                            </div>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -863,21 +902,6 @@
                                                     </span>
                                                 </strong>
                                                 <br>
-                                                <span>
-                                                    {{ langMap.main.description }}
-                                                </span>
-                                                <br>
-                                                <strong>
-                                                        {{ contactInfoForm.description }}
-                                                </strong>
-                                                <br>
-                                                <span>
-                                                    {{ langMap.main.roles }}
-                                                </span>
-                                                <br>
-                                                <strong>
-                                                        {{ contactInfoForm.employee.role_names }}
-                                                </strong>
                                             </span>
                                         <v-spacer></v-spacer>
                                         <span
@@ -2344,6 +2368,7 @@ export default {
             });
         },
         showContactInfo(item) {
+            console.log(item)
             this.contactInfoForm = item
             this.contactInfoModal = true
 
@@ -2392,6 +2417,7 @@ export default {
                 this.employeeForm.client_id = this.contactInfoForm.client_id
                 this.employeeForm.company_user_id = this.contactInfoForm.company_user_id
                 this.employeeForm.description = this.contactInfoForm.description
+                this.employeeForm.role_id = 6
                 this.addEmployee(true);
                 this.contactInfoModal = false
                 this.contactInfoEditBtn = false
