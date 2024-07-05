@@ -853,10 +853,10 @@
                                             </strong>
                                             <div v-else>
                                                 <v-select
-                                                    :items="[{label: 'Company client', value: 'company_client'}]"
-                                                    v-model="contactInfoForm.employee.role_names"
-                                                    item-value="value"
-                                                    item-text="label"
+                                                    :items="roles"
+                                                    v-model="contactInfoForm.employee.role_id"
+                                                    item-value="id"
+                                                    item-text="name"
                                                     :menu-props="{ bottom: true, offsetY: true }"
                                                     label="Roles"
                                                 ></v-select>
@@ -2331,7 +2331,7 @@ export default {
         },
         getRoles() {
             this.roles = []
-            axios.get('/api/roles').then(response => {
+            axios.get('/api/roles?search=client').then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.roles.push(response.data[response.data.length - 1])
@@ -2410,14 +2410,14 @@ export default {
         createOrRestoreEmployee(action) {
             this.emailTrashed = false;
             this.employeeForm.action = action;
-            this.addEmployee();
+            this.addEmployee()
         },
         editContactInfo() {
             if (this.contactInfoEditBtn === true) {
                 this.employeeForm.client_id = this.contactInfoForm.client_id
                 this.employeeForm.company_user_id = this.contactInfoForm.company_user_id
                 this.employeeForm.description = this.contactInfoForm.description
-                this.employeeForm.role_id = 6
+                this.employeeForm.role_id = this.contactInfoForm.employee.role_id
                 this.addEmployee(true);
                 this.contactInfoModal = false
                 this.contactInfoEditBtn = false
