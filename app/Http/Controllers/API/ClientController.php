@@ -145,9 +145,7 @@ class ClientController extends Controller
             ])->exists();
 
             if ($request['client_id']) {
-                $companyUser = $existingClient ?
-                    $this->clientRepo->updateDescription($request) :
-                    $this->clientRepo->attach($request);
+                $companyUser = $this->clientRepo->attach($request);
             }
             $result = !is_null($companyUser);
         }
