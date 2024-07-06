@@ -805,6 +805,7 @@ export default {
                 {id: 7, name: this.$store.state.lang.lang_map.ticket_tabs.closed}
             ],
             activeTab: this.tab ? parseInt(this.tab) : 1,
+            ticketStatuses: []
         }
     },
     mounted() {
@@ -822,6 +823,7 @@ export default {
         this.getProducts()
         this.getPriorities()
         this.getTypes()
+        this.getStatuses()
         setTimeout(() => {
             if (!this.$helpers.auth.checkPermissionByIds([1])) {
                 this.$router.push('knowledge_base')
@@ -954,6 +956,15 @@ export default {
 
             });
         },
+        getStatuses() {
+            axios.get('/api/ticket_statuses').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.ticketStatuses = response.data
+                }
+
+            });
+        },
         getTickets() {
             this.loading = this.themeBgColor
             if (this.options.sortDesc.length <= 0) {
@@ -979,7 +990,7 @@ export default {
                     page: this.page,
                     priority: this.options.priority,
                     type_id: this.options.type,
-                    status_id: this.options.status_id,
+                    status: this.options.status,
                 }
             }).then(
                 response => {
@@ -1093,14 +1104,14 @@ export default {
                 onlyForUser: false,
                 priority: null,
                 type: null,
-                status_id: null,
+                status: null,
             }
             switch (tab) {
                 case 0: {
                     return this.options = {
                         ...options,
                         ...emptyOptions,
-                        status_id: 5
+                        status: this.ticketStatuses.map((status) => status.id)
                     }
                 }
                 case 1: {
@@ -1108,6 +1119,7 @@ export default {
                         ...options,
                         ...emptyOptions,
                         onlyOpen: true,
+                        type: this.types.filter((type) => type.id !== 7).map((type) => type.id)
                     }
                 }
                 case 2: {
@@ -1123,6 +1135,7 @@ export default {
                         ...emptyOptions,
                         onlyOpen: true,
                         priority: 1 ,
+                        type: this.types.filter((type) => type.id !== 7).map((type) => type.id)
                     }
                 }
                 case 4: {
@@ -1152,7 +1165,7 @@ export default {
                     return this.options = {
                         ...options,
                         ...emptyOptions,
-                        status_id: 5
+                        status: this.ticketStatuses.filter((status) => status.id === 5).map((status) => status.id)
                     }
                 }
                 default: {
@@ -1160,6 +1173,7 @@ export default {
                         ...options,
                         ...emptyOptions,
                         onlyOpen: true,
+                        type: this.types.filter((type) => type.id !== 7).map((type) => type.id)
                     }
                 }
             }
