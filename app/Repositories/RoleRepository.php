@@ -41,11 +41,11 @@ class RoleRepository
 
     public function attach($modelId, $class, $roleId): bool
     {
-        $newRole = new ModelHasRole();
-        $newRole->model_id = $modelId;
-        $newRole->model_type = $class;
-        $newRole->role_id = $roleId;
-        $newRole->save();
+        ModelHasRole::query()->forceCreate([
+            'role_id' => $roleId,
+            'model_id' => $modelId,
+            'model_type' => $class
+        ]);
         return true;
     }
 
