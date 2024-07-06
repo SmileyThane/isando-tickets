@@ -823,43 +823,42 @@
                                             </v-icon>
                                             <v-divider></v-divider>
                                             <br>
-                                            <span>
-                                                {{langMap.main.name}}
-                                            </span>
+                                                <span>
+                                                    {{langMap.main.name}}
+                                                </span>
+                                                <br>
+                                                <strong>
+                                                    {{contactInfoForm.employee.user_data?.full_name}}
+                                                </strong>
                                             <br>
-                                            <strong>
-                                                {{contactInfoForm.employee.user_data?.full_name}}
-                                            </strong>
-                                            <br>
-                                            <span v-if="!contactInfoEditBtn">
-                                                {{ langMap.main.description }}
-                                            </span>
-                                            <br>
-                                            <strong v-if="!contactInfoEditBtn">
-                                                {{ contactInfoForm.description }}
-                                            </strong>
-                                            <v-text-field v-model="contactInfoForm.description"
-                                                          :color="themeBgColor"
-                                                          label="Description"
-                                                          type="text"
-                                                          v-else></v-text-field>
-                                            <br>
-                                            <span v-if="!contactInfoEditBtn">
-                                                {{ langMap.main.roles }}
-                                            </span>
-                                            <br>
-                                            <strong v-if="!contactInfoEditBtn">
-                                                {{ contactInfoForm.employee.role_names }}
-                                            </strong>
-                                            <div v-else>
-                                                <v-select
-                                                    :items="roles"
-                                                    v-model="contactInfoForm.employee.role_id"
-                                                    item-value="id"
-                                                    item-text="name"
-                                                    :menu-props="{ bottom: true, offsetY: true }"
-                                                    label="Roles"
-                                                ></v-select>
+                                            <div style="padding-top: 15px;">
+                                                <span>
+                                                    {{ langMap.main.description }}
+                                                </span>
+                                                <br>
+                                                <strong v-if="!contactInfoEditBtn">
+                                                    {{ contactInfoForm.description }}
+                                                </strong>
+                                                <v-text-field v-model="contactInfoForm.description"
+                                                              :color="themeBgColor"
+                                                              type="text"
+                                                              v-else></v-text-field>
+                                            </div>
+                                                <span>
+                                                    {{ langMap.main.roles }}
+                                                </span>
+                                                <br>
+                                                <strong v-if="!contactInfoEditBtn">
+                                                    {{ contactInfoForm.employee.role_names }}
+                                                </strong>
+                                                <div v-else>
+                                                    <v-select
+                                                        :items="roles"
+                                                        v-model="contactInfoForm.employee.role_id"
+                                                        item-value="id"
+                                                        item-text="name"
+                                                        :menu-props="{ bottom: true, offsetY: true }"
+                                                    ></v-select>
                                             </div>
                                         </v-col>
                                     </v-row>
