@@ -35,7 +35,29 @@ class TicketTypesSeeder extends Seeder
                 'name' => 'internal'
             ]
         );
-
-
+        DB::table('ticket_types')->updateOrInsert(
+            ['id' => 6],
+            [
+                'name' => 'Idea - DEV'
+            ]
+        );
+        DB::table('ticket_types')->updateOrInsert(
+            ['id' => 7],
+            [
+                'name' => 'Project'
+            ]
+        );
+        DB::table('ticket_types')->updateOrInsert(
+            ['id' => 8],
+            [
+                'name' => 'Request'
+            ]
+        );
+        DB::table('ticket_types')->updateOrInsert(
+            ['id' => 9],
+            [
+                'name' => 'Offer'
+            ]
+        );
     }
 }
