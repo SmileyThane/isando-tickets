@@ -2367,7 +2367,6 @@ export default {
             });
         },
         showContactInfo(item) {
-            console.log(item)
             this.contactInfoForm = item
             this.contactInfoModal = true
 
