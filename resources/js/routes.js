@@ -66,7 +66,7 @@ export default [
         path: '/home',
         name: 'home',
         component: Ticket,
-        props: route => ({ page: route.query.page, tab: 1 }),
+        props: route => ({ page: route.query.page, tab: route.query.tab }),
     },
     {
         path: '/user',
@@ -173,7 +173,7 @@ export default [
             requiresAuth: true,
         },
         component: Ticket,
-        props: route => ({ page: route.query.page, tab: 1 }),
+        props: route => ({ page: route.query.page, tab: route.query.tab }),
     },
     {
         path: '/ticket_create',

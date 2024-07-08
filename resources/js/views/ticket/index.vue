@@ -801,13 +801,16 @@ export default {
                 {id: 3, name: this.$store.state.lang.lang_map.ticket_tabs.urgent_open},
                 {id: 4, name: this.$store.state.lang.lang_map.ticket_tabs.internal_open},
                 {id: 5, name: this.$store.state.lang.lang_map.ticket_tabs.projects},
-                {id: 6, name: this.$store.state.lang.lang_map.ticket_tabs.spam}
+                {id: 6, name: this.$store.state.lang.lang_map.ticket_tabs.spam},
+                {id: 7, name: this.$store.state.lang.lang_map.ticket_tabs.closed}
             ],
             activeTab: this.tab ? parseInt(this.tab) : 1,
+            ticketStatuses: []
         }
     },
     mounted() {
         let that = this;
+        this.setOptionsByActiveTab(this.activeTab)
         this.updatePageFromRoute();
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -820,6 +823,7 @@ export default {
         this.getProducts()
         this.getPriorities()
         this.getTypes()
+        this.getStatuses()
         setTimeout(() => {
             if (!this.$helpers.auth.checkPermissionByIds([1])) {
                 this.$router.push('knowledge_base')
@@ -849,8 +853,9 @@ export default {
             if (this.page) {
                 this.tablePage = parseInt(this.page) || 1
                 this.options.page = parseInt(this.page) || 1;
+                this.activeTab = parseInt(this.tab) || 1;
                 // this.getTickets();
-                this.$router.push({ name: 'ticket_list', query: { page: this.page } })
+                this.$router.push({ name: 'ticket_list', query: { page: this.page, tab: this.tab } })
             }
         },
         manageFilter() {
@@ -951,6 +956,15 @@ export default {
 
             });
         },
+        getStatuses() {
+            axios.get('/api/ticket_statuses').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.ticketStatuses = response.data
+                }
+
+            });
+        },
         getTickets() {
             this.loading = this.themeBgColor
             if (this.options.sortDesc.length <= 0) {
@@ -975,7 +989,8 @@ export default {
                     filter_id: this.filterId,
                     page: this.page,
                     priority: this.options.priority,
-                    type_id: this.options.type
+                    type_id: this.options.type,
+                    status: this.options.status,
                 }
             }).then(
                 response => {
@@ -1088,13 +1103,15 @@ export default {
                 withSpam: false,
                 onlyForUser: false,
                 priority: null,
-                type: null
+                type: null,
+                status: null,
             }
             switch (tab) {
                 case 0: {
                     return this.options = {
                         ...options,
                         ...emptyOptions,
+                        status: this.ticketStatuses.map((status) => status.id)
                     }
                 }
                 case 1: {
@@ -1102,6 +1119,7 @@ export default {
                         ...options,
                         ...emptyOptions,
                         onlyOpen: true,
+                        type: this.types.filter((type) => type.id !== 7).map((type) => type.id)
                     }
                 }
                 case 2: {
@@ -1116,7 +1134,8 @@ export default {
                         ...options,
                         ...emptyOptions,
                         onlyOpen: true,
-                        priority: 1,
+                        priority: 1 ,
+                        type: this.types.filter((type) => type.id !== 7).map((type) => type.id)
                     }
                 }
                 case 4: {
@@ -1131,6 +1150,7 @@ export default {
                     return this.options = {
                         ...options,
                         ...emptyOptions,
+                        onlyOpen: true,
                         type: 7
                     }
                 }
@@ -1141,11 +1161,19 @@ export default {
                         withSpam: true,
                     }
                 }
+                case 7: {
+                    return this.options = {
+                        ...options,
+                        ...emptyOptions,
+                        status: this.ticketStatuses.filter((status) => status.id === 5).map((status) => status.id)
+                    }
+                }
                 default: {
                     return this.options = {
                         ...options,
                         ...emptyOptions,
                         onlyOpen: true,
+                        type: this.types.filter((type) => type.id !== 7).map((type) => type.id)
                     }
                 }
             }
