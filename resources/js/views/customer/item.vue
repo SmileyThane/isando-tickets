@@ -822,6 +822,44 @@
                                                 mdi-card-account-details-outline
                                             </v-icon>
                                             <v-divider></v-divider>
+                                            <br>
+                                                <span>
+                                                    {{langMap.main.name}}
+                                                </span>
+                                                <br>
+                                                <strong>
+                                                    {{contactInfoForm.employee.user_data?.full_name}}
+                                                </strong>
+                                            <br>
+                                            <div style="padding-top: 15px;">
+                                                <span>
+                                                    {{ langMap.main.description }}
+                                                </span>
+                                                <br>
+                                                <strong v-if="!contactInfoEditBtn">
+                                                    {{ contactInfoForm.description }}
+                                                </strong>
+                                                <v-text-field v-model="contactInfoForm.description"
+                                                              :color="themeBgColor"
+                                                              type="text"
+                                                              v-else></v-text-field>
+                                            </div>
+                                                <span>
+                                                    {{ langMap.main.roles }}
+                                                </span>
+                                                <br>
+                                                <strong v-if="!contactInfoEditBtn">
+                                                    {{ contactInfoForm.employee.role_names }}
+                                                </strong>
+                                                <div v-else>
+                                                    <v-select
+                                                        :items="roles"
+                                                        v-model="contactInfoForm.employee.role_id"
+                                                        item-value="id"
+                                                        item-text="name"
+                                                        :menu-props="{ bottom: true, offsetY: true }"
+                                                    ></v-select>
+                                            </div>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -863,21 +901,6 @@
                                                     </span>
                                                 </strong>
                                                 <br>
-                                                <span>
-                                                    {{ langMap.main.description }}
-                                                </span>
-                                                <br>
-                                                <strong>
-                                                        {{ contactInfoForm.description }}
-                                                </strong>
-                                                <br>
-                                                <span>
-                                                    {{ langMap.main.roles }}
-                                                </span>
-                                                <br>
-                                                <strong>
-                                                        {{ contactInfoForm.employee.role_names }}
-                                                </strong>
                                             </span>
                                         <v-spacer></v-spacer>
                                         <span
@@ -2307,7 +2330,7 @@ export default {
         },
         getRoles() {
             this.roles = []
-            axios.get('/api/roles').then(response => {
+            axios.get('/api/roles?search=client').then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.roles.push(response.data[response.data.length - 1])
@@ -2385,13 +2408,14 @@ export default {
         createOrRestoreEmployee(action) {
             this.emailTrashed = false;
             this.employeeForm.action = action;
-            this.addEmployee();
+            this.addEmployee()
         },
         editContactInfo() {
             if (this.contactInfoEditBtn === true) {
                 this.employeeForm.client_id = this.contactInfoForm.client_id
                 this.employeeForm.company_user_id = this.contactInfoForm.company_user_id
                 this.employeeForm.description = this.contactInfoForm.description
+                this.employeeForm.role_id = this.contactInfoForm.employee.role_id
                 this.addEmployee(true);
                 this.contactInfoModal = false
                 this.contactInfoEditBtn = false
