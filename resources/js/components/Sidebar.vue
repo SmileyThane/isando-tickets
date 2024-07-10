@@ -415,6 +415,26 @@
                                 v-on="on"
                                 v-if="$helpers.auth.checkPermissionByIds([1])"
                                 color="#757575" link
+                                to="/tickets?page=1&tab=5"
+                            >
+                                <v-list-item-action>
+                                    <v-icon>mdi mdi-view-list</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ langMap.sidebar.projects_list }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <span>{{ langMap.sidebar.projects_list }}</span>
+                    </v-tooltip>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item
+                                v-bind="attrs"
+                                v-on="on"
+                                v-if="$helpers.auth.checkPermissionByIds([1])"
+                                color="#757575" link
                                 style="background-color:white;"
                                 to="/tickets"
                             >
