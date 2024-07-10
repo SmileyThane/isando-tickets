@@ -227,12 +227,14 @@ class KbController extends Controller
     public function getArticlePdf($id)
     {
         $article = $this->kbRepo->getArticle($id);
+        $title = $article->name;
         $content = $article->content;
         if (Auth::user()->language_id === 2) {
-            $content = $this->content_de;
+            $title = $article->name_de;
+            $content = $article->content_de;
         }
 
-        return base64_encode(Pdf::loadHTML($this->kbRepo->prettifyArticlePdf($content))->download());
+        return base64_encode(Pdf::loadHTML($this->kbRepo->prettifyArticlePdf($title, $content))->download());
     }
 
 }

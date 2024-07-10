@@ -989,7 +989,7 @@ export default {
                     filter_id: this.filterId,
                     page: this.page,
                     priority: this.options.priority,
-                    type_id: this.options.type,
+                    type: this.options.type,
                     status: this.options.status,
                 }
             }).then(

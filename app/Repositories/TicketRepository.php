@@ -161,9 +161,9 @@ class TicketRepository
 
         if ($request->type) {
             if (is_array($request->type)) {
-                $ticketResult->whereIn('type_id', $request->type);
+                $ticketResult->whereIn('ticket_type_id', $request->type);
             } else {
-                $ticketResult->where('type_id', '=', $request->type);
+                $ticketResult->where('ticket_type_id', '=', $request->type);
             }
         }
 
