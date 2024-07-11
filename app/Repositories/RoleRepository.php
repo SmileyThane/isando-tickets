@@ -41,11 +41,12 @@ class RoleRepository
 
     public function attach($modelId, $class, $roleId): bool
     {
-        ModelHasRole::query()->forceCreate([
+        ModelHasRole::query()->firstOrCreate([
             'role_id' => $roleId,
             'model_id' => $modelId,
             'model_type' => $class
         ]);
+
         return true;
     }
 
