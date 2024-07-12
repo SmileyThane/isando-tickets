@@ -74,7 +74,8 @@ class LanguageSeeder extends Seeder
                             'create_incident' => 'Create incident',
                             'crm' => 'CRM',
                             'sidebar_access' => 'Sidebar access',
-                            'roles' => 'Roles'
+                            'roles' => 'Roles',
+                            'links' => 'VOIP'
                         ],
                     'tracking' =>
                         [
@@ -1085,6 +1086,15 @@ class LanguageSeeder extends Seeder
                     'exceptions' => [
                         'field_is_required' => '%{field} is required',
                     ],
+                    'links' => [
+                        'new_link' => 'Create new link',
+                        'name' => 'Name',
+                        'link' => 'Link',
+                        'description' => 'Description',
+                        'login' => 'Login',
+                        'password' => 'Password',
+                        'add_link' => 'Add link'
+                    ]
                 ])
             ]
         );
@@ -1147,7 +1157,8 @@ class LanguageSeeder extends Seeder
                             'create_incident' => 'Vorfall erstellen',
                             'crm' => 'CRM',
                             'sidebar_access' => 'Zugriff auf die Seitenleiste',
-                            'roles' => 'Rollen'
+                            'roles' => 'Rollen',
+                            'links' => 'VOIP'
                         ],
                         'tracking' => [
                             'name' => 'Name',
@@ -2134,6 +2145,15 @@ class LanguageSeeder extends Seeder
                         'exceptions' => [
                             'field_is_required' => '%{field} ist erforderlich',
                         ],
+                        'links' => [
+                            'new_link' => 'Neuen Link erstellen',
+                            'name' => 'Name',
+                            'link' => 'Verknüpfung',
+                            'description' => 'Beschreibung',
+                            'login' => 'Anmelden',
+                            'password' => 'Passwort',
+                            'add_link' => 'Link hinzufügen'
+                        ]
                     ]
                 )
             ]
