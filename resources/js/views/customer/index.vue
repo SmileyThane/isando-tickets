@@ -125,6 +125,7 @@
                                     <v-col cols="4" class="pb-0">
                                         <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
                                                   item-text="name" item-value="id" label="Search in"  multiple clearable
+                                                  style="font-size: 12px;"
                                                   :menu-props="{ bottom: true, offsetY: true }"
                                                   v-on:change="debounceGetClients"/>
                                     </v-col>
@@ -526,6 +527,11 @@ export default {
         },
     },
     watch: {
+        customersSearch(val){
+            if(val.length && !this.searchWhere.length) {
+                this.searchWhere = [1]
+            }
+        },
         options: {
             handler() {
                 this.getClients();

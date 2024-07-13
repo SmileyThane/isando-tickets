@@ -142,7 +142,9 @@
                                     </v-col>
                                     <v-col md="3" sm="12">
                                         <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
-                                                  item-text="name" item-value="id" label="Search in" multiple
+                                                  item-text="name" item-value="id" label="Search in" multiple clearable
+                                                  style="font-size: 12px;"
+                                                  :menu-props="{ bottom: true, offsetY: true }"
                                                   v-on:change="debounceGetEmployees"/>
                                     </v-col>
                                     <v-col md="1" sm="12">
@@ -595,6 +597,11 @@ export default {
         tablePage: function(newValue, oldValue) {
             if (newValue !== oldValue) {
                 this.$router.push({ name: 'individuals', query: { page: newValue } });
+            }
+        },
+        employeesSearch(val){
+            if(val.length && !this.searchWhere.length) {
+                this.searchWhere = [1]
             }
         },
     },
