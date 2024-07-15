@@ -842,6 +842,7 @@
                                                 <v-text-field v-model="contactInfoForm.description"
                                                               :color="themeBgColor"
                                                               type="text"
+                                                              class="description_input"
                                                               v-else></v-text-field>
                                             </div>
                                                 <span>
@@ -1979,6 +1980,10 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+>>> .description_input .v-input__control .v-input__slot input {
+    text-align: right;
 }
 </style>
 
