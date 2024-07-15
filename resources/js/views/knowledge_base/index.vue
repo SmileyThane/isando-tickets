@@ -12,6 +12,7 @@
                             <v-col cols="4" class="pb-0">
                                 <v-text-field v-model="search" :color="themeBgColor" :label="langMap.main.search"
                                               append-icon="mdi-magnify" hide-details
+                                              style="font-size: 12px;"
                                               v-on:keyup="debounceOpenCategory"/>
                             </v-col>
                             <v-col cols="4" class="pb-0">
