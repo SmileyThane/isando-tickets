@@ -17,7 +17,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{ langMap.customer.add_new }}
+                                    <span style="font-size: 12px;">{{ langMap.customer.add_new }}</span>
                                     <template v-slot:actions>
                                         <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
                                         </v-icon>
@@ -120,11 +120,13 @@
                                     <v-col cols="4" class="pb-0">
                                         <v-text-field v-model="customersSearch" :color="themeBgColor"
                                                       :label="langMap.main.search"
+                                                      style="font-size: 12px;"
                                                       class="mx-4" @input="debounceGetClients"></v-text-field>
                                     </v-col>
                                     <v-col cols="4" class="pb-0">
                                         <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
                                                   item-text="name" item-value="id" label="Search in"  multiple clearable
+                                                  style="font-size: 12px;"
                                                   :menu-props="{ bottom: true, offsetY: true }"
                                                   v-on:change="debounceGetClients"/>
                                     </v-col>
@@ -149,6 +151,7 @@
                                             :menu-props="{ bottom: true, offsetY: true }"
                                             class="mx-4 d-flex"
                                             @change="updateItemsCount"
+                                            style="font-size: 12px;"
                                         ></v-select>
                                     </v-col>
                                     <v-col cols="2">
@@ -158,6 +161,7 @@
                                                       :page="options.page"
                                                       :total-visible="0"
                                                       class="mx-4 mt-2 d-flex"
+                                                      style="font-size: 12px;"
                                                       circle
                                         >
                                         </v-pagination>
@@ -526,6 +530,11 @@ export default {
         },
     },
     watch: {
+        customersSearch(val){
+            if(val.length && !this.searchWhere.length) {
+                this.searchWhere = [1]
+            }
+        },
         options: {
             handler() {
                 this.getClients();

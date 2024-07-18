@@ -12,11 +12,14 @@
                             <v-col cols="4" class="pb-0">
                                 <v-text-field v-model="search" :color="themeBgColor" :label="langMap.main.search"
                                               append-icon="mdi-magnify" hide-details
+                                              style="font-size: 12px;"
                                               v-on:keyup="debounceOpenCategory"/>
                             </v-col>
                             <v-col cols="4" class="pb-0">
                                 <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
-                                          item-text="name" item-value="id" label="Search in" multiple
+                                          style="font-size: 12px;"
+                                          item-text="name" item-value="id" label="Search in" multiple clearable
+                                          :menu-props="{ bottom: true, offsetY: true }"
                                           v-on:change="debounceOpenCategory"/>
                             </v-col>
                             <v-col cols="3" class="pb-0">
@@ -702,7 +705,12 @@ export default {
                 this.getTags();
             }
             this.categoryForm.parent_id = this.getCategoryIdFromQuery;
-        }
+        },
+        search(val){
+            if(val.length && !this.searchWhere.length) {
+                this.searchWhere = [3]
+            }
+        },
     },
     created() {
         this.debounceOpenCategory = _.debounce(
