@@ -124,11 +124,10 @@ class ClientController extends Controller
                         ->where('permission_id', Permission::EMPLOYEE_CLIENT_ACCESS)
                         ->first();
                 }
-                $request['role_id'] = $clientRole ? $clientRole->role_id : Role::COMPANY_CLIENT;
+                $request['role_id'] = $clientRole->role_id ?? Role::COMPANY_CLIENT;
             }
             $request['company_id'] = Auth::user()->employee->company_id;
             $request['is_clientable'] = true;
-
 
             if (!$request->company_user_id) {
                 $companyUser = $this->companyUserRepo->invite($request);

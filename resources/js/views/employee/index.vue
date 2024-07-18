@@ -14,7 +14,7 @@
                     <v-expansion-panels>
                         <v-expansion-panel>
                             <v-expansion-panel-header>
-                                {{ langMap.individuals.add_new }}
+                                <span  style="font-size: 12px;">{{ langMap.individuals.add_new }}</span>
                                 <template v-slot:actions>
                                     <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                 </template>
@@ -138,11 +138,14 @@
                                     <v-col md="4" sm="12">
                                         <v-text-field v-model="employeesSearch" :color="themeBgColor"
                                                       :label="langMap.main.search"
+                                                      style="font-size: 12px;"
                                                       class="mx-4" @input="debounceGetEmployees"></v-text-field>
                                     </v-col>
                                     <v-col md="3" sm="12">
                                         <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
-                                                  item-text="name" item-value="id" label="Search in" multiple
+                                                  item-text="name" item-value="id" label="Search in" multiple clearable
+                                                  style="font-size: 12px;"
+                                                  :menu-props="{ bottom: true, offsetY: true }"
                                                   v-on:change="debounceGetEmployees"/>
                                     </v-col>
                                     <v-col md="1" sm="12">
@@ -154,6 +157,7 @@
                                             class="mx-4"
                                             v-model="options.itemsPerPage"
                                             @change="updateItemsCount"
+                                            style="font-size: 12px;"
                                         ></v-select>
                                     </v-col>
                                     <v-col md="2" sm="12">
@@ -161,7 +165,9 @@
                                                     value="1"
                                                     dense
                                                     :label="langMap.individuals.with_trashed"
-                                                    class="mx-4" @change="debounceGetEmployees"/>
+                                                    class="mx-4"
+                                                    :class="`checkbox_label`"
+                                                    @change="debounceGetEmployees"/>
                                     </v-col>
                                     <v-col md="2" sm="12">
                                         <v-pagination v-model="tablePage"
@@ -319,6 +325,10 @@
     z-index: 5;
     position: relative;
     background: #fff;
+}
+
+>>> .checkbox_label .v-input__control .v-input__slot label {
+    font-size: 12px;
 }
 </style>
 
@@ -595,6 +605,11 @@ export default {
         tablePage: function(newValue, oldValue) {
             if (newValue !== oldValue) {
                 this.$router.push({ name: 'individuals', query: { page: newValue } });
+            }
+        },
+        employeesSearch(val){
+            if(val.length && !this.searchWhere.length) {
+                this.searchWhere = [1]
             }
         },
     },

@@ -842,6 +842,7 @@
                                                 <v-text-field v-model="contactInfoForm.description"
                                                               :color="themeBgColor"
                                                               type="text"
+                                                              class="description_input"
                                                               v-else></v-text-field>
                                             </div>
                                                 <span>
@@ -1341,33 +1342,6 @@
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
-                <v-card>
-                    <v-toolbar
-                        :color="themeBgColor"
-                        dark
-                        dense
-                        flat
-                    >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">
-                            {{
-                                langMap.main.notes
-                            }}
-                        </v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-btn v-if="client.notes" :color="themeBgColor" icon @click="saveNote()">
-                            <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
-                        </v-btn>
-                    </v-toolbar>
-                    <v-card-text>
-                        <Tinymce
-                            v-model="client.notes"
-                            :placeholder="langMap.main.notes"
-                        />
-                    </v-card-text>
-                </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
                 <v-card v-if="$helpers.auth.checkPermissionByIds([105])">
                     <v-toolbar
                         :color="themeBgColor"
@@ -1681,6 +1655,33 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card>
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{
+                                langMap.main.notes
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn v-if="client.notes" :color="themeBgColor" icon @click="saveNote()">
+                            <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
+                        </v-btn>
+                    </v-toolbar>
+                    <v-card-text>
+                        <Tinymce
+                            v-model="client.notes"
+                            :placeholder="langMap.main.notes"
+                        />
+                    </v-card-text>
+                </v-card>
             </v-col>
         </v-row>
 
@@ -1979,6 +1980,10 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+>>> .description_input .v-input__control .v-input__slot input {
+    text-align: right;
 }
 </style>
 

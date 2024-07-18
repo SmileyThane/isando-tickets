@@ -890,6 +890,124 @@
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
+                <v-card
+                    v-if="$helpers.auth.checkPermissionByIds([88])"
+                >
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.profile.internal_billing
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-list-item v-for="item in userData.billing" :key="item.id">
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.name"></v-list-item-title>
+                                        <v-list-item-subtitle
+                                            v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon small @click="editInternalBilling(item)">
+                                            mdi-pencil
+                                        </v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-action>
+                                        <v-icon small @click="deleteInternalBilling(item.id)">
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-expansion-panels v-model="internalBillingEditor" accordion multiple>
+                                    <v-expansion-panel>
+                                        <v-expansion-panel-header>
+                                            {{ langMap.main.add }}
+                                            <template v-slot:actions>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
+                                            </template>
+                                        </v-expansion-panel-header>
+                                        <v-expansion-panel-content>
+                                            <v-form>
+                                                <v-row>
+                                                    <v-col cols="8">
+                                                        <v-text-field
+                                                            v-model="internalBillingForm.name"
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :label="langMap.main.name"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-col cols="3">
+                                                        <v-text-field
+                                                            v-model="internalBillingForm.cost"
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :label="langMap.main.cost"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-col v-if="currency" cols="1">
+                                                        <v-text-field
+                                                            v-model="currency.symbol"
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :label="langMap.tracking.settings.currency"
+                                                            dense
+                                                            readonly
+                                                        />
+                                                    </v-col>
+                                                    <v-btn
+                                                        v-if="!internalBillingForm.id"
+                                                        :color="themeBgColor"
+                                                        bottom
+                                                        dark
+                                                        fab
+                                                        right
+                                                        small
+                                                        @click="createInternalBilling"
+                                                    >
+                                                        <v-icon :color="themeBgColor"
+                                                                :style="`color: ${themeFgColor};`">mdi-plus
+                                                        </v-icon>
+                                                    </v-btn>
+                                                    <v-btn
+                                                        v-if="internalBillingForm.id"
+                                                        :color="themeBgColor"
+                                                        bottom
+                                                        dark
+                                                        fab
+                                                        right
+                                                        small
+                                                        @click="updateInternalBilling(internalBillingForm.id)"
+                                                    >
+                                                        <v-icon :color="themeBgColor"
+                                                                :style="`color: ${themeFgColor};`">mdi-update
+                                                        </v-icon>
+                                                    </v-btn>
+                                                </v-row>
+                                            </v-form>
+                                        </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                </v-expansion-panels>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
                 <v-card>
                     <v-toolbar
                         :color="themeBgColor"
@@ -897,21 +1015,178 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">
-                            {{
-                                langMap.main.notes
-                            }}
-                        </v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.product.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn v-if="userData.employee.notes" :color="themeBgColor" icon @click="saveNote()">
-                            <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
-                        </v-btn>
                     </v-toolbar>
                     <v-card-text>
-                        <Tinymce
-                            v-model="userData.employee.notes"
-                            :placeholder="langMap.main.notes"
-                        />
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="productHeaders"
+                            :items="userData.employee.assigned_to_products"
+                            :options.sync="options"
+                            class="elevation-1"
+                            dense
+                            item-key="id"
+                            @update:options="updateItemsPerPage"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn icon v-bind="attrs" @click="showProduct(item.product_data)" v-on="on">
+                                            <v-icon small>mdi-eye</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.show_product }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn icon v-bind="attrs" @click="showDeleteProductDlg(item)" v-on="on">
+                                            <v-icon small>mdi-link-off</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.product.unlink_product }}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+
+                        <v-spacer>&nbsp;</v-spacer>
+
+                        <v-expansion-panels>
+                            <v-expansion-panel @click="resetProduct">
+                                <v-expansion-panel-header>
+                                    {{ langMap.product.add_new }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12">
+                                                <v-autocomplete
+                                                    v-model="employeeProductForm.product_id"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="products"
+                                                    :label="langMap.main.products"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                />
+                                            </v-col>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                @click="addProductEmployee"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                    mdi-plus
+                                                </v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col cols="6">
+                <v-card>
+                    <v-toolbar
+                        dark
+                        dense
+                        flat
+                        :color="themeBgColor"
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.individuals.assigned_companies }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="headers"
+                            :items="companies"
+                            class="elevation-1"
+                            dense
+                            item-key="id"
+                            :options.sync="options"
+                            @click:row="showCompany"
+                            @update:options="updateItemsPerPage"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            icon
+                                            @click.native.stop="removeEmployeeProcess(item)">
+                                            <v-icon small>mdi-link-off</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.company.unlink_contact }}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.individuals.new_customer }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                        </v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <v-row>
+                                            <v-col cols="12">
+                                                <v-autocomplete
+                                                    v-model="employeeForm.client_id"
+                                                    :color="themeBgColor"
+                                                    :error-messages="employeeForm.id"
+                                                    :items="customers"
+                                                    :label="langMap.main.company"
+                                                    :placeholder="this.$store.state.lang.lang_map.main.search"
+                                                    hide-no-data
+                                                    hide-selected
+                                                    item-text="name"
+                                                    item-value="id"
+                                                />
+                                                <v-text-field
+                                                    v-model="employeeForm.description"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.main.description"
+                                                    class="pa-1"
+                                                    dense
+                                                    type="text"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                        <v-btn
+                                            :color="themeBgColor"
+                                            bottom
+                                            dark
+                                            fab
+                                            right
+                                            small
+                                            @click="addEmployee"
+                                        >
+                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
+                                            </v-icon>
+                                        </v-btn>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
@@ -1227,309 +1502,34 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-            </v-col>
-            <v-col cols="6">
-                <v-card>
-                    <v-toolbar
-                        dark
-                        dense
-                        flat
-                        :color="themeBgColor"
-                    >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.individuals.assigned_companies }}
-                        </v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-data-table
-                            :footer-props="footerProps"
-                            :headers="headers"
-                            :items="companies"
-                            class="elevation-1"
-                            dense
-                            item-key="id"
-                            :options.sync="options"
-                            @click:row="showCompany"
-                            @update:options="updateItemsPerPage"
-                        >
-                            <template v-slot:item.actions="{ item }">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            icon
-                                            @click.native.stop="removeEmployeeProcess(item)">
-                                            <v-icon small>mdi-link-off</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.company.unlink_contact }}</span>
-                                </v-tooltip>
-                            </template>
-                        </v-data-table>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    {{ langMap.individuals.new_customer }}
-                                    <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
-                                        </v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <v-row>
-                                            <v-col cols="12">
-                                                <v-autocomplete
-                                                    v-model="employeeForm.client_id"
-                                                    :color="themeBgColor"
-                                                    :error-messages="employeeForm.id"
-                                                    :items="customers"
-                                                    :label="langMap.main.company"
-                                                    :placeholder="this.$store.state.lang.lang_map.main.search"
-                                                    hide-no-data
-                                                    hide-selected
-                                                    item-text="name"
-                                                    item-value="id"
-                                                />
-                                                <v-text-field
-                                                    v-model="employeeForm.description"
-                                                    :color="themeBgColor"
-                                                    :label="langMap.main.description"
-                                                    class="pa-1"
-                                                    dense
-                                                    type="text"
-                                                />
-                                            </v-col>
-                                        </v-row>
-                                        <v-btn
-                                            :color="themeBgColor"
-                                            bottom
-                                            dark
-                                            fab
-                                            right
-                                            small
-                                            @click="addEmployee"
-                                        >
-                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
-                                            </v-icon>
-                                        </v-btn>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
-                <v-card
-                    v-if="$helpers.auth.checkPermissionByIds([88])"
-                >
+                <v-card>
                     <v-toolbar
                         :color="themeBgColor"
                         dark
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
-                                langMap.profile.internal_billing
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{
+                                langMap.main.notes
                             }}
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
+                        <v-btn v-if="userData.employee.notes" :color="themeBgColor" icon @click="saveNote()">
+                            <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
+                        </v-btn>
                     </v-toolbar>
                     <v-card-text>
-                        <v-row>
-                            <v-col cols="12">
-                                <v-list-item v-for="item in userData.billing" :key="item.id">
-                                    <v-list-item-content>
-                                        <v-list-item-title v-text="item.name"></v-list-item-title>
-                                        <v-list-item-subtitle
-                                            v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
-                                    </v-list-item-content>
-                                    <v-list-item-action>
-                                        <v-icon small @click="editInternalBilling(item)">
-                                            mdi-pencil
-                                        </v-icon>
-                                    </v-list-item-action>
-                                    <v-list-item-action>
-                                        <v-icon small @click="deleteInternalBilling(item.id)">
-                                            mdi-delete
-                                        </v-icon>
-                                    </v-list-item-action>
-                                </v-list-item>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-expansion-panels v-model="internalBillingEditor" accordion multiple>
-                                    <v-expansion-panel>
-                                        <v-expansion-panel-header>
-                                            {{ langMap.main.add }}
-                                            <template v-slot:actions>
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
-                                                    mdi-plus
-                                                </v-icon>
-                                            </template>
-                                        </v-expansion-panel-header>
-                                        <v-expansion-panel-content>
-                                            <v-form>
-                                                <v-row>
-                                                    <v-col cols="8">
-                                                        <v-text-field
-                                                            v-model="internalBillingForm.name"
-                                                            :color="themeBgColor"
-                                                            :item-color="themeBgColor"
-                                                            :label="langMap.main.name"
-                                                            dense
-                                                        />
-                                                    </v-col>
-                                                    <v-col cols="3">
-                                                        <v-text-field
-                                                            v-model="internalBillingForm.cost"
-                                                            :color="themeBgColor"
-                                                            :item-color="themeBgColor"
-                                                            :label="langMap.main.cost"
-                                                            dense
-                                                        />
-                                                    </v-col>
-                                                    <v-col v-if="currency" cols="1">
-                                                        <v-text-field
-                                                            v-model="currency.symbol"
-                                                            :color="themeBgColor"
-                                                            :item-color="themeBgColor"
-                                                            :label="langMap.tracking.settings.currency"
-                                                            dense
-                                                            readonly
-                                                        />
-                                                    </v-col>
-                                                    <v-btn
-                                                        v-if="!internalBillingForm.id"
-                                                        :color="themeBgColor"
-                                                        bottom
-                                                        dark
-                                                        fab
-                                                        right
-                                                        small
-                                                        @click="createInternalBilling"
-                                                    >
-                                                        <v-icon :color="themeBgColor"
-                                                                :style="`color: ${themeFgColor};`">mdi-plus
-                                                        </v-icon>
-                                                    </v-btn>
-                                                    <v-btn
-                                                        v-if="internalBillingForm.id"
-                                                        :color="themeBgColor"
-                                                        bottom
-                                                        dark
-                                                        fab
-                                                        right
-                                                        small
-                                                        @click="updateInternalBilling(internalBillingForm.id)"
-                                                    >
-                                                        <v-icon :color="themeBgColor"
-                                                                :style="`color: ${themeFgColor};`">mdi-update
-                                                        </v-icon>
-                                                    </v-btn>
-                                                </v-row>
-                                            </v-form>
-                                        </v-expansion-panel-content>
-                                    </v-expansion-panel>
-                                </v-expansion-panels>
-                            </v-col>
-                        </v-row>
+                        <Tinymce
+                            v-model="userData.employee.notes"
+                            :placeholder="langMap.main.notes"
+                            aria-rowcount="4"
+                        />
                     </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-card>
-                    <v-toolbar
-                        :color="themeBgColor"
-                        dark
-                        dense
-                        flat
-                    >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.product.info }}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-data-table
-                            :footer-props="footerProps"
-                            :headers="productHeaders"
-                            :items="userData.employee.assigned_to_products"
-                            :options.sync="options"
-                            class="elevation-1"
-                            dense
-                            item-key="id"
-                            @update:options="updateItemsPerPage"
-                        >
-                            <template v-slot:item.actions="{ item }">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn icon v-bind="attrs" @click="showProduct(item.product_data)" v-on="on">
-                                            <v-icon small>mdi-eye</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.customer.show_product }}</span>
-                                </v-tooltip>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn icon v-bind="attrs" @click="showDeleteProductDlg(item)" v-on="on">
-                                            <v-icon small>mdi-link-off</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.product.unlink_product }}</span>
-                                </v-tooltip>
-                            </template>
-                        </v-data-table>
-
-                        <v-spacer>&nbsp;</v-spacer>
-
-                        <v-expansion-panels>
-                            <v-expansion-panel @click="resetProduct">
-                                <v-expansion-panel-header>
-                                    {{ langMap.product.add_new }}
-                                    <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
-                                        </v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col cols="md-12">
-                                                <v-autocomplete
-                                                    v-model="employeeProductForm.product_id"
-                                                    :color="themeBgColor"
-                                                    :item-color="themeBgColor"
-                                                    :items="products"
-                                                    :label="langMap.main.products"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                />
-                                            </v-col>
-                                            <v-btn
-                                                :color="themeBgColor"
-                                                bottom
-                                                dark
-                                                fab
-                                                right
-                                                @click="addProductEmployee"
-                                            >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
-                                                    mdi-plus
-                                                </v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
-
             </v-col>
         </v-row>
 
