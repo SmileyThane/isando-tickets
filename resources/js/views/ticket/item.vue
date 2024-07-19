@@ -88,6 +88,7 @@
                                     dense
                                 />
                                 <v-autocomplete
+                                    v-if="ticket.from_entity_type !== 'App\\CompanyUser'"
                                     v-model="from"
                                     :color="themeBgColor"
                                     :item-color="themeBgColor"
@@ -99,6 +100,7 @@
                                     @input="getContacts"
                                 />
                                 <v-autocomplete
+                                    v-if="ticket.from_entity_type !== 'App\\CompanyUser'"
                                     v-model="ticket.contact_company_user_id"
                                     :color="themeBgColor"
                                     :item-color="themeBgColor"
