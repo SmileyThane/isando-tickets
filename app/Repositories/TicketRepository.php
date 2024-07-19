@@ -106,16 +106,16 @@ class TicketRepository
                                 $search = trim($request->search);
                                 $query->where(static function ($ticketsQuery) use ($search) {
                                     $ticketsQuery->whereHas('toCompany', static function ($q) use ($search) {
-                                        $q->where('name', '=', $search);
+                                        $q->where('name', 'like', '%' . trim($search) . '%');
                                     });
                                     $ticketsQuery->orWhereHas('toClient', static function ($q) use ($search) {
-                                        $q->where('name', '=', $search);
+                                        $q->where('name', 'like', '%' . trim($search) . '%');
                                     });
                                     $ticketsQuery->orWhereHas('fromCompany', static function ($q) use ($search) {
-                                        $q->where('name', '=', $search);
+                                        $q->where('name', 'like', '%' . trim($search) . '%');
                                     });
                                     $ticketsQuery->orWhereHas('fromClient', static function ($q) use ($search) {
-                                        $q->where('name', '=', $search);
+                                        $q->where('name', 'like', '%' . trim($search) . '%');
                                     });
                                 });
                                 break;
