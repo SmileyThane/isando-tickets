@@ -1181,8 +1181,8 @@ export default {
     },
     watch: {
         activeTab(value) {
-            this.setOptionsByActiveTab(value)
-            this.$router.push({ query: { ...this.$route.query, tab: this.activeTab } });
+            this.setOptionsByActiveTab(value);
+            this.$router.push({ query: { page: 1, tab: this.activeTab } });
         },
         '$route.query': function() {
           if(+this.activeTab !== +this.$route.query.tab) {
@@ -1223,7 +1223,7 @@ export default {
         },
         tablePage: function(newValue, oldValue) {
             if (newValue !== oldValue) {
-                this.$router.push({ name: 'ticket_list', query: { page: newValue } });
+                this.$router.push({ name: 'ticket_list', query: { page: newValue, tab: this.activeTab } });
             }
         },
     },
