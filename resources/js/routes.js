@@ -269,14 +269,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingDashboard,
-        beforeEnter: (to, from, next) => {
-            const company = store.state.mainCompany;
-            if (company && company.license && company.license) {
-                next();
-            } else {
-                next(from);
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     const company = store.state.mainCompany;
+        //     if (company && company.license && company.license) {
+        //         next();
+        //     } else {
+        //         next(from);
+        //     }
+        // }
     },
     {
         path: '/tracking/tracker',
@@ -285,14 +285,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingTracker,
-        beforeEnter: (to, from, next) => {
-            const company = store.state.mainCompany;
-            if (company && company.license && company.license) {
-                next();
-            } else {
-                next(from);
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     const company = store.state.mainCompany;
+        //     if (company && company.license && company.license) {
+        //         next();
+        //     } else {
+        //         next(from);
+        //     }
+        // }
     },
     {
         path: '/tracking/timesheet',
@@ -301,14 +301,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingTimesheet,
-        beforeEnter: (to, from, next) => {
-            const company = store.state.mainCompany;
-            if (company && company.license && company.license) {
-                next();
-            } else {
-                next(from);
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     const company = store.state.mainCompany;
+        //     if (company && company.license && company.license) {
+        //         next();
+        //     } else {
+        //         next(from);
+        //     }
+        // }
     },
     {
         path: '/tracking/calendar',
@@ -317,14 +317,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingCalendar,
-        beforeEnter: (to, from, next) => {
-            const company = store.state.mainCompany;
-            if (company && company.license && company.license) {
-                next();
-            } else {
-                next(from);
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     const company = store.state.mainCompany;
+        //     if (company && company.license && company.license) {
+        //         next();
+        //     } else {
+        //         next();
+        //     }
+        // }
     },
     {
         path: '/tracking/projects',
@@ -333,14 +333,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingProjects,
-        beforeEnter: (to, from, next) => {
-            const company = store.state.mainCompany;
-            if (company && company.license && company.license) {
-                next();
-            } else {
-                next(from);
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     const company = store.state.mainCompany;
+        //     if (company && company.license && company.license) {
+        //         next();
+        //     } else {
+        //         next(from);
+        //     }
+        // }
     },
     {
         path: '/tracking/projects/:id',
@@ -349,14 +349,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingProjectItem,
-        beforeEnter: (to, from, next) => {
-            const company = store.state.mainCompany;
-            if (company && company.license && company.license) {
-                next();
-            } else {
-                next(from);
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     const company = store.state.mainCompany;
+        //     if (company && company.license && company.license) {
+        //         next();
+        //     } else {
+        //         next(from);
+        //     }
+        // }
     },
     {
         path: '/tracking/reports',
@@ -365,14 +365,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingReports,
-        beforeEnter: (to, from, next) => {
-            const company = store.state.mainCompany;
-            if (company && company.license && company.license) {
-                next();
-            } else {
-                next(from);
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     const company = store.state.mainCompany;
+        //     if (company && company.license && company.license) {
+        //         next();
+        //     } else {
+        //         next(from);
+        //     }
+        // }
     },
     {
         path: '/tracking/settings',
@@ -381,14 +381,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingSettings,
-        beforeEnter: (to, from, next) => {
-            const company = store.state.mainCompany;
-            if (company && company.license && company.license) {
-                next();
-            } else {
-                next(from);
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     const company = store.state.mainCompany;
+        //     if (company && company.license && company.license) {
+        //         next();
+        //     } else {
+        //         next(from);
+        //     }
+        // }
     },
     {
         path: '/custom_license/:id',
