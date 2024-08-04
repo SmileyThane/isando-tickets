@@ -37,7 +37,9 @@
                                     <a class="text-decoration-none" @click="setPeriod('today')"
                                        :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
                                     <a class="text-decoration-none" @click="setPeriod('yesterday')"
-                                       :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_yesterday }}</a>
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_yesterday
+                                        }}</a>
                                     <a class="text-decoration-none" @click="setPeriod('last7days')"
                                        :style="{ color: themeBgColor }">{{
                                             langMap.tracking.report.period_last7days
@@ -140,7 +142,7 @@ export default {
     components: {
         GroupingSelect
     },
-    data () {
+    data() {
         return {
             dateFormat: 'YYYY-MM-DD',
             langMap: this.$store.state.lang.lang_map,
@@ -157,17 +159,17 @@ export default {
             grouping: "client",
         };
     },
-    created () {
+    created() {
         this.period = {
             start: moment().subtract(1, 'months').format('YYYY-MM-DDTHH:mm:ss'),
             end: moment().format('YYYY-MM-DDTHH:mm:ss'),
         };
     },
     methods: {
-        closePeriodSelect () {
+        closePeriodSelect() {
             this.isActive = null;
         },
-        async setPeriod (periodKey = 'today') {
+        async setPeriod(periodKey = 'today') {
             let start = null;
             let end = null;
             switch (periodKey) {
@@ -238,7 +240,7 @@ export default {
             }
             this.closePeriodSelect();
         },
-        genReport () {
+        genReport() {
             this.loadingBtn = true;
             axios.post(`/api/ttmanaging/settings/report/reconciliation`, {
                 start: this.period.start,
