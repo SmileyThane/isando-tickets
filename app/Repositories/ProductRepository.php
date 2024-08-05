@@ -88,7 +88,10 @@ class ProductRepository
 
     public function find($id)
     {
-        return Product::where('id', $id)->with('employees', 'clients.clientData', 'category', 'attachments')->first();
+        $product = Product::where('id', $id)->with('employees', 'clients.clientData', 'category', 'attachments')->first();
+        $product->makeVisible(['description']);
+
+        return $product;
     }
 
     public function create(Request $request)
