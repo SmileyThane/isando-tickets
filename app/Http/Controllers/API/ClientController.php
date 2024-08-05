@@ -138,13 +138,8 @@ class ClientController extends Controller
                 }
             }
 
-            $existingClient = ClientCompanyUser::where([
-                'client_id' => $request->client_id,
-                'company_user_id' => $request->company_user_id
-            ])->exists();
-
             if ($request['client_id']) {
-                $companyUser = $this->clientRepo->attach($request);
+                $companyUser = $this->clientRepo->attach($request, );
             }
             $result = !is_null($companyUser);
         }
