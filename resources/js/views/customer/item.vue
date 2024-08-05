@@ -2393,6 +2393,7 @@ export default {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.initEployeeForm()
                     this.getClient()
                     this.snackbarMessage = update ? this.langMap.company.employee_updated : this.langMap.company.employee_created;
                     this.actionColor = 'success'
@@ -2414,6 +2415,16 @@ export default {
             this.emailTrashed = false;
             this.employeeForm.action = action;
             this.addEmployee()
+        },
+        initEployeeForm() {
+            this.employeeForm = {
+                    company_user_id: 0,
+                    description: '',
+                    name: '',
+                    email: '',
+                    client_id: parseInt(this.$route.params.id),
+                    is_active: false
+            }
         },
         editContactInfo() {
             if (this.contactInfoEditBtn === true) {
