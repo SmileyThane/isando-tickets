@@ -32,7 +32,6 @@ export default {
         }
     },
     mounted() {
-        // this.getTickets()
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
