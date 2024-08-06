@@ -27,6 +27,8 @@ class CompanyUser extends Model
         'is_clientable',
     ];
 
+    protected $hidden = ['activities', 'notes'];
+
     public function getRoleNamesAttribute()
     {
         $result = null;
