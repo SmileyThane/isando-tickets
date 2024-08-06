@@ -26,6 +26,7 @@
                     <v-card-text>
                         <v-form>
                             <v-text-field
+                                v-if="product.category"
                                 v-model="product.category.name"
                                 :color="themeBgColor"
                                 :error-messages="errors.category_id"
@@ -274,7 +275,9 @@
                                 </v-expansion-panel>
                             </v-expansion-panels>
                             <perfect-scrollbar>
-                                <v-treeview :active="[product.category.id]"
+                                <v-treeview
+                                            v-if="product.category"
+                                            :active="[product.category.id]"
                                             :color="themeBgColor"
                                             :items="categories"
                                             activatable
@@ -495,7 +498,8 @@ export default {
             product: {
                 id: '',
                 category: {
-                  name: ''
+                    id: null,
+                    name: ''
                 },
                 category_id: '',
                 product_code: '',
@@ -553,7 +557,6 @@ export default {
         this.getSuppliers();
         this.getCategories();
         this.getProductCategoriesFlat();
-        this.getProductCategoriesTree();
         this.productCategoryForm.company_id = this.$route.params.id;
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
