@@ -1633,6 +1633,108 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
+
+                <v-card class="elevation-12">
+                    <v-spacer></v-spacer>
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.company.product_categories
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-treeview
+                                        :items="productCategoriesTree"
+                                        activatable
+                                        item-key="id"
+                                        open-on-click
+                                    >
+                                        <template v-slot:prepend="{ item }">
+                                            <v-icon v-if="item.children.length">mdi-folder</v-icon>
+                                            <v-icon v-else>mdi-file</v-icon>
+                                        </template>
+                                        <template v-slot:append="{ item }">
+                                            <v-btn
+                                                icon
+                                                small
+                                                @click="isCanEditCategory = true; editableCategoryItem = item"
+                                            >
+                                                <v-icon>mdi-pencil</v-icon>
+                                            </v-btn>
+                                            <v-btn
+                                                icon
+                                                small
+                                                @click="deleteProductCategory(item.id)"
+                                            >
+                                                <v-icon>mdi-trash-can</v-icon>
+                                            </v-btn>
+                                        </template>
+
+                                    </v-treeview>
+
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{ langMap.company.new_product_category }}
+                                                <template v-slot:actions>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
+                                                        mdi-plus
+                                                    </v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col class="pa-1" cols="md-6">
+                                                            <v-text-field
+                                                                v-model="productCategoryForm.name"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :label="langMap.main.name"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="6">
+                                                            <v-select
+                                                                v-model="productCategoryForm.parent_id"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :items="productCategoriesFlat"
+                                                                :label="langMap.company.parent_product_category"
+                                                                dense
+                                                                item-text="full_name"
+                                                                item-value="id"
+                                                            >
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            :color="themeBgColor"
+                                                            bottom
+                                                            dark
+                                                            fab
+                                                            right
+                                                            small
+                                                            @click="submitNewData(productCategoryForm, 'addProductCategory', company.id)"
+                                                        >
+                                                            <v-icon :color="themeBgColor"
+                                                                    :style="`color: ${themeFgColor};`">mdi-plus
+                                                            </v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </div>
         </div>
 
@@ -1745,6 +1847,44 @@
                         <v-btn color="red darken-1" text
                                @click="kb.deleteTypeDialog = false; deleteKbType(kb.selected.id)">
                             {{ langMap.main.delete }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="isCanEditCategory" max-width="480" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.company.edit_category }}: {{ editableCategoryItem.name }}
+                    </v-card-title>
+                    <v-card-text class="mt-6">
+                        <v-text-field
+                            v-model="editableCategoryItem.name"
+                            :color="themeBgColor"
+                            :label="langMap.main.name"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                        <v-select
+                            v-model="editableCategoryItem.parent_id"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
+                            :items="productCategoriesFlat"
+                            :label="langMap.company.parent_product_category"
+                            item-text="full_name"
+                            item-value="id"
+                            dense
+                        >
+                        </v-select>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="clearEditableCategory">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="editCategory()">
+                            {{ langMap.main.edit }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -2102,6 +2242,19 @@ export default {
             kbSelectedTypeId: null,
             permissions: [],
             selectedPermissions: [],
+            productCategoriesTree: [],
+            productCategoriesFlat: [],
+            productCategoryForm: {
+                name: '',
+                company_id: '',
+                parent_id: '',
+            },
+            selectedProductCategoryId: null,
+            editableCategoryItem: {
+                name: '',
+                parent_id: ''
+            },
+            isCanEditCategory: false,
         }
     },
     created() {
@@ -2132,6 +2285,8 @@ export default {
         this.getCompanySettings();
         this.getTimezones();
         this.getPermissions();
+        this.getProductCategoriesTree();
+        this.getProductCategoriesFlat();
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -2663,7 +2818,8 @@ export default {
                 }
             });
         },
-        submitNewData(data, method) {
+        submitNewData(data, method, id) {
+            data.entity_id = id
             this[method](data);
         },
         showUpdateTypeDialog(data, icons, method) {
@@ -3082,7 +3238,101 @@ export default {
             this.kb.selected.name = data.name;
             this.kb.selected.name_de = data.name_de;
             this.kb.deleteTypeDialog = true;
-        }
+        },
+        getProductCategoriesTree() {
+            axios.get(`/api/main_company/product_categories/tree`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.productCategoriesTree = response.data;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getProductCategoriesFlat() {
+            axios.get(`/api/company/${this.$store.state.mainCompany.id}/product_categories/flat`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.productCategoriesFlat = [{
+                        id: null,
+                        name: this.langMap.main.none,
+                        full_name: this.langMap.main.none,
+                        parent_id: null
+                    }].concat(response.data);
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        addProductCategory() {
+            this.snackbar = false;
+            axios.post(`/api/company/${this.$store.state.mainCompany.id}/product_category`, this.productCategoryForm).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getProductCategoriesTree();
+                    this.getProductCategoriesFlat();
+                    this.productCategoryForm.parent_id = '';
+                    this.productCategoryForm.name = '';
+                    this.snackbarMessage = this.langMap.company.product_category_created;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        deleteProductCategory(id) {
+            this.snackbar = false;
+            axios.delete(`/api/product_category/${id}`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.selectedProductCategoryId = null;
+                    this.getProductCategoriesTree();
+                    this.getProductCategoriesFlat();
+                    this.snackbarMessage = `${this.$store.state.lang.lang_map.company.product_category_deleted}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        clearEditableCategory() {
+            this.isCanEditCategory = false;
+            this.editableCategoryItem = {
+                name: '',
+                category_id: ''
+            }
+        },
+        editCategory(){
+            axios.patch(`/api/product_category/${this.editableCategoryItem.id}`, {
+                name: this.editableCategoryItem.name,
+                company_id: this.editableCategoryItem.company_id,
+                parent_id: this.editableCategoryItem.parent_id,
+            }).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getProductCategoriesTree();
+                    this.getProductCategoriesFlat();
+                    this.clearEditableCategory();
+                    this.snackbarMessage = this.langMap.company.product_category_edited;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
     },
     filters: {
         capitalize: function (value) {
