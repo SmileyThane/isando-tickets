@@ -1662,6 +1662,13 @@
                                             <v-btn
                                                 icon
                                                 small
+                                                @click="isCanEditCategory = true; editableCategoryItem = item"
+                                            >
+                                                <v-icon>mdi-pencil</v-icon>
+                                            </v-btn>
+                                            <v-btn
+                                                icon
+                                                small
                                                 @click="deleteProductCategory(item.id)"
                                             >
                                                 <v-icon>mdi-trash-can</v-icon>
@@ -1840,6 +1847,44 @@
                         <v-btn color="red darken-1" text
                                @click="kb.deleteTypeDialog = false; deleteKbType(kb.selected.id)">
                             {{ langMap.main.delete }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="isCanEditCategory" max-width="480" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.company.edit_category }}: {{ editableCategoryItem.name }}
+                    </v-card-title>
+                    <v-card-text class="mt-6">
+                        <v-text-field
+                            v-model="editableCategoryItem.name"
+                            :color="themeBgColor"
+                            :label="langMap.main.name"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                        <v-select
+                            v-model="editableCategoryItem.parent_id"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
+                            :items="productCategoriesFlat"
+                            :label="langMap.company.parent_product_category"
+                            item-text="full_name"
+                            item-value="id"
+                            dense
+                        >
+                        </v-select>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="clearEditableCategory">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="editCategory()">
+                            {{ langMap.main.edit }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -2204,7 +2249,12 @@ export default {
                 company_id: '',
                 parent_id: '',
             },
-            selectedProductCategoryId: null
+            selectedProductCategoryId: null,
+            editableCategoryItem: {
+                name: '',
+                parent_id: ''
+            },
+            isCanEditCategory: false,
         }
     },
     created() {
@@ -3246,6 +3296,34 @@ export default {
                     this.getProductCategoriesTree();
                     this.getProductCategoriesFlat();
                     this.snackbarMessage = `${this.$store.state.lang.lang_map.company.product_category_deleted}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        clearEditableCategory() {
+            this.isCanEditCategory = false;
+            this.editableCategoryItem = {
+                name: '',
+                category_id: ''
+            }
+        },
+        editCategory(){
+            axios.patch(`/api/product_category/${this.editableCategoryItem.id}`, {
+                name: this.editableCategoryItem.name,
+                company_id: this.editableCategoryItem.company_id,
+                parent_id: this.editableCategoryItem.parent_id,
+            }).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getProductCategoriesTree();
+                    this.getProductCategoriesFlat();
+                    this.clearEditableCategory();
+                    this.snackbarMessage = this.langMap.company.product_category_edited;
                     this.actionColor = 'success';
                     this.snackbar = true;
                 } else {
