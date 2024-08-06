@@ -78,31 +78,60 @@ class ClientRepository
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
         }
 
-        if ($request->search) {
+        if ($request->search && strlen($request->search) >= 2) {
             $clients = Client::query()->where(
                 function ($query) use ($companyId) {
                     $query->where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
                     $query->orWhere(['supplier_type' => Client::class]);
                 });
+
             $clients->where(
                 function ($query) use ($request) {
+                    if ($request->company_name) {
+                        $query->where('name', 'like', '%' . $request->search . '%');
+                    }
 
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('short_name', 'like', '%' . $request->search . '%')
-                        ->orWhere('company_external_id', 'like', '%' . $request->search . '%')
-                        ->orWhere('description', 'like', '%' . $request->search . '%');
-                    $filterGroup = ClientFilterGroup::query()->where('name', 'like', '%' . $request->search . '%')->get();
-                    if ($filterGroup) {
-                        $clientIds = ClientFilterGroupHasClients::query()
-                            ->whereIn('group_id', $filterGroup->pluck('id'))
-                            ->get();
-                        if ($clientIds) {
-                            $query->orWhereIn('id', $clientIds->pluck('client_id'));
+                    if ($request->client_number) {
+                        $query->orWhere('company_external_id', 'like', '%' . $request->search . '%');
+                    }
+
+                    if ($request->description) {
+                        $query->orWhere('description', 'like', '%' . $request->search . '%');
+                    }
+
+                    if ($request->client_groups) {
+                        $filterGroup = ClientFilterGroup::query()->where('name', 'like', '%' . $request->search . '%')->get();
+                        if ($filterGroup) {
+                            $clientIds = ClientFilterGroupHasClients::query()
+                                ->whereIn('group_id', $filterGroup->pluck('id'))
+                                ->get();
+                            if ($clientIds) {
+                                $query->orWhereIn('id', $clientIds->pluck('client_id'));
+                            }
                         }
+                    }
+
+                    if ($request->email) {
+                        $query->orWhereHas(
+                            'emails',
+                            function ($query) use ($request) {
+                                $query->where('email', 'like', '%' . $request->search . '%');
+                            }
+                        );
+                    }
+
+                    if ($request->supplier) {
+                        $query->orWhereHas(
+                            'supplier',
+                            function ($query) use ($request) {
+                                $query->where('name', 'like', '%' . $request->search . '%');
+                            }
+                        );
                     }
                 }
             );
         }
+
         return $clients;
     }
 
