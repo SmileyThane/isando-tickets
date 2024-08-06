@@ -276,8 +276,7 @@
                             </v-expansion-panels>
                             <perfect-scrollbar>
                                 <v-treeview
-                                            v-if="product.category"
-                                            :active="[product.category.id]"
+                                            :active="[product.category ? product.category.id : null]"
                                             :color="themeBgColor"
                                             :items="categories"
                                             activatable
