@@ -19,7 +19,7 @@ export default {
             required: true,
         }
     },
-    data () {
+    data() {
         return {
             items: [
                 {
@@ -37,12 +37,10 @@ export default {
             ],
         };
     },
-    created () {
+    created() {
 
     },
-    methods: {
-
-    },
+    methods: {},
     computed: {
         selectedItems: {
             get() {
@@ -57,7 +55,7 @@ export default {
 </script>
 
 <style scoped>
->>>.v-input__slot {
+>>> .v-input__slot {
     min-height: 50px !important;
 }
 </style>

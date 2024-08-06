@@ -102,7 +102,7 @@ class CompanyUserRepository
                 'assignedToClients.clients',
                 'userData.emails.type',
                 'userData.phones.type',
-                'userData.companies',
+                'userData',
                 'userData.settings',
                 'userData.clientFilterGroups.data',
             ]);

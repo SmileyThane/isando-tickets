@@ -71,9 +71,13 @@ class UserRepository
             $with = array_merge(['employee.activities.type', 'employee.activities.client'], $with);
         }
 
-        return User::withTrashed()->where('id', $id)
+        $user =  User::withTrashed()->where('id', $id)
             ->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures', 'notificationStatuses', 'billing', 'ixarmaLink'], $with))
             ->first();
+
+        $user?->employee?->makeVisible(['activities', 'notes']);
+
+        return $user;
     }
 
     public function create(Request $request)

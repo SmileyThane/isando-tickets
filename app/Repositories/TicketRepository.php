@@ -317,7 +317,7 @@ class TicketRepository
                 'followers'
             )->first();
         if ($ticket) {
-            $ticket->makeVisible(['to']);
+            $ticket->makeVisible(['to', 'description']);
         }
 
         return $ticket;

@@ -34,13 +34,12 @@ export default {
         ReportTracker,
         ReportReconciliation,
     },
-    data () {
-        return {
-        };
+    data() {
+        return {};
     },
     mounted() {
-        this.$store.dispatch('Clients/getClientList', { search: null });
-        this.$store.dispatch('Team/getCoworkers', { search: null });
+        this.$store.dispatch('Clients/getClientList', {search: null});
+        this.$store.dispatch('Team/getCoworkers', {search: null});
     }
 }
 </script>

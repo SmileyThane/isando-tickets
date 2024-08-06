@@ -21,6 +21,8 @@ class Client extends Model
         'contact_phone', 'contact_email', 'supplier_name', 'last_activity'
     ];
 
+    protected $hidden = ['activities', 'notes'];
+
     protected $with = ['emails', 'phones', 'supplier', 'activities'];
 
     public function activities(): MorphMany

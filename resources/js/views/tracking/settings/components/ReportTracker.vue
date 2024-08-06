@@ -18,7 +18,9 @@
                                 </div>
                                 <div class="d-inline-flex float-right flex-grow-1 text-center">
                                     <v-fade-transition leave-absolute>
-                                        <span v-if="open" class="d-block flex-grow-1">{{ langMap.tracking.report.choose_period }}</span>
+                                        <span v-if="open" class="d-block flex-grow-1">{{
+                                                langMap.tracking.report.choose_period
+                                            }}</span>
                                         <span v-else class="d-block flex-grow-1">
                                 {{ period.start ? moment(period.start).format('ddd D MMM YYYY') : '...' }} -
                                 {{ moment(period.end).format('ddd D MMM YYYY') }}
@@ -32,22 +34,54 @@
                         >
                             <div class="d-flex flex-row">
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('today')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('yesterday')" :style="{ color: themeBgColor }">{{langMap.tracking.report.period_yesterday}}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last7days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last7days }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last28days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last28days }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('today')"
+                                       :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('yesterday')"
+                                       :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_yesterday }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last7days')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last7days
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last28days')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last28days
+                                        }}</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_week }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_week }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_month }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_month }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_week
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_week
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_month
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_month
+                                        }}</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_quarter }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_quarter }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisYear')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_year }}</a>
-                                    <a class="text-decoration-none" @click="setPeriod('totalTime')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_total_time }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_quarter
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_last_quarter
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisYear')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_this_year
+                                        }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('totalTime')"
+                                       :style="{ color: themeBgColor }">{{
+                                            langMap.tracking.report.period_total_time
+                                        }}</a>
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
@@ -55,7 +89,7 @@
                             </div>
                             <div class="d-flex flex-row">
                                 <div class="d-inline-flex flex-grow-1">
-                                    {{langMap.tracking.report.select_custom_period}}:
+                                    {{ langMap.tracking.report.select_custom_period }}:
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
@@ -122,7 +156,8 @@
                     :color="themeBgColor"
                     @click="genReport"
                     :loading="loadingBtn"
-                >Generate report</v-btn>
+                >Generate report
+                </v-btn>
             </div>
         </div>
     </div>
@@ -139,7 +174,7 @@ export default {
         ClientSelect,
         CoworkerSelect,
     },
-    data () {
+    data() {
         return {
             dateFormat: 'YYYY-MM-DD',
             langMap: this.$store.state.lang.lang_map,
@@ -159,17 +194,17 @@ export default {
             loadingBtn: false,
         };
     },
-    created () {
+    created() {
         this.period = {
             start: moment().subtract(1, 'months').startOf('weeks').format('YYYY-MM-DDTHH:mm:ss'),
             end: moment().endOf('weeks').format('YYYY-MM-DDTHH:mm:ss')
         };
     },
     methods: {
-        closePeriodSelect () {
+        closePeriodSelect() {
             this.isActive = null;
         },
-        async setPeriod (periodKey = 'today') {
+        async setPeriod(periodKey = 'today') {
             let start = null;
             let end = null;
             switch (periodKey) {
@@ -240,7 +275,7 @@ export default {
             }
             this.closePeriodSelect();
         },
-        genReport () {
+        genReport() {
             this.loadingBtn = true;
             axios.post(`/api/ttmanaging/settings/report/${this.source}`, {
                 start: this.period.start,
@@ -272,7 +307,7 @@ export default {
 </script>
 
 <style scoped>
->>>.v-expansion-panel {
+>>> .v-expansion-panel {
     border-color: rgba(0, 0, 0, 0.42);
     border-width: 1px;
     border-style: solid;

@@ -207,9 +207,15 @@ class ClientRepository
             $with = array_merge(['activities.type', 'activities.employee'], $with);
         }
 
-        return Client::where('id', $id)
+        $result = Client::where('id', $id)
             ->with($with)
             ->first();
+
+        if ($result) {
+            $result->makeVisible(['activities', 'notes']);
+        }
+
+        return $result;
     }
 
     public function create(Request $request): Client
@@ -296,7 +302,7 @@ class ClientRepository
     public function attach(Request $request)
     {
         Log::info('attached_c_cu_d:' . $request->client_id . '_' . $request->company_user_id . '_' . $request->description);
-        $clientCompanyUser = ClientCompanyUser::with('employee')->firstOrCreate(
+        $clientCompanyUser = ClientCompanyUser::with('employee')->updateOrCreate(
             [
                 'client_id' => $request->client_id,
                 'company_user_id' => $request->company_user_id
