@@ -494,6 +494,9 @@ export default {
             ],
             product: {
                 id: '',
+                category: {
+                  name: ''
+                },
                 category_id: '',
                 product_code: '',
                 product_name: '',
