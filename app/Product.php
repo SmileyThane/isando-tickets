@@ -12,6 +12,8 @@ class Product extends Model
 {
     protected $fillable = ['product_code', 'name', 'photo', 'description'];
 
+    protected $hidden  = ['description'];
+
     protected $appends = ['full_name'];
 
     use SoftDeletes;
