@@ -15,6 +15,9 @@ class Role extends Model
     public const MANAGER = 4;
     public const USER = 5;
     public const COMPANY_CLIENT = 6;
+
+    public const COMPANY_CLIENT_NAME_DEFAULT = 'company_client';
+
     public const IS_CLIENTABLE = 101;
 
     //staff
