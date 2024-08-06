@@ -473,6 +473,27 @@
                 </v-list-group>
             </v-list>
             <v-divider></v-divider>
+            <v-tooltip right :disabled="!localDrawer">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-list-item
+                        v-bind="attrs"
+                        v-on="on"
+                        color="#757575"
+                        link
+                        style="background-color:white;"
+                        to="/links"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi mdi-link</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ langMap.sidebar.links }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </template>
+                <span>{{ langMap.sidebar.links }}</span>
+            </v-tooltip>
+            <v-divider></v-divider>
             <v-list dense v-if="hasLicense && $helpers.auth.checkPermissionByIds([40,41,42,51,52,54,55,61,66])">
                 <v-list-group
                     v-if="hasLicense"
@@ -931,6 +952,7 @@ export default {
             drawer: true,
             show: true,
             ticket: '',
+            links: '',
             customers: '',
             settings: '',
             notifications: '',
@@ -960,6 +982,7 @@ export default {
         this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
 
         this.ticket = this.langMap.sidebar.ticket_list_menu;
+        this.links = this.langMap.sidebar.links;
         this.customers = this.langMap.sidebar.customers
         this.notifications = this.langMap.sidebar.notifications
         this.settings = this.langMap.sidebar.settings

@@ -42,6 +42,7 @@ import RiskRepositoryMore from './views/risk_repository/more-page'
 import IncidentReportingCreate from './views/incident_reporting/create'
 import IncidentReportingActionBoards from './views/incident_reporting/action-boards'
 import SettingsIncidentSettings from './views/settings/incident_settings'
+import Links from "./views/links";
 import SidebarPage from "./views/sidebar/index";
 
 import store from './store';
@@ -254,6 +255,14 @@ export default [
             requiresAuth: false,
         },
         component: ResetPassword
+    },
+    {
+        path: '/links',
+        name: 'links',
+        meta: {
+            requiresAuth: true
+        },
+        component: Links,
     },
     {
         path: '/tracking',
