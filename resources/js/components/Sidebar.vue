@@ -473,6 +473,27 @@
                 </v-list-group>
             </v-list>
             <v-divider></v-divider>
+            <v-tooltip right :disabled="!localDrawer">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-list-item
+                        v-bind="attrs"
+                        v-on="on"
+                        color="#757575"
+                        link
+                        style="background-color:white;"
+                        to="/hosting"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi mdi-server</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ langMap.sidebar.hosting }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </template>
+                <span>{{ langMap.sidebar.hosting }}</span>
+            </v-tooltip>
+            <v-divider></v-divider>
             <v-list dense v-if="hasLicense && $helpers.auth.checkPermissionByIds([40,41,42,51,52,54,55,61,66])">
                 <v-list-group
                     v-if="hasLicense"
@@ -935,6 +956,7 @@ export default {
             settings: '',
             notifications: '',
             timeTracking: '',
+            hosting: '',
             sidebarGroups: false,
             countTimesheetForApproval: 0,
             roles: []
@@ -964,6 +986,7 @@ export default {
         this.notifications = this.langMap.sidebar.notifications
         this.settings = this.langMap.sidebar.settings
         this.timeTracking = this.langMap.sidebar.time_tracking
+        this.hosting = this.langMap.sidebar.hosting
 
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
