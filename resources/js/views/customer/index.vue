@@ -450,12 +450,12 @@ export default {
                     sort_val: this.options.sortDesc[0],
                     per_page: this.options.itemsPerPage,
                     page: this.page,
-                    company_name: this.searchWhere.includes(1),
-                    client_number: this.searchWhere.includes(2),
-                    email: this.searchWhere.includes(3),
-                    description: this.searchWhere.includes(4),
-                    supplier: this.searchWhere.includes(5),
-                    client_groups: this.searchWhere.includes(6),
+                    company_name: this.searchWhere.includes(1) ? 1 : 0,
+                    client_number: this.searchWhere.includes(2) ? 1 : 0,
+                    email: this.searchWhere.includes(3) ? 1 : 0,
+                    description: this.searchWhere.includes(4) ? 1 : 0,
+                    supplier: this.searchWhere.includes(5) ? 1 : 0,
+                    client_groups: this.searchWhere.includes(6) ? 1 : 0,
                 }
             }).then(response => {
                 this.loading = false
