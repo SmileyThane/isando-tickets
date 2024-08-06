@@ -553,7 +553,6 @@ export default {
         this.getSuppliers();
         this.getCategories();
         this.getProductCategoriesFlat();
-        this.getProductCategoriesTree();
         this.productCategoryForm.company_id = this.$route.params.id;
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
@@ -775,7 +774,6 @@ export default {
                 if (response.success === true) {
                     this.getProduct();
                     this.getCategories();
-                    this.getProductCategoriesTree();
                     this.getProductCategoriesFlat();
                     this.productCategoryForm.parent_id = '';
                     this.productCategoryForm.name = '';
