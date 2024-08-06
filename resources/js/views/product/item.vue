@@ -778,7 +778,6 @@ export default {
                 if (response.success === true) {
                     this.getProduct();
                     this.getCategories();
-                    this.getProductCategoriesTree();
                     this.getProductCategoriesFlat();
                     this.productCategoryForm.parent_id = '';
                     this.productCategoryForm.name = '';
