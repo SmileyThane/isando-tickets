@@ -642,20 +642,20 @@ export default {
             searchCategories: [
                 {
                     id: 1,
-                    name: 'ID'
+                    name: 'Company'
                 },
                 {
                     id: 2,
+                    name: 'ID'
+                },
+                {
+                    id: 3,
                     name: 'Subject'
                 },
                 {
-                    id: 3,
+                    id: 4,
                     name: 'Contact'
                 },
-                {
-                    id: 3,
-                    name: 'Company'
-                }
             ],
             headers: [
                 {text: '', value: 'data-table-expand', width: '20px'},
@@ -830,6 +830,12 @@ export default {
             }
 
         }, 500);
+
+        const storageTicketsPath = JSON.parse(localStorage.getItem('ticketsPath'))
+        if(storageTicketsPath) {
+            this.$router.push({ name: 'ticket_list', query: storageTicketsPath })
+            this.options.page = storageTicketsPath.page
+        }
     },
     methods: {
         updateUrl() {
@@ -1223,7 +1229,13 @@ export default {
         },
         tablePage: function(newValue, oldValue) {
             if (newValue !== oldValue) {
-                this.$router.push({ name: 'ticket_list', query: { page: newValue, tab: this.activeTab } });
+                const storageTicketsPath = JSON.parse(localStorage.getItem('ticketsPath'))
+                if(storageTicketsPath) {
+                    setTimeout(() => this.$router.push({ name: 'ticket_list', query: storageTicketsPath }), 2000);
+                } else {
+                    this.$router.push({ name: 'ticket_list', query: { page: newValue, tab: this.activeTab } });
+                }
+
             }
         },
     },
