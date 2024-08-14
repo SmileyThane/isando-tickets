@@ -1881,6 +1881,23 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+            <v-dialog v-model="deleteProductDlg" max-width="480" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        <span>{{ langMap.product.unlink_product }}</span>
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="deleteProduct(selectedProductId); deleteProductDlg = false; ">
+                            {{ langMap.main.delete }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
 
         </v-row>
     </v-container>
@@ -1915,7 +1932,8 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
-
+            deleteProductDlg: false,
+            selectedProductId: null,
             footerProps: {
                 showFirstLastPage: true,
                 itemsPerPageOptions: [
@@ -2963,10 +2981,10 @@ export default {
             });
         },
         deleteProduct(productId) {
-            axios.delete(`/api/product/client/${productId}`).then(response => {
+            axios.delete(`/api/product/employee/${productId}`).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.getClient()
+                    this.getUser()
                     this.selectedProductId = null;
                     this.snackbarMessage = this.langMap.customer.product_deleted;
                     this.actionColor = 'success'
