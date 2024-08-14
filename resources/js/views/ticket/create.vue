@@ -48,6 +48,7 @@
                                             item-text="name"
                                             item-value="item"
                                             label="Ticket is submitted by"
+                                            @change="fromType === 1 ? getContacts(ticketForm.from) : null;"
                                         />
                                     </div>
                                     <v-col class="col-md-4 col-sm-12">
@@ -753,20 +754,15 @@ export default {
                 route = `/api/client/${Object.values(entityItem)[0]}`
                 this.createContactForm.client_id = Object.values(entityItem)[0];
             }
-            // console.log(entityItem);
             axios.get(route).then(response => {
                 response = response.data
                 if (response.success === true) {
                     response = response.data
-                    // console.log(response);
                     if (!response.hasOwnProperty('company_number')) {
                         response.employees.forEach(employeeItem => this.employees.push(employeeItem.employee))
-                        // console.log('client');
                     } else {
                         this.employees = response.employees
-                        // console.log('company');
                     }
-                    // this.ticketForm.contact_company_user_id = this.employees[0].id
                 } else {
                 }
 

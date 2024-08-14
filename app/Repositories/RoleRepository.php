@@ -144,6 +144,8 @@ class RoleRepository
 
         if (isset($data['search'])) {
             $roles->where('name', 'like', '%' . $data['search'] . '%');
+        } else {
+            $roles->whereNotIn('name', [Role::COMPANY_CLIENT_NAME_DEFAULT]);
         }
 
         return $roles->get()->toArray();
