@@ -28,7 +28,7 @@
         "stevebauman/location": "^6.0",
         "symfony/process": "^6.2",
         "tremby/laravel-git-version": "^1.2",
-        "webklex/laravel-imap": "^4.0.0"
+        "webklex/laravel-imap": "^5.3.0"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",
