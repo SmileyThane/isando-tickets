@@ -638,7 +638,7 @@ export default {
                     compareParams: []
                 }
             ],
-            searchLabel: 'Subject',
+            searchLabel: 'Company',
             searchCategories: [
                 {
                     id: 1,
