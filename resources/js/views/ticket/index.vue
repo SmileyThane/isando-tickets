@@ -1,12 +1,12 @@
 <template>
     <v-container fluid>
         <v-toolbar flat>
-        <v-tabs
-            v-model="activeTab"
-            :color="themeBgColor"
-        >
-            <v-tab v-for="item in tabs" :key="item.id" :value="item.id">{{item.name}}</v-tab>
-        </v-tabs>
+            <v-tabs
+                v-model="activeTab"
+                :color="themeBgColor"
+            >
+                <v-tab v-for="item in tabs" :key="item.id" :value="item.id">{{ item.name }}</v-tab>
+            </v-tabs>
             <v-spacer></v-spacer>
             <v-tooltip left>
                 <template v-slot:activator="{ on, attrs }">
@@ -264,7 +264,7 @@
                         </v-pagination>
                     </template>
                     <template v-slot:item.ticket_type_id="{ item }">
-                        {{$helpers.i18n.localized(item.ticket_type)}}
+                        {{ $helpers.i18n.localized(item.ticket_type) }}
                         <!--                <v-tooltip top>-->
                         <!--                    <template v-slot:activator="{ on, attrs }">-->
                         <!--                        <v-icon v-if="item.ticket_type.icon" small-->
@@ -291,7 +291,7 @@
                             v-on="on"
                             style="display:block; max-width: 350px; text-overflow: ellipsis;overflow: hidden;white-space: nowrap;"
                         >
-                            {{item.name}}
+                            {{ item.name }}
                         </span>
                             </template>
                             <span>
@@ -353,7 +353,7 @@
                              @click="showItem(item)">
                             {{ item.assigned_person.user_data.full_name }}
                         </div>
-                        <div v-else> </div>
+                        <div v-else></div>
                     </template>
                     <!--            <template v-slot:item.actions="{ item }">-->
                     <!--            </template>-->
@@ -389,7 +389,7 @@
                                                 </v-icon>
                                             </v-btn>
                                         </template>
-                                        <span>{{langMap.ticket.view}}</span>
+                                        <span>{{ langMap.ticket.view }}</span>
                                     </v-tooltip>
                                 </template>
 
@@ -407,7 +407,7 @@
                                                 <v-icon dark>mdi-clipboard-flow</v-icon>
                                             </v-btn>
                                         </template>
-                                        <span>{{langMap.ticket.link_tickets}}</span>
+                                        <span>{{ langMap.ticket.link_tickets }}</span>
                                     </v-tooltip>
                                 </template>
 
@@ -428,7 +428,7 @@
                                                 </v-icon>
                                             </v-btn>
                                         </template>
-                                        <span>{{langMap.individuals.delete}}</span>
+                                        <span>{{ langMap.individuals.delete }}</span>
                                     </v-tooltip>
                                 </template>
 
@@ -449,7 +449,7 @@
                                                 </v-icon>
                                             </v-btn>
                                         </template>
-                                        <span>{{langMap.main.close}}</span>
+                                        <span>{{ langMap.main.close }}</span>
                                     </v-tooltip>
                                 </template>
                             </p>
@@ -459,12 +459,14 @@
                 <template>
                     <v-dialog v-model="removeTicketDialog" max-width="480" persistent>
                         <v-card>
-                            <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                            <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
+                                          class="mb-5">
                                 {{ langMap.main.delete_selected }}?
                             </v-card-title>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn color="grey darken-1" text @click="removeTicketDialog = false">{{ langMap.main.cancel }}
+                                <v-btn color="grey darken-1" text @click="removeTicketDialog = false">
+                                    {{ langMap.main.cancel }}
                                 </v-btn>
                                 <v-btn color="red darken-1" text @click="deleteTicket(selectedticketId)">
                                     {{ langMap.main.delete }}
@@ -476,7 +478,8 @@
                 <template>
                     <v-dialog v-model="mergeTicketDialog" max-width="480" persistent>
                         <v-card>
-                            <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                            <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
+                                          class="mb-5">
                                 {{ langMap.main.link }}
                             </v-card-title>
                             <v-card-text>
@@ -533,7 +536,8 @@
                             </v-card-title>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn color="grey darken-1" text @click="closeTicketDialog = false">{{ langMap.main.cancel }}
+                                <v-btn color="grey darken-1" text @click="closeTicketDialog = false">
+                                    {{ langMap.main.cancel }}
                                 </v-btn>
                                 <v-btn color="red darken-1" text @click="closeTicket()">
                                     {{ langMap.ticket.close_ticket }}
@@ -672,7 +676,11 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.ticket.type}`, value: 'ticket_type_id', width: '150px'},
                 // {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name', width: '250px'},
-                {text: `${this.$store.state.lang.lang_map.main.contact}`, value: 'contact.user_data.full_name', width: '150px'},
+                {
+                    text: `${this.$store.state.lang.lang_map.main.contact}`,
+                    value: 'contact.user_data.full_name',
+                    width: '150px'
+                },
                 {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name', width: '260px'},
                 {text: `${this.$store.state.lang.lang_map.main.product}`, value: 'product.name', width: '200px'},
                 {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person', width: '80px'},
@@ -832,28 +840,28 @@ export default {
         }, 500);
 
         const storageTicketsPath = JSON.parse(localStorage.getItem('ticketsPath'))
-        if(storageTicketsPath) {
-            this.$router.push({ name: 'ticket_list', query: storageTicketsPath })
+        if (storageTicketsPath) {
+            this.$router.push({name: 'ticket_list', query: storageTicketsPath})
             this.options.page = storageTicketsPath.page
         }
     },
     methods: {
         updateUrl() {
-            const query = { ...this.$route.query };
+            const query = {...this.$route.query};
 
-            if(this.ticketsSearch?.length) {
+            if (this.ticketsSearch?.length) {
                 query.search = this.ticketsSearch
             } else {
                 delete query.search
             }
 
-            if(this.searchLabel?.length) {
+            if (this.searchLabel?.length) {
                 query.searchLabel = this.searchLabel
             } else {
                 delete query.searchLabel
             }
 
-            this.$router.push({ query });
+            this.$router.push({query});
         },
         updatePageFromRoute() {
             if (this.page) {
@@ -861,7 +869,7 @@ export default {
                 this.options.page = parseInt(this.page) || 1;
                 this.activeTab = parseInt(this.tab) || 1;
                 // this.getTickets();
-                this.$router.push({ name: 'ticket_list', query: { page: this.page, tab: this.tab } })
+                this.$router.push({name: 'ticket_list', query: {page: this.page, tab: this.tab}})
             }
         },
         manageFilter() {
@@ -882,14 +890,14 @@ export default {
         },
         expandItem(item) {
             this.ticket = item;
-            const query = { ...this.$route.query };
+            const query = {...this.$route.query};
             if (this.expanded.indexOf(item) !== -1) {
                 delete query.expanded
                 this.expanded = [];
-                this.$router.push({ query });
+                this.$router.push({query});
             } else {
                 this.expanded.splice(0, 1, item);
-                this.$router.push({ query: {...query, expanded: item.id} })
+                this.$router.push({query: {...query, expanded: item.id}})
             }
         },
         saveFilter() {
@@ -1102,7 +1110,7 @@ export default {
             this.expanded = [];
             this.closeTicketDialog = false
         },
-        setOptionsByActiveTab(tab){
+        setOptionsByActiveTab(tab) {
             const options = this.options;
             const emptyOptions = {
                 onlyOpen: false,
@@ -1140,7 +1148,7 @@ export default {
                         ...options,
                         ...emptyOptions,
                         onlyOpen: true,
-                        priority: 1 ,
+                        priority: 1,
                         type: this.types.filter((type) => type.id !== 7).map((type) => type.id)
                     }
                 }
@@ -1188,12 +1196,12 @@ export default {
     watch: {
         activeTab(value) {
             this.setOptionsByActiveTab(value);
-            this.$router.push({ query: { page: 1, tab: this.activeTab } });
+            this.$router.push({query: {page: 1, tab: this.activeTab}});
         },
-        '$route.query': function() {
-          if(+this.activeTab !== +this.$route.query.tab) {
-              this.activeTab = +this.$route.query.tab
-          }
+        '$route.query': function () {
+            if (+this.activeTab !== +this.$route.query.tab) {
+                this.activeTab = +this.$route.query.tab
+            }
         },
         searchLabel: {
             handler: _.debounce(function (v) {
@@ -1207,10 +1215,10 @@ export default {
                 this.updateUrl();
                 this.getTickets();
             }, 500),
-                deep: true,
+            deep: true,
         },
-        tickets(){
-            if(this.$route.query.expanded && this.tickets.length){
+        tickets() {
+            if (this.$route.query.expanded && this.tickets.length) {
                 this.expanded = this.tickets.filter((ticket) => ticket.id.toString() === this.$route.query.expanded.toString())
             }
         },
@@ -1227,13 +1235,13 @@ export default {
             this.options.page = parseInt(newValue) || 1;
             this.tablePage = parseInt(newValue) || 1;
         },
-        tablePage: function(newValue, oldValue) {
+        tablePage: function (newValue, oldValue) {
             if (newValue !== oldValue) {
                 const storageTicketsPath = JSON.parse(localStorage.getItem('ticketsPath'))
-                if(storageTicketsPath) {
-                    setTimeout(() => this.$router.push({ name: 'ticket_list', query: storageTicketsPath }), 2000);
+                if (storageTicketsPath) {
+                    setTimeout(() => this.$router.push({name: 'ticket_list', query: storageTicketsPath}), 2000);
                 } else {
-                    this.$router.push({ name: 'ticket_list', query: { page: newValue, tab: this.activeTab } });
+                    this.$router.push({name: 'ticket_list', query: {page: newValue, tab: this.activeTab}});
                 }
 
             }
@@ -1246,6 +1254,7 @@ export default {
 .v-data-table-header th {
     white-space: nowrap;
 }
+
 .v-data-table > .v-data-table__wrapper > table > tbody > tr > td,
 .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td,
 .v-data-table > .v-data-table__wrapper > table > thead > tr > td {
