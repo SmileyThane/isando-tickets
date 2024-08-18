@@ -62,6 +62,14 @@ class Permission extends Model
     public const EMPLOYEE_TICKET_ADMIN_ACCESS = 39;
 
     //custom permissions
+	public const VOIP_DELETE_ACCESS = 115;
+	public const VOIP_WRITE_ACCESS = 114;
+	public const VOIP_READ_ACCESS = 113;
+	public const VOIP_CREATE_ACCESS = 112;
+	public const HOSTING_DELETE_ACCESS = 111;
+	public const HOSTING_WRITE_ACCESS = 110;
+	public const HOSTING_READ_ACCESS = 109;
+	public const HOSTING_CREATE_ACCESS = 108;
 	public const ACTIVITY_DELETE_ACCESS = 107;
 	public const ACTIVITY_WRITE_ACCESS = 106;
 	public const ACTIVITY_READ_ACCESS = 105;

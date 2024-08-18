@@ -298,6 +298,70 @@ class PermissionSeeder extends Seeder
         //custom permissions
 
         DB::table('permissions')->updateOrInsert(
+            ['id' => 115],
+            [
+                'name' => 'voip_delete_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 114],
+            [
+                'name' => 'voip_write_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 113],
+            [
+                'name' => 'voip_read_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 112],
+            [
+                'name' => 'voip_create_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 111],
+            [
+                'name' => 'hosting_delete_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 110],
+            [
+                'name' => 'hosting_write_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 109],
+            [
+                'name' => 'hosting_read_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 108],
+            [
+                'name' => 'hosting_create_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
             ['id' => 107],
             [
                 'name' => 'activity_delete_access',
