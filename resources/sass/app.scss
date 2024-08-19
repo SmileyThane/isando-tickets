@@ -11,3 +11,6 @@
 
 @import '~@mdi/font/css/materialdesignicons.css';
 
+.v-list-item.v-list-item--link.theme--light {
+    text-decoration: none!important;
+}
