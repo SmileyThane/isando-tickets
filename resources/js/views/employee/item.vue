@@ -2196,9 +2196,7 @@ export default {
                 if (response.success === true) {
                     this.userData = response.data
                     this.primaryEmailId = this.userData.email_id
-                    const employeeCompanies = this.userData.employee.assigned_to_clients.filter(item => item.deleted_at === null)
-                    this.companies = employeeCompanies.length > 0 ? employeeCompanies : this.userData.companies
-                    // console.log(this.companies);
+                    this.companies = this.userData.employee.assigned_to_clients.filter(item => item.deleted_at === null)
                     this.employeeForm.company_user_id = this.userData.employee.id
                     this.activityForm.model_id = this.userData.employee.id
                     if (this.userData.notification_statuses.length) {
@@ -2211,7 +2209,6 @@ export default {
                     } else {
                         this.notificationStatuses = [101, 102, 103, 201, 202, 301, 302];
                     }
-
                     if (this.userData.avatar_url) {
                         this.avatar = this.userData.avatar_url;
                     } else {
@@ -2229,7 +2226,6 @@ export default {
         },
         updateUser() {
             this.snackbar = false;
-
             if (this.newAvatar) {
                 let formData = new FormData();
                 formData.append('user_id', this.userData.id);
@@ -2253,7 +2249,6 @@ export default {
                     }
                 });
             }
-
             axios.post('/api/user', this.userData).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -2278,7 +2273,6 @@ export default {
         },
         updateNotificationsSettings() {
             this.enableToEdit = false;
-
             if (this.notificationStatuses.length === 0) {
                 this.notificationStatuses = [0];
             }
@@ -2605,7 +2599,6 @@ export default {
             this.userData.employee.roles.forEach(role => {
                 this.singleUserForm.role_ids.push(role.id)
             })
-            // console.log(item);
         },
         getRoles() {
             this.roles = []
