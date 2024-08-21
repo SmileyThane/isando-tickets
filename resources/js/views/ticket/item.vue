@@ -4165,4 +4165,9 @@ export default {
 .ticket--answer * {
     font-family: Roboto, sans-serif !important;
 }
+
+.v-list-item.v-list-item--link.theme--light {
+    text-decoration: none!important;
+}
+
 </style>
