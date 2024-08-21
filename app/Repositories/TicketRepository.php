@@ -596,10 +596,22 @@ class TicketRepository
         $ticket = Ticket::find($ticketId);
 
         $assignedPerson = $ticket->assignedPerson;
+        $ticketCreator = $ticket->creator;
         $contact = $ticket->contact;
 
         if ($assignedPerson && Auth::id() !== $assignedPerson->user_id) {
             Log::debug('Reply to assignedPerson');
+            $assignedPerson->userData->notify(
+                new SendTicketReply(
+                    $ticket->name,
+                    $reply,
+                    $files
+                )
+            );
+        }
+
+        if ($ticketCreator && Auth::id() !== $ticketCreator->user_id) {
+            Log::debug('Reply to creator');
             $assignedPerson->userData->notify(
                 new SendTicketReply(
                     $ticket->name,
