@@ -195,7 +195,11 @@ class KbRepository
             $articles->where('is_draft', '=', false);
         }
 
-        if (Auth::user()->employee->assignedToClients()->exists()) {
+        if (
+            !Auth::user()->employee->hasPermissionId(Permission::KB_EDIT_ACCESS)
+            &&
+            Auth::user()->employee->assignedToClients()->exists()
+        ) {
             $articles->where('is_internal', '=', false);
         }
 
