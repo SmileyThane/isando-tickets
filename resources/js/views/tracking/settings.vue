@@ -242,10 +242,18 @@
                                                                  style="width: 100%"
                                                             >
                                                                 <div class="d-inline-flex mx-4">
-                                                                    {{ moment(item.workTime.start).format('HH:mm') || 'Not set' }} - {{ moment(item.lunchTime.start).format('HH:mm') || 'Not set' }}
+                                                                    {{
+                                                                        moment(item.workTime.start).format('HH:mm') || 'Not set'
+                                                                    }} - {{
+                                                                        moment(item.lunchTime.start).format('HH:mm') || 'Not set'
+                                                                    }}
                                                                 </div>
                                                                 <div class="d-inline-flex mx-4">
-                                                                    {{ moment(item.lunchTime.end).format('HH:mm') || 'Not set' }} - {{ moment(item.workTime.end).format('HH:mm') || 'Not set' }}
+                                                                    {{
+                                                                        moment(item.lunchTime.end).format('HH:mm') || 'Not set'
+                                                                    }} - {{
+                                                                        moment(item.workTime.end).format('HH:mm') || 'Not set'
+                                                                    }}
                                                                 </div>
                                                             </div>
                                                         </v-fade-transition>
