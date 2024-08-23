@@ -14,15 +14,18 @@
                 <v-tab
                     v-if="$helpers.auth.checkPermissionByIds([79])"
                     :key="1"
-                >{{ langMap.tracking.settings.general }}</v-tab>
+                >{{ langMap.tracking.settings.general }}
+                </v-tab>
                 <v-tab
                     v-if="$helpers.auth.checkPermissionByIds([75])"
                     :key="2"
-                >{{ langMap.tracking.settings.services }}</v-tab>
+                >{{ langMap.tracking.settings.services }}
+                </v-tab>
                 <v-tab
                     v-if="$helpers.auth.checkPermissionByIds([96])"
-                   :key="3"
-                >Control report</v-tab>
+                    :key="3"
+                >Control report
+                </v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
@@ -34,7 +37,9 @@
                                 <div class="d-inline-flex">
                                     <v-card class="elevation-12 without-bottom" style="width: 100%">
                                         <v-toolbar :color="themeBgColor" dark dense flat>
-                                            <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.general }}</v-toolbar-title>
+                                            <v-toolbar-title :style="`color: ${themeFgColor};`">
+                                                {{ langMap.tracking.settings.general }}
+                                            </v-toolbar-title>
                                         </v-toolbar>
                                         <v-card-text class="mb-4">
                                             <v-checkbox
@@ -70,7 +75,9 @@
                                 <div class="d-inline-flex">
                                     <v-card class="elevation-12 without-bottom" style="width: 100%">
                                         <v-toolbar :color="themeBgColor" dark dense flat>
-                                            <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.custom_rounding }}</v-toolbar-title>
+                                            <v-toolbar-title :style="`color: ${themeFgColor};`">
+                                                {{ langMap.tracking.settings.custom_rounding }}
+                                            </v-toolbar-title>
                                         </v-toolbar>
                                         <v-card-text>
 
@@ -212,7 +219,9 @@
                             <!--Column 2-->
                             <v-card class="elevation-12 without-bottom" style="width: 100%" v-if="enableTimesheet">
                                 <v-toolbar :color="themeBgColor" dark dense flat>
-                                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.timesheet }}</v-toolbar-title>
+                                    <v-toolbar-title :style="`color: ${themeFgColor};`">
+                                        {{ langMap.tracking.settings.timesheet }}
+                                    </v-toolbar-title>
                                 </v-toolbar>
                                 <v-card-text>
                                     <v-expansion-panels>
@@ -229,8 +238,8 @@
                                                         <v-fade-transition leave-absolute>
                                                             <span v-if="open">When do you want to work?</span>
                                                             <div class="d-flex flex-row"
-                                                                v-else
-                                                                style="width: 100%"
+                                                                 v-else
+                                                                 style="width: 100%"
                                                             >
                                                                 <div class="d-inline-flex mx-4">
                                                                     {{ moment(item.workTime.start).format('HH:mm') || 'Not set' }} - {{ moment(item.lunchTime.start).format('HH:mm') || 'Not set' }}
