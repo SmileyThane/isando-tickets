@@ -318,8 +318,9 @@
                                                                 v-model="item.lunchTime.end"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
-                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
-                                                                {{moment(item.lunchTime.end).format('HH:mm')}}
+                                                            <span v-else style="max-width: 100px"
+                                                                  class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{ moment(item.lunchTime.end).format('HH:mm') }}
                                                             </span>
                                                         </div>
                                                     </div>
