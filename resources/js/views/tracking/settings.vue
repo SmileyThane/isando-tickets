@@ -263,7 +263,9 @@
                                             <v-expansion-panel-content>
                                                 <div class="d-flex flex-column">
                                                     <div class="d-inline-flex d-flex flex-row">
-                                                        <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Work time</div>
+                                                        <div class="d-inline-flex flex-grow-0"
+                                                             style="width: 30%; font-weight: bold">Work time
+                                                        </div>
                                                         <div class="d-inline-flex flex-grow-1 mx-4">
                                                             <TimeField
                                                                 v-if="$helpers.auth.checkPermissionByIds([81])"
@@ -273,8 +275,9 @@
                                                                 v-model="item.workTime.start"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
-                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
-                                                                {{moment(item.workTime.start).format('HH:mm')}}
+                                                            <span v-else style="max-width: 100px"
+                                                                  class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{ moment(item.workTime.start).format('HH:mm') }}
                                                             </span>
                                                             <TimeField
                                                                 v-if="$helpers.auth.checkPermissionByIds([81])"
@@ -284,13 +287,16 @@
                                                                 v-model="item.workTime.end"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
-                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
-                                                                {{moment(item.workTime.end).format('HH:mm')}}
+                                                            <span v-else style="max-width: 100px"
+                                                                  class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{ moment(item.workTime.end).format('HH:mm') }}
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <div class="d-inline-flex d-flex flex-row">
-                                                        <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Lunch time</div>
+                                                        <div class="d-inline-flex flex-grow-0"
+                                                             style="width: 30%; font-weight: bold">Lunch time
+                                                        </div>
                                                         <div class="d-inline-flex flex-grow-1 mx-4">
                                                             <TimeField
                                                                 v-if="$helpers.auth.checkPermissionByIds([81])"
@@ -300,8 +306,9 @@
                                                                 v-model="item.lunchTime.start"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
-                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
-                                                                {{moment(item.lunchTime.start).format('HH:mm')}}
+                                                            <span v-else style="max-width: 100px"
+                                                                  class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{ moment(item.lunchTime.start).format('HH:mm') }}
                                                             </span>
                                                             <TimeField
                                                                 v-if="$helpers.auth.checkPermissionByIds([81])"
@@ -412,7 +419,7 @@
                                     <span
                                         v-else
                                     >
-                                        {{props.item.name}}
+                                        {{ props.item.name }}
                                     </span>
                                 </template>
                                 <template v-slot:item.actions="props">
@@ -539,7 +546,7 @@ export default {
     },
     methods: {
         __getServices() {
-            this.$store.dispatch('Services/getServicesList', { search: this.searchService });
+            this.$store.dispatch('Services/getServicesList', {search: this.searchService});
         },
         __getSettings() {
             this.$store.dispatch('Tracking/getSettings');
@@ -579,7 +586,7 @@ export default {
                     }
                 });
         },
-        saveService (item) {
+        saveService(item) {
             this.$store.dispatch('Services/updateService', item);
         },
         __saveSettings() {
@@ -599,7 +606,7 @@ export default {
     computed: {
         enableTimesheet: {
             get() {
-                const { settings } = this.$store.getters['Tracking/getSettings'];
+                const {settings} = this.$store.getters['Tracking/getSettings'];
                 return settings && settings.enableTimesheet ? settings.enableTimesheet : false;
             },
             async set(val) {
@@ -609,7 +616,7 @@ export default {
         },
         toggleProjectType: {
             get() {
-                const { settings } = this.$store.getters['Tracking/getSettings'];
+                const {settings} = this.$store.getters['Tracking/getSettings'];
                 return settings && settings.projectType ? settings.projectType : 0;
             },
             async set(val) {
