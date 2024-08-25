@@ -355,7 +355,8 @@
                                 </template>
 
                                 <v-card>
-                                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                                    <v-card-title class="mb-5"
+                                                  :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                                         {{ langMap.tracking.settings.create_service_title }}
                                     </v-card-title>
 
@@ -626,8 +627,6 @@ export default {
             }
         },
     },
-    watch: {
-
-    }
+    watch: {}
 }
 </script>
