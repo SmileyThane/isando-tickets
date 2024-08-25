@@ -75,7 +75,7 @@
         <div class="d-flex flex-row" v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1">
             <div class="d-inline-flex flex-grow-0 mx-4"
                  v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
-             >
+            >
                 <v-checkbox
                     class="mt-1"
                     label="View and Edit services"
@@ -437,7 +437,8 @@
                                         <v-icon>mdi-information-outline</v-icon>
                                     </v-btn>
                                     <template v-slot:input>
-                                        <div class="mt-4" style="max-width: 500px; min-width: 500px; min-height: 100px; overflow-y: auto;">
+                                        <div class="mt-4"
+                                             style="max-width: 500px; min-width: 500px; min-height: 100px; overflow-y: auto;">
                                             {{ item.note }}
                                         </div>
                                     </template>
@@ -448,14 +449,30 @@
                                 <tr>
                                     <th></th>
                                     <th></th>
-                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 1), false) }}</th>
-                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 2), false) }}</th>
-                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 3), false) }}</th>
-                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 4), false) }}</th>
-                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 5), false) }}</th>
-                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 6), false) }}</th>
-                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 7), false) }}</th>
-                                    <th class="text-end" style="color: #0009">{{ $helpers.time.convertSecToTime(calculateTotalTime(item.items), false) }}</th>
+                                    <th class="text-end" style="color: #0009">
+                                        {{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 1), false) }}
+                                    </th>
+                                    <th class="text-end" style="color: #0009">
+                                        {{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 2), false) }}
+                                    </th>
+                                    <th class="text-end" style="color: #0009">
+                                        {{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 3), false) }}
+                                    </th>
+                                    <th class="text-end" style="color: #0009">
+                                        {{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 4), false) }}
+                                    </th>
+                                    <th class="text-end" style="color: #0009">
+                                        {{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 5), false) }}
+                                    </th>
+                                    <th class="text-end" style="color: #0009">
+                                        {{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 6), false) }}
+                                    </th>
+                                    <th class="text-end" style="color: #0009">
+                                        {{ $helpers.time.convertSecToTime(calculateTimeByDay(item.items, 7), false) }}
+                                    </th>
+                                    <th class="text-end" style="color: #0009">
+                                        {{ $helpers.time.convertSecToTime(calculateTotalTime(item.items), false) }}
+                                    </th>
                                 </tr>
                             </template>
                         </v-data-table>
@@ -481,7 +498,8 @@
                         <div>(Resend request for approval)</div>
                     </v-tooltip>
                 </template>
-                <template v-slot:item.edit="{ item }" v-if="[STATUS_APPROVAL_PENDING, STATUS_REJECTED].indexOf(typeOfItems) !== -1">
+                <template v-slot:item.edit="{ item }"
+                          v-if="[STATUS_APPROVAL_PENDING, STATUS_REJECTED].indexOf(typeOfItems) !== -1">
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
@@ -609,7 +627,10 @@
                             <template v-if="group.name">{{ group.name }}</template>
                             <template v-else>{{ group }}</template>
                         </template>
-                        <template v-else>Without {{ groupBy[0] === 'service.name' ? 'service': groupBy[0] === 'entity.name' ? 'project' : groupBy[0] }}</template>
+                        <template v-else>Without {{
+                                groupBy[0] === 'service.name' ? 'service' : groupBy[0] === 'entity.name' ? 'project' : groupBy[0]
+                            }}
+                        </template>
                         <v-icon @click="remove">mdi-close</v-icon>
                     </th>
                 </template>
@@ -623,7 +644,9 @@
                             <template v-if="header.value === 'entity.name'">
                                 Total time
                             </template>
-                            <span v-if="header.time >= 0">{{ $helpers.time.convertSecToTime(header.time, false) }}</span>
+                            <span v-if="header.time >= 0">{{
+                                    $helpers.time.convertSecToTime(header.time, false)
+                                }}</span>
                         </td>
                     </tr>
                 </template>
@@ -667,7 +690,9 @@
                                         :ref="`editDialogService`"
                                     >
                                         <span v-if="form.service">
-                                            {{ $store.getters['Services/getServices'].find(i => i.id === form.service).name }}
+                                            {{
+                                                $store.getters['Services/getServices'].find(i => i.id === form.service).name
+                                            }}
                                         </span>
                                         <span v-else class="text--secondary">Add service</span>
                                         <template v-slot:input>
@@ -926,7 +951,8 @@
                     </div>
                 </template>
                 <template v-slot:item.entity.name="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) !== -1 || !item.is_manually">
+                    <template
+                        v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) !== -1 || !item.is_manually">
                         <v-btn
                             tile
                             small
@@ -946,7 +972,9 @@
                             :style="{ color: item.entity && item.entity.color ? item.entity.color+'!important' : themeBgColor+'!important' }"
                         >
                             <span v-if="item.entity && item.entity.name">
-                                {{getTrackingProjectLabel}}:<br>{{ $helpers.string.shortenText(item.entity.name, 35) }}
+                                {{ getTrackingProjectLabel }}:<br>{{
+                                    $helpers.string.shortenText(item.entity.name, 35)
+                                }}
                             </span>
                         </v-btn>
                     </template>
@@ -960,9 +988,16 @@
                     </template>
                 </template>
                 <template v-slot:item.status="{ isMobile, item, header, value }">
-                    <v-chip v-if="value === STATUS_ARCHIVED" small color="success">{{ langMap.tracking.timesheet.approved }}</v-chip>
-                    <v-chip v-if="value === STATUS_REJECTED" small color="error">{{ langMap.tracking.timesheet.rejected }}</v-chip>
-                    <v-chip v-if="value === STATUS_APPROVAL_PENDING" small color="primary">{{ langMap.tracking.timesheet.approval_pending }}</v-chip>
+                    <v-chip v-if="value === STATUS_ARCHIVED" small color="success">
+                        {{ langMap.tracking.timesheet.approved }}
+                    </v-chip>
+                    <v-chip v-if="value === STATUS_REJECTED" small color="error">{{
+                            langMap.tracking.timesheet.rejected
+                        }}
+                    </v-chip>
+                    <v-chip v-if="value === STATUS_APPROVAL_PENDING" small color="primary">
+                        {{ langMap.tracking.timesheet.approval_pending }}
+                    </v-chip>
                     <v-chip v-if="value === STATUS_TRACKED" small>{{ langMap.tracking.timesheet.tracked }}</v-chip>
                 </template>
                 <template v-slot:item.number="{ isMobile, item, header, value }">
@@ -971,7 +1006,8 @@
                     </template>
                 </template>
                 <template v-slot:item.service.name="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) !== -1 || !item.is_manually">
+                    <template
+                        v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) !== -1 || !item.is_manually">
                         <span v-if="item.service">{{ item.service.name }}</span>
                     </template>
                     <template v-else>
@@ -1032,7 +1068,8 @@
                     <span v-else>00:00</span>
                 </template>
                 <template v-slot:item.mon="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
+                    <template
+                        v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[0]">
                         <TimeField
                             v-model="moment(item.times[0].dateTime).format()"
@@ -1050,7 +1087,8 @@
                     </template>
                 </template>
                 <template v-slot:item.tue="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
+                    <template
+                        v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[1]">
                     <TimeField
                         v-model="moment(item.times[1].dateTime).format()"
@@ -1068,7 +1106,8 @@
                     </template>
                 </template>
                 <template v-slot:item.wed="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
+                    <template
+                        v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[2]">
                     <TimeField
                         v-model="moment(item.times[2].dateTime).format()"
@@ -1086,7 +1125,8 @@
                     </template>
                 </template>
                 <template v-slot:item.thu="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
+                    <template
+                        v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[3]">
                         <TimeField
                             v-model="moment(item.times[3].dateTime).format()"
@@ -1104,7 +1144,8 @@
                     </template>
                 </template>
                 <template v-slot:item.fri="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
+                    <template
+                        v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[4]">
                         <TimeField
                             v-model="moment(item.times[4].dateTime).format()"
@@ -1122,7 +1163,8 @@
                     </template>
                 </template>
                 <template v-slot:item.sat="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
+                    <template
+                        v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[5]">
                     <TimeField
                         v-model="moment(item.times[5].dateTime).format()"
@@ -1140,7 +1182,8 @@
                     </template>
                 </template>
                 <template v-slot:item.sun="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
+                    <template
+                        v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && [STATUS_ARCHIVED, STATUS_APPROVAL_PENDING].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[6]">
                         <TimeField
                             v-model="moment(item.times[6].dateTime).format()"
@@ -1171,7 +1214,8 @@
                             <v-icon>mdi-information-outline</v-icon>
                         </v-btn>
                         <template v-slot:input>
-                            <div class="mt-4" style="max-width: 500px; min-width: 500px; min-height: 100px; overflow-y: auto;">
+                            <div class="mt-4"
+                                 style="max-width: 500px; min-width: 500px; min-height: 100px; overflow-y: auto;">
                                 {{ item.note }}
                             </div>
                         </template>
@@ -1310,7 +1354,7 @@
                                         >
                                             <v-list-item-content>
                                                 <v-list-item-title>
-                                                    #{{item.id}}. {{item.name}}
+                                                    #{{ item.id }}. {{ item.name }}
                                                 </v-list-item-title>
                                             </v-list-item-content>
                                             <v-list-item-action @click="removeTemplate(item.id)">
@@ -1385,7 +1429,9 @@
                         small
                         :disabled="blockActions"
                     >
-                        <span v-if="typeOfItems === STATUS_TRACKED">{{ langMap.tracking.timesheet.submit_for_approval }}</span>
+                        <span v-if="typeOfItems === STATUS_TRACKED">{{
+                                langMap.tracking.timesheet.submit_for_approval
+                            }}</span>
                         <span v-else>{{ langMap.tracking.timesheet.resubmit_for_approval }}</span>
                     </v-btn>
                 </template>
@@ -1540,7 +1586,7 @@
             v-model="undo.id"
             timeout="-1"
         >
-            Will be deleted after {{undo.countdown}} sec
+            Will be deleted after {{ undo.countdown }} sec
             <template v-slot:action="{ attrs }">
                 <v-btn
                     :color="themeBgColor"
@@ -1557,7 +1603,7 @@
 </template>
 
 <style scoped>
->>>tr.highlight {
+>>> tr.highlight {
     background-color: #f0f0f0;
     border-color: #f0f0f0;
     font-weight: bold;
@@ -1572,38 +1618,46 @@
     width: 14px;
     height: 14px;
 }
+
 >>> td.text-end .time-field__small {
     float: right;
 }
+
 >>> .v-data-table-header th.sortable span:first-child {
     order: 1;
 }
+
 >>> .v-data-table-header th.sortable span:last-child {
     order: 3;
 }
+
 >>> .tracking-timesheet *:not(.v-icon),
 .v-list-item * {
     font-size: 12px !important;
 }
+
 >>> label, input, div *:not(.v-icon), *:not(.v-icon),
 th *:not(.v-icon) td, th, td *:not(.v-icon), .v-tooltip__content,
 .v-list-item__content *:not(.v-icon),
-.v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
     font-size: 12px !important;
 }
+
 *:not(.v-icon) {
     font-size: 12px !important;
 }
-.v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
+
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
     font-size: 12px !important;
 }
 </style>
 
 <style>
 .v-list-item__title,
-.v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
     font-size: 12px !important;
 }
+
 .sortable-chosen {
     transform: translateY(0);
 }
