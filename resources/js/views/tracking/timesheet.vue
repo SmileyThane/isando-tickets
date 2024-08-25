@@ -1675,7 +1675,7 @@ export default {
         ProjectBtn,
         TimeField,
     },
-    data () {
+    data() {
         return {
             countRecordsOnTable: 1000,
             dateFormat: 'YYYY-MM-DD',
@@ -1768,7 +1768,7 @@ export default {
             invalidWeekday: [false, false, false, false, false, false, false],
         }
     },
-    created () {
+    created() {
         moment.updateLocale(this.$store.state.lang.short_code, {
             week: {
                 dow: 1,
@@ -1785,7 +1785,7 @@ export default {
         this.debounceGetTimesheetTemplates = _.debounce(this._getTimesheetTemplates, 1000);
         this.date = moment().format(this.dateFormat);
     },
-    mounted () {
+    mounted() {
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1802,12 +1802,12 @@ export default {
         this.debounceGetTeamManagers();
         this.debounceGetServices();
         this.debounceGetTimesheetTemplates();
-        this.$store.dispatch('Clients/getClientList', { search: null });
-        this.$store.dispatch('Products/getProductList', { search: null });
+        this.$store.dispatch('Clients/getClientList', {search: null});
+        this.$store.dispatch('Products/getProductList', {search: null});
         this._getTimesheetByStatus();
     },
     methods: {
-        async _getTimesheet () {
+        async _getTimesheet() {
             this.loading = true;
             await this.$store.dispatch('Timesheet/getTimesheet', {
                 ...this.dateRange,
@@ -1815,36 +1815,36 @@ export default {
             this.loading = false;
             this.resetTimesheet();
         },
-        async _getManagedTeams () {
+        async _getManagedTeams() {
             this.loading = true;
-            await this.$store.dispatch('Team/getManagedTeams', { withEmployee: false });
+            await this.$store.dispatch('Team/getManagedTeams', {withEmployee: false});
             this.loading = false;
             this.resetTimesheet();
         },
         _getTeamManagers() {
             this.$store.dispatch('Team/getTeamManagers');
         },
-        _getProjects () {
-            this.$store.dispatch('Projects/getProjectList', { search: null });
+        _getProjects() {
+            this.$store.dispatch('Projects/getProjectList', {search: null});
         },
-        _getTickets () {
-            this.$store.dispatch('Tickets/getTicketList', { search: null });
+        _getTickets() {
+            this.$store.dispatch('Tickets/getTicketList', {search: null});
         },
-        _getCurrentUser () {
+        _getCurrentUser() {
             this.$store.dispatch('getCurrentUser');
         },
         _getServices() {
-            this.$store.dispatch('Services/getServicesList', { search: '' });
+            this.$store.dispatch('Services/getServicesList', {search: ''});
         },
         _getTimesheetTemplates() {
             this.$store.dispatch('Timesheet/getTimesheetTemplates');
         },
         _getTimesheetByStatus() {
             this.loading = true;
-            this.$store.dispatch('Timesheet/getAllGroupedByStatus', { userId: this.currentUser ? this.currentUser.id : null });
+            this.$store.dispatch('Timesheet/getAllGroupedByStatus', {userId: this.currentUser ? this.currentUser.id : null});
             this.loading = false;
         },
-        createTimesheet () {
+        createTimesheet() {
             if (this.form.entity) {
                 this.form.entity_id = this.form.entity.id;
                 this.form.entity_type = this.form.entity.from ? 'App\\Ticket' : 'App\\TrackingProject';
@@ -1880,7 +1880,7 @@ export default {
             }
             this.selected = [];
         },
-        resetTimesheet () {
+        resetTimesheet() {
             this.selected = [];
             this.form = {
                 entity: null,
@@ -1896,11 +1896,11 @@ export default {
                 sun: moment(this.periodStart).add(6, 'days').startOf('days').format(),
             };
         },
-        timeBetween (end) {
+        timeBetween(end) {
             const start = moment(end).startOf('days')
             return this.$helpers.time.getSecBetweenDates(start, end);
         },
-        removeTimesheet () {
+        removeTimesheet() {
             if (this.selected.length) {
                 const self = this;
                 const id = Date.now();
@@ -1923,12 +1923,12 @@ export default {
             }
             this.selected = [];
         },
-        removeTimesheetConfirm (items) {
+        removeTimesheetConfirm(items) {
             Promise.all(items.map(id => {
                 this.$store.dispatch('Timesheet/removeTimesheet', id);
             }))
-                .then( () => {
-                    this.$store.dispatch('Timesheet/getAllGroupedByStatus', { userId: this.currentUser.id });
+                .then(() => {
+                    this.$store.dispatch('Timesheet/getAllGroupedByStatus', {userId: this.currentUser.id});
                 });
         },
         undoDeleting(id) {
@@ -1937,8 +1937,8 @@ export default {
             clearInterval(this.undoStack[index].timer);
             this.undoStack.splice(index, 1);
         },
-        saveTimesheet (item) {
-            return this.$store.dispatch('Timesheet/updateTimesheet', { id: item.id, timesheet: item })
+        saveTimesheet(item) {
+            return this.$store.dispatch('Timesheet/updateTimesheet', {id: item.id, timesheet: item})
                 .then(res => {
                     if (!res) {
                         this.snackbarMessage = 'Error';
@@ -1958,7 +1958,7 @@ export default {
             timeByDay += this.convertTimeToSec(value);
             return timeByDay <= limitByDay;
         },
-        convertTimeToSec (time) {
+        convertTimeToSec(time) {
             const items = time.split(':', 3);
             let seconds = 0;
             if (items && items[0]) {
@@ -1972,7 +1972,7 @@ export default {
             }
             return seconds;
         },
-        saveChanges (item, index, newValue) {
+        saveChanges(item, index, newValue) {
             if (!this.validateTimesheet(item, index, moment(newValue).format('HH:mm:ss'))) {
                 this.snackbarMessage = 'It is not possible to add more than 24 hours per day';
                 this.actionColor = 'error'
@@ -1986,7 +1986,7 @@ export default {
                 return this.saveTimesheet(item);
             }
         },
-        submitItems (status) {
+        submitItems(status) {
             if (this.selected.length) {
                 this.$store.dispatch('Timesheet/submitTimesheetByIds', {
                     ids: this.selected.map(i => i.id),
@@ -2001,10 +2001,10 @@ export default {
             }
             this.selected = [];
         },
-        canApproval (item) {
+        canApproval(item) {
             return item.team_id && this.$store.getters['Team/getManagedTeams'].find(i => i.id === item.team_id);
         },
-        toggleTableItem (item) {
+        toggleTableItem(item) {
             this.selected.find(i => i.id === item.id)
                 ? this.selected.splice(this.selected.findIndex(i => i.id === item.id), 1)
                 : this.selected.push(item);
@@ -2062,12 +2062,12 @@ export default {
                 });
             }
             headers = headers.concat([{
-                    text: '',
-                    align: 'start',
-                    value: 'is_manually',
-                    width: '3%',
-                    groupable: false,
-                },
+                text: '',
+                align: 'start',
+                value: 'is_manually',
+                width: '3%',
+                groupable: false,
+            },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.mon,
                     align: 'end',
@@ -2148,7 +2148,7 @@ export default {
                 },
             ]);
             if ([this.STATUS_REJECTED].indexOf(this.typeOfItems) !== -1) {
-                headers.push({ text: 'Note', align: 'start', value: 'note', width: '10%', groupable: false, });
+                headers.push({text: 'Note', align: 'start', value: 'note', width: '10%', groupable: false,});
                 return headers;
             }
             return headers;
@@ -2205,7 +2205,7 @@ export default {
         },
         remindTimesheet(item) {
             this.loadingBtn = true;
-            this.$store.dispatch('Timesheet/remindTimesheet', { ids: item.items.map(i => i.id) })
+            this.$store.dispatch('Timesheet/remindTimesheet', {ids: item.items.map(i => i.id)})
                 .then(() => {
                     this.loadingBtn = false;
                     return null;
@@ -2251,9 +2251,9 @@ export default {
                 from: this.dateRange.start,
                 to: this.dateRange.end,
             })
-            .finally(() => {
-                this.loadingCopyWeek = false;
-            });
+                .finally(() => {
+                    this.loadingCopyWeek = false;
+                });
         },
         resetSaveAsTemplate() {
             this.newTemplate.name = '';
@@ -2262,7 +2262,10 @@ export default {
         },
         saveAsTemplate() {
             if (this.selected.length) {
-                this.$store.dispatch('Timesheet/saveAsTemplate', { items: this.selected.map(i => i.id), data: this.newTemplate })
+                this.$store.dispatch('Timesheet/saveAsTemplate', {
+                    items: this.selected.map(i => i.id),
+                    data: this.newTemplate
+                })
                     .then(() => this.resetSaveAsTemplate());
             }
         },
@@ -2351,7 +2354,7 @@ export default {
         }
     },
     watch: {
-        date () {
+        date() {
             this.dateRange.start =
                 this.viewType === 'weekly'
                     ? moment(this.date).startOf('weeks').format(this.dateFormat)
@@ -2361,26 +2364,26 @@ export default {
                     ? moment(this.date).endOf('weeks').format(this.dateFormat)
                     : moment(this.date).endOf('days').format(this.dateFormat);
         },
-        'dateRange.start' () {
+        'dateRange.start'() {
             this._getTimesheet();
         },
-        undoStack () {
+        undoStack() {
             this.deletedItems = this.undoStack.reduce((acc, curr) => acc.concat(curr.items), []);
         },
-        typeOfItems () {
+        typeOfItems() {
             if (this.typeOfItems !== this.STATUS_TRACKED) {
                 this.debounceGetTimesheetByStatus();
             }
         },
     },
     computed: {
-        exportAvailable () {
+        exportAvailable() {
             return !!(this.selected.length ? this.selected : this.expandedManagerData).map(i => i.id).length;
         },
-        currentUser () {
+        currentUser() {
             return this.$store.getters['getCurrentUser'];
         },
-        currentStatus () {
+        currentStatus() {
             let status = this.STATUS_TRACKED;
             switch (this.typeOfItems) {
                 case this.STATUS_TRACKED:
@@ -2401,29 +2404,29 @@ export default {
             }
             return status;
         },
-        periodStart () {
+        periodStart() {
             return moment(this.date).startOf('weeks');
         },
-        periodEnd () {
+        periodEnd() {
             return moment(this.date).endOf('weeks');
         },
-        dateRangeText () {
+        dateRangeText() {
             const dateFormat = 'DD MMM YYYY';
             if (this.viewType === 'weekly') {
                 return `${moment(this.periodStart).format(dateFormat)} - ${moment(this.periodEnd).format(dateFormat)}`;
             }
             return moment(this.date).format(dateFormat);
         },
-        selectedDateText () {
+        selectedDateText() {
             if (this.date === moment().format(this.dateFormat)) {
                 return 'Today';
             }
             return moment(this.date).format(this.dateFormat);
         },
-        dailyHeaders () {
+        dailyHeaders() {
             return [];
         },
-        weeklyManagerHeaders () {
+        weeklyManagerHeaders() {
             const headers = [
                 {
                     text: 'Team member',
@@ -2465,27 +2468,27 @@ export default {
                     align: 'center',
                     value: 'total_time',
                 },
-                { text: '', value: 'data-table-expand', width: '3%' },
+                {text: '', value: 'data-table-expand', width: '3%'},
             ];
             if (this.typeOfItems === this.STATUS_APPROVAL_PENDING) {
-                headers.push({ text: '', value: 'remind', width: '3%' });
+                headers.push({text: '', value: 'remind', width: '3%'});
             }
             if ([this.STATUS_APPROVAL_PENDING, this.STATUS_REJECTED].indexOf(this.typeOfItems) !== -1) {
-                headers.push({ text: '', value: 'edit', width: '3%' });
+                headers.push({text: '', value: 'edit', width: '3%'});
             }
             if ([this.STATUS_REJECTED].indexOf(this.typeOfItems) !== -1) {
-                headers.push({ text: '', value: 'resubmit', width: '3%' });
+                headers.push({text: '', value: 'resubmit', width: '3%'});
             }
             if (this.typeOfItems === this.STATUS_APPROVAL_REQUESTS) {
-                headers.push({ text: '', value: 'approve', width: '3%' });
-                headers.push({ text: '', value: 'reject', width: '3%' });
+                headers.push({text: '', value: 'approve', width: '3%'});
+                headers.push({text: '', value: 'reject', width: '3%'});
             }
             return headers;
         },
-        weeklyHeaders () {
+        weeklyHeaders() {
             return this.calculateHeaders(this.getTimesheet);
         },
-        getTimesheet () {
+        getTimesheet() {
             const user = this.currentUser;
             const timesheet = this.$store.getters['Timesheet/getTimesheet']
                 .filter(i => !this.deletedItems.includes(i.id));
@@ -2553,9 +2556,9 @@ export default {
             //         }
             //     });
             return _.uniqBy(timesheet, 'number')
-                .map(i => ({ ...i, items: timesheet.filter(t => t.number === i.number) }));
+                .map(i => ({...i, items: timesheet.filter(t => t.number === i.number)}));
         },
-        totalTime () {
+        totalTime() {
             let totalTime = 0;
             this.getTimesheet.map(timesheet => {
                 for (let i = 0; i < 7; i++) {
@@ -2564,13 +2567,13 @@ export default {
             });
             return totalTime;
         },
-        canApprove () {
+        canApprove() {
             if (this.selected.length && this.$store.getters['Team/getManagedTeams'].find(t => this.selected.find(i => i.team_id === t.id))) {
                 return this.selected.length && [this.STATUS_APPROVAL_PENDING].indexOf(this.typeOfItems) !== -1;
             }
             return false;
         },
-        formTotalTime () {
+        formTotalTime() {
             return moment(this.form.mon).diff(moment(this.form.mon).startOf('day'), 'seconds')
                 + moment(this.form.tue).diff(moment(this.form.tue).startOf('day'), 'seconds')
                 + moment(this.form.wed).diff(moment(this.form.wed).startOf('day'), 'seconds')
@@ -2597,21 +2600,27 @@ export default {
             return false;
         },
         getTrackingProjectLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.department;
-                case 2: return this.langMap.tracking.profit_center;
-                default: return this.langMap.tracking.project;
+                case 1:
+                    return this.langMap.tracking.department;
+                case 2:
+                    return this.langMap.tracking.profit_center;
+                default:
+                    return this.langMap.tracking.project;
             }
         },
         getTrackingProjectsLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.departments;
-                case 2: return this.langMap.tracking.profit_centres;
-                default: return this.langMap.tracking.projects;
+                case 1:
+                    return this.langMap.tracking.departments;
+                case 2:
+                    return this.langMap.tracking.profit_centres;
+                default:
+                    return this.langMap.tracking.projects;
             }
         },
     }
