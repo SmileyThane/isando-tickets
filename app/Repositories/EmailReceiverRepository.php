@@ -27,6 +27,8 @@ class EmailReceiverRepository
 
     const YAHOO_QUOTED_TAG_PART_FOR_REMOVING = '<div id="yahoo_quoted';
     const CUSTOM_QUOTED_TAG_PART_FOR_REMOVING = '<br id="lineBreakAtBeginningOfMessage">';
+    const REPLY_PREFIXES = ["Re:", "re:", "Fwd:", "fwd:", "AW:", 'Aw:', "aw:", "Fw:", "FW:", "fw:"];
+    const BROKEN_ENCODING_PARTS = ['=?', '?=', 'iso-8859-1?', 'Q?'];
 
     public function __construct(TicketRepository $ticketRepository)
     {
@@ -78,8 +80,7 @@ class EmailReceiverRepository
             if ($userGlobal) {
                 Log::info('email from ' . $userGlobal->name);
                 try {
-                    $replyPrefixes = ["Re:", "re:", "Fwd:", "fwd:", "AW:", 'Aw:', "aw:", "Fw:", "FW:", "fw:"];
-                    $ticketSubject = trim(str_replace($replyPrefixes, "", $rawSubject));
+                    $ticketSubject = $this->prettifySubject($rawSubject);
                     Log::info("subject is $ticketSubject");
                     $cachedCount = MailCache::where('message_key', $key)->count();
                     if ($cachedCount === 0) {
@@ -312,6 +313,27 @@ class EmailReceiverRepository
         $request->headers->set('Accept', 'application/json');
         $response = app()->handle($request);
         return $response->getContent();
+    }
+
+    private function prettifySubject($subject)
+    {
+        $subject = str_replace(
+            [
+                ...self::REPLY_PREFIXES,
+                ...self::BROKEN_ENCODING_PARTS,
+                '_',
+                '=DC'
+            ],
+            [
+                "",
+                "",
+                " ",
+                "U"
+            ],
+            $subject
+        );
+
+        return trim($subject);
     }
 
 }
