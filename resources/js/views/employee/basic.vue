@@ -2188,15 +2188,14 @@ export default {
                 }
             });
         },
-        getUser() {
+        getUser()
+        {
             axios.get(`/api/user/find/${this.$route.params.id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.userData = response.data
                     this.primaryEmailId = this.userData.email_id
-                    const employeeCompanies = this.userData.employee.assigned_to_clients.filter(item => item.deleted_at === null)
-                    this.companies = employeeCompanies.length > 0 ? employeeCompanies : this.userData.companies
-                    // console.log(this.companies);
+                    this.userData.employee.assigned_to_clients.filter(item => item.deleted_at === null);
                     this.employeeForm.company_user_id = this.userData.employee.id
                     this.activityForm.model_id = this.userData.employee.id
                     if (this.userData.notification_statuses.length) {
@@ -2224,7 +2223,8 @@ export default {
                     this.snackbar = true;
                 }
             });
-        },
+        }
+,
         updateUser() {
             this.snackbar = false;
 
