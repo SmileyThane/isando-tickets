@@ -14,15 +14,18 @@
                 <v-tab
                     v-if="$helpers.auth.checkPermissionByIds([79])"
                     :key="1"
-                >{{ langMap.tracking.settings.general }}</v-tab>
+                >{{ langMap.tracking.settings.general }}
+                </v-tab>
                 <v-tab
                     v-if="$helpers.auth.checkPermissionByIds([75])"
                     :key="2"
-                >{{ langMap.tracking.settings.services }}</v-tab>
+                >{{ langMap.tracking.settings.services }}
+                </v-tab>
                 <v-tab
                     v-if="$helpers.auth.checkPermissionByIds([96])"
-                   :key="3"
-                >Control report</v-tab>
+                    :key="3"
+                >Control report
+                </v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
@@ -34,7 +37,9 @@
                                 <div class="d-inline-flex">
                                     <v-card class="elevation-12 without-bottom" style="width: 100%">
                                         <v-toolbar :color="themeBgColor" dark dense flat>
-                                            <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.general }}</v-toolbar-title>
+                                            <v-toolbar-title :style="`color: ${themeFgColor};`">
+                                                {{ langMap.tracking.settings.general }}
+                                            </v-toolbar-title>
                                         </v-toolbar>
                                         <v-card-text class="mb-4">
                                             <v-checkbox
@@ -70,7 +75,9 @@
                                 <div class="d-inline-flex">
                                     <v-card class="elevation-12 without-bottom" style="width: 100%">
                                         <v-toolbar :color="themeBgColor" dark dense flat>
-                                            <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.custom_rounding }}</v-toolbar-title>
+                                            <v-toolbar-title :style="`color: ${themeFgColor};`">
+                                                {{ langMap.tracking.settings.custom_rounding }}
+                                            </v-toolbar-title>
                                         </v-toolbar>
                                         <v-card-text>
 
@@ -212,7 +219,9 @@
                             <!--Column 2-->
                             <v-card class="elevation-12 without-bottom" style="width: 100%" v-if="enableTimesheet">
                                 <v-toolbar :color="themeBgColor" dark dense flat>
-                                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.timesheet }}</v-toolbar-title>
+                                    <v-toolbar-title :style="`color: ${themeFgColor};`">
+                                        {{ langMap.tracking.settings.timesheet }}
+                                    </v-toolbar-title>
                                 </v-toolbar>
                                 <v-card-text>
                                     <v-expansion-panels>
@@ -229,14 +238,22 @@
                                                         <v-fade-transition leave-absolute>
                                                             <span v-if="open">When do you want to work?</span>
                                                             <div class="d-flex flex-row"
-                                                                v-else
-                                                                style="width: 100%"
+                                                                 v-else
+                                                                 style="width: 100%"
                                                             >
                                                                 <div class="d-inline-flex mx-4">
-                                                                    {{ moment(item.workTime.start).format('HH:mm') || 'Not set' }} - {{ moment(item.lunchTime.start).format('HH:mm') || 'Not set' }}
+                                                                    {{
+                                                                        moment(item.workTime.start).format('HH:mm') || 'Not set'
+                                                                    }} - {{
+                                                                        moment(item.lunchTime.start).format('HH:mm') || 'Not set'
+                                                                    }}
                                                                 </div>
                                                                 <div class="d-inline-flex mx-4">
-                                                                    {{ moment(item.lunchTime.end).format('HH:mm') || 'Not set' }} - {{ moment(item.workTime.end).format('HH:mm') || 'Not set' }}
+                                                                    {{
+                                                                        moment(item.lunchTime.end).format('HH:mm') || 'Not set'
+                                                                    }} - {{
+                                                                        moment(item.workTime.end).format('HH:mm') || 'Not set'
+                                                                    }}
                                                                 </div>
                                                             </div>
                                                         </v-fade-transition>
@@ -246,7 +263,9 @@
                                             <v-expansion-panel-content>
                                                 <div class="d-flex flex-column">
                                                     <div class="d-inline-flex d-flex flex-row">
-                                                        <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Work time</div>
+                                                        <div class="d-inline-flex flex-grow-0"
+                                                             style="width: 30%; font-weight: bold">Work time
+                                                        </div>
                                                         <div class="d-inline-flex flex-grow-1 mx-4">
                                                             <TimeField
                                                                 v-if="$helpers.auth.checkPermissionByIds([81])"
@@ -256,8 +275,9 @@
                                                                 v-model="item.workTime.start"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
-                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
-                                                                {{moment(item.workTime.start).format('HH:mm')}}
+                                                            <span v-else style="max-width: 100px"
+                                                                  class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{ moment(item.workTime.start).format('HH:mm') }}
                                                             </span>
                                                             <TimeField
                                                                 v-if="$helpers.auth.checkPermissionByIds([81])"
@@ -267,13 +287,16 @@
                                                                 v-model="item.workTime.end"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
-                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
-                                                                {{moment(item.workTime.end).format('HH:mm')}}
+                                                            <span v-else style="max-width: 100px"
+                                                                  class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{ moment(item.workTime.end).format('HH:mm') }}
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <div class="d-inline-flex d-flex flex-row">
-                                                        <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Lunch time</div>
+                                                        <div class="d-inline-flex flex-grow-0"
+                                                             style="width: 30%; font-weight: bold">Lunch time
+                                                        </div>
                                                         <div class="d-inline-flex flex-grow-1 mx-4">
                                                             <TimeField
                                                                 v-if="$helpers.auth.checkPermissionByIds([81])"
@@ -283,8 +306,9 @@
                                                                 v-model="item.lunchTime.start"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
-                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
-                                                                {{moment(item.lunchTime.start).format('HH:mm')}}
+                                                            <span v-else style="max-width: 100px"
+                                                                  class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{ moment(item.lunchTime.start).format('HH:mm') }}
                                                             </span>
                                                             <TimeField
                                                                 v-if="$helpers.auth.checkPermissionByIds([81])"
@@ -294,8 +318,9 @@
                                                                 v-model="item.lunchTime.end"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
-                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
-                                                                {{moment(item.lunchTime.end).format('HH:mm')}}
+                                                            <span v-else style="max-width: 100px"
+                                                                  class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{ moment(item.lunchTime.end).format('HH:mm') }}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -330,7 +355,8 @@
                                 </template>
 
                                 <v-card>
-                                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                                    <v-card-title class="mb-5"
+                                                  :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                                         {{ langMap.tracking.settings.create_service_title }}
                                     </v-card-title>
 
@@ -395,7 +421,7 @@
                                     <span
                                         v-else
                                     >
-                                        {{props.item.name}}
+                                        {{ props.item.name }}
                                     </span>
                                 </template>
                                 <template v-slot:item.actions="props">
@@ -522,7 +548,7 @@ export default {
     },
     methods: {
         __getServices() {
-            this.$store.dispatch('Services/getServicesList', { search: this.searchService });
+            this.$store.dispatch('Services/getServicesList', {search: this.searchService});
         },
         __getSettings() {
             this.$store.dispatch('Tracking/getSettings');
@@ -562,7 +588,7 @@ export default {
                     }
                 });
         },
-        saveService (item) {
+        saveService(item) {
             this.$store.dispatch('Services/updateService', item);
         },
         __saveSettings() {
@@ -582,7 +608,7 @@ export default {
     computed: {
         enableTimesheet: {
             get() {
-                const { settings } = this.$store.getters['Tracking/getSettings'];
+                const {settings} = this.$store.getters['Tracking/getSettings'];
                 return settings && settings.enableTimesheet ? settings.enableTimesheet : false;
             },
             async set(val) {
@@ -592,7 +618,7 @@ export default {
         },
         toggleProjectType: {
             get() {
-                const { settings } = this.$store.getters['Tracking/getSettings'];
+                const {settings} = this.$store.getters['Tracking/getSettings'];
                 return settings && settings.projectType ? settings.projectType : 0;
             },
             async set(val) {
@@ -601,8 +627,6 @@ export default {
             }
         },
     },
-    watch: {
-
-    }
+    watch: {}
 }
 </script>

@@ -282,7 +282,7 @@ class UserRepository
         UserNotificationStatus::where('user_id', $id)->whereNotIn('status', $notificationStatuses)->delete();
 
         foreach ($notificationStatuses as $status) {
-            UserNotificationStatus::firstOrCreate([
+            UserNotificationStatus::query()->firstOrCreate([
                 'user_id' => $id,
                 'status' => $status
             ]);

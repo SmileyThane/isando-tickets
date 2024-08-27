@@ -569,6 +569,7 @@
 import EventBus from "../../components/EventBus";
 
 export default {
+    name: 'tickets',
     props: {
         page: {
             type: [String, Number],
