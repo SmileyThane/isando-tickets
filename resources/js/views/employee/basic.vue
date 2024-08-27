@@ -2205,10 +2205,7 @@ export default {
                                 that.notificationStatuses.push(item.status);
                             }
                         });
-                    } else {
-                        this.notificationStatuses = [101, 102, 103, 201, 202, 301, 302];
                     }
-
                     if (this.userData.avatar_url) {
                         this.avatar = this.userData.avatar_url;
                     } else {
