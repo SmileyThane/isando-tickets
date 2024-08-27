@@ -57,6 +57,11 @@ class User extends Authenticatable
         return $this->hasOne(CompanyUser::class, 'user_id', 'id')->withTrashed();
     }
 
+    public function mainCompanies(): HasMany
+    {
+        return $this->hasMany(CompanyUser::class, 'user_id', 'id')->withTrashed();
+    }
+
     public function phoneTypes(): MorphMany
     {
         return $this->morphMany(PhoneType::class, 'entity');
