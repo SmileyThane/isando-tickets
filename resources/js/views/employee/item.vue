@@ -19,12 +19,12 @@
 
 <script>
 import BasicView from './basic.vue';
-import tickets1 from '../ticket/index.vue';
+import TicketsView from '../ticket/index.vue';
 
 export default {
   components: {
       'basic-view': BasicView,
-      'tickets': tickets1,
+      'tickets': TicketsView,
   },
   data() {
     return {
