@@ -1403,13 +1403,13 @@ export default {
                 return Object.assign({}, entry, {name})
             })
         },
-        periodStart () {
+        periodStart() {
             return moment(this.dateRange.start).format('DD/MM/YYYY');
         },
-        periodEnd () {
+        periodEnd() {
             return moment(this.dateRange.end).format('DD/MM/YYYY');
         },
-        teamEmployee () {
+        teamEmployee() {
             if (this.hasPermission([90])) {
                 return this.$store.getters['Team/getCoworkers'];
             } else if (this.hasPermission([42])) {
