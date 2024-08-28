@@ -1479,8 +1479,8 @@ export default {
                     .format(this.dateTimeFormat);
             }
         },
-        search () {
-            this.$store.dispatch('Projects/getProjectList', { search: this.search });
+        search() {
+            this.$store.dispatch('Projects/getProjectList', {search: this.search});
         },
         globalTimer: function () {
             // Update DataTable passed field
