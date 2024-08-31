@@ -17,7 +17,13 @@
             @onSetCompanyName="onSetCompanyName"
             v-if="item === 'basic'"
           />
-          <tickets :companyName="companyName" v-else />
+          <tickets
+            :searchValue="companyName"
+            searchLabel="Company"
+            pageName="customer"
+            :searchDisabled="true"
+            v-else
+          />
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -26,7 +32,7 @@
 
 <script>
 import BasicView from './basic.vue';
-import TicketsView from './tickets.vue';
+import TicketsView from '../../components/tickets/tickets.vue';
 
 export default {
   props: {

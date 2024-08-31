@@ -17,7 +17,13 @@
             @onSetContactName="onSetContactName"
             v-if="item === 'basic'"
           />
-          <tickets :contactName="contactName" v-else />
+          <tickets
+            :searchValue="contactName"
+            searchLabel="Contact"
+            pageName="individual"
+            :searchDisabled="true"
+            v-else
+          />
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -26,7 +32,7 @@
 
 <script>
 import BasicEmployee from './basic';
-import tickets from './tickets.vue';
+import tickets from '../../components/tickets/tickets';
 
 export default {
   components: {

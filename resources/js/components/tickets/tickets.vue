@@ -19,11 +19,11 @@
 
     <ticketsTable
       :active-tab="activeTab"
-      :searchValue="companyName"
-      searchLabel="Company"
-      :searchDisabled="true"
+      :searchValue="searchValue"
+      :searchLabel="searchLabel"
+      :searchDisabled="searchDisabled"
       :tabs="tabs"
-      pageName="customer"
+      :pageName="pageName"
       :tab="tab"
       :page="page"
     />
@@ -44,7 +44,7 @@
 </style>
 
 <script>
-import ticketsTable from '../../components/tickets/ticketsTable';
+import ticketsTable from './ticketsTable.vue';
 
 export default {
   name: 'tickets',
@@ -58,9 +58,21 @@ export default {
       type: [String, Number],
       default: 1,
     },
-    companyName: {
+    searchValue: {
       type: String,
       default: '',
+    },
+    pageName: {
+      type: String,
+      default: '',
+    },
+    searchLabel: {
+      type: String,
+      default: 'Company',
+    },
+    searchDisabled: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -71,7 +83,6 @@ export default {
       snackbar: false,
       actionColor: '',
       snackbarMessage: '',
-      searchLabel: 'Company',
       tabs: [
         { id: 0, name: this.$store.state.lang.lang_map.ticket_tabs.all },
         { id: 1, name: this.$store.state.lang.lang_map.ticket_tabs.open },
@@ -94,7 +105,7 @@ export default {
   watch: {
     activeTab(value) {
       this.$router.push({
-        name: 'customer',
+        name: this.pageName,
         query: { ...this.$route.query, tab: value, page: 1 },
       });
     },

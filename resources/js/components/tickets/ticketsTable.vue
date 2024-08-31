@@ -46,7 +46,13 @@
                 <template slot="prepend">
                   <v-menu bottom rounded transition="slide-y-transition">
                     <template v-slot:activator="{ on: menu, attrs }">
-                      <v-btn :disabled="searchDisabled" text v-bind="attrs" v-on="{ ...menu }" small>
+                      <v-btn
+                        :disabled="searchDisabled"
+                        text
+                        v-bind="attrs"
+                        v-on="{ ...menu }"
+                        small
+                      >
                         <span v-if="searchLabel !== ''">
                           {{ searchLabel }}
                         </span>
@@ -255,7 +261,7 @@
                 v-on="on"
                 @click.prevent.stop="expandItem(item)"
               >
-                <v-icon x-small> mdi-checkbox-blank-circle </v-icon>
+                <v-icon x-small> mdi-checkbox-blank-circle</v-icon>
               </v-btn>
             </template>
             <span>{{ item.priority.name }}.{{ item.status.name }}</span>
@@ -549,22 +555,22 @@ export default {
       type: Array,
       default: [],
     },
-      pageName: {
-        type: String,
-          default: 'tickets'
-      },
-      page: {
-          type: [String, Number],
-          default: 1,
-      },
-      tab: {
-          type: [String, Number],
-          default: 1,
-      },
-      searchDisabled: {
-        type: Boolean,
-          default: false,
-      }
+    pageName: {
+      type: String,
+      default: '',
+    },
+    page: {
+      type: [String, Number],
+      default: 1,
+    },
+    tab: {
+      type: [String, Number],
+      default: 1,
+    },
+    searchDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -647,7 +653,7 @@ export default {
           width: '80px',
         },
       ],
-        types: [],
+      types: [],
       tickets: [],
       tablePage: 1,
       options: {
@@ -728,20 +734,21 @@ export default {
       }
     }, 500);
     //
-    const storageCustomerTicketsPath = JSON.parse(
-      localStorage.getItem('ticketsPath')
-    );
-    if (storageCustomerTicketsPath) {
-      console.log(111, storageCustomerTicketsPath);
-      this.$router.push({
-        name: this.pageName,
-        query: { ...this.$route.query, ...storageCustomerTicketsPath },
-      });
-      this.options.page = storageCustomerTicketsPath.page;
-    }
+    // const storageCustomerTicketsPath = JSON.parse(
+    //   localStorage.getItem('ticketsPath')
+    // );
+    // if (storageCustomerTicketsPath) {
+    //   this.$router.push({
+    //     name: this.pageName,
+    //     query: { ...this.$route.query, ...storageCustomerTicketsPath },
+    //   });
+    //   this.options.page = storageCustomerTicketsPath.page;
+    // }
 
-    if(this.searchValue) {
-        this.ticketsSearch = this.searchValue;
+    console.log(this.pageName);
+
+    if (this.searchValue) {
+      this.ticketsSearch = this.searchValue;
     }
   },
   methods: {
@@ -769,7 +776,10 @@ export default {
         this.activeTab = parseInt(this.tab) || 1;
         // this.getTickets();
 
-        this.$router.push({name: this.pageName, query: {...this.$route.query, page: this.page, tab: this.tab}})
+        this.$router.push({
+          name: this.pageName,
+          query: { ...this.$route.query, page: this.page, tab: this.tab },
+        });
       }
     },
     manageFilter() {
@@ -794,10 +804,13 @@ export default {
       if (this.expanded.indexOf(item) !== -1) {
         delete query.expanded;
         this.expanded = [];
-        this.$router.push({name: this.pageName, query});
+        this.$router.push({ name: this.pageName, query });
       } else {
         this.expanded.splice(0, 1, item);
-        this.$router.push({name: this.pageName, query: {...query, expanded: item.id}})
+        this.$router.push({
+          name: this.pageName,
+          query: { ...query, expanded: item.id },
+        });
       }
     },
     saveFilter() {
@@ -1129,9 +1142,12 @@ export default {
       deep: true,
     },
     tickets() {
-        if (this.$route.query.expanded && this.tickets.length) {
-            this.expanded = this.tickets.filter((ticket) => ticket.id.toString() === this.$route.query.expanded.toString())
-        }
+      if (this.$route.query.expanded && this.tickets.length) {
+        this.expanded = this.tickets.filter(
+          (ticket) =>
+            ticket.id.toString() === this.$route.query.expanded.toString()
+        );
+      }
     },
     options: {
       handler: _.debounce(function (v) {
