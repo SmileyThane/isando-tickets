@@ -1,7 +1,11 @@
 <template>
-  <div>
-    <v-tabs :color="themeBgColor" v-model="employeeActiveTab" align-with-title>
-      <v-tab v-for="item in items" :key="item">
+  <v-container fluid>
+    <v-tabs v-model="employeeActiveTab" :color="themeBgColor" align-with-title>
+      <v-tab
+        v-for="(item, index) in items"
+        @click="handleChangeCustomerTab(index)"
+        :key="item"
+      >
         {{ item }}
       </v-tab>
     </v-tabs>
@@ -9,30 +13,55 @@
     <v-tabs-items v-model="employeeActiveTab">
       <v-tab-item v-for="item in items" :key="item">
         <v-card flat>
-          <basic-view v-if="item === 'basic'" />
-          <tickets v-else />
+          <basic-employee
+            @onSetContactName="onSetContactName"
+            v-if="item === 'basic'"
+          />
+          <tickets
+            :searchValue="contactName"
+            searchLabel="Contact"
+            pageName="individual"
+            :searchDisabled="true"
+            v-else
+          />
         </v-card>
       </v-tab-item>
     </v-tabs-items>
-  </div>
+  </v-container>
 </template>
 
 <script>
-import BasicView from './basic.vue';
-import TicketsView from '../ticket/index.vue';
+import BasicEmployee from './basic';
+import tickets from '../../components/tickets/tickets';
 
 export default {
   components: {
-      'basic-view': BasicView,
-      'tickets': TicketsView,
+    tickets: tickets,
+    'basic-employee': BasicEmployee,
   },
   data() {
     return {
-      themeBgColor: this.$store.state.themeBgColor,
-      employeeActiveTab: 'basic',
       items: ['basic', 'tickets'],
+      contactName: '',
+      employeeActiveTab: this.tab,
+      themeFgColor: this.$store.state.themeFgColor,
+      themeBgColor: this.$store.state.themeBgColor,
     };
+  },
+  methods: {
+    onSetContactName(name) {
+      this.contactName = name;
+    },
+    handleChangeCustomerTab(key) {
+      this.employeeActiveTab = key;
+      this.$router.push({
+        name: 'individual',
+        query: {
+          ...this.$route.query,
+          customerTab: key,
+        },
+      });
+    },
   },
 };
 </script>
-<script setup></script>

@@ -19,9 +19,11 @@
 
     <ticketsTable
       :active-tab="activeTab"
-      searchLabel="Company"
+      :searchValue="searchValue"
+      :searchLabel="searchLabel"
+      :searchDisabled="searchDisabled"
       :tabs="tabs"
-      pageName="ticket_list"
+      :pageName="pageName"
       :tab="tab"
       :page="page"
     />
@@ -42,8 +44,7 @@
 </style>
 
 <script>
-import EventBus from '../../components/EventBus';
-import ticketsTable from '../../components/tickets/ticketsTable.vue';
+import ticketsTable from './ticketsTable.vue';
 
 export default {
   name: 'tickets',
@@ -57,12 +58,31 @@ export default {
       type: [String, Number],
       default: 1,
     },
+    searchValue: {
+      type: String,
+      default: '',
+    },
+    pageName: {
+      type: String,
+      default: '',
+    },
+    searchLabel: {
+      type: String,
+      default: 'Company',
+    },
+    searchDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       langMap: this.$store.state.lang.lang_map,
       themeFgColor: this.$store.state.themeFgColor,
       themeBgColor: this.$store.state.themeBgColor,
+      snackbar: false,
+      actionColor: '',
+      snackbarMessage: '',
       tabs: [
         { id: 0, name: this.$store.state.lang.lang_map.ticket_tabs.all },
         { id: 1, name: this.$store.state.lang.lang_map.ticket_tabs.open },
@@ -82,22 +102,16 @@ export default {
       activeTab: this.tab ? parseInt(this.tab) : 1,
     };
   },
-  mounted() {
-    let that = this;
-    EventBus.$on('update-theme-fg-color', function (color) {
-      that.themeFgColor = color;
-    });
-    EventBus.$on('update-theme-bg-color', function (color) {
-      that.themeBgColor = color;
-    });
-  },
   watch: {
     activeTab(value) {
-      this.$router.push({ query: { page: 1, tab: this.activeTab } });
+      this.$router.push({
+        name: this.pageName,
+        query: { ...this.$route.query, tab: value, page: 1 },
+      });
     },
-    '$route.query': function () {
-      if (+this.activeTab !== +this.$route.query.tab) {
-        this.activeTab = +this.$route.query.tab;
+    '$route.query.tab': function (value) {
+      if (+this.activeTab !== +value) {
+        this.activeTab = +value;
       }
     },
   },
@@ -112,6 +126,6 @@ export default {
 .v-data-table > .v-data-table__wrapper > table > tbody > tr > td,
 .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td,
 .v-data-table > .v-data-table__wrapper > table > thead > tr > td {
-  height: 0px;
+  height: 0;
 }
 </style>

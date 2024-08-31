@@ -97,8 +97,16 @@ export default {
                 localStorage.setItem('ticketsPath', JSON.stringify(to.query))
             }
 
+            if(this.$route.path.includes('customer')) {
+                localStorage.setItem('customerTicketsPath', JSON.stringify(to.query))
+            }
+
             if(!this.$route.path.includes('tickets') || !this.$route.path.includes('ticket')) {
                 localStorage.removeItem('ticketsPath')
+            }
+
+            if(!this.$route.path.includes('customer')) {
+                localStorage.removeItem('customerTicketsPath')
             }
         }
     },
@@ -127,10 +135,14 @@ export default {
         },
         back() {
             const storageTicketsPath = JSON.parse(localStorage.getItem('ticketsPath'))
+            const storageCustomerTicketsPath = JSON.parse(localStorage.getItem('customerTicketsPath'))
 
             if (storageTicketsPath && this.$route.path.includes('/ticket/')) {
                 this.$router.push({ name: 'ticket_list', query: storageTicketsPath })
+            } else if(storageCustomerTicketsPath && this.$route.path.includes('/ticket/')) {
+                this.$router.push({ name: 'customer', query: storageCustomerTicketsPath })
             } else {
+                // this.$router.go(-1)
                 window.history.back();
             }
         },
