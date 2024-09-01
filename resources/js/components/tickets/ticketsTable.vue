@@ -906,7 +906,7 @@ export default {
             });
         },
         showItem(item) {
-            location.href = `/ticket/${item.id}`;
+            this.$router.push(`/ticket/${item.id}`)
         },
         ticketDeleteProcess(item) {
             this.selectedticketId = item.id;

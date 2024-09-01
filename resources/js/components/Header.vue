@@ -134,17 +134,7 @@ export default {
             });
         },
         back() {
-            const storageTicketsPath = JSON.parse(localStorage.getItem('ticketsPath'))
-            const storageCustomerTicketsPath = JSON.parse(localStorage.getItem('customerTicketsPath'))
-
-            if (storageTicketsPath && this.$route.path.includes('/ticket/')) {
-                this.$router.push({ name: 'ticket_list', query: storageTicketsPath })
-            } else if(storageCustomerTicketsPath && this.$route.path.includes('/ticket/')) {
-                this.$router.push({ name: 'customer', query: storageCustomerTicketsPath })
-            } else {
-                // this.$router.go(-1)
-                window.history.back();
-            }
+            this.$router.go(-1)
         },
         logout(e) {
             e.preventDefault()
