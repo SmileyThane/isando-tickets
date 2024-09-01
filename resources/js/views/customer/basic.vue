@@ -2573,7 +2573,7 @@ export default {
         entity_type: 'App\\Client',
         email: '',
         email_type: '',
-        opened: null,
+        opened: [],
       },
       supplierForm: {
         client_id: null,
