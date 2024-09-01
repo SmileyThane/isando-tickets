@@ -43,7 +43,7 @@ export default {
     return {
       items: ['basic', 'tickets'],
       contactName: '',
-      employeeActiveTab: this.tab,
+        employeeActiveTab: this.$route.query.employeeActiveTab ? parseInt(this.$route.query.employeeActiveTab) : 0,
       themeFgColor: this.$store.state.themeFgColor,
       themeBgColor: this.$store.state.themeBgColor,
     };
@@ -53,14 +53,15 @@ export default {
       this.contactName = name;
     },
     handleChangeCustomerTab(key) {
-      this.employeeActiveTab = key;
-      this.$router.push({
-        name: 'individual',
-        query: {
-          ...this.$route.query,
-          customerTab: key,
-        },
-      });
+        if (key !== this.$route.query.employeeActiveTab) {
+            this.$router.push({
+                name: 'individual',
+                query: {
+                    ...this.$route.query,
+                    employeeActiveTab: key,
+                },
+            });
+        }
     },
   },
 };

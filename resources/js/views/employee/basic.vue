@@ -2268,9 +2268,6 @@ export default {
         this.getActivityTypes();
         this.getProducts();
         this.getFilterGroups();
-        // if (localStorage.getItem('auth_token')) {
-        //     this.$router.push('tickets')
-        // }
         this.$store.dispatch('getMainCompany');
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
