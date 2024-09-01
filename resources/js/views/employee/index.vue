@@ -170,7 +170,7 @@
                                                     @change="debounceGetEmployees"/>
                                     </v-col>
                                     <v-col md="2" sm="12">
-                                        <v-pagination v-model="tablePage"
+                                        <v-pagination v-model="options.page"
                                                       :color="themeBgColor"
                                                       :length="lastPage"
                                                       :page="options.page"
@@ -183,7 +183,7 @@
                                 </v-row>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination v-model="tablePage"
+                                <v-pagination v-model="options.page"
                                               :color="themeBgColor"
                                               :length="lastPage"
                                               :page="options.page"
@@ -358,7 +358,6 @@ export default {
             isLoading: false,
             selectedEmployeeId: null,
             removeEmployeeDialog: false,
-            tablePage: 1,
             options: {
                 page: this.page ? parseInt(this.page) : 1,
                 sortDesc: [false],
@@ -457,10 +456,7 @@ export default {
     methods: {
         updatePageFromRoute() {
             if (this.page) {
-                this.tablePage = parseInt(this.page) || 1
-                this.options.page = parseInt(this.page) || 1;
                 this.getEmployees();
-                this.$router.push({ name: 'individuals', query: { page: this.page } })
             }
         },
         getEmployees() {
@@ -471,7 +467,7 @@ export default {
                 this.options.sortBy[0] = 'id'
                 this.options.sortDesc[0] = false
             }
-            if (this.totalEmployees < this.options.itemsPerPage) {
+            if (this.totalEmployees > 0 && this.totalEmployees < this.options.itemsPerPage) {
                 this.options.page = 1
             }
             axios.get('/api/employee', {
@@ -599,12 +595,15 @@ export default {
         },
         page(newValue) {
             this.options.page = parseInt(newValue) || 1;
-            this.tablePage = parseInt(newValue) || 1;
             this.getEmployees();
+
         },
-        tablePage: function(newValue, oldValue) {
-            if (newValue !== oldValue) {
-                this.$router.push({ name: 'individuals', query: { page: newValue } });
+        'options.page'(value) {
+            if (value !== this.$route.query.page) {
+                this.$router.push({
+                    name: 'individuals',
+                    query: { ...this.$route.query, page: value, },
+                });
             }
         },
         employeesSearch(val){
