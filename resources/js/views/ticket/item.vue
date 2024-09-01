@@ -3236,25 +3236,12 @@ export default {
         this.getTickets();
         this.getSignatures();
         this.getCurrentUser();
-        // if (localStorage.getticket('auth_token')) {
-        //     this.$router.push('tickets')
-        // }
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeBgColor = color;
         });
 
         let ticketId = this.$route.params.id;
-        window.history.replaceState(
-            {},
-            this.langMap.sidebar.ticket_list,
-            '/tickets'
-        );
-        window.history.pushState(
-            {ticket_id: ticketId},
-            this.langMap.sidebar.ticket,
-            `/ticket/${ticketId}`
-        );
         this.trackerActive.entity_id = ticketId;
         this.getTrackers();
         this.$store.dispatch('Tags/getTagList', {force: true});

@@ -32,12 +32,18 @@ class CompanyRepository
 
     public function find($request, $id)
     {
-        $employee = Auth::user()->employee;
+        $user = Auth::user();
+        $employee = $user->employee;
         if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $company = $clientCompanyUser->clients()->with('employees.employee.userData');
         } else {
-            $company = Company::where('id', $id ?? $employee->company_id);
+            if ($id) {
+                $company = Company::where('id', $id);
+            } else {
+                $company = Company::whereIn('id', $user->mainCompanies->pluck('company_id')->toArray());
+            }
+
             $company->with('currency');
         }
         if ($request->search !== '') {

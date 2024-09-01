@@ -97,8 +97,16 @@ export default {
                 localStorage.setItem('ticketsPath', JSON.stringify(to.query))
             }
 
+            if(this.$route.path.includes('customer')) {
+                localStorage.setItem('customerTicketsPath', JSON.stringify(to.query))
+            }
+
             if(!this.$route.path.includes('tickets') || !this.$route.path.includes('ticket')) {
                 localStorage.removeItem('ticketsPath')
+            }
+
+            if(!this.$route.path.includes('customer')) {
+                localStorage.removeItem('customerTicketsPath')
             }
         }
     },
@@ -126,13 +134,7 @@ export default {
             });
         },
         back() {
-            const storageTicketsPath = JSON.parse(localStorage.getItem('ticketsPath'))
-
-            if (storageTicketsPath && this.$route.path.includes('/ticket/')) {
-                this.$router.push({ name: 'ticket_list', query: storageTicketsPath })
-            } else {
-                window.history.back();
-            }
+            this.$router.go(-1)
         },
         logout(e) {
             e.preventDefault()

@@ -114,7 +114,8 @@ export default [
         meta: {
             requiresAuth: true,
         },
-        component: SingleCustomer
+        component: SingleCustomer,
+        props: route => ({ tab: route.query.tab }),
     },
     {
         path: '/customer',
