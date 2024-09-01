@@ -1081,11 +1081,12 @@ export default {
         activeTab(value) {
             this.setOptionsByActiveTab(value);
             this.options.page = 1
-            console.log('tab', value)
-            this.$router.push({
-                name: this.pageName,
-                query: { ...this.$route.query, tab: value },
-            });
+            if (value !== parseInt(this.$route.query.tab)) {
+                this.$router.push({
+                    name: this.pageName,
+                    query: { ...this.$route.query, tab: value },
+                });
+            }
         },
         searchLabel: {
             handler: _.debounce(function (value) {
