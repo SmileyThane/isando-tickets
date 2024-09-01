@@ -1081,7 +1081,7 @@ export default {
         activeTab(value) {
             this.setOptionsByActiveTab(value);
             this.options.page = 1
-            if (value !== parseInt(this.$route.query.tab)) {
+            if (value !== parseInt(this.$route.query.tab) && !isNaN(value)) {
                 this.$router.push({
                     name: this.pageName,
                     query: { ...this.$route.query, tab: value },
@@ -1111,7 +1111,7 @@ export default {
             }
         },
         options: {
-            handler: _.debounce(function (v) {
+            handler: _.debounce(function () {
                 this.getTickets();
             }, 500),
             deep: true,
@@ -1122,8 +1122,7 @@ export default {
             }
         },
         'options.page'(value) {
-            console.log('page',value)
-            if (value !== this.$route.query.page) {
+            if (value !== parseInt(this.$route.query.page)) {
                 this.$router.push({
                     name: this.pageName,
                     query: {...this.$route.query, page: value,},
@@ -1131,6 +1130,15 @@ export default {
 
             }
         },
+        '$route'() {
+            if (this.$route.query.page) {
+                this.options.page = parseInt(this.$route.query.page)
+            }
+
+            if(typeof this.$route.query.page === "undefined"){
+                this.options.page = 1
+            }
+        }
     },
 };
 </script>
