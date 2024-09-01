@@ -66,6 +66,17 @@ export default {
             }
         },
     },
+    watch: {
+        '$route'() {
+            if (this.$route.query.customerActiveTab) {
+                this.customerActiveTab = parseInt(this.$route.query.customerActiveTab)
+            }
+
+            if(typeof this.$route.query.customerActiveTab === "undefined"){
+                this.customerActiveTab = 0
+            }
+        }
+    }
 };
 </script>
 <script setup></script>
