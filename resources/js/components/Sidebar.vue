@@ -415,7 +415,7 @@
                                 v-on="on"
                                 v-if="$helpers.auth.checkPermissionByIds([1])"
                                 color="#757575" link
-                                to="/tickets?page=1&tab=5"
+                                to="/tickets?tab=5"
                             >
                                 <v-list-item-action>
                                     <v-icon>mdi mdi-view-list</v-icon>
