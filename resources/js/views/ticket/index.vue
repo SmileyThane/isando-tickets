@@ -1,117 +1,19 @@
 <template>
-  <v-container fluid>
-    <v-toolbar flat>
-      <v-tabs v-model="activeTab" :color="themeBgColor">
-        <v-tab v-for="item in tabs" :key="item.id" :value="item.id"
-          >{{ item.name }}
-        </v-tab>
-      </v-tabs>
-      <v-spacer></v-spacer>
-      <v-tooltip left>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn text v-bind="attrs" v-on="on">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-        </template>
-        <span>Coming soon</span>
-      </v-tooltip>
-    </v-toolbar>
-
-    <ticketsTable
-      :active-tab="activeTab"
-      searchLabel="Company"
-      :tabs="tabs"
-      pageName="ticket_list"
-      :tab="tab"
-      :page="page"
+    <tickets
+        searchLabel="Company"
+        pageName="ticket_list"
+        :searchDisabled="false"
     />
-  </v-container>
 </template>
 
-<style scoped>
-.v-data-table /deep/ .sticky-header {
-  position: sticky;
-}
-
-.v-data-table /deep/ .v-data-table__wrapper {
-  overflow: unset;
-  z-index: 5;
-  position: relative;
-  background: #fff;
-}
-</style>
-
 <script>
-import EventBus from '../../components/EventBus';
-import ticketsTable from '../../components/tickets/ticketsTable.vue';
+import tickets from '../../components/tickets/tickets';
 
 export default {
-  name: 'tickets',
-  components: { ticketsTable },
-  props: {
-    page: {
-      type: [String, Number],
-      default: 1,
+    components: {tickets},
+
+    data() {
+        return {};
     },
-    tab: {
-      type: [String, Number],
-      default: 1,
-    },
-  },
-  data() {
-    return {
-      langMap: this.$store.state.lang.lang_map,
-      themeFgColor: this.$store.state.themeFgColor,
-      themeBgColor: this.$store.state.themeBgColor,
-      tabs: [
-        { id: 0, name: this.$store.state.lang.lang_map.ticket_tabs.all },
-        { id: 1, name: this.$store.state.lang.lang_map.ticket_tabs.open },
-        { id: 2, name: this.$store.state.lang.lang_map.ticket_tabs.my_tickets },
-        {
-          id: 3,
-          name: this.$store.state.lang.lang_map.ticket_tabs.urgent_open,
-        },
-        {
-          id: 4,
-          name: this.$store.state.lang.lang_map.ticket_tabs.internal_open,
-        },
-        { id: 5, name: this.$store.state.lang.lang_map.ticket_tabs.projects },
-        { id: 6, name: this.$store.state.lang.lang_map.ticket_tabs.spam },
-        { id: 7, name: this.$store.state.lang.lang_map.ticket_tabs.closed },
-      ],
-      activeTab: this.tab ? parseInt(this.tab) : 1,
-    };
-  },
-  mounted() {
-    let that = this;
-    EventBus.$on('update-theme-fg-color', function (color) {
-      that.themeFgColor = color;
-    });
-    EventBus.$on('update-theme-bg-color', function (color) {
-      that.themeBgColor = color;
-    });
-  },
-  watch: {
-    activeTab(value) {
-      this.$router.push({ query: { page: 1, tab: this.activeTab } });
-    },
-    '$route.query': function () {
-      if (+this.activeTab !== +this.$route.query.tab) {
-        this.activeTab = +this.$route.query.tab;
-      }
-    },
-  },
 };
 </script>
-
-<style>
-.v-data-table-header th {
-  white-space: nowrap;
-}
-
-.v-data-table > .v-data-table__wrapper > table > tbody > tr > td,
-.v-data-table > .v-data-table__wrapper > table > tfoot > tr > td,
-.v-data-table > .v-data-table__wrapper > table > thead > tr > td {
-  height: 0px;
-}
-</style>
