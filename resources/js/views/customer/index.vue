@@ -130,17 +130,6 @@
                                                   :menu-props="{ bottom: true, offsetY: true }"
                                                   v-on:change="debounceGetClients"/>
                                     </v-col>
-<!--                                    <v-col md="2" sm="12">-->
-<!--                                        <v-select-->
-<!--                                            v-model="customersSearchOption"-->
-<!--                                            :color="themeBgColor"-->
-<!--                                            :item-color="themeBgColor"-->
-<!--                                            :items="footerProps.itemsPerPageOptions"-->
-<!--                                            :label="langMap.main.items_per_page"-->
-<!--                                            class="mx-4 d-flex"-->
-<!--                                            @change="updateItemsCount"-->
-<!--                                        ></v-select>-->
-<!--                                    </v-col>-->
                                     <v-col cols="2">
                                         <v-select
                                             v-model="options.itemsPerPage"
@@ -155,7 +144,7 @@
                                         ></v-select>
                                     </v-col>
                                     <v-col cols="2">
-                                        <v-pagination v-model="tablePage"
+                                        <v-pagination v-model="options.page"
                                                       :color="themeBgColor"
                                                       :length="lastPage"
                                                       :page="options.page"
@@ -204,7 +193,7 @@
                                 </span>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination v-model="tablePage"
+                                <v-pagination v-model="options.page"
                                               :color="themeBgColor"
                                               :length="lastPage"
                                               :page="options.page"
@@ -330,9 +319,8 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             expanded: [],
             singleExpand: false,
-            tablePage: 1,
             options: {
-                page: this.page ? parseInt(this.page) : 1,
+                page: this.$route.query.page ? parseInt(this.$route.query.page) : 1,
                 sortDesc: [false],
                 sortBy: ['name'],
                 itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
@@ -427,10 +415,7 @@ export default {
     methods: {
         updatePageFromRoute() {
             if (this.page) {
-                this.tablePage = parseInt(this.page) || 1
-                this.options.page = parseInt(this.page) || 1;
                 this.getClients();
-                this.$router.push({ name: 'customers', query: { page: this.page } })
             }
         },
         getClients() {
@@ -440,7 +425,7 @@ export default {
                 this.options.sortBy[0] = 'id'
                 this.options.sortDesc[0] = false
             }
-            if (this.totalCustomers < this.options.itemsPerPage) {
+            if (this.totalCustomers > 0 && this.totalCustomers < this.options.itemsPerPage) {
                 this.options.page = 1
             }
             axios.get('/api/client', {
@@ -541,18 +526,19 @@ export default {
             },
             deep: true,
         },
-        loading(value) {
+        'options.page'(value) {
+            if (value !== this.$route.query.page) {
+                this.$router.push({
+                    name: 'customers',
+                    query: { ...this.$route.query, page: value, },
+                });
+            }
+        },
+        loading() {
             this.$parent.$parent.$refs.container.scrollTop = 0
         },
         page(newValue) {
-            this.options.page = parseInt(newValue) || 1;
-            this.tablePage = parseInt(newValue) || 1;
-            this.getClients();
-        },
-        tablePage: function(newValue, oldValue) {
-            if (newValue !== oldValue) {
-                this.$router.push({ name: 'customers', query: { page: newValue } });
-            }
+            this.options.page = parseInt(newValue) ?? 1;
         },
     },
 }
