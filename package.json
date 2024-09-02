@@ -48,6 +48,6 @@
     "vuedraggable": "^2.24.3",
     "vuetify": "^2.2.32",
     "vuex": "^3.5.1",
-    "webpack": "^5.92.0"
+    "webpack": "^5.94.0"
   }
 }
