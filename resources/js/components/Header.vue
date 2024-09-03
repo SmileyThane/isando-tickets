@@ -134,7 +134,7 @@ export default {
             });
         },
         back() {
-            this.$router.go(-1)
+            window.history.back();
         },
         logout(e) {
             e.preventDefault()
