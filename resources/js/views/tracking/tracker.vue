@@ -605,8 +605,9 @@
                                                             @open="open"
                                                             @close=""
                                                         >
-                                                            {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;<span v-if="row.date_to && row.date_to !== null">{{moment(row.date_to).format(timeFormat)}}</span>
-                                                            <span v-else>{{moment().format(timeFormat)}}</span>
+                                                            {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;<span
+                                                            v-if="row.date_to && row.date_to !== null">{{ moment(row.date_to).format(timeFormat) }}</span>
+                                                            <span v-else>{{ moment().format(timeFormat) }}</span>
                                                             <template v-slot:input>
                                                                 <div class="d-flex flex-row">
                                                                     <div class="d-inline-flex">
