@@ -416,7 +416,7 @@
 
         <br>
 
-<!--        dataTable-->
+        <!--        dataTable-->
         <template>
             <v-expansion-panels
                 v-model="panels"
@@ -789,30 +789,37 @@
 </template>
 
 <style scoped>
->>> .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:before,
-.date-picker__without-line.v-text-field:not(.v-input__has-state):hover>.v-input__control>.v-input__slot:before,
-.date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:after{
+>>> .date-picker__without-line.v-text-field > .v-input__control > .v-input__slot:before,
+.date-picker__without-line.v-text-field:not(.v-input__has-state):hover > .v-input__control > .v-input__slot:before,
+.date-picker__without-line.v-text-field > .v-input__control > .v-input__slot:after {
     border: none !important;
 }
+
 >>> .dateRangePicker input {
     text-align: center;
 }
+
 >>> .v-data-table-header {
     /*display: none;*/
 }
+
 >>> .v-expansion-panel-header {
     min-height: 40px !important;
     padding: 14px 24px !important;
 }
+
 >>> .v-data-table__wrapper tr td.text-start:nth-child(6):after {
     /*content: "—";*/
 }
+
 >>> *:not(.v-icon) {
     font-size: 12px !important;
 }
+
 >>> .tag-field *:before {
     border: none !important;
 }
+
 >>> .tag-field .v-label {
     text-align: right;
     width: 80%;
