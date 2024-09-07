@@ -752,7 +752,7 @@
                                                                                     @click="actionDeleteTracking(row.id)"
                                                                                     style="color: red"
                                                                                 >
-                                                                                    {{langMap.tracking.tracker.delete}}
+                                                                                    {{ langMap.tracking.tracker.delete }}
                                                                                 </v-list-item-title>
                                                                             </v-list-item-content>
                                                                         </v-list-item>
@@ -1046,7 +1046,7 @@ export default {
                 offset: this.offset,
             });
             return axios.get(`/api/ttmanaging/ttmanager?${queryParams.toString()}`)
-                .then(({ data }) => {
+                .then(({data}) => {
                     if (this.offset === 0) {
                         this.tracking = [];
                     }
@@ -1071,7 +1071,7 @@ export default {
         __createTracking(data) {
             this.loadingCreateTrack = true;
             return axios.post('/api/ttmanaging/ttmanager', data)
-                .then(({ data }) => {
+                .then(({data}) => {
                     // if (data.success) {
                     //     this.tracking.splice(0, 0, data.data);
                     // }
@@ -1098,7 +1098,7 @@ export default {
         __updateTrackingById(id, data) {
             this.loadingUpdateTrack = true;
             return axios.patch(`/api/ttmanaging/ttmanager/${id}`, data)
-                .then(({ data }) => {
+                .then(({data}) => {
                     if (data.success) {
                         this.tracking.splice(this.tracking.findIndex(i => i.id === id), 1, data.data);
                     }
@@ -1136,7 +1136,7 @@ export default {
         },
         __duplicateTracking(id) {
             return axios.post(`/api/ttmanaging/ttmanager/${id}/duplicate`)
-                .then(({ data }) => {
+                .then(({data}) => {
                     // this.debounceGetTracking();
                     this.tracking.splice(0, 0, data.data);
                     return data;
@@ -1281,11 +1281,11 @@ export default {
                     }
                     return true;
                 })
-                .filter(function(item) {
-                return moment(item.date_from).format(self.dateFormat) === date;
-            });
+                .filter(function (item) {
+                    return moment(item.date_from).format(self.dateFormat) === date;
+                });
         },
-        save (item, fieldName, newValue = null) {
+        save(item, fieldName, newValue = null) {
             if (['date_from', 'date_to'].indexOf(fieldName)) {
                 item.passed = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to, true);
             }
