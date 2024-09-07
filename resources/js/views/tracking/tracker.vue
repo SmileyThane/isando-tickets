@@ -1013,15 +1013,15 @@ export default {
             });
         this.debounceGetTracking();
         this.$store.dispatch('Tracking/getSettings');
-        this.$store.dispatch('Projects/getProjectList', { search: null, force: true });
-        this.$store.dispatch('Products/getProductList', { search: null });
-        this.$store.dispatch('Clients/getClientList', { search: null, force: true });
-        this.$store.dispatch('Tags/getTagList', { force: true });
-        this.$store.dispatch('Services/getServicesList', { search: null });
-        this.$store.dispatch('Tickets/getTicketList', { search: null });
-        this.$store.dispatch('Team/getManagedTeams', { withEmployee: true });
-        this.$store.dispatch('Team/getCoworkers', { search: null });
-        this.$store.dispatch('Team/getTeams', { search: null });
+        this.$store.dispatch('Projects/getProjectList', {search: null, force: true});
+        this.$store.dispatch('Products/getProductList', {search: null});
+        this.$store.dispatch('Clients/getClientList', {search: null, force: true});
+        this.$store.dispatch('Tags/getTagList', {force: true});
+        this.$store.dispatch('Services/getServicesList', {search: null});
+        this.$store.dispatch('Tickets/getTicketList', {search: null});
+        this.$store.dispatch('Team/getManagedTeams', {withEmployee: true});
+        this.$store.dispatch('Team/getCoworkers', {search: null});
+        this.$store.dispatch('Team/getTeams', {search: null});
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1267,15 +1267,15 @@ export default {
             this.manualPanel.entity = data.project;
         },
         handlerTagsTimerPanel(data) {
-            this.timerPanel.tags  = data.tags;
+            this.timerPanel.tags = data.tags;
         },
         handlerTagsManualPanel(data) {
-            this.manualPanel.tags  = data.tags;
+            this.manualPanel.tags = data.tags;
         },
         filterTracking(date) {
             const self = this;
             return this.tracking
-                .filter(function(item) {
+                .filter(function (item) {
                     if (self.teamFilter.length) {
                         return self.teamFilter.indexOf(item.user_id) !== -1;
                     }
@@ -1376,7 +1376,7 @@ export default {
         clearInterval(this.intervalId)
     },
     computed: {
-        timeAdd () {
+        timeAdd() {
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
                 this.manualPanel.date_to = moment(this.manualPanel.date_to).format(this.dateTimeFormat);
             }
