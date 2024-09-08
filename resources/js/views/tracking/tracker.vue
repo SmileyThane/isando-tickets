@@ -1313,15 +1313,6 @@ export default {
             }
             this.__updateTrackingById(item.id, item);
         },
-        cancel () {
-            //TODO
-        },
-        open () {
-            //TODO
-        },
-        close () {
-            //TODO
-        },
         handlerChangeDate(item) {
             const date = {
                 date: moment(item.date).date(),
