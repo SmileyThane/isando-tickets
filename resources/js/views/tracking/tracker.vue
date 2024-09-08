@@ -1333,8 +1333,8 @@ export default {
             }
             const trackerDiff = moment().diff(tracker.date_from, 'seconds');
             if (
-                (this.hasPermission([45]) &&  trackerDiff > 60 * 60 * 24 * 14)
-                || (this.hasPermission([44]) &&  trackerDiff > 60 * 60 * 24 * 7)
+                (this.hasPermission([45]) && trackerDiff > 60 * 60 * 24 * 14)
+                || (this.hasPermission([44]) && trackerDiff > 60 * 60 * 24 * 7)
             ) {
                 return false;
             }
@@ -1374,14 +1374,14 @@ export default {
             const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to, true);
             return this.$helpers.time.convertSecToTime(seconds);
         },
-        dateRangeText () {
+        dateRangeText() {
             const dateFormat = 'DD MMM YYYY';
             return `${moment(this.dateRange.start).format(dateFormat)} - ${moment(this.dateRange.end).format(dateFormat)}`;
         },
-        getPanelDates () {
+        getPanelDates() {
             const self = this;
             const items = this.tracking
-                .filter(function(item) {
+                .filter(function (item) {
                     if (self.teamFilter.length) {
                         return self.teamFilter.indexOf(item.user_id) !== -1;
                     }
@@ -1391,7 +1391,7 @@ export default {
                     return [...acc, date.toString()];
                 }, []);
             const panels = [...new Set(items)].sort().reverse();
-            this.panels = panels.map((i,k) => k);
+            this.panels = panels.map((i, k) => k);
             return panels;
         },
         getFilteredProjects() {
@@ -1400,7 +1400,7 @@ export default {
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
 
-                return Object.assign({}, entry, { name })
+                return Object.assign({}, entry, {name})
             })
         },
         periodStart () {
