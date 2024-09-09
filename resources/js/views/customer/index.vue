@@ -102,7 +102,7 @@
                         <v-data-table
                             :expanded.sync="expanded"
                             :footer-props="footerProps"
-                            :headers="headers"
+                            :headers="filteredHeaders"
                             :items="customers"
                             :loading="loading"
                             :loading-text="langMap.main.loading"
@@ -214,6 +214,12 @@
                                     }}
                                 </v-icon>
                             </template>
+                            <template v-slot:item.supplier_name="{item}">
+                                <span v-if="item.supplier_name" style="display: flex; align-items: center; gap: 8px;">
+                                    {{ item.supplier_name }}
+                                    <br>
+                                </span>
+                            </template>
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <v-spacer>
@@ -313,6 +319,7 @@ export default {
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
+            type: this.$route.query.type,
             totalCustomers: 0,
             lastPage: 0,
             loading: this.themeBgColor,
@@ -371,7 +378,6 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
                 {text: `${this.$store.state.lang.lang_map.customer.supplier}`, value: 'supplier_name'},
                 {text: `${this.$store.state.lang.lang_map.main.last_activity}`, value: 'last_activity'},
-
             ],
             customersSearch: '',
             customersSearchOption: '',
@@ -539,6 +545,14 @@ export default {
         },
         page(newValue) {
             this.options.page = parseInt(newValue) ?? 1;
+        },
+    },
+    computed: {
+        filteredHeaders() {
+            if (this.$route.query.type === 'suppliers') {
+                return this.headers.filter((header) => header.value !== 'supplier_name');
+            }
+            return this.headers;
         },
     },
 }
