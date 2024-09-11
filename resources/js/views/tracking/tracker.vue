@@ -9,14 +9,14 @@
             {{ snackbarMessage }}
         </v-snackbar>
 
-<!--        <v-overlay :value="loading">-->
-<!--            <v-progress-circular-->
-<!--                indeterminate-->
-<!--                size="64"-->
-<!--            ></v-progress-circular>-->
-<!--        </v-overlay>-->
+        <!--        <v-overlay :value="loading">-->
+        <!--            <v-progress-circular-->
+        <!--                indeterminate-->
+        <!--                size="64"-->
+        <!--            ></v-progress-circular>-->
+        <!--        </v-overlay>-->
 
-<!--        panel-->
+        <!--        panel-->
         <template>
             <v-card flat>
                 <v-toolbar>
@@ -52,7 +52,9 @@
                                         v-bind="attrs"
                                         v-on="on"
                                     >
-                                        <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
+                                        <v-icon v-bind:class="{ 'white--text': !mode }">
+                                            mdi-format-list-bulleted-square
+                                        </v-icon>
                                     </v-btn>
                                 </template>
                                 <span v-text="langMap.tracking.tracker.manual"></span>
@@ -140,7 +142,8 @@
                         </div>
                     </div>
                     <!-- Manual mode-->
-                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!$helpers.auth.checkPermissionByIds([47]) && !mode">
+                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%"
+                         v-if="!$helpers.auth.checkPermissionByIds([47]) && !mode">
                         <div class="mx-1 d-flex flex-column">
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
@@ -169,7 +172,9 @@
                                         v-bind="attrs"
                                         v-on="on"
                                     >
-                                        <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
+                                        <v-icon v-bind:class="{ 'white--text': !mode }">
+                                            mdi-format-list-bulleted-square
+                                        </v-icon>
                                     </v-btn>
                                 </template>
                                 <span v-text="langMap.tracking.tracker.manual"></span>
@@ -302,7 +307,7 @@
                                 style="color: white"
                                 @click="actionCreateTrack()"
                             >
-                                {{langMap.tracking.tracker.add}}
+                                {{ langMap.tracking.tracker.add }}
                             </v-btn>
                         </div>
                     </div>
