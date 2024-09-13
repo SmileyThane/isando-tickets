@@ -66,7 +66,7 @@ class KbRepository
                 ->get();
 
             if (!empty($category_id)) {
-                $resultCategory = kbCategory::where('id', $category_id)
+                $resultCategory = kbCategory::query()->where('id', $category_id)
                     ->withCount('articles')
                     ->with(['children']);
 
@@ -78,7 +78,7 @@ class KbRepository
                     $resultCategory = $resultCategory->where('is_internal', '=', false);
                 }
 
-                $result = $resultCategory->get()->merge($result);
+                $result = $resultCategory->orderBy($request->sort_by ?? 'id')->get()->merge($result);
             }
         }
 
@@ -185,7 +185,7 @@ class KbRepository
             $articles->whereDoesntHave('categories');
         }
 
-        return $articles->get();
+        return $articles->orderBy($request->sort_by ?? 'id')->get();
     }
 
     public function getAllArticles($typeId)
