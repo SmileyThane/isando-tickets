@@ -49,7 +49,7 @@ class TicketController extends Controller
             ->where('entity_type', Company::class)
             ->where('entity_id', Auth::user()->employee->companyData->id);
 
-        if ($companyUser = Auth::user()->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
+        if (Auth::user()->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $types->where('id', '!=', TicketType::INTERNAL);
         }
 
