@@ -121,7 +121,7 @@
                         <v-data-table
                             :expanded.sync="expanded"
                             :footer-props="footerProps"
-                            :headers="headers"
+                            :headers="filteredHeaders"
                             :items="contacts"
                             :loading="loading"
                             :loading-text="langMap.main.loading"
@@ -349,6 +349,7 @@ export default {
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
+            type: this.$route.query.type,
             totalEmployees: 0,
             lastPage: 0,
             loading: this.themeBgColor,
@@ -610,6 +611,17 @@ export default {
             if(val.length && !this.searchWhere.length) {
                 this.searchWhere = [1]
             }
+        },
+    },
+    computed: {
+        filteredHeaders() {
+            if (this.$route.query.type === 'suppliers') {
+                return this.headers.map((header) => header.value === 'assigned_to_clients.clients'
+                    ? {...header, text: this.$store.state.lang.lang_map.customer.supplier}
+                    : header
+                );
+            }
+            return this.headers;
         },
     },
 }

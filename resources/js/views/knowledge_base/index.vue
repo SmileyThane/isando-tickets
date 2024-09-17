@@ -9,7 +9,7 @@
                 <v-card outlined>
                     <v-card-text style="padding: 5px 15px 0 15px">
                         <v-row>
-                            <v-col cols="4" class="pb-0">
+                            <v-col cols="2" class="pb-0">
                                 <v-text-field v-model="search" :color="themeBgColor" :label="langMap.main.search"
                                               append-icon="mdi-magnify" hide-details
                                               style="font-size: 12px;"
@@ -22,7 +22,21 @@
                                           :menu-props="{ bottom: true, offsetY: true }"
                                           v-on:change="debounceOpenCategory"/>
                             </v-col>
-                            <v-col cols="3" class="pb-0">
+                            <v-col cols="1.5" class="pb-0">
+                                <v-select v-model="sortByCategories" :color="themeBgColor" :items="sortByCategoriesOptions"
+                                          style="font-size: 12px;"
+                                          item-text="label" item-value="value" :label="langMap.main.sort_by_categories"
+                                          :menu-props="{ bottom: true, offsetY: true }"
+                                          v-on:change="getCategories"/>
+                            </v-col>
+                            <v-col cols="1.5" class="pb-0">
+                                <v-select v-model="sortByArticles" :color="themeBgColor" :items="sortByArticlesOptions"
+                                          style="font-size: 12px;"
+                                          item-text="label" item-value="value" :label="langMap.main.sort_by_articles"
+                                          :menu-props="{ bottom: true, offsetY: true }"
+                                          v-on:change="debounceOpenCategory"/>
+                            </v-col>
+                            <v-col cols="2" class="pb-0">
                                 <v-select v-model="activeTags" :color="themeBgColor"
                                           :items="$store.getters['Tags/getTags']"
                                           :label="langMap.kb.tags" append-icon="mdi-tag-multiple-outline" hide-selected
@@ -499,11 +513,15 @@ export default {
             themeBgColor: this.$store.state.themeBgColor,
             search: '',
             searchWhere: [1, 2, 3],
+            sortByArticles: '',
+            sortByCategories: '',
             searchOptions: [
                 {id: 1, name: this.$store.state.lang.lang_map.kb.search_in_category_names},
                 {id: 2, name: this.$store.state.lang.lang_map.kb.search_in_article_names},
                 {id: 3, name: this.$store.state.lang.lang_map.kb.search_in_article_names_and_contents},
             ],
+            sortByArticlesOptions: [],
+            sortByCategoriesOptions: [],
             categories: [],
             categoriesTree: [],
             articles: [],
@@ -731,6 +749,7 @@ export default {
         this.getArticles();
         this.getCategoriesTree();
         this.getTags();
+        this.setSortByOptions();
     },
     methods: {
         limitTo(str, count = 50) {
@@ -744,12 +763,27 @@ export default {
         getTags() {
             this.$store.dispatch('Tags/getTagList')
         },
+        setSortByOptions(){
+            const currentLanguage = this.$store.state.lang.short_code
+            this.sortByArticlesOptions = [
+                {id: 1, label: this.$store.state.lang.lang_map.kb.name_sort, value: currentLanguage === 'en' ? 'name' : 'name_de'},
+                {id: 2, label: this.$store.state.lang.lang_map.kb.is_internal_sort, value: 'is_internal'},
+                {id: 3, label: this.$store.state.lang.lang_map.kb.keywords_sort, value: 'keywords'},
+                {id: 4, label: this.$store.state.lang.lang_map.kb.is_draft_sort, value: 'is_draft'},
+            ]
+            this.sortByCategoriesOptions = [
+                {id: 1, label: this.$store.state.lang.lang_map.kb.name_sort, value: currentLanguage === 'en' ? 'name' : 'name_de'},
+                {id: 2, label: this.$store.state.lang.lang_map.kb.is_internal_sort, value: 'is_internal'},
+                {id: 4, label: this.$store.state.lang.lang_map.kb.is_draft_sort, value: 'is_draft'},
+            ]
+        },
         getCategories() {
             this.isCategoriesLoading = true
             axios.get(`/api/kb/categories?type=${this.$route.params.alias}`, {
                 params: {
                     search: this.searchWhere.includes(1) ? this.search : '',
-                    category_id: this.$route.query.parent_category ? this.$route.query.parent_category : null
+                    category_id: this.$route.query.parent_category ? this.$route.query.parent_category : null,
+                    sortBy: this.sortByCategories,
                 }
             }).then(response => {
                 response = response.data;
@@ -784,6 +818,7 @@ export default {
                 search: search && (this.searchWhere.includes(2) || this.searchWhere.includes(3)) ? this.search : '',
                 search_in_text: this.searchWhere.includes(3),
                 tags: this.activeTags,
+                sortBy: this.sortByArticles,
             }
             if (this.getCategoryIdFromQuery !== 'null' && this.getCategoryIdFromQuery !== null) {
                 params.category_id = this.getCategoryIdFromQuery
