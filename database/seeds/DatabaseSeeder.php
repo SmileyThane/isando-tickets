@@ -1,6 +1,8 @@
 <?php
 
 use Database\Seeders\LanguageSeeder;
+use Database\Seeders\TicketPrioritySeeder;
+use Database\Seeders\TicketTypesSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -33,6 +35,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call(PhoneTypeSeeder::class);
 //        $this->call(SocialTypeSeeder::class);
 //        $this->call(TypesSeeder::class);
+//        $this->call(ExternalSourceTypesSeeder::class);
 
 
     }

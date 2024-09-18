@@ -2,11 +2,13 @@
 
 namespace App;
 
+use App\Contracts\ExternalSourceEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ClientCompanyUser extends Model
+class ClientCompanyUser extends Model implements ExternalSourceEntity
 {
     use SoftDeletes;
 
@@ -21,5 +23,10 @@ class ClientCompanyUser extends Model
     public function employee(): HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'company_user_id');
+    }
+
+    public function externalSources(): MorphMany
+    {
+        return $this->morphMany(ExternalSource::class, 'entity');
     }
 }

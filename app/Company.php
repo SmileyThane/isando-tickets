@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Contracts\ExternalSourceEntity;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class Company extends Model
+class Company extends Model implements ExternalSourceEntity
 {
     use SoftDeletes;
 
@@ -156,5 +157,10 @@ class Company extends Model
     public function license(): HasOne
     {
         return $this->hasOne(License::class, 'company_id', 'id');
+    }
+
+    public function externalSources(): MorphMany
+    {
+        return $this->morphMany(ExternalSource::class, 'entity');
     }
 }
