@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Contracts\ExternalSourceEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
-class CompanyUser extends Model
+class CompanyUser extends Model implements ExternalSourceEntity
 {
     use SoftDeletes, HasRoles;
 
@@ -121,5 +122,10 @@ class CompanyUser extends Model
     public function activities(): MorphMany
     {
         return $this->morphMany(Activity::class, 'model');
+    }
+
+    public function externalSources(): MorphMany
+    {
+        return $this->morphMany(ExternalSource::class, 'entity');
     }
 }

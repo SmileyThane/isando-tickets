@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Contracts\ExternalSourceEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Client extends Model
+class Client extends Model implements ExternalSourceEntity
 {
     use SoftDeletes;
 
@@ -146,5 +147,10 @@ class Client extends Model
         $activity = $this->activities->last();
 
         return $activity ? $activity->title : '';
+    }
+
+    public function externalSources(): MorphMany
+    {
+        return $this->morphMany(ExternalSource::class, 'entity');
     }
 }
