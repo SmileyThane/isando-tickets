@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
+
 class Ticket extends Model
 {
     use SoftDeletes;
