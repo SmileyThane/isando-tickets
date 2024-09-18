@@ -573,6 +573,7 @@
                         {{ langMap.ticket.merge }}
                     </v-btn>
                     <v-btn
+                        v-if="!$helpers.auth.checkPermissionByIds([36])"
                         v-show="!thirdColumn"
                         class="ma-2 d-sm-none d-md-flex"
                         color="#f2f2f2"
