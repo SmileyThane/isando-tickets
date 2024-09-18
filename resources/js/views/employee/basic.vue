@@ -888,124 +888,6 @@
             <v-spacer>
                 &nbsp;
             </v-spacer>
-            <v-card
-                v-if="$helpers.auth.checkPermissionByIds([88])"
-            >
-                <v-toolbar
-                    :color="themeBgColor"
-                    dark
-                    dense
-                    flat
-                >
-                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{
-                            langMap.profile.internal_billing
-                        }}
-                    </v-toolbar-title>
-                    <v-spacer></v-spacer>
-                </v-toolbar>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-list-item v-for="item in userData.billing" :key="item.id">
-                                <v-list-item-content>
-                                    <v-list-item-title v-text="item.name"></v-list-item-title>
-                                    <v-list-item-subtitle
-                                        v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
-                                </v-list-item-content>
-                                <v-list-item-action>
-                                    <v-icon small @click="editInternalBilling(item)">
-                                        mdi-pencil
-                                    </v-icon>
-                                </v-list-item-action>
-                                <v-list-item-action>
-                                    <v-icon small @click="deleteInternalBilling(item.id)">
-                                        mdi-delete
-                                    </v-icon>
-                                </v-list-item-action>
-                            </v-list-item>
-                        </v-col>
-                        <v-col cols="12">
-                            <v-expansion-panels v-model="internalBillingEditor" accordion multiple>
-                                <v-expansion-panel>
-                                    <v-expansion-panel-header>
-                                        {{ langMap.main.add }}
-                                        <template v-slot:actions>
-                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
-                                                mdi-plus
-                                            </v-icon>
-                                        </template>
-                                    </v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                        <v-form>
-                                            <v-row>
-                                                <v-col cols="8">
-                                                    <v-text-field
-                                                        v-model="internalBillingForm.name"
-                                                        :color="themeBgColor"
-                                                        :item-color="themeBgColor"
-                                                        :label="langMap.main.name"
-                                                        dense
-                                                    />
-                                                </v-col>
-                                                <v-col cols="3">
-                                                    <v-text-field
-                                                        v-model="internalBillingForm.cost"
-                                                        :color="themeBgColor"
-                                                        :item-color="themeBgColor"
-                                                        :label="langMap.main.cost"
-                                                        dense
-                                                    />
-                                                </v-col>
-                                                <v-col v-if="currency" cols="1">
-                                                    <v-text-field
-                                                        v-model="currency.symbol"
-                                                        :color="themeBgColor"
-                                                        :item-color="themeBgColor"
-                                                        :label="langMap.tracking.settings.currency"
-                                                        dense
-                                                        readonly
-                                                    />
-                                                </v-col>
-                                                <v-btn
-                                                    v-if="!internalBillingForm.id"
-                                                    :color="themeBgColor"
-                                                    bottom
-                                                    dark
-                                                    fab
-                                                    right
-                                                    small
-                                                    @click="createInternalBilling"
-                                                >
-                                                    <v-icon :color="themeBgColor"
-                                                            :style="`color: ${themeFgColor};`">mdi-plus
-                                                    </v-icon>
-                                                </v-btn>
-                                                <v-btn
-                                                    v-if="internalBillingForm.id"
-                                                    :color="themeBgColor"
-                                                    bottom
-                                                    dark
-                                                    fab
-                                                    right
-                                                    small
-                                                    @click="updateInternalBilling(internalBillingForm.id)"
-                                                >
-                                                    <v-icon :color="themeBgColor"
-                                                            :style="`color: ${themeFgColor};`">mdi-update
-                                                    </v-icon>
-                                                </v-btn>
-                                            </v-row>
-                                        </v-form>
-                                    </v-expansion-panel-content>
-                                </v-expansion-panel>
-                            </v-expansion-panels>
-                        </v-col>
-                    </v-row>
-                </v-card-text>
-            </v-card>
-            <v-spacer>
-                &nbsp;
-            </v-spacer>
             <v-card>
                 <v-toolbar
                     :color="themeBgColor"
@@ -1013,82 +895,22 @@
                     dense
                     flat
                 >
-                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.product.info }}</v-toolbar-title>
+                    <v-toolbar-title :style="`color: ${themeFgColor};`">
+                        {{
+                            langMap.main.notes
+                        }}
+                    </v-toolbar-title>
                     <v-spacer></v-spacer>
+                    <v-btn v-if="userData.employee.notes" :color="themeBgColor" icon @click="saveNote()">
+                        <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
+                    </v-btn>
                 </v-toolbar>
                 <v-card-text>
-                    <v-data-table
-                        :footer-props="footerProps"
-                        :headers="productHeaders"
-                        :items="userData.employee.assigned_to_products"
-                        :options.sync="options"
-                        class="elevation-1"
-                        dense
-                        item-key="id"
-                        @update:options="updateItemsPerPage"
-                    >
-                        <template v-slot:item.actions="{ item }">
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn icon v-bind="attrs" @click="showProduct(item.product_data)" v-on="on">
-                                        <v-icon small>mdi-eye</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span>{{ langMap.customer.show_product }}</span>
-                            </v-tooltip>
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn icon v-bind="attrs" @click="showDeleteProductDlg(item)" v-on="on">
-                                        <v-icon small>mdi-link-off</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span>{{ langMap.product.unlink_product }}</span>
-                            </v-tooltip>
-                        </template>
-                    </v-data-table>
-
-                    <v-spacer>&nbsp;</v-spacer>
-
-                    <v-expansion-panels>
-                        <v-expansion-panel @click="resetProduct">
-                            <v-expansion-panel-header>
-                                {{ langMap.product.add_new }}
-                                <template v-slot:actions>
-                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
-                                    </v-icon>
-                                </template>
-                            </v-expansion-panel-header>
-                            <v-expansion-panel-content>
-                                <v-form>
-                                    <div class="row">
-                                        <v-col cols="md-12">
-                                            <v-autocomplete
-                                                v-model="employeeProductForm.product_id"
-                                                :color="themeBgColor"
-                                                :item-color="themeBgColor"
-                                                :items="products"
-                                                :label="langMap.main.products"
-                                                item-text="name"
-                                                item-value="id"
-                                            />
-                                        </v-col>
-                                        <v-btn
-                                            :color="themeBgColor"
-                                            bottom
-                                            dark
-                                            fab
-                                            right
-                                            @click="addProductEmployee"
-                                        >
-                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
-                                                mdi-plus
-                                            </v-icon>
-                                        </v-btn>
-                                    </div>
-                                </v-form>
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                    </v-expansion-panels>
+                    <Tinymce
+                        v-model="userData.employee.notes"
+                        :placeholder="langMap.main.notes"
+                        aria-rowcount="4"
+                    />
                 </v-card-text>
             </v-card>
         </v-col>
@@ -1498,34 +1320,6 @@
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                     </v-expansion-panels>
-                </v-card-text>
-            </v-card>
-            <v-spacer>
-                &nbsp;
-            </v-spacer>
-            <v-card>
-                <v-toolbar
-                    :color="themeBgColor"
-                    dark
-                    dense
-                    flat
-                >
-                    <v-toolbar-title :style="`color: ${themeFgColor};`">
-                        {{
-                            langMap.main.notes
-                        }}
-                    </v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn v-if="userData.employee.notes" :color="themeBgColor" icon @click="saveNote()">
-                        <v-icon :color="themeFgColor" dense small>mdi-check</v-icon>
-                    </v-btn>
-                </v-toolbar>
-                <v-card-text>
-                    <Tinymce
-                        v-model="userData.employee.notes"
-                        :placeholder="langMap.main.notes"
-                        aria-rowcount="4"
-                    />
                 </v-card-text>
             </v-card>
         </v-col>
@@ -2056,7 +1850,7 @@ export default {
     },
     data(){
         return {
-            items: ['basic', 'tickets'],
+            items: ['basic', 'tickets', 'additional'],
             companyName: '',
             employeeActiveTab: this.tab,
             themeFgColor: this.$store.state.themeFgColor,
@@ -2694,21 +2488,6 @@ export default {
                 }
             });
         },
-        deleteSocial(id) {
-            axios.delete(`/api/social/${id}`).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.getUser()
-                    this.snackbarMessage = this.langMap.company.social_deleted;
-                    this.actionColor = 'success'
-                    this.snackbar = true;
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
-                }
-            });
-        },
         showCompany(item) {
             this.$router.push(`/customer/${item.clients.id}`)
         },
@@ -2741,16 +2520,6 @@ export default {
         showIsAccessedModal(item) {
             this.selectedIsAccessedItem = item
             this.isAccessedDialog = true
-        },
-        showRolesModal() {
-            this.rolesDialog = true
-            this.singleUserForm.user = this.userData
-            this.singleUserForm.role_ids = []
-            this.singleUserForm.company_user_id = this.userData.employee.id
-            this.userData.employee.roles.forEach(role => {
-                this.singleUserForm.role_ids.push(role.id)
-            })
-            // console.log(item);
         },
         getRoles() {
             this.roles = []
@@ -2820,13 +2589,6 @@ export default {
             this.phoneForm.id = item.id;
             this.phoneForm.phone = item.phone;
             this.phoneForm.phone_type = item.type ? item.type.id : 0;
-        },
-        editSocial(item) {
-            this.updateSocialDlg = true;
-
-            this.socialForm.id = item.id;
-            this.socialForm.social_link = item.social_link;
-            this.socialForm.social_type = item.type ? item.type.id : 0;
         },
         editAddress(item) {
             this.updateAddressDlg = true;
@@ -3082,13 +2844,6 @@ export default {
                 }
             });
         },
-        showProduct(item) {
-            this.$router.push(`/product/${item.id}`)
-        },
-        showDeleteProductDlg(item) {
-            this.selectedProductId = item.id;
-            this.deleteProductDlg = true;
-        },
         resetProduct() {
             this.employeeProductForm.product_id = null
             this.employeeProductForm.company_user_id = this.userData.employee.id
@@ -3106,19 +2861,6 @@ export default {
                     this.totalProducts = response.data.total
                     this.lastPage = response.data.last_page
                     this.loadingProducts = false
-                } else {
-                    console.log('error')
-                }
-
-            });
-        },
-
-        addProductEmployee() {
-            axios.post(`/api/product/${this.employeeProductForm.product_id}/employee`, this.employeeProductForm).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.getUser();
-                    this.resetProduct();
                 } else {
                     console.log('error')
                 }
@@ -3152,69 +2894,6 @@ export default {
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
-                    this.snackbar = true;
-                }
-            });
-        },
-        editInternalBilling(item) {
-            if (this.internalBillingEditor === null) {
-
-                this.internalBillingEditor = [0]
-                this.internalBillingForm.id = item.id
-                this.internalBillingForm.name = item.name
-                this.internalBillingForm.cost = item.cost
-            } else {
-                this.internalBillingEditor = null
-                this.internalBillingForm = {}
-            }
-        },
-        deleteInternalBilling(id) {
-            axios.delete(`/api/billing/internal/${id}`).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.snackbarMessage = this.langMap.main.update_successful;
-                    this.actionColor = 'success'
-                    this.snackbar = true
-                    this.getUser()
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
-                }
-            });
-        },
-        updateInternalBilling(id) {
-            axios.put(`/api/billing/internal/${id}`, this.internalBillingForm).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.snackbarMessage = this.langMap.main.update_successful;
-                    this.actionColor = 'success'
-                    this.snackbar = true
-                    this.internalBillingEditor = null
-                    this.internalBillingForm = {}
-                    this.getUser()
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
-                }
-            });
-        },
-        createInternalBilling() {
-            this.internalBillingForm.entity_id = this.userData.id
-            this.internalBillingForm.entity_type = 'App\\User'
-            axios.post(`/api/billing/internal`, this.internalBillingForm).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.snackbarMessage = this.langMap.main.update_successful;
-                    this.actionColor = 'success'
-                    this.snackbar = true
-                    this.internalBillingEditor = null
-                    this.internalBillingForm = {}
-                    this.getUser()
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error';
                     this.snackbar = true;
                 }
             });
