@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\API\ActivityController;
 use App\Http\Controllers\API\ClientGroupController;
+use App\Http\Controllers\API\ExternalSourceController;
+use App\Http\Controllers\API\ExternalSourceTypeController;
 use App\Http\Controllers\API\IncidentReportingController;
 use App\Http\Controllers\API\InternalBillingController;
 use App\Http\Controllers\API\LimitationGroupController;
@@ -426,5 +428,24 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('filter_groups/client', [ClientGroupController::class, 'create']);
     Route::patch('filter_groups/client/{id}', [ClientGroupController::class, 'update']);
     Route::delete('filter_groups/client/{id}', [ClientGroupController::class, 'delete']);
+
+    Route::prefix('external-sources')->group(function () {
+        Route::get('/', [ExternalSourceController::class, 'all']);
+        Route::post('/', [ExternalSourceController::class, 'create']);
+        Route::get('{id}', [ExternalSourceController::class, 'show']);
+        Route::patch('{id}', [ExternalSourceController::class, 'update']);
+        Route::delete('{id}', [ExternalSourceController::class, 'delete']);
+
+        Route::get('{id}/get-password', [ExternalSourceController::class, 'getPassword']);
+        Route::get('{id}/get-uri', [ExternalSourceController::class, 'getUri']);
+    });
+
+    Route::prefix('external-source-types')->group(function () {
+        Route::get('/', [ExternalSourceTypeController::class, 'all']);
+        Route::post('/', [ExternalSourceTypeController::class, 'create']);
+        Route::get('{id}', [ExternalSourceTypeController::class, 'show']);
+        Route::patch('{id}', [ExternalSourceTypeController::class, 'update']);
+        Route::delete('{id}', [ExternalSourceTypeController::class, 'delete']);
+    });
 });
 
