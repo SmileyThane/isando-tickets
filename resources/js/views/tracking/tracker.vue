@@ -315,8 +315,8 @@
             </v-card>
         </template>
 
-<!--        Team selector   -->
-<!--        dateRangePicker -->
+        <!--        Team selector   -->
+        <!--        dateRangePicker -->
         <template>
             <div class="d-flex flex-row mr-16">
                 <div class="d-inline-flex flex-grow-0">
@@ -431,8 +431,9 @@
                         :color="themeBgColor"
                         style="color: white"
                     >
-                        <span v-if="moment(panelDate).format(dateTimeFormat) === moment().format(dateTimeFormat)">{{langMap.tracking.tracker.today}}</span>
-                        <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY')}}</span>
+                        <span
+                            v-if="moment(panelDate).format(dateTimeFormat) === moment().format(dateTimeFormat)">{{ langMap.tracking.tracker.today }}</span>
+                        <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY') }}</span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <template>
@@ -481,7 +482,7 @@
                                                         v-if="row.entity"
                                                         :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
                                                     >
-                                                        {{$helpers.string.shortenText(row.entity.name, 35)}}
+                                                        {{ $helpers.string.shortenText(row.entity.name, 35) }}
                                                     </div>
                                                 </div>
                                             </td>
@@ -493,7 +494,10 @@
                                                 <template v-if="row.entity && row.entity.client">
                                                     {{ row.entity.client.name }}
                                                 </template>
-                                                <template v-else-if="row.entity">{{ row.entity.from_company_name }}</template>
+                                                <template v-else-if="row.entity">{{
+                                                        row.entity.from_company_name
+                                                    }}
+                                                </template>
                                             </td>
                                             <td
                                                 class="px-3 py-0"
