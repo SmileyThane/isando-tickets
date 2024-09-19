@@ -9,6 +9,7 @@ use App\Http\Requests\ExternalSource\CreateExternalSourceRequest;
 use App\Http\Requests\ExternalSource\UpdateExternalSourceRequest;
 use App\Repositories\ExternalSourceRepository;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ExternalSourceController extends Controller
@@ -17,10 +18,10 @@ class ExternalSourceController extends Controller
     {
     }
 
-    public function all(): JsonResponse {
+    public function all(Request $request): JsonResponse {
         return self::showResponse(
             success: true,
-            data: $this->repository->index(),
+            data: $this->repository->index($request->type_id),
         );
     }
 
