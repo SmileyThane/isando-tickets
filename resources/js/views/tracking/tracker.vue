@@ -618,7 +618,9 @@
                                                                             @input="correctionTime(row.date_from, row.date_to); debounceSave(row, 'date_from', row.date_from)"
                                                                         ></TimeField>
                                                                     </div>
-                                                                    <div class="d-inline-flex mt-2">&nbsp;&mdash;&nbsp;</div>
+                                                                    <div class="d-inline-flex mt-2">
+                                                                        &nbsp;&mdash;&nbsp;
+                                                                    </div>
                                                                     <div class="d-inline-flex">
                                                                         <TimeField
                                                                             v-model="row.date_to"
@@ -633,8 +635,9 @@
                                                             </template>
                                                         </v-edit-dialog>
                                                         <span v-else>
-                                                            <span>{{moment(row.date_from).format(timeFormat)}}</span>&nbsp;&mdash;&nbsp;<span v-if="row.date_to && row.date_to !== null">{{moment(row.date_to).format(timeFormat)}}</span>
-                                                            <span v-else>{{moment().format(timeFormat)}}</span>
+                                                            <span>{{ moment(row.date_from).format(timeFormat) }}</span>&nbsp;&mdash;&nbsp;<span
+                                                            v-if="row.date_to && row.date_to !== null">{{ moment(row.date_to).format(timeFormat) }}</span>
+                                                            <span v-else>{{ moment().format(timeFormat) }}</span>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -736,7 +739,9 @@
                                                                                 <v-list-item-title
                                                                                     @click="actionDuplicateTracking(row.id)"
                                                                                 >
-                                                                                    {{ langMap.tracking.tracker.duplicate }}
+                                                                                    {{
+                                                                                        langMap.tracking.tracker.duplicate
+                                                                                    }}
                                                                                 </v-list-item-title>
                                                                             </v-list-item-content>
                                                                         </v-list-item>
