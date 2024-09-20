@@ -14,8 +14,12 @@ use Illuminate\Support\Arr;
 
 class ExternalSourceRepository
 {
-    public function index(): LengthAwarePaginator {
-        return ExternalSource::with('externalSourceType')
+    public function index(int $typeId = null): LengthAwarePaginator {
+        $externalSource = ExternalSource::query();
+        if ($typeId !== null) {
+            $externalSource->where('external_source_type_id', '=', $typeId);
+        }
+        return $externalSource->with('externalSourceType')
             ->paginate(
                 perPage: request()->input('perPage', 15),
                 page: request()->input('page', 1),

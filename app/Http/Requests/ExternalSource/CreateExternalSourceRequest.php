@@ -28,19 +28,19 @@ class CreateExternalSourceRequest extends FormRequest
     {
         return [
             'domain' => 'required|string',
-            'domainPrefix' => 'required|string',
+            'domain_prefix' => 'required|string',
             'uri' => 'nullable|string',
             'name' => 'required|string',
-            'authName' => 'required|string',
-            'authHeaders' => 'nullable|string',
+            'auth_name' => 'required|string',
+            'auth_headers' => 'nullable|json',
             'password' => 'nullable|string',
-            'billingPrice' => 'required|int',
-            'billingCurrency' => 'required|int',
-            'billingType' => 'required|int',
-            'isBillingAutoRenewal' => 'bool|string',
-            'entityId' => ['nullable', 'int', new EntityExistsRule($this->input('entityType'))],
-            'entityType' => 'nullable|string',
-            'externalSourceTypeId' => 'id|exists:external_source_types,id',
+            'billing_price' => 'required|int',
+            'billing_currency' => 'required|int',
+            'billing_type' => 'required|int',
+            'is_billing_auto_renewal' => 'bool',
+            'entity_id' => ['nullable', 'int', new EntityExistsRule($this->input('entityType'))],
+            'entity_type' => 'nullable|string',
+            'external_source_typeId' => 'integer|exists:external_source_types,id',
         ];
     }
 }
