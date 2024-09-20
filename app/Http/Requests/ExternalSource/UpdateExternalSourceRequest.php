@@ -27,20 +27,20 @@ class UpdateExternalSourceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'domain' => 'required|string',
-            'domainPrefix' => 'required|string',
+            'domain' => 'sometimes|string',
+            'domain_prefix' => 'sometimes|string',
             'uri' => 'nullable|string',
-            'name' => 'nullable|string',
-            'authName' => 'nullable|string',
-            'authHeaders' => 'nullable|string',
+            'name' => 'sometimes|string',
+            'auth_name' => 'sometimes|string',
+            'auth_headers' => 'nullable|json',
             'password' => 'nullable|string',
-            'billingPrice' => 'nullable|int',
-            'billingCurrency' => 'nullable|int',
-            'billingType' => 'nullable|int',
-            'isBillingAutoRenewal' => 'bool|string',
-            'entityId' => ['nullable', 'int', new EntityExistsRule($this->input('entityType'))],
-            'entityType' => 'nullable|string',
-            'externalSourceTypeId' => 'id|exists:external_source_types,id',
+            'billing_price' => 'sometimes|int',
+            'billing_currency' => 'sometimes|int',
+            'billing_type' => 'sometimes|int',
+            'is_billing_auto_renewal' => 'bool',
+            'entity_id' => ['nullable', 'int', new EntityExistsRule($this->input('entityType'))],
+            'entity_type' => 'nullable|string',
+            'external_source_typeId' => 'integer|exists:external_source_types,id',
         ];
     }
 }
