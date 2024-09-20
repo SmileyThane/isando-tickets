@@ -40,7 +40,7 @@ class CreateExternalSourceRequest extends FormRequest
             'is_billing_auto_renewal' => 'bool',
             'entity_id' => ['nullable', 'int', new EntityExistsRule($this->input('entityType'))],
             'entity_type' => 'nullable|string',
-            'external_source_typeId' => 'integer|exists:external_source_types,id',
+            'external_source_type_id' => 'required|integer|exists:external_source_types,id',
         ];
     }
 }

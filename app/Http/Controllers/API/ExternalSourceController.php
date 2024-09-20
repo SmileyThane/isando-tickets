@@ -21,7 +21,7 @@ class ExternalSourceController extends Controller
     public function all(Request $request): JsonResponse {
         return self::showResponse(
             success: true,
-            data: $this->repository->index($request->type_id),
+            data: $this->repository->index((int)$request->type_id),
         );
     }
 
