@@ -484,7 +484,7 @@
                             </v-list-item-content>
                         </v-list-item>
                     </template>
-                    <span>{{ langMap.sidebar.projects_list }}</span>
+                    <span>Hosting</span>
                 </v-tooltip>
                 <v-tooltip right :disabled="!localDrawer">
                     <template v-slot:activator="{ on, attrs }">

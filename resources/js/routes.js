@@ -43,7 +43,7 @@ import IncidentReportingCreate from './views/incident_reporting/create'
 import IncidentReportingActionBoards from './views/incident_reporting/action-boards'
 import SettingsIncidentSettings from './views/settings/incident_settings'
 import SidebarPage from "./views/sidebar/index";
-import Hosting from "./views/hosting/index";
+import ExternalSource from "./views/external_source/index";
 
 import store from './store';
 
@@ -169,12 +169,15 @@ export default [
         component: SingleEmployee
     },
     {
-        path: '/hosting',
+        path: '/external_source',
         name: 'hosting',
         meta: {
             requiresAuth: true,
         },
-        component: Hosting
+        component: ExternalSource,
+        props: {
+            type: 1
+        }
     },
     {
         path: '/voip',
@@ -182,7 +185,10 @@ export default [
         meta: {
             requiresAuth: true,
         },
-        component: AllCustomers
+        component: ExternalSource,
+        props: {
+            type: 2
+        }
     },
     {
         path: '/tickets',
