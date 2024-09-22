@@ -207,23 +207,23 @@ class TicketRepository
         if ($orderedField === 'from_entity_id') {
             $ticketResult = $ticketResult->get();
             if ($orderedDirection === 'asc') {
-                $ticketResult = $ticketResult->sortBy('from_company_name', SORT_NATURAL, false);
+                $ticketResult = $ticketResult->sortBy('from_company_name', SORT_NATURAL);
             } else {
-                $ticketResult = $ticketResult->sortByDesc('from_company_name', SORT_NATURAL, true);
+                $ticketResult = $ticketResult->sortByDesc('from_company_name', SORT_NATURAL);
             }
         } elseif ($orderedField === 'contact.user_data.full_name') {
             $ticketResult = $ticketResult->get();
             if ($orderedDirection === 'asc') {
-                $ticketResult = $ticketResult->sortBy('contact.userData.name', SORT_NATURAL, false);
+                $ticketResult = $ticketResult->sortBy('contact.userData.name', SORT_NATURAL);
             } else {
-                $ticketResult = $ticketResult->sortByDesc('contact.userData.name', SORT_NATURAL, true);
+                $ticketResult = $ticketResult->sortByDesc('contact.userData.name', SORT_NATURAL);
             }
         } elseif ($orderedField === 'category.name') {
             $ticketResult = $ticketResult->get();
             if ($orderedDirection === 'asc') {
-                $ticketResult = $ticketResult->sortBy('category.name', SORT_NATURAL, false);
+                $ticketResult = $ticketResult->sortBy('category.name', SORT_NATURAL);
             } else {
-                $ticketResult = $ticketResult->sortByDesc('category.name', SORT_NATURAL, true);
+                $ticketResult = $ticketResult->sortByDesc('category.name', SORT_NATURAL);
             }
         } else {
             $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);
