@@ -286,6 +286,34 @@
                 </v-card-actions>
             </v-card>
         </v-form>
+
+        <v-dialog v-model="deleteAttachDlg" max-width="480" persistent>
+            <v-card>
+                <v-card-title
+                    :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
+                    class="mb-5"
+                >
+                    {{ langMap.main.delete_selected }}?
+                </v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="grey darken-1"
+                        text
+                        @click="deleteAttachDlg = false"
+                    >
+                        {{ langMap.main.cancel }}
+                    </v-btn>
+                    <v-btn
+                        color="red darken-1"
+                        text
+                        @click="removeAttachment(selectedAttachment)"
+                    >
+                        {{ langMap.main.delete }}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -576,6 +604,7 @@ export default {
             this.article.tags.splice(this.article.tags.indexOf(item), 1)
         },
         deleteAttachment(attachment) {
+            console.log(attachment);
             this.selectedAttachment = attachment;
             this.deleteAttachDlg = true;
         },
