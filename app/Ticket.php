@@ -30,10 +30,22 @@ class Ticket extends Model
         'category_id', 'parent_id', 'unifier_id', 'merged_at'
     ];
 
-    protected $appends = ['from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
-        'replicated_to', 'ticket_type', 'created_at_time', 'merged_parent_info', 'merged_child_info', 'original_name'];
+    protected $appends = [
+        'from',
+        'from_company_name',
+        'to',
+        'last_update',
+        'can_be_edited',
+        'can_be_answered',
+        'replicated_to',
+        'ticket_type',
+        'created_at_time',
+        'merged_parent_info',
+        'merged_child_info',
+        'original_name'
+    ];
 
-    protected $hidden = ['to', 'description'];
+    protected $hidden = ['from', 'to', 'description', 'fromCompany'];
     protected $langId;
 
     public function __construct(array $attributes = [])
@@ -71,8 +83,7 @@ class Ticket extends Model
     {
         $content = str_replace(["\n", "<br>", "<br/>"], "", $this->attributes['description']);
         $content = preg_replace("/<img[^>]+cid:[^>]+\>/i", "[[image from attachments]]", $content);
-        foreach ($this->attachments as $attachment)
-        {
+        foreach ($this->attachments as $attachment) {
             $content = preg_replace('/\[\[image from attachments\]\]/', '<img style="max-width:100%" src="' . $attachment->link . '"/>', $content, 1);
         }
         $content = preg_replace('/\[\[image from attachments\]\]/', '', $content);
@@ -82,20 +93,20 @@ class Ticket extends Model
 
     public function getFromAttribute()
     {
-        return $this->attributes['from_entity_type']::where('id', $this->attributes['from_entity_id'])->withTrashed()->first();
+        return $this->fromCompany()->withTrashed()->first();
     }
 
     public function getFromCompanyNameAttribute()
     {
-        if ($this->from) {
-            return $this->from->name;
+        if ($this->fromCompany) {
+            return $this->fromCompany->name;
         }
         return null;
     }
 
     public function getToAttribute()
     {
-        return $this->attributes['to_entity_type']::where('id', $this->attributes['to_entity_id'])->withTrashed()->first();
+        return $this->toCompany()->withTrashed()->first();
     }
 
     public function toCompany()
