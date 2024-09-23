@@ -35,7 +35,7 @@
                         addOrEditExternalSourceDialogOpen = true;
                         dialogMode = 'add';
                       "
-                      >Add new
+                      >{{ langMap.external_source.add_new }}
                     </v-btn>
                   </v-col>
                   <v-col md="2" sm="12">
@@ -115,13 +115,13 @@
         >
           {{
             dialogMode === 'add'
-              ? 'Add new external source'
-              : 'Edit external source'
+              ? langMap.external_source.add_new_external_source
+              : langMap.external_source.edit_external_source
           }}
         </v-card-title>
         <v-card-text>
           <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>Domain</v-card-title>
+            <v-card-title>{{ langMap.external_source.domain }}</v-card-title>
             <v-card-actions>
               <v-row>
                 <v-col cols="6" md="4">
@@ -129,7 +129,7 @@
                     v-model="externalSourceForm.domain"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'Domain'"
+                    :label="langMap.external_source.domain"
                     dense
                     required
                   />
@@ -139,7 +139,7 @@
                     v-model="externalSourceForm.domain_prefix"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'Domain prefix'"
+                    :label="langMap.external_source.domain_prefix"
                     dense
                   />
                 </v-col>
@@ -148,7 +148,7 @@
                     v-model="externalSourceForm.uri"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'Uri'"
+                    :label="langMap.external_source.uri"
                     dense
                   />
                 </v-col>
@@ -159,7 +159,7 @@
           <v-divider class="divider">&nbsp;</v-divider>
 
           <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>Auth</v-card-title>
+            <v-card-title>{{ langMap.external_source.auth }}</v-card-title>
             <v-card-actions>
               <v-row>
                 <v-col cols="6" md="4">
@@ -167,7 +167,7 @@
                     v-model="externalSourceForm.auth_name"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'auth_name'"
+                    :label="langMap.external_source.auth_name"
                     dense
                   />
                 </v-col>
@@ -176,7 +176,7 @@
                     v-model="externalSourceForm.auth_method"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'auth_method'"
+                    :label="langMap.external_source.auth_method"
                     dense
                   />
                 </v-col>
@@ -185,7 +185,7 @@
                     v-model="externalSourceForm.auth_headers"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'auth_headers'"
+                    :label="langMap.external_source.auth_headers"
                     dense
                   />
                 </v-col>
@@ -196,7 +196,9 @@
           <v-divider class="divider">&nbsp;</v-divider>
 
           <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>Credentials</v-card-title>
+            <v-card-title>{{
+              langMap.external_source.credentials
+            }}</v-card-title>
             <v-card-actions>
               <v-row>
                 <v-col cols="6" md="4">
@@ -204,7 +206,7 @@
                     v-model="externalSourceForm.name"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'name'"
+                    :label="langMap.external_source.name"
                     dense
                   />
                 </v-col>
@@ -213,7 +215,7 @@
                     v-model="externalSourceForm.password"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'password'"
+                    :label="langMap.external_source.password"
                     dense
                   />
                 </v-col>
@@ -223,7 +225,7 @@
                     :color="themeBgColor"
                     :item-color="themeBgColor"
                     :items="[true, false]"
-                    :label="'is_billing_auto_renewal'"
+                    :label="langMap.external_source.is_renewal"
                     dense
                   />
                 </v-col>
@@ -234,7 +236,7 @@
           <v-divider class="divider">&nbsp;</v-divider>
 
           <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>Billing</v-card-title>
+            <v-card-title>{{ langMap.external_source.billing }}</v-card-title>
             <v-card-actions>
               <v-row>
                 <v-col cols="6" md="4">
@@ -242,7 +244,7 @@
                     v-model="externalSourceForm.billing_price"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'billing_price'"
+                    :label="langMap.external_source.billing_price"
                     dense
                   />
                 </v-col>
@@ -251,7 +253,7 @@
                     v-model="externalSourceForm.billing_currency"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'billing_currency'"
+                    :label="langMap.external_source.billing_currency"
                     dense
                   />
                 </v-col>
@@ -260,7 +262,7 @@
                     v-model="externalSourceForm.billing_type"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'billing_type'"
+                    :label="langMap.external_source.billing_type"
                     dense
                   />
                 </v-col>
@@ -271,7 +273,7 @@
           <v-divider class="divider">&nbsp;</v-divider>
 
           <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>Entity</v-card-title>
+            <v-card-title>{{ langMap.external_source.entity }}</v-card-title>
             <v-card-actions>
               <v-row>
                 <v-col cols="6" md="4">
@@ -279,7 +281,7 @@
                     v-model="externalSourceForm.external_source_type_id"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'external_source_type_id'"
+                    :label="langMap.external_source.type_id"
                     dense
                   />
                 </v-col>
@@ -288,7 +290,7 @@
                     v-model="externalSourceForm.entity_id"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'entity_id'"
+                    :label="langMap.external_source.entity_id"
                     dense
                   />
                 </v-col>
@@ -297,7 +299,7 @@
                     v-model="externalSourceForm.entity_type"
                     :color="themeBgColor"
                     :item-color="themeBgColor"
-                    :label="'entity_type'"
+                    :label="langMap.external_source.entity_type"
                     dense
                   />
                 </v-col>
@@ -308,14 +310,18 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="grey darken-1" text @click="saveOrAddExternalSource">
-            {{ dialogMode === 'add' ? 'Add' : 'Save' }}
+            {{
+              dialogMode === 'add'
+                ? langMap.external_source.add
+                : langMap.external_source.save
+            }}
           </v-btn>
           <v-btn
             color="red darken-1"
             text
             @click="addOrEditExternalSourceDialogOpen = false"
           >
-            Close
+            {{ langMap.external_source.close }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -331,17 +337,14 @@
           :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
           class="mb-5"
         >
-          Are you sure you want to delete this source?
+          {{ langMap.external_source.delete_confirmation }}
         </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="grey darken-1"
             text
-            @click="
-              saveForLaterFlag = false;
-              saveForLater();
-            "
+            @click="removeExternalSourceDialogOpen = false"
           >
             {{ langMap.main.no }}
           </v-btn>
@@ -416,15 +419,15 @@ export default {
         ],
       },
       headers: [
-        { text: 'ID', value: 'id' },
-        { text: 'Name', value: 'name' },
-        { text: 'Domain', value: 'domain', sortable: false },
+        { text: this.$store.state.lang.lang_map.external_source.id, value: 'id' },
+        { text: this.$store.state.lang.lang_map.external_source.name, value: 'name' },
+        { text: this.$store.state.lang.lang_map.external_source.domain, value: 'domain', sortable: false },
         {
-          text: 'Billing price',
+          text: this.$store.state.lang.lang_map.external_source.billing_price,
           value: 'billing_price',
         },
         {
-          text: 'Currency',
+          text: this.$store.state.lang.lang_map.external_source.billing_currency,
           value: 'billing_currency',
         },
         {
@@ -510,7 +513,6 @@ export default {
           } else {
             this.snackbarMessage =
               this.$store.state.lang.lang_map.main.generic_error;
-            // this.errorType = 'error';
             this.snackbar = true;
           }
         });
@@ -520,6 +522,7 @@ export default {
         ...this.externalSourceForm,
         auth_headers: JSON.stringify(this.externalSourceForm.auth_headers),
       };
+
       if (this.dialogMode === 'add') {
         axios.post('/api/external-sources', formValues).then((response) => {
           if (response.data.success) {
@@ -530,7 +533,7 @@ export default {
       } else {
         axios
           .patch(
-            `/api/external-sources?${this.externalSourceForm.id}`,
+            `/api/external-sources/${this.externalSourceForm.id}`,
             formValues
           )
           .then((response) => {
@@ -543,7 +546,7 @@ export default {
     },
     removeExternalSource() {
       axios
-        .delete(`/api/external-sources?${this.externalSourceForm.id}`)
+        .delete(`/api/external-sources/${this.externalSourceForm.id}`)
         .then((response) => {
           if (response.data.success) {
             this.removeExternalSourceDialogOpen = false;

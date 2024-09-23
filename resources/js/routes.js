@@ -169,7 +169,7 @@ export default [
         component: SingleEmployee
     },
     {
-        path: '/external_source',
+        path: '/hosting',
         name: 'hosting',
         meta: {
             requiresAuth: true,
