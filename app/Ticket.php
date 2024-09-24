@@ -33,6 +33,8 @@ class Ticket extends Model
     protected $appends = [
         'from',
         'from_company_name',
+        'contact_full_name',
+        'assigned_person_full_name',
         'to',
         'last_update',
         'can_be_edited',
@@ -45,7 +47,7 @@ class Ticket extends Model
         'original_name'
     ];
 
-    protected $hidden = ['from', 'to', 'description', 'fromCompany'];
+    protected $hidden = ['from', 'to', 'description', 'fromCompany', 'contact', 'assignedPerson'];
     protected $langId;
 
     public function __construct(array $attributes = [])
@@ -93,19 +95,47 @@ class Ticket extends Model
 
     public function getFromAttribute()
     {
+        if ($this->attributes['from_entity_type'] === Client::class) {
+            return $this->fromClient()->withTrashed()->first();
+        }
+
+        if ($this->attributes['from_entity_type'] === User::class) {
+            return $this->fromCompanyUser()->withTrashed()->first();
+        }
+
         return $this->fromCompany()->withTrashed()->first();
+    }
+
+    public function fromClient()
+    {
+        return $this->morphTo(Client::class, 'from_entity_type', 'from_entity_id');
+    }
+
+    public function fromCompanyUser()
+    {
+        return $this->morphTo(CompanyUser::class, 'from_entity_type', 'from_entity_id');
+    }
+
+    public function fromCompany()
+    {
+        return $this->morphTo(Company::class, 'from_entity_type', 'from_entity_id');
     }
 
     public function getFromCompanyNameAttribute()
     {
-        if ($this->fromCompany) {
-            return $this->fromCompany->name;
-        }
-        return null;
+        return $this->fromCompany?->name;
     }
 
     public function getToAttribute()
     {
+        if ($this->attributes['to_entity_type'] === Client::class) {
+            return $this->toCompany()->withTrashed()->first();
+        }
+
+        if ($this->attributes['to_entity_type'] === User::class) {
+            return $this->toCompanyUser()->withTrashed()->first();
+        }
+
         return $this->toCompany()->withTrashed()->first();
     }
 
@@ -114,19 +144,14 @@ class Ticket extends Model
         return $this->morphTo(Company::class, 'to_entity_type', 'to_entity_id');
     }
 
+    public function toCompanyUser()
+    {
+        return $this->morphTo(CompanyUser::class, 'to_entity_type', 'to_entity_id');
+    }
+
     public function toClient()
     {
         return $this->morphTo(Client::class, 'to_entity_type', 'to_entity_id');
-    }
-
-    public function fromCompany()
-    {
-        return $this->morphTo(Company::class, 'from_entity_type', 'from_entity_id');
-    }
-
-    public function fromClient()
-    {
-        return $this->morphTo(Client::class, 'from_entity_type', 'from_entity_id');
     }
 
     public function getReplicatedToAttribute()
@@ -379,5 +404,15 @@ class Ticket extends Model
             'id',
             'id'
         );
+    }
+
+    public function getContactFullNameAttribute()
+    {
+        return $this->contact?->userData?->full_name;
+    }
+
+    public function getAssignedPersonFullNameAttribute()
+    {
+        return $this->assignedPerson?->userData?->full_name;
     }
 }
