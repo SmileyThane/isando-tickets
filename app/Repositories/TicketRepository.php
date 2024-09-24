@@ -22,6 +22,7 @@ use App\UserNotificationStatus;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
@@ -227,6 +228,15 @@ class TicketRepository
             $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);
         }
 //        dd(DB::getQueryLog());
+
+        $key = 'ticket_' . base64_encode(json_encode($request->all()));
+        if (Cache::has($key)) {
+            return Cache::get($key);
+        }
+
+        Cache::remember($key, 600, static function () use ($ticketResult, $request, $ticketIds) {
+            return $ticketResult->paginate($request->per_page ?? count($ticketIds));
+        });
 
         return $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
