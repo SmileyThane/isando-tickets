@@ -43,6 +43,7 @@ import IncidentReportingCreate from './views/incident_reporting/create'
 import IncidentReportingActionBoards from './views/incident_reporting/action-boards'
 import SettingsIncidentSettings from './views/settings/incident_settings'
 import SidebarPage from "./views/sidebar/index";
+import ExternalSource from "./views/external_source/index";
 
 import store from './store';
 
@@ -166,6 +167,28 @@ export default [
             requiresAuth: true,
         },
         component: SingleEmployee
+    },
+    {
+        path: '/hosting',
+        name: 'hosting',
+        meta: {
+            requiresAuth: true,
+        },
+        component: ExternalSource,
+        props: {
+            type: 1
+        }
+    },
+    {
+        path: '/voip',
+        name: 'voip',
+        meta: {
+            requiresAuth: true,
+        },
+        component: ExternalSource,
+        props: {
+            type: 2
+        }
     },
     {
         path: '/tickets',
