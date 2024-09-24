@@ -302,7 +302,7 @@ class TicketRepository
 
     public function find($id)
     {
-        $ticket = Ticket::where('id', $id)
+        $ticket = Ticket::query()->where('id', $id)
             ->with(
                 'creator.userData',
                 'assignedPerson.userData',
@@ -327,7 +327,7 @@ class TicketRepository
                 'followers'
             )->first();
         if ($ticket) {
-            $ticket->makeVisible(['from', 'to', 'description', 'contact', 'assignedPerson']);
+            $ticket->append(['from', 'to'])->makeVisible(['from', 'to', 'description', 'contact', 'assignedPerson']);
         }
 
         return $ticket;
