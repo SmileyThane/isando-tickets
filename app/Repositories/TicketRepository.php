@@ -194,8 +194,6 @@ class TicketRepository
 
         $ticketResult
             ->with(
-                'assignedPerson.userData',
-                'contact.userData',
                 'product',
                 'priority',
                 'status',
@@ -317,7 +315,7 @@ class TicketRepository
                 'followers'
             )->first();
         if ($ticket) {
-            $ticket->makeVisible(['from', 'to', 'description']);
+            $ticket->makeVisible(['from', 'to', 'description', 'contact', 'assignedPerson']);
         }
 
         return $ticket;
