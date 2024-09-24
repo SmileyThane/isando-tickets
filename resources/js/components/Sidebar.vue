@@ -322,7 +322,7 @@
             </template>
             <span>{{ langMap.sidebar.all }}</span>
           </v-tooltip>
-          <v-list-group :value="true" no-action sub-group>
+          <v-list-group :value="true" :color="themeBgColor" no-action sub-group>
             <template v-slot:activator>
               <v-list-item-content>
                 <v-list-item-title>Clients</v-list-item-title>
@@ -380,7 +380,7 @@
             </v-tooltip>
           </v-list-group>
 
-          <v-list-group :value="true" no-action sub-group>
+          <v-list-group :value="true" :color="themeBgColor" no-action sub-group>
             <template v-slot:activator>
               <v-list-item-content>
                 <v-list-item-title>Suppliers</v-list-item-title>
