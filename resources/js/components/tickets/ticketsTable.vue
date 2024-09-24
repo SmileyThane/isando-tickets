@@ -298,13 +298,13 @@
                 <template v-slot:item.product.name="{ item }">
                     {{ item.product ? item.product.name : '' }}
                 </template>
-                <template v-slot:item.assigned_person="{ item }">
+                <template v-slot:item.assigned_person_full_name="{ item }">
                     <div
-                        v-if="item.assigned_person && item.assigned_person.user_data"
+                        v-if="item.assigned_person_full_name"
                         class="justify-center"
                         @click="showItem(item)"
                     >
-                        {{ item.assigned_person.user_data.full_name }}
+                        {{ item.assigned_person_full_name }}
                     </div>
                     <div v-else></div>
                 </template>
@@ -634,7 +634,7 @@ export default {
                 },
                 {
                     text: `${this.$store.state.lang.lang_map.main.contact}`,
-                    value: 'contact.user_data.full_name',
+                    value: 'contact_full_name',
                     width: '150px',
                 },
                 {
@@ -649,7 +649,7 @@ export default {
                 },
                 {
                     text: `${this.$store.state.lang.lang_map.team.members}`,
-                    value: 'assigned_person',
+                    value: 'assigned_person_full_name',
                     width: '80px',
                 },
             ],
@@ -958,7 +958,7 @@ export default {
         manageSortableField(value) {
             if (value === 'last_update') return 'updated_at';
             if (value === 'status.name') return 'status_id';
-            if (value === 'assigned_person') return 'to_company_user_id';
+            if (value === 'assigned_person_full_name') return 'to_company_user_id';
             if (value === 'product.name') return 'to_product_id';
             if (value === 'name') return 'name';
             if (value === 'from.name') return 'from_entity_id';
