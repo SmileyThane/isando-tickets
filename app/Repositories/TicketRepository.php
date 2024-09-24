@@ -340,6 +340,9 @@ class TicketRepository
             $employeeId = $request->from_entity_id;
         }
         $ticket = new Ticket();
+
+        $ticket = $this->preparePredefinedTitles($ticket, $request);
+
         $ticket->name = $request->name;
         $ticket->description = $request->description;
         $ticket->from_entity_id = $request->from_entity_id;
@@ -368,6 +371,32 @@ class TicketRepository
         return $ticket;
     }
 
+    private function preparePredefinedTitles($ticket, $request)
+    {
+        if ($request->contact_company_user_id) {
+            $companyUser = CompanyUser::find($request->contact_company_user_id);
+            if ($companyUser) {
+                $ticket->contact_full_name = $companyUser->userData->full_name;
+            }
+        }
+
+        if ($request->to_company_user_id) {
+            $companyUser = CompanyUser::find($request->to_company_user_id);
+            if ($companyUser) {
+                $ticket->assigned_person_full_name = $companyUser->userData->full_name;
+            }
+        }
+
+        if ($request->from_entity_type && $request->from_entity_id) {
+            $entity = $request->from_entity_type::find($request->from_entity_id);
+            if ($entity) {
+                $ticket->from_entity_name = $entity->name;
+            }
+        }
+
+        return $ticket;
+    }
+
     public function update(Request $request, $id)
     {
         $ticket = Ticket::with('followers')->find($id);
@@ -375,6 +404,9 @@ class TicketRepository
         if ($request->status_id !== $ticket->status_id) {
             $this->updateStatus($request, $id);
         } else {
+
+            $ticket = $this->preparePredefinedTitles($ticket, $request);
+
             $ticket->contact_company_user_id = $this->ticketUpdateRepo->setContactCompanyUserId(
                 $ticket->contact_company_user_id,
                 $request->contact_company_user_id,
