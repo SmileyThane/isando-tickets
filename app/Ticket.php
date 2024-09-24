@@ -31,11 +31,6 @@ class Ticket extends Model
     ];
 
     protected $appends = [
-        'from',
-        'from_company_name',
-        'contact_full_name',
-        'assigned_person_full_name',
-        'to',
         'last_update',
         'can_be_edited',
         'can_be_answered',
@@ -404,15 +399,5 @@ class Ticket extends Model
             'id',
             'id'
         );
-    }
-
-    public function getContactFullNameAttribute()
-    {
-        return $this->contact?->userData?->full_name;
-    }
-
-    public function getAssignedPersonFullNameAttribute()
-    {
-        return $this->assignedPerson?->userData?->full_name;
     }
 }
