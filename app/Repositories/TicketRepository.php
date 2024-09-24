@@ -22,6 +22,7 @@ use App\UserNotificationStatus;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
@@ -194,8 +195,6 @@ class TicketRepository
 
         $ticketResult
             ->with(
-                'assignedPerson.userData',
-                'contact.userData',
                 'product',
                 'priority',
                 'status',
@@ -207,28 +206,37 @@ class TicketRepository
         if ($orderedField === 'from_entity_id') {
             $ticketResult = $ticketResult->get();
             if ($orderedDirection === 'asc') {
-                $ticketResult = $ticketResult->sortBy('from_company_name', SORT_NATURAL, false);
+                $ticketResult = $ticketResult->sortBy('from_company_name', SORT_NATURAL);
             } else {
-                $ticketResult = $ticketResult->sortByDesc('from_company_name', SORT_NATURAL, true);
+                $ticketResult = $ticketResult->sortByDesc('from_company_name', SORT_NATURAL);
             }
         } elseif ($orderedField === 'contact.user_data.full_name') {
             $ticketResult = $ticketResult->get();
             if ($orderedDirection === 'asc') {
-                $ticketResult = $ticketResult->sortBy('contact.userData.name', SORT_NATURAL, false);
+                $ticketResult = $ticketResult->sortBy('contact.userData.name', SORT_NATURAL);
             } else {
-                $ticketResult = $ticketResult->sortByDesc('contact.userData.name', SORT_NATURAL, true);
+                $ticketResult = $ticketResult->sortByDesc('contact.userData.name', SORT_NATURAL);
             }
         } elseif ($orderedField === 'category.name') {
             $ticketResult = $ticketResult->get();
             if ($orderedDirection === 'asc') {
-                $ticketResult = $ticketResult->sortBy('category.name', SORT_NATURAL, false);
+                $ticketResult = $ticketResult->sortBy('category.name', SORT_NATURAL);
             } else {
-                $ticketResult = $ticketResult->sortByDesc('category.name', SORT_NATURAL, true);
+                $ticketResult = $ticketResult->sortByDesc('category.name', SORT_NATURAL);
             }
         } else {
             $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);
         }
 //        dd(DB::getQueryLog());
+
+        $key = 'ticket_' . base64_encode(json_encode($request->all()));
+        if (Cache::has($key)) {
+            return Cache::get($key);
+        }
+
+        Cache::remember($key, 600, static function () use ($ticketResult, $request, $ticketIds) {
+            return $ticketResult->paginate($request->per_page ?? count($ticketIds));
+        });
 
         return $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
@@ -317,7 +325,7 @@ class TicketRepository
                 'followers'
             )->first();
         if ($ticket) {
-            $ticket->makeVisible(['to', 'description']);
+            $ticket->makeVisible(['from', 'to', 'description', 'contact', 'assignedPerson']);
         }
 
         return $ticket;

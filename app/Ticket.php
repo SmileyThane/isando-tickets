@@ -30,10 +30,24 @@ class Ticket extends Model
         'category_id', 'parent_id', 'unifier_id', 'merged_at'
     ];
 
-    protected $appends = ['from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
-        'replicated_to', 'ticket_type', 'created_at_time', 'merged_parent_info', 'merged_child_info', 'original_name'];
+    protected $appends = [
+        'from',
+        'from_company_name',
+        'contact_full_name',
+        'assigned_person_full_name',
+        'to',
+        'last_update',
+        'can_be_edited',
+        'can_be_answered',
+        'replicated_to',
+        'ticket_type',
+        'created_at_time',
+        'merged_parent_info',
+        'merged_child_info',
+        'original_name'
+    ];
 
-    protected $hidden = ['to', 'description'];
+    protected $hidden = ['from', 'to', 'description', 'fromCompany', 'contact', 'assignedPerson'];
     protected $langId;
 
     public function __construct(array $attributes = [])
@@ -71,8 +85,7 @@ class Ticket extends Model
     {
         $content = str_replace(["\n", "<br>", "<br/>"], "", $this->attributes['description']);
         $content = preg_replace("/<img[^>]+cid:[^>]+\>/i", "[[image from attachments]]", $content);
-        foreach ($this->attachments as $attachment)
-        {
+        foreach ($this->attachments as $attachment) {
             $content = preg_replace('/\[\[image from attachments\]\]/', '<img style="max-width:100%" src="' . $attachment->link . '"/>', $content, 1);
         }
         $content = preg_replace('/\[\[image from attachments\]\]/', '', $content);
@@ -82,30 +95,25 @@ class Ticket extends Model
 
     public function getFromAttribute()
     {
-        return $this->attributes['from_entity_type']::where('id', $this->attributes['from_entity_id'])->withTrashed()->first();
-    }
-
-    public function getFromCompanyNameAttribute()
-    {
-        if ($this->from) {
-            return $this->from->name;
+        if ($this->attributes['from_entity_type'] === Client::class) {
+            return $this->fromClient()->withTrashed()->first();
         }
-        return null;
+
+        if ($this->attributes['from_entity_type'] === User::class) {
+            return $this->fromCompanyUser()->withTrashed()->first();
+        }
+
+        return $this->fromCompany()->withTrashed()->first();
     }
 
-    public function getToAttribute()
+    public function fromClient()
     {
-        return $this->attributes['to_entity_type']::where('id', $this->attributes['to_entity_id'])->withTrashed()->first();
+        return $this->morphTo(Client::class, 'from_entity_type', 'from_entity_id');
     }
 
-    public function toCompany()
+    public function fromCompanyUser()
     {
-        return $this->morphTo(Company::class, 'to_entity_type', 'to_entity_id');
-    }
-
-    public function toClient()
-    {
-        return $this->morphTo(Client::class, 'to_entity_type', 'to_entity_id');
+        return $this->morphTo(CompanyUser::class, 'from_entity_type', 'from_entity_id');
     }
 
     public function fromCompany()
@@ -113,9 +121,37 @@ class Ticket extends Model
         return $this->morphTo(Company::class, 'from_entity_type', 'from_entity_id');
     }
 
-    public function fromClient()
+    public function getFromCompanyNameAttribute()
     {
-        return $this->morphTo(Client::class, 'from_entity_type', 'from_entity_id');
+        return $this->fromCompany?->name;
+    }
+
+    public function getToAttribute()
+    {
+        if ($this->attributes['to_entity_type'] === Client::class) {
+            return $this->toCompany()->withTrashed()->first();
+        }
+
+        if ($this->attributes['to_entity_type'] === User::class) {
+            return $this->toCompanyUser()->withTrashed()->first();
+        }
+
+        return $this->toCompany()->withTrashed()->first();
+    }
+
+    public function toCompany()
+    {
+        return $this->morphTo(Company::class, 'to_entity_type', 'to_entity_id');
+    }
+
+    public function toCompanyUser()
+    {
+        return $this->morphTo(CompanyUser::class, 'to_entity_type', 'to_entity_id');
+    }
+
+    public function toClient()
+    {
+        return $this->morphTo(Client::class, 'to_entity_type', 'to_entity_id');
     }
 
     public function getReplicatedToAttribute()
@@ -368,5 +404,15 @@ class Ticket extends Model
             'id',
             'id'
         );
+    }
+
+    public function getContactFullNameAttribute()
+    {
+        return $this->contact?->userData?->full_name;
+    }
+
+    public function getAssignedPersonFullNameAttribute()
+    {
+        return $this->assignedPerson?->userData?->full_name;
     }
 }

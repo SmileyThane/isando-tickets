@@ -315,8 +315,8 @@
             </v-card>
         </template>
 
-<!--        Team selector   -->
-<!--        dateRangePicker -->
+        <!--        Team selector   -->
+        <!--        dateRangePicker -->
         <template>
             <div class="d-flex flex-row mr-16">
                 <div class="d-inline-flex flex-grow-0">
@@ -416,7 +416,7 @@
 
         <br>
 
-<!--        dataTable-->
+        <!--        dataTable-->
         <template>
             <v-expansion-panels
                 v-model="panels"
@@ -431,8 +431,9 @@
                         :color="themeBgColor"
                         style="color: white"
                     >
-                        <span v-if="moment(panelDate).format(dateTimeFormat) === moment().format(dateTimeFormat)">{{langMap.tracking.tracker.today}}</span>
-                        <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY')}}</span>
+                        <span
+                            v-if="moment(panelDate).format(dateTimeFormat) === moment().format(dateTimeFormat)">{{ langMap.tracking.tracker.today }}</span>
+                        <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY') }}</span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <template>
@@ -481,7 +482,7 @@
                                                         v-if="row.entity"
                                                         :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
                                                     >
-                                                        {{$helpers.string.shortenText(row.entity.name, 35)}}
+                                                        {{ $helpers.string.shortenText(row.entity.name, 35) }}
                                                     </div>
                                                 </div>
                                             </td>
@@ -493,7 +494,10 @@
                                                 <template v-if="row.entity && row.entity.client">
                                                     {{ row.entity.client.name }}
                                                 </template>
-                                                <template v-else-if="row.entity">{{ row.entity.from_company_name }}</template>
+                                                <template v-else-if="row.entity">{{
+                                                        row.entity.from_company_name
+                                                    }}
+                                                </template>
                                             </td>
                                             <td
                                                 class="px-3 py-0"
@@ -601,8 +605,9 @@
                                                             @open="open"
                                                             @close=""
                                                         >
-                                                            {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;<span v-if="row.date_to && row.date_to !== null">{{moment(row.date_to).format(timeFormat)}}</span>
-                                                            <span v-else>{{moment().format(timeFormat)}}</span>
+                                                            {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;<span
+                                                            v-if="row.date_to && row.date_to !== null">{{ moment(row.date_to).format(timeFormat) }}</span>
+                                                            <span v-else>{{ moment().format(timeFormat) }}</span>
                                                             <template v-slot:input>
                                                                 <div class="d-flex flex-row">
                                                                     <div class="d-inline-flex">
@@ -614,7 +619,9 @@
                                                                             @input="correctionTime(row.date_from, row.date_to); debounceSave(row, 'date_from', row.date_from)"
                                                                         ></TimeField>
                                                                     </div>
-                                                                    <div class="d-inline-flex mt-2">&nbsp;&mdash;&nbsp;</div>
+                                                                    <div class="d-inline-flex mt-2">
+                                                                        &nbsp;&mdash;&nbsp;
+                                                                    </div>
                                                                     <div class="d-inline-flex">
                                                                         <TimeField
                                                                             v-model="row.date_to"
@@ -629,8 +636,9 @@
                                                             </template>
                                                         </v-edit-dialog>
                                                         <span v-else>
-                                                            <span>{{moment(row.date_from).format(timeFormat)}}</span>&nbsp;&mdash;&nbsp;<span v-if="row.date_to && row.date_to !== null">{{moment(row.date_to).format(timeFormat)}}</span>
-                                                            <span v-else>{{moment().format(timeFormat)}}</span>
+                                                            <span>{{ moment(row.date_from).format(timeFormat) }}</span>&nbsp;&mdash;&nbsp;<span
+                                                            v-if="row.date_to && row.date_to !== null">{{ moment(row.date_to).format(timeFormat) }}</span>
+                                                            <span v-else>{{ moment().format(timeFormat) }}</span>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -732,7 +740,9 @@
                                                                                 <v-list-item-title
                                                                                     @click="actionDuplicateTracking(row.id)"
                                                                                 >
-                                                                                    {{ langMap.tracking.tracker.duplicate }}
+                                                                                    {{
+                                                                                        langMap.tracking.tracker.duplicate
+                                                                                    }}
                                                                                 </v-list-item-title>
                                                                             </v-list-item-content>
                                                                         </v-list-item>
@@ -742,7 +752,7 @@
                                                                                     @click="actionDeleteTracking(row.id)"
                                                                                     style="color: red"
                                                                                 >
-                                                                                    {{langMap.tracking.tracker.delete}}
+                                                                                    {{ langMap.tracking.tracker.delete }}
                                                                                 </v-list-item-title>
                                                                             </v-list-item-content>
                                                                         </v-list-item>
@@ -780,30 +790,37 @@
 </template>
 
 <style scoped>
->>> .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:before,
-.date-picker__without-line.v-text-field:not(.v-input__has-state):hover>.v-input__control>.v-input__slot:before,
-.date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:after{
+>>> .date-picker__without-line.v-text-field > .v-input__control > .v-input__slot:before,
+.date-picker__without-line.v-text-field:not(.v-input__has-state):hover > .v-input__control > .v-input__slot:before,
+.date-picker__without-line.v-text-field > .v-input__control > .v-input__slot:after {
     border: none !important;
 }
+
 >>> .dateRangePicker input {
     text-align: center;
 }
+
 >>> .v-data-table-header {
     /*display: none;*/
 }
+
 >>> .v-expansion-panel-header {
     min-height: 40px !important;
     padding: 14px 24px !important;
 }
+
 >>> .v-data-table__wrapper tr td.text-start:nth-child(6):after {
     /*content: "—";*/
 }
+
 >>> *:not(.v-icon) {
     font-size: 12px !important;
 }
+
 >>> .tag-field *:before {
     border: none !important;
 }
+
 >>> .tag-field .v-label {
     text-align: right;
     width: 80%;
@@ -996,15 +1013,15 @@ export default {
             });
         this.debounceGetTracking();
         this.$store.dispatch('Tracking/getSettings');
-        this.$store.dispatch('Projects/getProjectList', { search: null, force: true });
-        this.$store.dispatch('Products/getProductList', { search: null });
-        this.$store.dispatch('Clients/getClientList', { search: null, force: true });
-        this.$store.dispatch('Tags/getTagList', { force: true });
-        this.$store.dispatch('Services/getServicesList', { search: null });
-        this.$store.dispatch('Tickets/getTicketList', { search: null });
-        this.$store.dispatch('Team/getManagedTeams', { withEmployee: true });
-        this.$store.dispatch('Team/getCoworkers', { search: null });
-        this.$store.dispatch('Team/getTeams', { search: null });
+        this.$store.dispatch('Projects/getProjectList', {search: null, force: true});
+        this.$store.dispatch('Products/getProductList', {search: null});
+        this.$store.dispatch('Clients/getClientList', {search: null, force: true});
+        this.$store.dispatch('Tags/getTagList', {force: true});
+        this.$store.dispatch('Services/getServicesList', {search: null});
+        this.$store.dispatch('Tickets/getTicketList', {search: null});
+        this.$store.dispatch('Team/getManagedTeams', {withEmployee: true});
+        this.$store.dispatch('Team/getCoworkers', {search: null});
+        this.$store.dispatch('Team/getTeams', {search: null});
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1029,7 +1046,7 @@ export default {
                 offset: this.offset,
             });
             return axios.get(`/api/ttmanaging/ttmanager?${queryParams.toString()}`)
-                .then(({ data }) => {
+                .then(({data}) => {
                     if (this.offset === 0) {
                         this.tracking = [];
                     }
@@ -1054,7 +1071,7 @@ export default {
         __createTracking(data) {
             this.loadingCreateTrack = true;
             return axios.post('/api/ttmanaging/ttmanager', data)
-                .then(({ data }) => {
+                .then(({data}) => {
                     // if (data.success) {
                     //     this.tracking.splice(0, 0, data.data);
                     // }
@@ -1081,7 +1098,7 @@ export default {
         __updateTrackingById(id, data) {
             this.loadingUpdateTrack = true;
             return axios.patch(`/api/ttmanaging/ttmanager/${id}`, data)
-                .then(({ data }) => {
+                .then(({data}) => {
                     if (data.success) {
                         this.tracking.splice(this.tracking.findIndex(i => i.id === id), 1, data.data);
                     }
@@ -1119,7 +1136,7 @@ export default {
         },
         __duplicateTracking(id) {
             return axios.post(`/api/ttmanaging/ttmanager/${id}/duplicate`)
-                .then(({ data }) => {
+                .then(({data}) => {
                     // this.debounceGetTracking();
                     this.tracking.splice(0, 0, data.data);
                     return data;
@@ -1250,25 +1267,25 @@ export default {
             this.manualPanel.entity = data.project;
         },
         handlerTagsTimerPanel(data) {
-            this.timerPanel.tags  = data.tags;
+            this.timerPanel.tags = data.tags;
         },
         handlerTagsManualPanel(data) {
-            this.manualPanel.tags  = data.tags;
+            this.manualPanel.tags = data.tags;
         },
         filterTracking(date) {
             const self = this;
             return this.tracking
-                .filter(function(item) {
+                .filter(function (item) {
                     if (self.teamFilter.length) {
                         return self.teamFilter.indexOf(item.user_id) !== -1;
                     }
                     return true;
                 })
-                .filter(function(item) {
-                return moment(item.date_from).format(self.dateFormat) === date;
-            });
+                .filter(function (item) {
+                    return moment(item.date_from).format(self.dateFormat) === date;
+                });
         },
-        save (item, fieldName, newValue = null) {
+        save(item, fieldName, newValue = null) {
             if (['date_from', 'date_to'].indexOf(fieldName)) {
                 item.passed = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to, true);
             }
@@ -1296,15 +1313,6 @@ export default {
             }
             this.__updateTrackingById(item.id, item);
         },
-        cancel () {
-            //TODO
-        },
-        open () {
-            //TODO
-        },
-        close () {
-            //TODO
-        },
         handlerChangeDate(item) {
             const date = {
                 date: moment(item.date).date(),
@@ -1325,8 +1333,8 @@ export default {
             }
             const trackerDiff = moment().diff(tracker.date_from, 'seconds');
             if (
-                (this.hasPermission([45]) &&  trackerDiff > 60 * 60 * 24 * 14)
-                || (this.hasPermission([44]) &&  trackerDiff > 60 * 60 * 24 * 7)
+                (this.hasPermission([45]) && trackerDiff > 60 * 60 * 24 * 14)
+                || (this.hasPermission([44]) && trackerDiff > 60 * 60 * 24 * 7)
             ) {
                 return false;
             }
@@ -1359,21 +1367,21 @@ export default {
         clearInterval(this.intervalId)
     },
     computed: {
-        timeAdd () {
+        timeAdd() {
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
                 this.manualPanel.date_to = moment(this.manualPanel.date_to).format(this.dateTimeFormat);
             }
             const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to, true);
             return this.$helpers.time.convertSecToTime(seconds);
         },
-        dateRangeText () {
+        dateRangeText() {
             const dateFormat = 'DD MMM YYYY';
             return `${moment(this.dateRange.start).format(dateFormat)} - ${moment(this.dateRange.end).format(dateFormat)}`;
         },
-        getPanelDates () {
+        getPanelDates() {
             const self = this;
             const items = this.tracking
-                .filter(function(item) {
+                .filter(function (item) {
                     if (self.teamFilter.length) {
                         return self.teamFilter.indexOf(item.user_id) !== -1;
                     }
@@ -1383,7 +1391,7 @@ export default {
                     return [...acc, date.toString()];
                 }, []);
             const panels = [...new Set(items)].sort().reverse();
-            this.panels = panels.map((i,k) => k);
+            this.panels = panels.map((i, k) => k);
             return panels;
         },
         getFilteredProjects() {
@@ -1392,16 +1400,16 @@ export default {
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
 
-                return Object.assign({}, entry, { name })
+                return Object.assign({}, entry, {name})
             })
         },
-        periodStart () {
+        periodStart() {
             return moment(this.dateRange.start).format('DD/MM/YYYY');
         },
-        periodEnd () {
+        periodEnd() {
             return moment(this.dateRange.end).format('DD/MM/YYYY');
         },
-        teamEmployee () {
+        teamEmployee() {
             if (this.hasPermission([90])) {
                 return this.$store.getters['Team/getCoworkers'];
             } else if (this.hasPermission([42])) {
@@ -1428,21 +1436,27 @@ export default {
             }
         },
         getTrackingProjectLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.department;
-                case 2: return this.langMap.tracking.profit_center;
-                default: return this.langMap.tracking.project;
+                case 1:
+                    return this.langMap.tracking.department;
+                case 2:
+                    return this.langMap.tracking.profit_center;
+                default:
+                    return this.langMap.tracking.project;
             }
         },
         getTrackingProjectsLabel() {
-            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const {settings} = this.$store.getters['Tracking/getSettings'];
             const projectType = settings && settings.projectType ? settings.projectType : 0;
             switch (projectType) {
-                case 1: return this.langMap.tracking.departments;
-                case 2: return this.langMap.tracking.profit_centres;
-                default: return this.langMap.tracking.projects;
+                case 1:
+                    return this.langMap.tracking.departments;
+                case 2:
+                    return this.langMap.tracking.profit_centres;
+                default:
+                    return this.langMap.tracking.projects;
             }
         },
     },
@@ -1471,8 +1485,8 @@ export default {
                     .format(this.dateTimeFormat);
             }
         },
-        search () {
-            this.$store.dispatch('Projects/getProjectList', { search: this.search });
+        search() {
+            this.$store.dispatch('Projects/getProjectList', {search: this.search});
         },
         globalTimer: function () {
             // Update DataTable passed field

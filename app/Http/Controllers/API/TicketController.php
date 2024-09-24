@@ -27,15 +27,6 @@ class TicketController extends Controller
         $this->ticketRepo = $ticketRepository;
     }
 
-    public function get(Request $request)
-    {
-        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
-            return self::showResponse(true, $this->ticketRepo->all($request));
-        }
-
-        return self::showResponse(false);
-    }
-
     public function priorities()
     {
         return self::showResponse(true, TicketPriority::all());
@@ -58,11 +49,20 @@ class TicketController extends Controller
             ->where('entity_type', Company::class)
             ->where('entity_id', Auth::user()->employee->companyData->id);
 
-        if ($companyUser = Auth::user()->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
+        if (Auth::user()->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $types->where('id', '!=', TicketType::INTERNAL);
         }
 
         return self::showResponse(true, $types->get());
+    }
+
+    public function get(Request $request)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
+            return self::showResponse(true, $this->ticketRepo->all($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function getAllTypesInCompanyContext()
@@ -98,6 +98,18 @@ class TicketController extends Controller
         return self::showResponse(true, $type);
     }
 
+    public function update(Request $request, $id)
+    {
+        $result = $this->ticketRepo->validate($request);
+        $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS);
+
+        if ($result && $hasAccess) {
+            return self::showResponse(true, $this->ticketRepo->update($request, $id));
+        }
+
+        return self::showResponse(false);
+    }
+
     public function deleteType($id): JsonResponse
     {
         try {
@@ -110,10 +122,10 @@ class TicketController extends Controller
         }
     }
 
-    public function find($id)
+    public function delete($id)
     {
-        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
-            return self::showResponse(true, $this->ticketRepo->find($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_DELETE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->delete($id));
         }
 
         return self::showResponse(false);
@@ -138,32 +150,11 @@ class TicketController extends Controller
         return self::showResponse($success, $result);
     }
 
-    public function update(Request $request, $id)
-    {
-        $result = $this->ticketRepo->validate($request);
-        $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS);
-
-        if ($result && $hasAccess) {
-            return self::showResponse(true, $this->ticketRepo->update($request, $id));
-        }
-
-        return self::showResponse(false);
-    }
-
     public function updateDescription(Request $request, $id)
     {
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS);
         if ($hasAccess) {
             return self::showResponse(true, $this->ticketRepo->updateDescription($request, $id));
-        }
-
-        return self::showResponse(false);
-    }
-
-    public function delete($id)
-    {
-        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_DELETE_ACCESS)) {
-            return self::showResponse($this->ticketRepo->delete($id));
         }
 
         return self::showResponse(false);
@@ -193,6 +184,15 @@ class TicketController extends Controller
         }
 
         return self::showResponse($result);
+    }
+
+    public function find($id)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
+            return self::showResponse(true, $this->ticketRepo->find($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function attachEmployee(Request $request, $id)

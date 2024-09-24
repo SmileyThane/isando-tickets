@@ -17,6 +17,8 @@ class ProductCategory extends Model
 
     protected $appends = ['full_name'];
 
+    protected $hidden = ['created_at','updated_at'];
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'id', 'company_id');
