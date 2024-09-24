@@ -1109,10 +1109,10 @@
                   <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
                   <span v-if="ticket.contact.user_data.full_name">
                     {{ ticket.contact.user_data.full_name }} -
-                    {{ ticket.from.name }}
+                    {{ ticket.from_entity_name }}
                   </span>
                   <span v-else>
-                    {{ ticket.from.name }}
+                    {{ ticket.from_entity_name }}
                   </span>
                 </span>
               </span>
@@ -1635,7 +1635,7 @@
                       >mdi-account-circle</v-icon
                       >
                       {{ ticket.contact.user_data.full_name }} -
-                      {{ ticket.from.name }}
+                      {{ ticket.from_entity_name }}
                     </span>
                                     </div>
                                     <div
@@ -1643,7 +1643,7 @@
                                         class="d-inline-flex my-2"
                                         style="min-width: 80px"
                                     >
-                                        {{ ticket.from.name }}
+                                        {{ ticket.from_entity_name }}
                                     </div>
                                 </div>
                             </div>
@@ -1670,7 +1670,7 @@
                                 style="display: flex; flex-direction: column"
                             >
                                 <div>
-                                    <v-label v-if="ticket.from.name">
+                                    <v-label v-if="ticket.from_entity_name">
                                         {{ langMap.ticket.contact_email }}:
                                     </v-label>
                                     <div class="float-md-right ml-1">
@@ -1687,7 +1687,7 @@
                                 style="display: flex; flex-direction: column"
                             >
                                 <div>
-                                    <v-label v-if="ticket.from.name">
+                                    <v-label v-if="ticket.from_entity_name">
                                         {{ langMap.ticket.contact_phone }}:
                                     </v-label>
                                     <div class="float-md-right ml-1">
@@ -1698,18 +1698,18 @@
                             </div>
                             <div style="display: flex; flex-direction: column">
                                 <div>
-                                    <v-label v-if="ticket.from.name">
+                                    <v-label v-if="ticket.from_entity_name">
                                         {{ langMap.ticket.company_from }}:
                                     </v-label>
                                     <v-btn
-                                        v-if="ticket.from.name"
+                                        v-if="ticket.from_entity_name"
                                         class="float-md-right"
                                         color="white"
                                         small
                                         style="color: black"
                                         @click="handleNavigateToCompany"
                                     >
-                                        {{ ticket.from.name }}
+                                        {{ ticket.from_entity_name }}
                                     </v-btn>
                                 </div>
                                 <span style="padding-bottom: 5px"></span>
@@ -2809,7 +2809,7 @@
                                                                             ? item.creator.user_data.full_name
                                                                             : ''
                                                                     }},
-                                  {{ item.from !== null ? item.from.name : '' }}
+                                  {{ item.from !== null ? item.from_entity_name : '' }}
                                 </span>
                                                                 <br/>
                                                                 <span style="font-weight: lighter">

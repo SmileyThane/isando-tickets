@@ -629,7 +629,7 @@ export default {
                 },
                 {
                     text: `${this.$store.state.lang.lang_map.ticket.company_from}`,
-                    value: 'from_company_name',
+                    value: 'from_entity_name',
                     width: '250px',
                 },
                 {
