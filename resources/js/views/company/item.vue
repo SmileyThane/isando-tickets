@@ -2524,26 +2524,26 @@
                 </v-card-title>
                 <v-card-actions>
                     <div style="width: 100%; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 15px 0;">
-                            <v-text-field
-                                v-model="editCategoryForm.name"
-                                :color="themeBgColor"
-                                :item-color="themeBgColor"
-                                :label="langMap.main.name"
-                                style="width: 100%;"
-                                dense
-                            ></v-text-field>
-                            <v-select
-                                v-model="editCategoryForm.parent_id"
-                                :color="themeBgColor"
-                                :item-color="themeBgColor"
-                                :items="productCategoriesFlat"
-                                :label="langMap.company.parent_product_category"
-                                style="width: 100%;"
-                                dense
-                                item-text="full_name"
-                                item-value="id"
-                            >
-                            </v-select>
+                        <v-text-field
+                            v-model="editCategoryForm.name"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
+                            :label="langMap.main.name"
+                            style="width: 100%;"
+                            dense
+                        ></v-text-field>
+                        <v-select
+                            v-model="editCategoryForm.parent_id"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
+                            :items="productCategoriesFlat"
+                            :label="langMap.company.parent_product_category"
+                            style="width: 100%;"
+                            dense
+                            item-text="full_name"
+                            item-value="id"
+                        >
+                        </v-select>
                         <v-spacer></v-spacer>
                         <div>
                             <v-btn color="grey darken-1" small text @click="editCategoryModal = false">
@@ -2951,7 +2951,7 @@ export default {
             });
         },
         getRoles() {
-            axios.get('/api/roles').then(response => {
+            axios.get('/api/roles?exclude[]=company_client').then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.roles = response.data
@@ -3065,7 +3065,7 @@ export default {
         },
         addProduct() {
             const config = {
-                headers: {'content-type': 'multipart/form-data'}
+                headers: { 'content-type': 'multipart/form-data' }
             }
             let formData = new FormData();
             for (let key in this.productForm) {
@@ -3860,7 +3860,7 @@ export default {
         }
     },
     computed: {
-        companyUpdates: function () {
+        companyUpdates: function() {
             return this.company
         }
     }

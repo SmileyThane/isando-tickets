@@ -449,7 +449,6 @@ export default {
                     client_groups: this.searchWhere.includes(6) ? 1 : 0,
                 }
             }).then(response => {
-                this.loading = false
                 response = response.data
                 if (response.success === true) {
                     this.customers = response.data.data
@@ -460,6 +459,8 @@ export default {
                     this.actionColor = 'error'
                     this.snackbar = true;
                 }
+            }).finally(() => {
+                this.loading = false
             });
         },
         addClient() {
@@ -521,6 +522,11 @@ export default {
         },
     },
     watch: {
+        searchWhere(value) {
+            if(!value.length) {
+                this.searchWhere = [1]
+            }
+        },
         customersSearch(val){
             if(val.length && !this.searchWhere.length) {
                 this.searchWhere = [1]

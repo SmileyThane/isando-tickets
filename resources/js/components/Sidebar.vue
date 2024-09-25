@@ -322,7 +322,7 @@
             </template>
             <span>{{ langMap.sidebar.all }}</span>
           </v-tooltip>
-          <v-list-group :value="true" no-action sub-group>
+          <v-list-group :value="true" :color="themeBgColor" no-action sub-group>
             <template v-slot:activator>
               <v-list-item-content>
                 <v-list-item-title>Clients</v-list-item-title>
@@ -380,7 +380,7 @@
             </v-tooltip>
           </v-list-group>
 
-          <v-list-group :value="true" no-action sub-group>
+          <v-list-group :value="true" :color="themeBgColor" no-action sub-group>
             <template v-slot:activator>
               <v-list-item-content>
                 <v-list-item-title>Suppliers</v-list-item-title>
@@ -442,6 +442,79 @@
       <v-divider v-if="$helpers.auth.checkPermissionByIds([1])"
         >&nbsp;
       </v-divider>
+
+        <v-list dense>
+            <v-list-group
+                v-if="$helpers.auth.checkPermissionByIds([1])"
+                :style="'background-color: ' + 'white' + ';'"
+                :value="sidebarGroups"
+                color="#757575"
+                no-action
+            >
+                <template v-slot:activator>
+                    <v-tooltip right :disabled="!localDrawer">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-list-item-action v-bind="attrs" v-on="on">
+                                <v-icon>mdi mdi-server-outline</v-icon>
+                            </v-list-item-action>
+                        </template>
+                        <span>External sources</span>
+                    </v-tooltip>
+                    <v-list-item-content>
+                        <v-list-item-title>External sources</v-list-item-title>
+                    </v-list-item-content>
+                </template>
+                <v-tooltip right :disabled="!localDrawer">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-list-item
+                            v-bind="attrs"
+                            v-on="on"
+                            v-if="$helpers.auth.checkPermissionByIds([1])"
+                            color="#757575"
+                            link
+                            to="/hosting"
+                        >
+                            <v-list-item-action>
+                                <v-icon>mdi mdi-fireplace-off</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title
+                                >Hosting
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                    <span>Hosting</span>
+                </v-tooltip>
+                <v-tooltip right :disabled="!localDrawer">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-list-item
+                            v-bind="attrs"
+                            v-on="on"
+                            v-if="$helpers.auth.checkPermissionByIds([1])"
+                            color="#757575"
+                            link
+                            style="background-color: white"
+                            to="/voip"
+                        >
+                            <v-list-item-action>
+                                <v-icon>mdi mdi-record-player</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title
+                                >VOIP
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                    <span>VOIP</span>
+                </v-tooltip>
+            </v-list-group>
+        </v-list>
+        <v-divider v-if="$helpers.auth.checkPermissionByIds([1])"
+        >&nbsp;
+        </v-divider>
+
       <v-tooltip right :disabled="!localDrawer">
         <template v-slot:activator="{ on, attrs }">
           <v-list-item
