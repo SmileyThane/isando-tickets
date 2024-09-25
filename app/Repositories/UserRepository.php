@@ -309,14 +309,16 @@ class UserRepository
     {
         $employee = Auth::user()->employee;
         $groupIds = [];
-        foreach ($groupNames as $groupName) {
-            if ($employee) {
-                $group = ClientFilterGroup::query()
-                    ->firstOrCreate(['name' => $groupName, 'company_id' => $employee->company_id]);
-                if ($group) {
-                    ClientFilterGroupHasUsers::query()
-                        ->firstOrCreate(['user_id' => $userId, 'group_id' => $group->id]);
-                    $groupIds[] = $group->id;
+        if ($groupNames) {
+            foreach ($groupNames as $groupName) {
+                if ($employee) {
+                    $group = ClientFilterGroup::query()
+                        ->firstOrCreate(['name' => $groupName, 'company_id' => $employee->company_id]);
+                    if ($group) {
+                        ClientFilterGroupHasUsers::query()
+                            ->firstOrCreate(['user_id' => $userId, 'group_id' => $group->id]);
+                        $groupIds[] = $group->id;
+                    }
                 }
             }
         }
