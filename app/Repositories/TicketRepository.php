@@ -654,7 +654,7 @@ class TicketRepository
 
         if ($ticketCreator && Auth::id() !== $ticketCreator->user_id) {
             Log::debug('Reply to creator');
-            $assignedPerson->userData->notify(
+            $ticketCreator->userData->notify(
                 new SendTicketReply(
                     $ticket->name,
                     $reply,
