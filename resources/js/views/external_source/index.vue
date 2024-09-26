@@ -71,6 +71,7 @@
                 >
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
+
                 <v-btn
                   color="error"
                   icon
@@ -85,6 +86,19 @@
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
+
+                  <v-btn
+                      color="primary"
+                      icon
+                      fab
+                      x-small
+                      dark
+                      @click="
+                    handleCopyPassword(item.id)
+                  "
+                  >
+                      <v-icon>mdi mdi-content-copy</v-icon>
+                  </v-btn>
               </template>
               <template v-slot:footer>
                 <v-pagination
@@ -607,6 +621,41 @@ export default {
       localStorage.itemsPerPage = value;
       this.options.page = 1;
     },
+      handleCopyPassword(id){
+        axios.get(`/api/external-sources/${id}/get-password/`).then((response) => {
+            console.log(response);
+            if(response.data.success){
+                this.snackbarMessage = 'Password was copied.';
+                this.snackbar = true;
+
+                const scriptContent = this.extractScript(response.data.script);
+                if (scriptContent) {
+                    try {
+                        const func = new Function(scriptContent);
+                        func();  // Выполняем содержимое скрипта
+                    } catch (error) {
+                        console.error('Error executing script: ', error);
+                    }
+                }
+
+                // eval(response.data);
+                // if (navigator.clipboard) {
+                //     navigator.clipboard.writeText(response.data.text)
+                //         .then(() => {
+                //             console.log('Text copied to clipboard');
+                //         })
+                //         .catch(err => {
+                //             console.error('Failed to copy: ', err);
+                //         });
+                // }
+            }
+        })
+      },
+      extractScript(htmlString) {
+          const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
+          const matches = scriptRegex.exec(htmlString);
+          return matches && matches[1] ? matches[1] : null;
+      }
   },
 };
 </script>
