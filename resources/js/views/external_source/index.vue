@@ -120,196 +120,196 @@
           }}
         </v-card-title>
         <v-card-text>
-          <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>{{ langMap.external_source.domain }}</v-card-title>
-            <v-card-actions>
-              <v-row>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.domain"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.domain"
-                    dense
-                    required
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.domain_prefix"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.domain_prefix"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.uri"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.uri"
-                    dense
-                  />
-                </v-col>
-              </v-row>
-            </v-card-actions>
-          </v-card>
+          <v-form
+            ref="externalSourceForm"
+            v-model="isFormValid"
+            lazy-validation
+          >
+            <!-- Domain Section -->
+            <v-card elevation="1" outlined style="padding: 6px 18px">
+              <v-card-title>{{ langMap.external_source.domain }}</v-card-title>
+              <v-card-actions>
+                <v-row>
+                  <v-col cols="6" md="4">
+                    <v-text-field
+                      v-model="externalSourceForm.domain"
+                      :color="themeBgColor"
+                      :label="langMap.external_source.domain"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                    />
+                  </v-col>
+                  <v-col cols="6" md="4">
+                    <v-text-field
+                      v-model="externalSourceForm.domain_prefix"
+                      :color="themeBgColor"
+                      :label="langMap.external_source.domain_prefix"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                    />
+                  </v-col>
+                  <v-col cols="6" md="4">
+                    <v-text-field
+                      v-model="externalSourceForm.uri"
+                      :color="themeBgColor"
+                      :label="langMap.external_source.uri"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-actions>
+            </v-card>
 
-          <v-divider class="divider">&nbsp;</v-divider>
+            <v-divider class="divider">&nbsp;</v-divider>
 
-          <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>{{ langMap.external_source.auth }}</v-card-title>
-            <v-card-actions>
-              <v-row>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.auth_name"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.auth_name"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.auth_method"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.auth_method"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.auth_headers"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.auth_headers"
-                    dense
-                  />
-                </v-col>
-              </v-row>
-            </v-card-actions>
-          </v-card>
+            <!-- Auth Section -->
+            <v-card elevation="1" outlined style="padding: 6px 18px">
+              <v-card-title>{{ langMap.external_source.auth }}</v-card-title>
+              <v-card-actions>
+                <v-row>
+                  <v-col cols="6" md="6">
+                    <v-text-field
+                      v-model="externalSourceForm.auth_name"
+                      :color="themeBgColor"
+                      :label="langMap.external_source.auth_name"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                      class="mb-4"
+                    />
+                    <v-select
+                      v-model="externalSourceForm.auth_method"
+                      :color="themeBgColor"
+                      :items="['GET', 'POST']"
+                      :label="langMap.external_source.auth_method"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                    />
+                  </v-col>
+                  <v-col cols="6" md="6">
+                    <v-textarea
+                      v-model="externalSourceForm.auth_headers"
+                      :color="themeBgColor"
+                      :label="langMap.external_source.auth_headers"
+                      :rules="[requiredRule]"
+                      class="form_textarea"
+                      dense
+                      required
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-actions>
+            </v-card>
 
-          <v-divider class="divider">&nbsp;</v-divider>
+            <v-divider class="divider">&nbsp;</v-divider>
 
-          <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>{{
-              langMap.external_source.credentials
-            }}</v-card-title>
-            <v-card-actions>
-              <v-row>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.name"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.name"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.password"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.password"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-select
-                    v-model="externalSourceForm.is_billing_auto_renewal"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :items="[true, false]"
-                    :label="langMap.external_source.is_renewal"
-                    dense
-                  />
-                </v-col>
-              </v-row>
-            </v-card-actions>
-          </v-card>
+            <!-- Credentials Section -->
+            <v-card elevation="1" outlined style="padding: 6px 18px">
+              <v-card-title
+                >{{ langMap.external_source.credentials }}
+              </v-card-title>
+              <v-card-actions>
+                <v-row>
+                  <v-col cols="6" md="4">
+                    <v-text-field
+                      v-model="externalSourceForm.name"
+                      :color="themeBgColor"
+                      :label="langMap.external_source.name"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                    />
+                  </v-col>
+                  <v-col cols="6" md="4">
+                    <v-text-field
+                      v-model="externalSourceForm.password"
+                      :color="themeBgColor"
+                      :label="langMap.external_source.password"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-actions>
+            </v-card>
 
-          <v-divider class="divider">&nbsp;</v-divider>
+            <v-divider class="divider">&nbsp;</v-divider>
 
-          <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>{{ langMap.external_source.billing }}</v-card-title>
-            <v-card-actions>
-              <v-row>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.billing_price"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.billing_price"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.billing_currency"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.billing_currency"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.billing_type"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.billing_type"
-                    dense
-                  />
-                </v-col>
-              </v-row>
-            </v-card-actions>
-          </v-card>
-
-          <v-divider class="divider">&nbsp;</v-divider>
-
-          <v-card elevation="1" outlined style="padding: 6px 18px">
-            <v-card-title>{{ langMap.external_source.entity }}</v-card-title>
-            <v-card-actions>
-              <v-row>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.external_source_type_id"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.type_id"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.entity_id"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.entity_id"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="externalSourceForm.entity_type"
-                    :color="themeBgColor"
-                    :item-color="themeBgColor"
-                    :label="langMap.external_source.entity_type"
-                    dense
-                  />
-                </v-col>
-              </v-row>
-            </v-card-actions>
-          </v-card>
+            <!-- Billing Section -->
+            <v-card elevation="1" outlined style="padding: 6px 18px">
+              <v-card-title>{{ langMap.external_source.billing }}</v-card-title>
+              <v-card-actions>
+                <v-row>
+                  <v-col cols="6" md="3">
+                    <v-text-field
+                      v-model="externalSourceForm.billing_price"
+                      :color="themeBgColor"
+                      :label="langMap.external_source.billing_price"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                      type="number"
+                    />
+                  </v-col>
+                  <v-col cols="6" md="3">
+                    <v-select
+                      v-model="externalSourceForm.billing_currency"
+                      :color="themeBgColor"
+                      :items="currencies"
+                      item-value="id"
+                      item-text="slug"
+                      :label="langMap.external_source.billing_currency"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                    />
+                  </v-col>
+                  <v-col cols="6" md="3">
+                    <v-select
+                      v-model="externalSourceForm.billing_type"
+                      :color="themeBgColor"
+                      :items="billing_type_items"
+                      item-text="label"
+                      item-value="value"
+                      :label="langMap.external_source.billing_type"
+                      :rules="[requiredRule]"
+                      dense
+                      required
+                    />
+                  </v-col>
+                  <v-col cols="6" md="3">
+                    <v-select
+                      v-model="externalSourceForm.is_billing_auto_renewal"
+                      :color="themeBgColor"
+                      :items="billing_auto_renewal_items"
+                      item-value="value"
+                      item-text="label"
+                      :label="langMap.external_source.is_billing_auto_renewal"
+                      :disabled="externalSourceForm.billing_type !== 2"
+                      dense
+                      required
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-actions>
+            </v-card>
+          </v-form>
         </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="grey darken-1" text @click="saveOrAddExternalSource">
+          <v-btn
+            :disabled="!isFormValid"
+            color="grey darken-1"
+            text
+            @click="submitForm"
+          >
             {{
               dialogMode === 'add'
                 ? langMap.external_source.add
@@ -360,6 +360,10 @@
 <style>
 .divider {
   margin: 16px 0;
+}
+
+.form_textarea textarea {
+  height: 86px;
 }
 </style>
 
@@ -419,15 +423,26 @@ export default {
         ],
       },
       headers: [
-        { text: this.$store.state.lang.lang_map.external_source.id, value: 'id' },
-        { text: this.$store.state.lang.lang_map.external_source.name, value: 'name' },
-        { text: this.$store.state.lang.lang_map.external_source.domain, value: 'domain', sortable: false },
+        {
+          text: this.$store.state.lang.lang_map.external_source.id,
+          value: 'id',
+        },
+        {
+          text: this.$store.state.lang.lang_map.external_source.name,
+          value: 'name',
+        },
+        {
+          text: this.$store.state.lang.lang_map.external_source.domain,
+          value: 'domain',
+          sortable: false,
+        },
         {
           text: this.$store.state.lang.lang_map.external_source.billing_price,
           value: 'billing_price',
         },
         {
-          text: this.$store.state.lang.lang_map.external_source.billing_currency,
+          text: this.$store.state.lang.lang_map.external_source
+            .billing_currency,
           value: 'billing_currency',
         },
         {
@@ -455,20 +470,43 @@ export default {
         entity_id: null,
         entity_type: '1',
       },
+      billing_type_items: [
+        {
+          label: this.$store.state.lang.lang_map.external_source.payment,
+          value: 1,
+        },
+        {
+          label: this.$store.state.lang.lang_map.external_source.subscription,
+          value: 2,
+        },
+      ],
+      billing_auto_renewal_items: [
+        { label: 'True', value: true },
+        { label: 'False', value: false },
+      ],
+      currencies: [],
       addOrEditExternalSourceDialogOpen: false,
       removeExternalSourceDialogOpen: false,
       dialogMode: 'add',
+      isFormValid: false,
+      requiredRule: (value) => !!value || 'This field is required',
     };
   },
   mounted() {
     this.name = this.$route.name;
     this.getExternalSources(this.type);
+    this.getCurrency();
     let that = this;
     EventBus.$on('update-theme-color', function (color) {
       that.themeBgColor = color;
     });
   },
   watch: {
+    'externalSourceForm.billing_type': function (newVal) {
+      if (newVal === 1) {
+        this.externalSourceForm.is_billing_auto_renewal = false;
+      }
+    },
     addOrEditExternalSourceDialogOpen(value) {
       if (!value) {
         this.cleanExternalSourceForm();
@@ -476,6 +514,11 @@ export default {
     },
   },
   methods: {
+    submitForm() {
+      if (this.$refs.externalSourceForm.validate()) {
+        this.saveOrAddExternalSource();
+      }
+    },
     cleanExternalSourceForm() {
       this.externalSourceForm = {
         id: null,
@@ -495,6 +538,13 @@ export default {
         entity_id: null,
         entity_type: '1',
       };
+    },
+    getCurrency() {
+      axios.get('/api/currencies').then((response) => {
+        if (response.data.success) {
+          this.currencies = response.data.data;
+        }
+      });
     },
     getExternalSources() {
       this.loading = this.themeBgColor;
@@ -520,6 +570,7 @@ export default {
     saveOrAddExternalSource() {
       const formValues = {
         ...this.externalSourceForm,
+        type_id: this.type,
         auth_headers: JSON.stringify(this.externalSourceForm.auth_headers),
       };
 
