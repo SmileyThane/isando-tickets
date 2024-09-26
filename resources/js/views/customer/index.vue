@@ -121,13 +121,14 @@
                                         <v-text-field v-model="customersSearch" :color="themeBgColor"
                                                       :label="langMap.main.search"
                                                       style="font-size: 12px;"
-                                                      class="mx-4" @input="debounceGetClients"></v-text-field>
+                                                      class="mx-4" @input="debounceGetClients" clearable></v-text-field>
                                     </v-col>
                                     <v-col cols="4" class="pb-0">
                                         <v-select v-model="searchWhere" :color="themeBgColor" :items="searchOptions"
                                                   item-text="name" item-value="id" label="Search in"  multiple clearable
                                                   style="font-size: 12px;"
                                                   :menu-props="{ bottom: true, offsetY: true }"
+                                                  class="search_in_select"
                                                   v-on:change="debounceGetClients"/>
                                     </v-col>
                                     <v-col cols="2">
@@ -298,6 +299,10 @@
 
 .v-data-table /deep/ .text-center {
     padding: 0 8px;
+}
+
+.search_in_select /deep/ .v-input__icon--clear button {
+    color: #95c13d;
 }
 </style>
 
