@@ -467,8 +467,6 @@ export default {
         billing_type: null,
         is_billing_auto_renewal: false,
         external_source_type_id: null,
-        entity_id: null,
-        entity_type: '1',
       },
       billing_type_items: [
         {
@@ -535,8 +533,6 @@ export default {
         billing_type: null,
         is_billing_auto_renewal: false,
         external_source_type_id: null,
-        entity_id: null,
-        entity_type: '1',
       };
     },
     getCurrency() {
@@ -570,7 +566,7 @@ export default {
     saveOrAddExternalSource() {
       const formValues = {
         ...this.externalSourceForm,
-        type_id: this.type,
+          external_source_type_id: this.type,
         auth_headers: JSON.stringify(this.externalSourceForm.auth_headers),
       };
 
