@@ -6,7 +6,7 @@
       :color="actionColor"
       :right="true"
     >
-      {{ name }}
+      {{ snackbarMessage }}
     </v-snackbar>
     <div class="row justify-content-center">
       <div class="col-md-12">
@@ -52,9 +52,9 @@
                 </v-row>
               </template>
               <template v-slot:item.domain="{ item }">
-                <span>{{
+                <a :style="`color: ${themeBgColor}`" :href="item.domain_prefix + '://' + item.domain + '.' + item.uri" target="_blank">{{
                   item.domain_prefix + '://' + item.domain + '.' + item.uri
-                }}</span>
+                }}</a>
               </template>
               <template v-slot:item.actions="{ item }">
                 <v-btn
@@ -71,6 +71,7 @@
                 >
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
+
                 <v-btn
                   color="error"
                   icon
@@ -85,6 +86,19 @@
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
+
+                  <v-btn
+                      color="primary"
+                      icon
+                      fab
+                      x-small
+                      dark
+                      @click="
+                    handleCopyPassword(item.id)
+                  "
+                  >
+                      <v-icon>mdi mdi-content-copy</v-icon>
+                  </v-btn>
               </template>
               <template v-slot:footer>
                 <v-pagination
@@ -607,6 +621,33 @@ export default {
       localStorage.itemsPerPage = value;
       this.options.page = 1;
     },
+      handleCopyPassword(id){
+        axios.get(`/api/external-sources/${id}/get-password/`).then((response) => {
+            console.log(response.data.data);
+            if(response.data.success){
+                this.snackbarMessage = this.$store.state.lang.lang_map.external_source.copied_password;
+                this.snackbar = true;
+                this.actionColor = 'success';
+
+
+                // eval(response.data);
+                this.copyText(response.data.data);
+            }
+        })
+      },
+      copyText(text) {
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+              document.execCommand('copy');
+              console.log('Text copied to clipboard');
+          } catch (err) {
+              console.error('Unable to copy', err);
+          }
+          document.body.removeChild(textArea);
+      }
   },
 };
 </script>
