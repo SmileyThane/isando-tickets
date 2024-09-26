@@ -875,7 +875,7 @@ export default {
                         sort_val: this.options.sortDesc[0],
                         with_spam: this.options.withSpam,
                         only_for_user: this.options.onlyForUser,
-                        only_open: this.options.onlyOpen,
+                        only_open: this.options.type === 7 ? false : this.options.onlyOpen,
                         per_page: this.options.itemsPerPage,
                         minified: this.minifiedTickets,
                         filter_id: this.filterId,
