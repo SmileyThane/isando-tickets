@@ -6,7 +6,7 @@
       :color="actionColor"
       :right="true"
     >
-      {{ name }}
+      {{ snackbarMessage }}
     </v-snackbar>
     <div class="row justify-content-center">
       <div class="col-md-12">
@@ -52,9 +52,9 @@
                 </v-row>
               </template>
               <template v-slot:item.domain="{ item }">
-                <span>{{
+                <a :href="item.domain_prefix + '://' + item.domain + '.' + item.uri" target="_blank">{{
                   item.domain_prefix + '://' + item.domain + '.' + item.uri
-                }}</span>
+                }}</a>
               </template>
               <template v-slot:item.actions="{ item }">
                 <v-btn
@@ -623,38 +623,30 @@ export default {
     },
       handleCopyPassword(id){
         axios.get(`/api/external-sources/${id}/get-password/`).then((response) => {
-            console.log(response);
+            console.log(response.data.data);
             if(response.data.success){
-                this.snackbarMessage = 'Password was copied.';
+                this.snackbarMessage = this.$store.state.lang.lang_map.external_source.copied_password;
                 this.snackbar = true;
+                this.actionColor = 'success';
 
-                const scriptContent = this.extractScript(response.data.script);
-                if (scriptContent) {
-                    try {
-                        const func = new Function(scriptContent);
-                        func();  // Выполняем содержимое скрипта
-                    } catch (error) {
-                        console.error('Error executing script: ', error);
-                    }
-                }
 
                 // eval(response.data);
-                // if (navigator.clipboard) {
-                //     navigator.clipboard.writeText(response.data.text)
-                //         .then(() => {
-                //             console.log('Text copied to clipboard');
-                //         })
-                //         .catch(err => {
-                //             console.error('Failed to copy: ', err);
-                //         });
-                // }
+                this.copyText(response.data.data);
             }
         })
       },
-      extractScript(htmlString) {
-          const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
-          const matches = scriptRegex.exec(htmlString);
-          return matches && matches[1] ? matches[1] : null;
+      copyText(text) {
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+              document.execCommand('copy');
+              console.log('Text copied to clipboard');
+          } catch (err) {
+              console.error('Unable to copy', err);
+          }
+          document.body.removeChild(textArea);
       }
   },
 };
