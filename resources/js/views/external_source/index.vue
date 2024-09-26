@@ -52,7 +52,7 @@
                 </v-row>
               </template>
               <template v-slot:item.domain="{ item }">
-                <a :href="item.domain_prefix + '://' + item.domain + '.' + item.uri" target="_blank">{{
+                <a :style="`color: ${themeBgColor}`" :href="item.domain_prefix + '://' + item.domain + '.' + item.uri" target="_blank">{{
                   item.domain_prefix + '://' + item.domain + '.' + item.uri
                 }}</a>
               </template>
