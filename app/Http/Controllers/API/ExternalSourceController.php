@@ -78,23 +78,8 @@ class ExternalSourceController extends Controller
 
     public function getPassword(int $id): Response|JsonResponse {
         if($source = $this->repository->getById($id)) {
-            $script = "
-                <script>
-                    (function() {
-                        var textarea = document.createElement('textarea');
-                        textarea.value = '$source->password';
-                        document.body.appendChild(textarea);
-                        textarea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textarea);
-                        window.close();
-                    })();
-                </script>
-            ";
-
-            return response($script, 200)
-                ->header('Content-Type', 'application/javascript');
-        };
+            return self::showResponse(true, $source->password);
+        }
 
         return self::showResponse(false);
     }

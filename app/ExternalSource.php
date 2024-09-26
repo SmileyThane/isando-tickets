@@ -25,6 +25,7 @@ class ExternalSource extends Model
         'last_billed_at',
         'entity_id',
         'entity_type',
+        'external_source_type_id'
     ];
 
     protected $casts = [

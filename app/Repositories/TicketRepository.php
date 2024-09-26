@@ -153,7 +153,7 @@ class TicketRepository
         }
 
         if ($request->only_open === "true") {
-            $ticketResult->whereIn('status_id', [1, 2, 3, 4]);
+            $ticketResult->whereIn('status_id', [1, 2, 3, 4])->whereNot('ticket_type_id', 7);
         }
         if ($request->status) {
             if (is_array($request->status)) {
@@ -654,7 +654,7 @@ class TicketRepository
 
         if ($ticketCreator && Auth::id() !== $ticketCreator->user_id) {
             Log::debug('Reply to creator');
-            $assignedPerson->userData->notify(
+            $ticketCreator->userData->notify(
                 new SendTicketReply(
                     $ticket->name,
                     $reply,

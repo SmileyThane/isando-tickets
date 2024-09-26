@@ -1118,7 +1118,10 @@ class LanguageSeeder extends Seeder
                          'save' => 'Save',
                          'close' => 'Close',
                          'delete_confirmation' => 'Are you sure you want to delete this source?',
-                         'id' => 'ID'
+                         'id' => 'ID',
+                         'payment' => 'Payment',
+                         'subscription' => 'Subscription',
+                         'copied_password' => 'Password was copied'
                     ],
                 ])
             ]
@@ -2202,7 +2205,10 @@ class LanguageSeeder extends Seeder
                             'save' => 'Speichern',
                             'close' => 'Schließen',
                             'delete_confirmation' => 'Sind Sie sicher, dass Sie diese Quelle löschen möchten?',
-                            'id' => 'ID'
+                            'id' => 'ID',
+                            'payment' => 'Zahlung',
+                            'subscription' => 'Abonnement',
+                            'copied_password' => 'Passwort wurde kopiert'
                         ],
                     ]
                 )
