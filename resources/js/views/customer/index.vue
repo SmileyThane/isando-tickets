@@ -439,7 +439,7 @@ export default {
             if (this.totalCustomers > 0 && this.totalCustomers < this.options.itemsPerPage) {
                 this.options.page = 1
             }
-            axios.get('/api/client', {
+            axios.get(`/api/client?type=${this.$route.query.type}`, {
                 params: {
                     search: this.customersSearch,
                     sort_by: this.options.sortBy[0],
@@ -557,6 +557,10 @@ export default {
         page(newValue) {
             this.options.page = parseInt(newValue) ?? 1;
         },
+        $route() {
+            this.getClients()
+        },
+
     },
     computed: {
         filteredHeaders() {
