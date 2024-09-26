@@ -52,9 +52,12 @@ class ClientRepository
             $request['page'] = 1;
         }
         $clients = $this->getClients($request);
-        $childClientIds = $this->getRecursiveChildClientIds($clients->with(['clients'])->get());
-        $clients = $clients->orWhereIn('id', $childClientIds)
-            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
+        if ($request->type == 'suppliers') {
+            $childClientIds = [];
+        } else {
+            $childClientIds = $this->getRecursiveChildClientIds($clients->with(['clients'])->get());
+        }
+        $clients = $clients->orWhereIn('id', $childClientIds)->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
         return $clients->with('owner.userData', 'clientFilterGroups.data')->paginate($request->per_page ?? $clients->count());
     }
 
