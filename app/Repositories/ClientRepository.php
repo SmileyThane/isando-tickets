@@ -48,17 +48,24 @@ class ClientRepository
 
     public function clients($request)
     {
+        $onlySuppliers = $request->type === 'suppliers';
+
         if ($request->search) {
             $request['page'] = 1;
         }
+
         $clients = $this->getClients($request);
-        if ($request->type == 'suppliers') {
-            $childClientIds = [];
+        $childClientIds = $this->getRecursiveChildClientIds($clients->with(['clients'])->get(), $onlySuppliers);
+        if ($onlySuppliers) {
+            $clients = Client::query()->whereIn('id', $childClientIds);
         } else {
-            $childClientIds = $this->getRecursiveChildClientIds($clients->with(['clients'])->get());
+            $clients = $clients->orWhereIn('id', $childClientIds);
         }
-        $clients = $clients->orWhereIn('id', $childClientIds)->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
-        return $clients->with('owner.userData', 'clientFilterGroups.data')->paginate($request->per_page ?? $clients->count());
+
+        return $clients
+            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
+            ->with('owner.userData', 'clientFilterGroups.data')
+            ->paginate($request->per_page ?? $clients->count());
     }
 
     public function getClients($request)
@@ -138,16 +145,19 @@ class ClientRepository
         return $clients;
     }
 
-    public function getRecursiveChildClientIds($clientsArray): array
+    public function getRecursiveChildClientIds($clientsArray, $onlySuppliers = false): array
     {
         $clientIds = [];
         foreach ($clientsArray as $client) {
             if ($client->has('clients') && count($client->clients) > 0) {
                 $clientIds[] = $client->id;
-                $childClientIds = $this->getRecursiveChildClientIds($client->clients);
+                $childClientIds = $this->getRecursiveChildClientIds($client->clients, $onlySuppliers);
                 $clientIds = array_merge($clientIds, $childClientIds);
             } else {
-                $clientIds[] = $client->id;
+                if (!$onlySuppliers) {
+                    $clientIds[] = $client->id;
+                }
+
             }
         }
         return $clientIds;
