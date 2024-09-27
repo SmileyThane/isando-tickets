@@ -662,6 +662,7 @@ export default {
             that.themeBgColor = color;
         });
         this.loadSavedForm();
+        this.ticketForm.ticket_type_id = 2;
     },
     methods: {
         onInput(val) {
