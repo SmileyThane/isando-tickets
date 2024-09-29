@@ -886,7 +886,6 @@ export default {
                     },
                 })
                 .then((response) => {
-                    console.log(this.searchValue)
                     response = response.data;
                     if (response.success === true) {
                         this.tickets = response.data.data;
