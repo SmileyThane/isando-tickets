@@ -60,7 +60,18 @@ export default {
       themeBgColor: this.$store.state.themeBgColor,
     };
   },
+    mounted() {
+        this.getClient(this.$route.params.id);
+    },
   methods: {
+      getClient() {
+          axios.get(`/api/client/${this.$route.params.id}`).then((response) => {
+              response = response.data;
+              if (response.success === true) {
+                  this.onSetCompanyName(response.data.supplier_name);
+              }
+          });
+      },
     onSetCompanyName(name) {
       this.companyName = name;
     },

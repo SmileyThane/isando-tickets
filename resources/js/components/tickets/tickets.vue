@@ -102,6 +102,23 @@ export default {
             activeTab: this.$route.query.tab ? parseInt(this.$route.query.tab) : 1,
         };
     },
+    // mounted() {
+    //     if(!this.searchValue) {
+    //         this.pageName === 'customer' ? this.getClient(this.$route.params.id) : this.getUser(this.$route.params.id)
+    //         console.log(this.pageName)
+    //     }
+    // },
+    // methods: {
+    //     getClient() {
+    //         axios.get(`/api/client/${this.$route.params.id}`).then((response) => {
+    //             response = response.data;
+    //             if (response.success === true) {
+    //                 this.search = response.data.supplier_name;
+    //             }
+    //         });
+    //     },
+    //
+    // },
     watch: {
         '$route.query.tab': function (value) {
             if (+this.activeTab !== +value) {

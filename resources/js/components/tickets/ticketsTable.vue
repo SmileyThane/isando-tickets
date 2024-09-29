@@ -886,11 +886,13 @@ export default {
                     },
                 })
                 .then((response) => {
+                    console.log(this.searchValue)
                     response = response.data;
                     if (response.success === true) {
                         this.tickets = response.data.data;
                         this.totalTickets = response.data.total;
                         this.lastPage = response.data.last_page;
+                        this.ticketsSearch = this.searchValue;
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -1101,6 +1103,10 @@ export default {
                 this.getTickets();
             }, 500),
             deep: true,
+        },
+        searchValue(value) {
+            this.getTickets()
+            this.ticketsSearch = value
         },
         tickets() {
             if (this.$route.query.expanded && this.tickets.length) {
