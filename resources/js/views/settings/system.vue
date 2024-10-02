@@ -1362,25 +1362,6 @@
                             show-expand
                             single-expand
                         >
-                            <template v-slot:item.name="props">
-                                <v-edit-dialog
-                                    @cancel="saveTag(props.item)"
-                                    @close="saveTag(props.item)"
-                                    @open="saveTag(props.item)"
-                                    @save="saveTag(props.item)"
-                                >
-                                    {{ props.item.name }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.name"
-                                            :hint="langMap.tracking.settings.name"
-                                            :label="langMap.tracking.settings.name"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
                             <template v-slot:item.color="props">
                                 <v-menu
                                     v-model="colorMenu[props.item.id]"
@@ -1388,6 +1369,7 @@
                                     nudge-bottom="105"
                                     nudge-left="16"
                                     top
+                                    disabled
                                 >
                                     <template v-slot:activator="{ on }">
                                         <div
@@ -1418,12 +1400,20 @@
                                 <v-btn
                                     :color="themeBgColor"
                                     icon
+                                    @click="isCanEditTag = true; forms.tags = props.item;"
+                                >
+                                    <v-icon>mdi mdi-pencil</v-icon>
+                                </v-btn>
+                                <v-btn
+                                    :color="themeBgColor"
+                                    icon
                                     @click="removeTag(props.item.id)"
                                 >
                                     <v-icon>mdi-delete</v-icon>
                                 </v-btn>
                             </template>
                             <template v-slot:expanded-item="{ headers, item }">
+
                                 <td :colspan="headers.length">
                                     <v-list
                                         dense
@@ -1915,6 +1905,168 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+
+            <v-dialog v-model="isCanEditTag" max-width="480" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.company.edit_currency }}: {{ forms.tags.name }}
+                    </v-card-title>
+                    <v-card-text class="mt-6">
+                        <v-form>
+                            <div class="row">
+                                <v-col class="pa-1" cols="md-6">
+                                    <v-text-field
+                                        v-model="forms.tags.name"
+                                        :label="langMap.tracking.settings.name"
+                                        required
+                                    ></v-text-field>
+
+                                </v-col>
+                                <v-col class="pa-1" cols="md-6">
+                                    <v-text-field
+                                        v-model="forms.tags.color"
+                                        :label="langMap.tracking.settings.color"
+                                        class="ma-0 pa-0"
+                                        hide-details
+                                        required
+                                        solo
+                                    >
+                                        <template v-slot:append>
+                                            <v-menu
+                                                v-model="colorMenuCreate"
+                                                :close-on-content-click="false"
+                                                nudge-bottom="105"
+                                                nudge-left="16"
+                                                top
+                                            >
+                                                <template v-slot:activator="{ on }">
+                                                    <div
+                                                        :style="{
+                                                                backgroundColor: forms.tags.color,
+                                                                cursor: 'pointer',
+                                                                height: '30px',
+                                                                width: '30px',
+                                                                borderRadius: colorMenuCreate ? '50%' : '4px',
+                                                                transition: 'border-radius 200ms ease-in-out'
+                                                            }"
+                                                        v-on="on"
+                                                    />
+                                                </template>
+                                                <v-card>
+                                                    <v-card-text
+                                                        class="pa-0"
+                                                    >
+                                                        <v-color-picker
+                                                            v-model="forms.tags.color"
+                                                            flat
+                                                        />
+                                                    </v-card-text>
+                                                </v-card>
+                                            </v-menu>
+                                        </template>
+                                    </v-text-field>
+                                </v-col>
+                            </div>
+                        </v-form>
+                        <td :colspan="headers.length">
+                            <v-list
+                                v-if="forms.tags.translates"
+                                dense
+                            >
+                                <v-list-item
+                                    v-for="(translate, index) in forms.tags.translates"
+                                    :key="translate.id"
+                                    class="d-flex flex-row"
+                                >
+                                    <div
+                                        class="d-inline-flex flex-grow-0 mx-3"
+                                        style="min-width: 100px"
+                                    >
+                                        {{ getLangName(translate.lang) }}
+                                    </div>
+                                    <div class="d-inline-flex flex-grow-1">
+                                        <v-text-field
+                                            v-model="forms.tags.translates[index].name"
+                                            class="mt-n1"
+                                            dense
+                                            hide-details
+                                            @blur="addOrUpdateTranslate(forms.tags, translate.lang, translate.name)"
+                                        ></v-text-field>
+                                    </div>
+                                </v-list-item>
+                                <v-list-item-action v-if="filterLang(forms.tags).length > 0">
+                                    <v-dialog
+                                        v-model="addTranslationDialog[forms.tags.id]"
+                                        width="500"
+                                    >
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                text
+                                                v-bind="attrs"
+                                                @click="resetDialog()"
+                                                v-on="on"
+                                            >
+                                                {{ langMap.tracking.settings.add_translation }}
+                                            </v-btn>
+                                        </template>
+
+                                        <v-card>
+                                            <v-card-title class="headline grey lighten-2">
+                                                {{ langMap.tracking.settings.add_translation }}
+                                            </v-card-title>
+
+                                            <v-card-text>
+                                                <v-select
+                                                    v-model="tagTranslateForm.lang"
+                                                    :items="filterLang(forms.tags)"
+                                                    :label="langMap.tracking.settings.language"
+                                                    item-text="name"
+                                                    item-value="locale"
+                                                ></v-select>
+                                                <v-text-field
+                                                    v-model="tagTranslateForm.name"
+                                                    label="Tag name"
+                                                ></v-text-field>
+                                            </v-card-text>
+
+                                            <v-divider></v-divider>
+
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
+                                                <v-btn
+                                                    color="error"
+                                                    text
+                                                    @click="closeDialog(forms.tags.id)"
+                                                >
+                                                    {{ langMap.tracking.settings.cancel }}
+                                                </v-btn>
+                                                <v-btn
+                                                    color="success"
+                                                    text
+                                                    @click="addOrUpdateTranslate(forms.tags); closeDialog(forms.tags.id)"
+                                                >
+                                                    {{ langMap.tracking.settings.add }}
+                                                </v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
+                                </v-list-item-action>
+                            </v-list>
+                        </td>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="clearEditableTag">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="saveTag(forms.tags)">
+                            {{ langMap.main.edit }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-row>
     </v-container>
 </template>
@@ -2289,9 +2441,7 @@ export default {
                 symbol: ''
             },
             isCanEditActivity: false,
-            editActivityTypeForm: {
-                name: ''
-            }
+            isCanEditTag: false
         }
     },
     created() {
@@ -3091,7 +3241,9 @@ export default {
             return foundLang ? foundLang.name : code;
         },
         saveTag(item) {
+            console.log(this.forms.tags.translates)
             this.$store.dispatch('Tags/updateTag', item);
+            this.clearEditableTag();
         },
         saveService(item) {
             this.$store.dispatch('Services/updateService', item);
@@ -3099,12 +3251,10 @@ export default {
         saveCurrency(item) {
             this.$store.dispatch('Currencies/updateCurrency', item);
             this.clearEditableCurrency();
-            this.isCanEditCurrency = false;
         },
         saveActivityType(item) {
             this.$store.dispatch('ActivityTypes/updateActivityType', item);
             this.clearEditableActivity();
-            this.isCanEditActivity = false;
         },
         removeTag(tagId) {
             this.$store.dispatch('Tags/deleteTag', tagId)
@@ -3198,6 +3348,7 @@ export default {
                 lang: lang ?? this.tagTranslateForm.lang,
                 name: name ?? this.tagTranslateForm.name
             });
+            this.__getTags()
         },
         getPermissions() {
             axios.get(`/api/permissions`).then(response => {
@@ -3367,6 +3518,14 @@ export default {
             this.forms.activityType = {
                 name: '',
             }
+        },
+        clearEditableTag() {
+            this.isCanEditTag = false;
+            this.forms.tags = {
+                name: '',
+                color: this.$helpers.color.genRandomColor()
+            }
+            this.addTranslationDialog = {}
         },
         editCategory(){
             axios.patch(`/api/product_category/${this.editableCategoryItem.id}`, {
