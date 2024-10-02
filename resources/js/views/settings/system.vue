@@ -489,16 +489,16 @@
                                 <v-btn
                                     :color="themeBgColor"
                                     icon
-                                    @click="removeCurrency(props.item.id)"
+                                    @click="isCanEditCurrency = true; editCurrencyForm = props.item;"
                                 >
-                                    <v-icon>mdi-delete</v-icon>
+                                    <v-icon>mdi mdi-pencil</v-icon>
                                 </v-btn>
                                 <v-btn
                                     :color="themeBgColor"
                                     icon
-                                    @click="isCanEditCurrency = true; editCurrencyForm = props.item;"
+                                    @click="removeCurrency(props.item.id)"
                                 >
-                                    <v-icon>mdi mdi-pencil</v-icon>
+                                    <v-icon>mdi-delete</v-icon>
                                 </v-btn>
                             </template>
                         </v-data-table>
@@ -573,26 +573,33 @@
                             <template v-slot:item.id="props">
                                 {{ props.item.id }}
                             </template>
-                            <template v-slot:item.name="props">
-                                <v-edit-dialog
-                                    @cancel="saveActivityType(props.item)"
-                                    @close="saveActivityType(props.item)"
-                                    @open="saveActivityType(props.item)"
-                                    @save="saveActivityType(props.item)"
-                                >
-                                    {{ props.item.name }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.name"
-                                            :hint="langMap.tracking.settings.name"
-                                            :label="langMap.tracking.settings.name"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
+<!--                            <template v-slot:item.name="props">-->
+<!--                                <v-edit-dialog-->
+<!--                                    @cancel="saveActivityType(props.item)"-->
+<!--                                    @close="saveActivityType(props.item)"-->
+<!--                                    @open="saveActivityType(props.item)"-->
+<!--                                    @save="saveActivityType(props.item)"-->
+<!--                                >-->
+<!--                                    {{ props.item.name }}-->
+<!--                                    <template v-slot:input>-->
+<!--                                        <v-text-field-->
+<!--                                            v-model="props.item.name"-->
+<!--                                            :hint="langMap.tracking.settings.name"-->
+<!--                                            :label="langMap.tracking.settings.name"-->
+<!--                                            counter-->
+<!--                                            single-line-->
+<!--                                        ></v-text-field>-->
+<!--                                    </template>-->
+<!--                                </v-edit-dialog>-->
+<!--                            </template>-->
                             <template v-slot:item.actions="props">
+                                <v-btn
+                                    :color="themeBgColor"
+                                    icon
+                                    @click="isCanEditActivity = true; forms.activityType = props.item"
+                                >
+                                    <v-icon>mdi mdi-pencil</v-icon>
+                                </v-btn>
                                 <v-btn
                                     :color="themeBgColor"
                                     icon
@@ -1881,6 +1888,33 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+
+            <v-dialog v-model="isCanEditActivity" max-width="480" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.company.edit_currency }}: {{ forms.activityType.name }}
+                    </v-card-title>
+                    <v-card-text class="mt-6">
+                        <v-text-field
+                            v-model="forms.activityType.name"
+                            :color="themeBgColor"
+                            :label="langMap.tracking.settings.name"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="clearEditableActivity">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="saveActivityType(forms.activityType)">
+                            {{ langMap.main.edit }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-row>
     </v-container>
 </template>
@@ -2253,6 +2287,10 @@ export default {
                 name: '',
                 slug: '',
                 symbol: ''
+            },
+            isCanEditActivity: false,
+            editActivityTypeForm: {
+                name: ''
             }
         }
     },
@@ -3065,6 +3103,8 @@ export default {
         },
         saveActivityType(item) {
             this.$store.dispatch('ActivityTypes/updateActivityType', item);
+            this.clearEditableActivity();
+            this.isCanEditActivity = false;
         },
         removeTag(tagId) {
             this.$store.dispatch('Tags/deleteTag', tagId)
@@ -3320,6 +3360,12 @@ export default {
                 name: '',
                 code: '',
                 symbol: ''
+            }
+        },
+        clearEditableActivity() {
+            this.isCanEditActivity = false;
+            this.forms.activityType = {
+                name: '',
             }
         },
         editCategory(){
