@@ -477,6 +477,7 @@
                     </v-toolbar>
 
                     <v-card-text>
+
                         <v-data-table
                             :headers="headers.currencies"
                             :items="$store.getters['Currencies/getCurrencies']"
@@ -484,63 +485,6 @@
                             class="elevation-1"
                             dense
                         >
-                            <template v-slot:item.name="props">
-                                <v-edit-dialog
-                                    @cancel="saveCurrency(props.item)"
-                                    @close="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
-                                    @save="saveCurrency(props.item)"
-                                >
-                                    {{ props.item.name }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.name"
-                                            :hint="langMap.tracking.settings.name"
-                                            :label="langMap.tracking.settings.name"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
-                            <template v-slot:item.slug="props">
-                                <v-edit-dialog
-                                    @cancel="saveCurrency(props.item)"
-                                    @close="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
-                                    @save="saveCurrency(props.item)"
-                                >
-                                    {{ props.item.slug }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.slug"
-                                            :hint="langMap.tracking.settings.slug"
-                                            :label="langMap.tracking.settings.slug"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
-                            <template v-slot:item.symbol="props">
-                                <v-edit-dialog
-                                    @cancel="saveCurrency(props.item)"
-                                    @close="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
-                                    @save="saveCurrency(props.item)"
-                                >
-                                    {{ props.item.symbol }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.symbol"
-                                            :hint="langMap.tracking.settings.symbol"
-                                            :label="langMap.tracking.settings.symbol"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
                             <template v-slot:item.actions="props">
                                 <v-btn
                                     :color="themeBgColor"
@@ -548,6 +492,13 @@
                                     @click="removeCurrency(props.item.id)"
                                 >
                                     <v-icon>mdi-delete</v-icon>
+                                </v-btn>
+                                <v-btn
+                                    :color="themeBgColor"
+                                    icon
+                                    @click="isCanEditCurrency = true; editCurrencyForm = props.item;"
+                                >
+                                    <v-icon>mdi mdi-pencil</v-icon>
                                 </v-btn>
                             </template>
                         </v-data-table>
@@ -1889,6 +1840,47 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+
+            <v-dialog v-model="isCanEditCurrency" max-width="480" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.company.edit_currency }}: {{ editCurrencyForm.name }}
+                    </v-card-title>
+                    <v-card-text class="mt-6">
+                        <v-text-field
+                            v-model="editCurrencyForm.name"
+                            :color="themeBgColor"
+                            :label="langMap.tracking.settings.currency_name"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="editCurrencyForm.slug"
+                            :color="themeBgColor"
+                            :label="langMap.tracking.settings.currency_symbol"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="editCurrencyForm.symbol"
+                            :color="themeBgColor"
+                            :label="langMap.tracking.settings.currency_slug"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="clearEditableCurrency">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="saveCurrency(editCurrencyForm)">
+                            {{ langMap.main.edit }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-row>
     </v-container>
 </template>
@@ -2255,6 +2247,13 @@ export default {
                 parent_id: ''
             },
             isCanEditCategory: false,
+            isCanEditCurrency: false,
+            editCurrencyForm: {
+                id: null,
+                name: '',
+                slug: '',
+                symbol: ''
+            }
         }
     },
     created() {
@@ -3061,6 +3060,8 @@ export default {
         },
         saveCurrency(item) {
             this.$store.dispatch('Currencies/updateCurrency', item);
+            this.clearEditableCurrency();
+            this.isCanEditCurrency = false;
         },
         saveActivityType(item) {
             this.$store.dispatch('ActivityTypes/updateActivityType', item);
@@ -3310,6 +3311,15 @@ export default {
             this.editableCategoryItem = {
                 name: '',
                 category_id: ''
+            }
+        },
+        clearEditableCurrency() {
+            this.isCanEditCurrency = false;
+            this.editCurrencyForm = {
+                id: null,
+                name: '',
+                code: '',
+                symbol: ''
             }
         },
         editCategory(){
