@@ -34,15 +34,11 @@ export default {
         },
         GET_TREE_TICKETS(state, tickets) {
             let companies = [];
-            tickets = tickets.filter(i => i.from);
+            tickets = tickets.filter(i => i.from_entity_id);
             tickets.forEach(i => {
-                if (!companies.find(x => x.id === i.from.id)) {
-                    companies.push({...i.from, tickets: []})
+                if (!companies.find(x => x.id === i.from_entity_id)) {
+                    companies.push({name: i.name, number: i.number, id: i.id, tickets: []})
                 }
-            })
-            companies = companies.map(company => {
-                company.tickets = tickets.filter(i => i.from.id === company.id);
-                return company;
             })
             state.treeTickets = companies
         }
