@@ -464,17 +464,11 @@
                                             >
                                                 <v-edit-dialog
                                                     v-if="isEditable(row)"
-                                                    @save="debounceSave(row, 'entity', row.entity)"
-                                                    @cancel="cancel"
-                                                    @open="open"
-                                                    @close="debounceSave(row, 'entity', row.entity)"
                                                 >
                                                     <ProjectBtn
                                                         :key="row.id"
                                                         :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
                                                         v-model="row.entity"
-                                                        @blur="debounceSave(row, 'entity', row.entity)"
-                                                        @input="debounceSave(row, 'entity', row.entity)"
                                                     ></ProjectBtn>
                                                 </v-edit-dialog>
                                                 <div v-else>
@@ -505,10 +499,6 @@
                                             >
                                                 <v-edit-dialog
                                                     v-if="isEditable(row)"
-                                                    @save="debounceSave(row, 'description')"
-                                                    @cancel="cancel"
-                                                    @open="open"
-                                                    @close="debounceSave(row, 'description')"
                                                     :ref="`dialog${row.id}`"
                                                 >
                                                     <span v-if="row.service">
@@ -600,10 +590,6 @@
                                                     <div class="d-flex-inline">
                                                         <v-edit-dialog
                                                             v-if="isEditable(row)"
-                                                            @save=""
-                                                            @cancel="cancel"
-                                                            @open="open"
-                                                            @close=""
                                                         >
                                                             {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;<span
                                                             v-if="row.date_to && row.date_to !== null">{{ moment(row.date_to).format(timeFormat) }}</span>
