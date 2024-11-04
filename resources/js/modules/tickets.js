@@ -30,15 +30,19 @@ export default {
     },
     mutations: {
         GET_TICKETS(state, tickets) {
-            state.tickets = tickets.filter(i => i.from)
+            state.tickets = tickets.filter(i => i.from_entity_id)
         },
         GET_TREE_TICKETS(state, tickets) {
             let companies = [];
             tickets = tickets.filter(i => i.from_entity_id);
             tickets.forEach(i => {
                 if (!companies.find(x => x.id === i.from_entity_id)) {
-                    companies.push({name: i.name, number: i.number, id: i.id, tickets: []})
+                    companies.push({name: i.from_entity_name, number: i.number, id: i.from_entity_id, tickets: []})
                 }
+            })
+            companies = companies.map(company => {
+                company.tickets = tickets.filter(i => i.from_entity_id === company.id);
+                return company;
             })
             state.treeTickets = companies
         }

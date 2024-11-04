@@ -24,20 +24,19 @@
                 </span>
                 <span v-if="selectedProject">
                     <span
-                        v-if="selectedProject && selectedProject.from">
-                        Ticket: {{ $helpers.string.shortenText(selectedProject.number, 15) }}.<br>
-                        {{ $helpers.string.shortenText(selectedProject.name, 20) }}
+                        v-if="selectedProject && selectedProject.from_entity_name">
+                        Ticket: {{ selectedProject.from_entity_name }}.
                     </span>
                     <span v-else>
-                        {{ getTrackingProjectLabel }}:<br>{{ $helpers.string.shortenText(selectedProject.name, 35) }}
+                        {{ getTrackingProjectLabel }}:<br>{{ selectedProject.client.name }}
                     </span>
                 </span>
             </v-btn>
             <v-btn
-                v-if="selectedProject && selectedProject.from"
+                v-if="selectedProject"
                 text
                 small
-                :to="`/ticket/${selectedProject.id}`"
+                :to="`/${selectedProject.from_entity_id ? 'ticket' : 'tracking/projects'}/${selectedProject.id}`"
             >
                 <v-icon>mdi-arrow-right</v-icon>
             </v-btn>
@@ -336,13 +335,23 @@ export default {
         },
         value: {
             required: true
+        },
+        openPanel: {
+            type: Number,
+            default: 0,
+            required: false
+        },
+        openChildrenId: {
+            type: Number,
+            default: null,
+            required: false
         }
     },
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
             shown: false,
-            panels: 0,
+            panels: this.openPanel,
             menu: false,
             search: '',
             isLoadingProject: false,

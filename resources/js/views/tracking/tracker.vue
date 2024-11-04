@@ -469,6 +469,8 @@
                                                         :key="row.id"
                                                         :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
                                                         v-model="row.entity"
+                                                        :openPanel="row.entity_type === 'App\\TrackingProject' ? 0 : 2"
+                                                        :openChildrenId="row.entity_id"
                                                     ></ProjectBtn>
                                                 </v-edit-dialog>
                                                 <div v-else>
@@ -486,10 +488,10 @@
                                                 :width="headers.find(i => i.value === 'entity').width"
                                             >
                                                 <template v-if="row.entity && row.entity.client">
-                                                    {{ row.entity.client.name }}
+                                                    {{ row.entity.product.name }}
                                                 </template>
                                                 <template v-else-if="row.entity">{{
-                                                        row.entity.from_company_name
+                                                        row.entity.name
                                                     }}
                                                 </template>
                                             </td>
@@ -1489,12 +1491,12 @@ export default {
                 this.timerPanel.passedSeconds = this.$helpers.time.convertSecToTime(seconds);
             }
         },
-        'timerPanel.entity': function () {
-            this.timerPanel.entity_type = this.timerPanel.entity && this.timerPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
+        'timerPanel.entity': function (value) {
+            this.timerPanel.entity_type = this.timerPanel.entity && this.timerPanel.entity.from_entity_id ? "App\\Ticket" : 'App\\TrackingProject';
             this.saveChangesFromTimer();
         },
         'manualPanel.entity': function () {
-            this.manualPanel.entity_type = this.manualPanel && this.manualPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
+            this.manualPanel.entity_type = this.manualPanel && this.manualPanel.entity.from_entity_id ? "App\\Ticket" : 'App\\TrackingProject';
         }
     },
 }
