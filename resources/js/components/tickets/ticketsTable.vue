@@ -252,17 +252,53 @@
                 <template v-slot:item.data-table-expand="{ index, item }">
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                :style="`color: ${item.priority.color === 'amber' ? '#FEBE00' : item.priority.color}`"
-                                dark
-                                icon
-                                x-small
-                                v-bind="attrs"
-                                v-on="on"
-                                @click.prevent.stop="expandItem(item)"
-                            >
-                                <v-icon x-small> mdi-checkbox-blank-circle</v-icon>
-                            </v-btn>
+                            <v-menu offset-y>
+                                <template v-slot:activator="{ on, attrs }">
+<!--                                    <v-btn-->
+<!--                                        color="primary"-->
+<!--                                        dark-->
+<!--                                        v-bind="attrs"-->
+<!--                                        v-on="on"-->
+<!--                                    >-->
+<!--                                        Dropdown-->
+<!--                                    </v-btn>-->
+                                    <v-btn
+                                        :style="`color: ${item.priority.color === 'amber' ? '#FEBE00' : item.priority.color}`"
+                                        dark
+                                        icon
+                                        x-small
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        @click.prevent.stop="expandItem(item)"
+                                    >
+                                        <v-icon x-small> mdi-checkbox-blank-circle</v-icon>
+                                    </v-btn>
+                                </template>
+                                <v-list>
+                                    <v-list-item
+                                        link
+                                        v-for="(item, index) in items"
+                                        :key="index"
+                                    >
+                                        <v-list-item-title style="font-size: 16px;">
+                                            <div style="display: flex; align-items: center;">
+                                                <v-icon>{{ item.icon }}</v-icon>
+                                                <span style="margin-left: 16px;">{{ item.title }}</span></div>
+                                        </v-list-item-title>
+                                    </v-list-item>
+                                </v-list>
+                            </v-menu>
+<!--                            <v-btn-->
+<!--                                :style="`color: ${item.priority.color === 'amber' ? '#FEBE00' : item.priority.color}`"-->
+<!--                                dark-->
+<!--                                icon-->
+<!--                                x-small-->
+<!--                                v-bind="attrs"-->
+<!--                                v-on="on"-->
+<!--                                @click.prevent.stop="expandItem(item)"-->
+<!--                            >-->
+<!--                                <v-icon x-small> mdi-checkbox-blank-circle</v-icon>-->
+<!--                            </v-btn>-->
                         </template>
                         <span>{{ item.priority.name }}.{{ item.status.name }}</span>
                     </v-tooltip>
@@ -308,112 +344,112 @@
                     </div>
                     <div v-else></div>
                 </template>
-                <template v-slot:expanded-item="{ headers, item }">
-                    <td :colspan="headers.length">
-                        <v-spacer> &nbsp;</v-spacer>
-                        <h3>{{ item.number }}</h3>
-                        <p>
-                            <strong>{{ langMap.ticket.contact_name }}:</strong>
-                            {{
-                                item.contact && item.contact.user_data
-                                    ? item.contact.user_data.full_name
-                                    : ''
-                            }}
-                        </p>
-                        <p>
-                            <strong>{{ langMap.ticket.contact_email }}:</strong>
-                            {{
-                                item.contact && item.contact.user_data
-                                    ? item.contact.user_data.email
-                                    : ''
-                            }}
-                        </p>
-                        <p>
-                            <strong>{{ langMap.ticket.due_date }}:</strong>
-                            {{ item.due_date }}
-                        </p>
-                        <p>
-                            <strong>{{ langMap.ticket.access_details }}:</strong>
-                            {{ item.access_details }}
-                        </p>
-                        <p>
-                            <strong>{{ langMap.main.actions }}:</strong>
-                        </p>
-                        <p>
-                            <template>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn
-                                            color="grey"
-                                            v-on="on"
-                                            dark
-                                            fab
-                                            x-small
-                                            @click="showItem(item)"
-                                        >
-                                            <v-icon> mdi-eye</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.ticket.view }}</span>
-                                </v-tooltip>
-                            </template>
+<!--                <template v-slot:expanded-item="{ headers, item }">-->
+<!--                    <td :colspan="headers.length">-->
+<!--                        <v-spacer> &nbsp;</v-spacer>-->
+<!--                        <h3>{{ item.number }}</h3>-->
+<!--                        <p>-->
+<!--                            <strong>{{ langMap.ticket.contact_name }}:</strong>-->
+<!--                            {{-->
+<!--                                item.contact && item.contact.user_data-->
+<!--                                    ? item.contact.user_data.full_name-->
+<!--                                    : ''-->
+<!--                            }}-->
+<!--                        </p>-->
+<!--                        <p>-->
+<!--                            <strong>{{ langMap.ticket.contact_email }}:</strong>-->
+<!--                            {{-->
+<!--                                item.contact && item.contact.user_data-->
+<!--                                    ? item.contact.user_data.email-->
+<!--                                    : ''-->
+<!--                            }}-->
+<!--                        </p>-->
+<!--                        <p>-->
+<!--                            <strong>{{ langMap.ticket.due_date }}:</strong>-->
+<!--                            {{ item.due_date }}-->
+<!--                        </p>-->
+<!--                        <p>-->
+<!--                            <strong>{{ langMap.ticket.access_details }}:</strong>-->
+<!--                            {{ item.access_details }}-->
+<!--                        </p>-->
+<!--                        <p>-->
+<!--                            <strong>{{ langMap.main.actions }}:</strong>-->
+<!--                        </p>-->
+<!--                        <p>-->
+<!--                            <template>-->
+<!--                                <v-tooltip top>-->
+<!--                                    <template v-slot:activator="{ on }">-->
+<!--                                        <v-btn-->
+<!--                                            color="grey"-->
+<!--                                            v-on="on"-->
+<!--                                            dark-->
+<!--                                            fab-->
+<!--                                            x-small-->
+<!--                                            @click="showItem(item)"-->
+<!--                                        >-->
+<!--                                            <v-icon> mdi-eye</v-icon>-->
+<!--                                        </v-btn>-->
+<!--                                    </template>-->
+<!--                                    <span>{{ langMap.ticket.view }}</span>-->
+<!--                                </v-tooltip>-->
+<!--                            </template>-->
 
-                            <template>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn
-                                            :color="themeBgColor"
-                                            v-on="on"
-                                            dark
-                                            fab
-                                            x-small
-                                            @click="mergeTicketProcess(item.id)"
-                                        >
-                                            <v-icon dark>mdi-clipboard-flow</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.ticket.link_tickets }}</span>
-                                </v-tooltip>
-                            </template>
+<!--                            <template>-->
+<!--                                <v-tooltip top>-->
+<!--                                    <template v-slot:activator="{ on }">-->
+<!--                                        <v-btn-->
+<!--                                            :color="themeBgColor"-->
+<!--                                            v-on="on"-->
+<!--                                            dark-->
+<!--                                            fab-->
+<!--                                            x-small-->
+<!--                                            @click="mergeTicketProcess(item.id)"-->
+<!--                                        >-->
+<!--                                            <v-icon dark>mdi-clipboard-flow</v-icon>-->
+<!--                                        </v-btn>-->
+<!--                                    </template>-->
+<!--                                    <span>{{ langMap.ticket.link_tickets }}</span>-->
+<!--                                </v-tooltip>-->
+<!--                            </template>-->
 
-                            <template>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn
-                                            color="error"
-                                            v-on="on"
-                                            dark
-                                            fab
-                                            x-small
-                                            @click="ticketDeleteProcess(item)"
-                                        >
-                                            <v-icon> mdi-delete</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.individuals.delete }}</span>
-                                </v-tooltip>
-                            </template>
+<!--                            <template>-->
+<!--                                <v-tooltip top>-->
+<!--                                    <template v-slot:activator="{ on }">-->
+<!--                                        <v-btn-->
+<!--                                            color="error"-->
+<!--                                            v-on="on"-->
+<!--                                            dark-->
+<!--                                            fab-->
+<!--                                            x-small-->
+<!--                                            @click="ticketDeleteProcess(item)"-->
+<!--                                        >-->
+<!--                                            <v-icon> mdi-delete</v-icon>-->
+<!--                                        </v-btn>-->
+<!--                                    </template>-->
+<!--                                    <span>{{ langMap.individuals.delete }}</span>-->
+<!--                                </v-tooltip>-->
+<!--                            </template>-->
 
-                            <template>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn
-                                            color="grey"
-                                            v-on="on"
-                                            dark
-                                            fab
-                                            x-small
-                                            @click="closeTicketDialog = true"
-                                        >
-                                            <v-icon> mdi-check</v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.main.close }}</span>
-                                </v-tooltip>
-                            </template>
-                        </p>
-                    </td>
-                </template>
+<!--                            <template>-->
+<!--                                <v-tooltip top>-->
+<!--                                    <template v-slot:activator="{ on }">-->
+<!--                                        <v-btn-->
+<!--                                            color="grey"-->
+<!--                                            v-on="on"-->
+<!--                                            dark-->
+<!--                                            fab-->
+<!--                                            x-small-->
+<!--                                            @click="closeTicketDialog = true"-->
+<!--                                        >-->
+<!--                                            <v-icon> mdi-check</v-icon>-->
+<!--                                        </v-btn>-->
+<!--                                    </template>-->
+<!--                                    <span>{{ langMap.main.close }}</span>-->
+<!--                                </v-tooltip>-->
+<!--                            </template>-->
+<!--                        </p>-->
+<!--                    </td>-->
+<!--                </template>-->
             </v-data-table>
 
             <template>
@@ -653,6 +689,14 @@ export default {
                     width: '80px',
                 },
             ],
+            items: [
+                { icon: 'mdi-eye', title: this.$store.state.lang.lang_map.ticket.view, action: this.showItem(this.ticket) },
+                { icon: 'mdi-clipboard-flow', title: this.$store.state.lang.lang_map.ticket.link_tickets },
+                { icon: 'mdi-delete', title: this.$store.state.lang.lang_map.individuals.delete },
+                { icon: 'mdi-check', title: this.$store.state.lang.lang_map.main.close },
+                { icon: 'mdi mdi-alpha-p-box-outline', title: this.$store.state.lang.lang_map.main.assign_priority },
+                { icon: 'mdi mdi-file-find', title: this.$store.state.lang.lang_map.main.preview_last_response },
+            ],
             types: [],
             tickets: [],
             options: {
@@ -709,6 +753,7 @@ export default {
             closeTicketDialog: false,
             removeTicketDialog: false,
             mergeTicketDialog: false,
+            ticket: null,
         };
     },
     mounted() {
@@ -770,18 +815,18 @@ export default {
         },
         expandItem(item) {
             this.ticket = item;
-            const query = {...this.$route.query};
-            if (this.expanded.indexOf(item) !== -1) {
-                delete query.expanded;
-                this.expanded = [];
-                this.$router.push({name: this.pageName, query});
-            } else {
-                this.expanded.splice(0, 1, item);
-                this.$router.push({
-                    name: this.pageName,
-                    query: {...query, expanded: item.id},
-                });
-            }
+            // const query = {...this.$route.query};
+            // if (this.expanded.indexOf(item) !== -1) {
+            //     delete query.expanded;
+            //     this.expanded = [];
+            //     this.$router.push({name: this.pageName, query});
+            // } else {
+            //     this.expanded.splice(0, 1, item);
+            //     this.$router.push({
+            //         name: this.pageName,
+            //         query: {...query, expanded: item.id},
+            //     });
+            // }
         },
         saveFilter() {
             let data = {
