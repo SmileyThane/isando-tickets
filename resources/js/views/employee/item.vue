@@ -64,7 +64,18 @@ export default {
       themeBgColor: this.$store.state.themeBgColor,
     };
   },
+    mounted() {
+        this.getUser(this.$route.params.id)
+    },
   methods: {
+      getUser(){
+          axios.get(`/api/user/find/${this.$route.params.id}`).then(response => {
+              response = response.data
+              if (response.success === true) {
+                  this.onSetContactName(response.data.email);
+              }
+          });
+      },
     onSetContactName(name) {
       this.contactName = name;
     },
