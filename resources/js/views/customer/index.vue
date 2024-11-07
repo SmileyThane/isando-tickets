@@ -25,7 +25,7 @@
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <v-form>
-                                        <div class="row">
+                                        <div class="row" style="align-items: center;">
                                             <div class="col-md-2">
                                                 <v-text-field
                                                     v-model="clientForm.client_name"
@@ -70,7 +70,7 @@
                                                     type="text"
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-2" v-if="$route.query.type === 'suppliers'">
                                                 <v-select
                                                     v-model="clientForm.supplier_object"
                                                     :color="themeBgColor"
@@ -88,6 +88,7 @@
                                                 dark
                                                 fab
                                                 right
+                                                small
                                                 @click="addClient"
                                             >
                                                 <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
@@ -452,6 +453,7 @@ export default {
                     description: this.searchWhere.includes(4) ? 1 : 0,
                     supplier: this.searchWhere.includes(5) ? 1 : 0,
                     client_groups: this.searchWhere.includes(6) ? 1 : 0,
+                    isSupplier: this.$route.query.type === 'clients'
                 }
             }).then(response => {
                 response = response.data
