@@ -849,7 +849,7 @@ class TicketRepository
                                 && $ticket->assignedPerson
                                 && $user->id === $ticket->assignedPerson->user_id)
                             || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_TEAM)
-                                && $ticket->team->employees->contains('company_user_id', $employee->id))
+                                && $ticket->team && $ticket->team->employees->contains('company_user_id', $employee->id))
                         ) {
                             $recipients[] = $employee;
                         }
@@ -860,7 +860,7 @@ class TicketRepository
                                 && $ticket->assignedPerson
                                 && $user->id === $ticket->assignedPerson->id)
                             || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_TEAM)
-                                && $ticket->team->employees->contains('company_user_id', $employee->id))
+                                && $ticket->team && $ticket->team->employees->contains('company_user_id', $employee->id))
                         ) {
                             $recipients[] = $employee;
                         }
