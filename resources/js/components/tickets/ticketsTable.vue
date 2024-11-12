@@ -329,112 +329,6 @@
                     </div>
                     <div v-else></div>
                 </template>
-<!--                <template v-slot:expanded-item="{ headers, item }">-->
-<!--                    <td :colspan="headers.length">-->
-<!--                        <v-spacer> &nbsp;</v-spacer>-->
-<!--                        <h3>{{ item.number }}</h3>-->
-<!--                        <p>-->
-<!--                            <strong>{{ langMap.ticket.contact_name }}:</strong>-->
-<!--                            {{-->
-<!--                                item.contact && item.contact.user_data-->
-<!--                                    ? item.contact.user_data.full_name-->
-<!--                                    : ''-->
-<!--                            }}-->
-<!--                        </p>-->
-<!--                        <p>-->
-<!--                            <strong>{{ langMap.ticket.contact_email }}:</strong>-->
-<!--                            {{-->
-<!--                                item.contact && item.contact.user_data-->
-<!--                                    ? item.contact.user_data.email-->
-<!--                                    : ''-->
-<!--                            }}-->
-<!--                        </p>-->
-<!--                        <p>-->
-<!--                            <strong>{{ langMap.ticket.due_date }}:</strong>-->
-<!--                            {{ item.due_date }}-->
-<!--                        </p>-->
-<!--                        <p>-->
-<!--                            <strong>{{ langMap.ticket.access_details }}:</strong>-->
-<!--                            {{ item.access_details }}-->
-<!--                        </p>-->
-<!--                        <p>-->
-<!--                            <strong>{{ langMap.main.actions }}:</strong>-->
-<!--                        </p>-->
-<!--                        <p>-->
-<!--                            <template>-->
-<!--                                <v-tooltip top>-->
-<!--                                    <template v-slot:activator="{ on }">-->
-<!--                                        <v-btn-->
-<!--                                            color="grey"-->
-<!--                                            v-on="on"-->
-<!--                                            dark-->
-<!--                                            fab-->
-<!--                                            x-small-->
-<!--                                            @click="showItem(item)"-->
-<!--                                        >-->
-<!--                                            <v-icon> mdi-eye</v-icon>-->
-<!--                                        </v-btn>-->
-<!--                                    </template>-->
-<!--                                    <span>{{ langMap.ticket.view }}</span>-->
-<!--                                </v-tooltip>-->
-<!--                            </template>-->
-
-<!--                            <template>-->
-<!--                                <v-tooltip top>-->
-<!--                                    <template v-slot:activator="{ on }">-->
-<!--                                        <v-btn-->
-<!--                                            :color="themeBgColor"-->
-<!--                                            v-on="on"-->
-<!--                                            dark-->
-<!--                                            fab-->
-<!--                                            x-small-->
-<!--                                            @click="mergeTicketProcess(item.id)"-->
-<!--                                        >-->
-<!--                                            <v-icon dark>mdi-clipboard-flow</v-icon>-->
-<!--                                        </v-btn>-->
-<!--                                    </template>-->
-<!--                                    <span>{{ langMap.ticket.link_tickets }}</span>-->
-<!--                                </v-tooltip>-->
-<!--                            </template>-->
-
-<!--                            <template>-->
-<!--                                <v-tooltip top>-->
-<!--                                    <template v-slot:activator="{ on }">-->
-<!--                                        <v-btn-->
-<!--                                            color="error"-->
-<!--                                            v-on="on"-->
-<!--                                            dark-->
-<!--                                            fab-->
-<!--                                            x-small-->
-<!--                                            @click="ticketDeleteProcess(item)"-->
-<!--                                        >-->
-<!--                                            <v-icon> mdi-delete</v-icon>-->
-<!--                                        </v-btn>-->
-<!--                                    </template>-->
-<!--                                    <span>{{ langMap.individuals.delete }}</span>-->
-<!--                                </v-tooltip>-->
-<!--                            </template>-->
-
-<!--                            <template>-->
-<!--                                <v-tooltip top>-->
-<!--                                    <template v-slot:activator="{ on }">-->
-<!--                                        <v-btn-->
-<!--                                            color="grey"-->
-<!--                                            v-on="on"-->
-<!--                                            dark-->
-<!--                                            fab-->
-<!--                                            x-small-->
-<!--                                            @click="closeTicketDialog = true"-->
-<!--                                        >-->
-<!--                                            <v-icon> mdi-check</v-icon>-->
-<!--                                        </v-btn>-->
-<!--                                    </template>-->
-<!--                                    <span>{{ langMap.main.close }}</span>-->
-<!--                                </v-tooltip>-->
-<!--                            </template>-->
-<!--                        </p>-->
-<!--                    </td>-->
-<!--                </template>-->
             </v-data-table>
 
             <template>
@@ -592,6 +486,139 @@
                         </v-btn>
                         <v-btn color="darken-1" :color="themeBgColor" text @click="changePriority">
                             {{ langMap.main.save }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="previewLastResponses" v-if="currentTicketInfo" max-width="800" persistent>
+                <v-card>
+                    <v-card-title
+                        :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
+                    >
+                        {{ langMap.main.preview_last_response }}
+                    </v-card-title>
+                    <div
+                        v-if="currentTicketInfo.answers.length"
+                        v-for="(answer, index) in [currentTicketInfo.answers[0]]"
+                        :key="index"
+                        class="ticket--answer"
+                    >
+                        <v-card class="mx-auto" dense outlined>
+                            <v-list-item>
+                                <v-list-item-content>
+                                    <v-col :cols="11">
+                      <span class="text-left" style="font-weight: bold">
+                        <v-avatar
+                            v-if="
+                            answer.employee.user_data.avatar_url ||
+                            answer.employee.user_data.full_name
+                          "
+                            class="mr-2 mb-2"
+                            color="grey darken-1"
+                            size="2em"
+                        >
+                          <v-img
+                              v-if="answer.employee.user_data.avatar_url"
+                              :src="answer.employee.user_data.avatar_url"
+                          />
+                          <span
+                              v-else-if="answer.employee.user_data.full_name"
+                              class="white--text"
+                          >
+                            {{
+                                  answer.employee.user_data.full_name
+                                      .split(/\s/)
+                                      .reduce(
+                                          (response, word) =>
+                                              (response += word.slice(0, 1)),
+                                          ''
+                                      )
+                                      .substr(0, 2)
+                                      .toLocaleUpperCase()
+                              }}
+                          </span>
+                        </v-avatar>
+                        <v-icon v-else class="mr-2" large
+                        >mdi-account-circle</v-icon
+                        >
+
+                        {{ answer.employee.user_data.full_name }}
+                        {{
+                              answer.created_at_time !== ''
+                                  ? moment(answer.created_at_time).isValid()
+                                      ? moment(answer.created_at_time).format(
+                                          'DD.MM.YYYY HH:mm'
+                                      )
+                                      : answer.created_at_time
+                                  : moment(answer.created_at).format(
+                                      'DD.MM.YYYY HH:mm'
+                                  )
+                          }}
+                        {{
+                              answer.created_at !== answer.updated_at
+                                  ? ', ' +
+                                  langMap.main.updated +
+                                  ' ' +
+                                  (answer.updated_at_time !== ''
+                                      ? moment(answer.updated_at_time).isValid()
+                                          ? moment(answer.updated_at_time).format(
+                                              'DD.MM.YYYY HH:mm'
+                                          )
+                                          : answer.updated_at_time
+                                      : moment(answer.updated_at).format(
+                                          'DD.MM.YYYY HH:mm'
+                                      ))
+                                  : ''
+                          }}
+                        :
+                        <span style="color: grey"
+                        ><strong v-if="answer.is_internal"
+                        >[{{ langMap.ticket.internal_note }}]</strong
+                        ></span
+                        >
+                      </span>
+                                    </v-col>
+                                    <v-col
+                                        cols="1"
+                                    >
+<!--                                        <v-btn-->
+<!--                                            :color="themeBgColor"-->
+<!--                                            :title="langMap.ticket.edit_answer"-->
+<!--                                            icon-->
+<!--                                            right-->
+<!--                                            @click="editAnswer(answer)"-->
+<!--                                        >-->
+<!--                                            <v-icon>mdi-pencil</v-icon>-->
+<!--                                        </v-btn>-->
+                                    </v-col>
+                                    <br class="pb-2"/>
+                                    <div v-html="answer.answer"></div>
+                                    <v-col v-if="answer.attachments.length > 0" cols="12">
+                                        <h4>{{ langMap.main.attachments }}</h4>
+                                        <div v-for="attachment in answer.attachments">
+                                            <v-chip
+                                                :color="themeBgColor"
+                                                :href="attachment.link"
+                                                :text-color="themeFgColor"
+                                                class="ma-2"
+                                            >
+                                                {{ attachment.name }}
+                                            </v-chip>
+                                        </div>
+                                    </v-col>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-card>
+                        <v-spacer> &nbsp;</v-spacer>
+                    </div>
+                    <div style="display: flex; justify-content: center; padding: 12px 26px;" v-else >
+                        <span>No answers</span>
+                    </div>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red darken-1" text @click="previewLastResponses = false">
+                            {{ langMap.main.close }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -786,7 +813,9 @@ export default {
             mergeTicketDialog: false,
             ticket: null,
             assignTicketDialog: false,
-            priorities: []
+            priorities: [],
+            previewLastResponses: false,
+            currentTicketInfo: null,
         };
     },
     mounted() {
@@ -893,6 +922,14 @@ export default {
         },
         selectSearchCategory(item) {
             this.searchLabel = item.name;
+        },
+        getTicket() {
+            axios.get(`/api/ticket/${this.ticket.id}`).then((response) => {
+                response = response.data;
+                if (response.success === true) {
+                    this.currentTicketInfo = response.data
+                }
+            })
         },
         getProducts() {
             axios.get('/api/product').then((response) => {
@@ -1166,6 +1203,9 @@ export default {
                     return this.closeTicketDialog = true
                 case 'assign':
                     return this.assignTicketDialog = true
+                case 'preview':
+                    this.getTicket();
+                    return this.previewLastResponses = true
                 default:
                     return this.showItem(item)
             }
