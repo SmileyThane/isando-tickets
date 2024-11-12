@@ -254,14 +254,6 @@
                         <template v-slot:activator="{ on, attrs }">
                             <v-menu offset-y>
                                 <template v-slot:activator="{ on, attrs }">
-<!--                                    <v-btn-->
-<!--                                        color="primary"-->
-<!--                                        dark-->
-<!--                                        v-bind="attrs"-->
-<!--                                        v-on="on"-->
-<!--                                    >-->
-<!--                                        Dropdown-->
-<!--                                    </v-btn>-->
                                     <v-btn
                                         :style="`color: ${item.priority.color === 'amber' ? '#FEBE00' : item.priority.color}`"
                                         dark
@@ -277,28 +269,21 @@
                                 <v-list>
                                     <v-list-item
                                         link
-                                        v-for="(item, index) in items"
-                                        :key="index"
+                                        v-for="(element, idx) in dropdownItems"
+                                        :key="idx"
                                     >
-                                        <v-list-item-title style="font-size: 16px;">
+                                        <v-list-item-title
+                                            style="font-size: 16px;"
+                                            @click="handleClickDropdownItem(item, element.action)"
+                                        >
                                             <div style="display: flex; align-items: center;">
-                                                <v-icon>{{ item.icon }}</v-icon>
-                                                <span style="margin-left: 16px;">{{ item.title }}</span></div>
+                                                <v-icon>{{ element.icon }}</v-icon>
+                                                <span style="margin-left: 16px;">{{ element.title }}</span>
+                                            </div>
                                         </v-list-item-title>
                                     </v-list-item>
                                 </v-list>
                             </v-menu>
-<!--                            <v-btn-->
-<!--                                :style="`color: ${item.priority.color === 'amber' ? '#FEBE00' : item.priority.color}`"-->
-<!--                                dark-->
-<!--                                icon-->
-<!--                                x-small-->
-<!--                                v-bind="attrs"-->
-<!--                                v-on="on"-->
-<!--                                @click.prevent.stop="expandItem(item)"-->
-<!--                            >-->
-<!--                                <v-icon x-small> mdi-checkbox-blank-circle</v-icon>-->
-<!--                            </v-btn>-->
                         </template>
                         <span>{{ item.priority.name }}.{{ item.status.name }}</span>
                     </v-tooltip>
@@ -457,7 +442,6 @@
                     <v-card>
                         <v-card-title
                             :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
-                            class="mb-5"
                         >
                             {{ langMap.main.delete_selected }}?
                         </v-card-title>
@@ -550,7 +534,6 @@
                         </v-card-title>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            \
                             <v-btn
                                 color="grey darken-1"
                                 text
@@ -565,6 +548,54 @@
                     </v-card>
                 </v-dialog>
             </template>
+
+            <v-dialog v-model="assignTicketDialog" v-if="ticket" max-width="350" persistent>
+                <v-card>
+                    <v-card-title
+                        :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
+                    >
+                        {{ langMap.main.assign_priority }}
+                    </v-card-title>
+                    <div style="padding: 0 24px; display: flex; justify-content: center; height: 200px;">
+                        <v-select
+                            :items="priorities"
+                            v-model="ticket.priority_id"
+                            label="Solo field"
+                            class="mt-7"
+                            solo
+                            item-text="name"
+                            item-value="id"
+                        >
+                            <template v-slot:item="data">
+                                <v-list-item v-bind="data.attrs" v-on="data.on">
+                                    <v-badge :color="data.item.color" dot inline></v-badge>
+                                    <v-list-item-content class="ml-2">
+                                        {{ data.item.name }}
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </template>
+
+                            <template v-slot:selection="data">
+                                <v-badge :color="data.item.color" dot inline></v-badge>
+                                <span class="ml-2">{{ data.item.name }}</span>
+                            </template>
+                        </v-select>
+                    </div>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="grey darken-1"
+                            text
+                            @click="assignTicketDialog = false"
+                        >
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="darken-1" :color="themeBgColor" text @click="changePriority">
+                            {{ langMap.main.save }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-tab-item>
     </v-tabs-items>
 </template>
@@ -689,13 +720,13 @@ export default {
                     width: '80px',
                 },
             ],
-            items: [
-                { icon: 'mdi-eye', title: this.$store.state.lang.lang_map.ticket.view, action: this.showItem(this.ticket) },
-                { icon: 'mdi-clipboard-flow', title: this.$store.state.lang.lang_map.ticket.link_tickets },
-                { icon: 'mdi-delete', title: this.$store.state.lang.lang_map.individuals.delete },
-                { icon: 'mdi-check', title: this.$store.state.lang.lang_map.main.close },
-                { icon: 'mdi mdi-alpha-p-box-outline', title: this.$store.state.lang.lang_map.main.assign_priority },
-                { icon: 'mdi mdi-file-find', title: this.$store.state.lang.lang_map.main.preview_last_response },
+            dropdownItems: [
+                { action: 'view', icon: 'mdi-eye', title: this.$store.state.lang.lang_map.ticket.view },
+                { action: 'link', icon: 'mdi-clipboard-flow', title: this.$store.state.lang.lang_map.ticket.link_tickets },
+                { action: 'delete', icon: 'mdi-delete', title: this.$store.state.lang.lang_map.individuals.delete },
+                { action: 'close', icon: 'mdi-check', title: this.$store.state.lang.lang_map.main.close },
+                { action: 'assign', icon: 'mdi mdi-alpha-p-box-outline', title: this.$store.state.lang.lang_map.main.assign_priority },
+                { action: 'preview', icon: 'mdi mdi-file-find', title: this.$store.state.lang.lang_map.main.preview_last_response },
             ],
             types: [],
             tickets: [],
@@ -754,6 +785,8 @@ export default {
             removeTicketDialog: false,
             mergeTicketDialog: false,
             ticket: null,
+            assignTicketDialog: false,
+            priorities: []
         };
     },
     mounted() {
@@ -1120,6 +1153,26 @@ export default {
                     });
                 }
             }
+        },
+        handleClickDropdownItem(item, action) {
+            switch(action) {
+                case 'view':
+                    return this.showItem(item)
+                case 'link':
+                    return this.mergeTicketProcess(item.id)
+                case 'delete':
+                    return this.ticketDeleteProcess(item)
+                case 'close':
+                    return this.closeTicketDialog = true
+                case 'assign':
+                    return this.assignTicketDialog = true
+                default:
+                    return this.showItem(item)
+            }
+        },
+        changePriority() {
+            this.updateTicket();
+            this.assignTicketDialog = false
         },
     },
     watch: {
