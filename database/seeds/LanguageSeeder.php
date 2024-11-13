@@ -1094,10 +1094,10 @@ class LanguageSeeder extends Seeder
                     'exceptions' => [
                         'field_is_required' => '%{field} is required',
                     ],
-                    'external_source' => [
+                    'domains' => [
                          'add_new' => 'Add new',
-                         'add_new_external_source' => 'Add new external source',
-                         'edit_external_source' => 'Edit external source',
+                         'add_new_domain' => 'Add new domain',
+                         'edit_domain' => 'Edit domain',
                          'domain' => 'Domain',
                          'domain_prefix' => 'Domain prefix',
                          'uri' => 'Uri',
@@ -1120,7 +1120,7 @@ class LanguageSeeder extends Seeder
                          'add' => 'Add',
                          'save' => 'Save',
                          'close' => 'Close',
-                         'delete_confirmation' => 'Are you sure you want to delete this source?',
+                         'delete_confirmation' => 'Are you sure you want to delete this domain?',
                          'id' => 'ID',
                          'payment' => 'Payment',
                          'subscription' => 'Subscription',
@@ -2183,10 +2183,10 @@ class LanguageSeeder extends Seeder
                         'exceptions' => [
                             'field_is_required' => '%{field} ist erforderlich',
                         ],
-                        'external_source' => [
+                        'domains' => [
                             'add_new' => 'Neu hinzufügen',
-                            'add_new_external_source' => 'Neue externe Quelle hinzufügen',
-                            'edit_external_source' => 'Externe Quelle bearbeiten',
+                            'add_new_domain' => 'Neue Domain hinzufügen',
+                            'edit_domain' => 'Domain bearbeiten',
                             'domain' => 'Domäne',
                             'domain_prefix' => 'Domain-Präfix',
                             'uri' => 'Uri',
@@ -2209,7 +2209,7 @@ class LanguageSeeder extends Seeder
                             'add' => 'Hinzufügen',
                             'save' => 'Speichern',
                             'close' => 'Schließen',
-                            'delete_confirmation' => 'Sind Sie sicher, dass Sie diese Quelle löschen möchten?',
+                            'delete_confirmation' => 'Sind Sie sicher, dass Sie diese Domain löschen möchten?',
                             'id' => 'ID',
                             'payment' => 'Zahlung',
                             'subscription' => 'Abonnement',
