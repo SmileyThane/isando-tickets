@@ -31,7 +31,7 @@ class TicketAnswer extends Model
         $locale = Language::find(Auth::user()->language_id)->locale;
         $createdAt = Carbon::parse($this->attributes['created_at']);
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
+        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() . ' (' . $createdAt->locale($locale)->format('d.m h:i:s') . ')' : '';
     }
 
     public function getUpdatedAtAttribute()
