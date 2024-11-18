@@ -534,6 +534,51 @@
                 </v-card>
             </v-dialog>
         </template>
+        <v-dialog v-model="remindDialogOpen" max-width="480" persistent>
+            <v-card>
+                <v-card-title
+                    :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
+                    class="mb-5"
+                >
+                    {{langMap.ticket.set_reminder_time}}
+                </v-card-title>
+                <v-card-actions style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; width: 100%;">
+                        <v-date-picker
+                            first-day-of-week="1"
+                            dense
+                            v-model="dateValueComputed"
+                        ></v-date-picker>
+                        <TimeField
+                            v-model="timeValue"
+                            style="max-width: 100px"
+                            placeholder="hh:mm"
+                            format="HH:mm"
+                            :label="langMap.ticket.time"
+                            :hide-calendar="true"
+                        ></TimeField>
+                    </div>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                        <div/>
+                        <div class="mb-2">
+                            <v-btn
+                                color="grey darken-1"
+                                text
+                                @click="remindDialogOpen = false"
+                            >{{ langMap.main.cancel }}
+                            </v-btn>
+                            <v-btn color="light-green darken-1" text @click="saveReminderDate">
+                                {{ langMap.main.save }}
+                            </v-btn>
+                            <v-btn color="red darken-1" text @click="clearReminderDate">
+                                {{ langMap.main.clear }}
+                            </v-btn>
+                        </div>
+                    </div>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-row v-if="isLoaded">
             <v-col
                 :md="firstColumnSize + secondColumnSize + thirdColumnSize"
@@ -751,6 +796,8 @@
                             </v-list-item>
                         </v-list>
                     </v-menu>
+
+                    <button @click="remindDialogOpen = true" class="ma-2 float-md-right v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small" style="font-weight: bold; display: flex; align-items: center; line-height: normal;">REMINDER</button>
                 </v-toolbar>
 
                 <template>
@@ -3023,6 +3070,7 @@ export default {
                 merge_comment: null,
             },
             ticket: {
+                reminderDate: '',
                 status_id: null,
                 to_company_user_id: null,
                 attachments: [
@@ -3204,6 +3252,9 @@ export default {
             teamFilter: [],
             offset: 0,
             intervalId: null,
+            remindDialogOpen: false,
+            dateValue: moment().format('YYYY-MM-DDTHH:mm:ss'),
+            timeValue: moment().format('YYYY-MM-DDTHH:mm:ss'),
         };
     },
     watch: {
@@ -3253,6 +3304,18 @@ export default {
         clearInterval(this.intervalId);
     },
     methods: {
+        saveReminderDate(){
+            this.ticket.reminderDate = this.dateValue.slice(0, -8) + this.timeValue.slice(-8);
+            this.updateTicket();
+            this.remindDialogOpen = false;
+        },
+        clearReminderDate(){
+            this.ticket.reminderDate = '';
+            this.dateValue = new Date();
+            this.timeValue = new Date();
+            this.updateTicket();
+            this.remindDialogOpen = false;
+        },
         handleSelectTags(data) {
             this.timerPanel.tags = data.tags;
         },
@@ -3397,6 +3460,11 @@ export default {
                         this.notesPanel.push(0);
                     }
                     this.getInternalBilling();
+
+                    if(response.data.reminderDate) {
+                        this.dateValue = response.data.reminderDate
+                        this.timeValue = response.data.reminderDate
+                    }
                 }
             });
         },
@@ -4097,6 +4165,21 @@ export default {
         },
     },
     computed: {
+        dateValueComputed: {
+            get() {
+                return moment(this.dateValue).format(this.dateFormat);
+            },
+            set(val) {
+                this.dateValue = moment(val).format(this.dateTimeFormat);
+                const date = {
+                    date: moment(val).date(),
+                    month: moment(val).month(),
+                    year: moment(val).year()
+                };
+                this.dateValue = moment(this.dateValue)
+                    .set(date).format(this.dateTimeFormat);
+            }
+        },
         checkProgress: function () {
             return this.progressBuffer;
         },
