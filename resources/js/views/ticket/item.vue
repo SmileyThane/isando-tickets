@@ -219,7 +219,7 @@
                                     <Tinymce
                                         v-model="ticketAnswer.answer"
                                         :placeholder="langMap.ticket.answer_description"
-                                        :key="tinymceKey"
+                                        :key="replyEditorKey"
                                     />
                                 </div>
                                 <div class="col-md-12">
@@ -411,6 +411,7 @@
                             <div class="row">
                                 <div class="col-md-12 mt-2">
                                     <Tinymce
+                                        :key="internalNoteEditorKey"
                                         v-model="ticketNotice.notice"
                                         :placeholder="
                       ticketNotice.id
@@ -2945,7 +2946,8 @@ export default {
     },
     data() {
         return {
-            tinymceKey: 0,
+            replyEditorKey: 0,
+            internalNoteEditorKey: 0,
             selectedAnswerId: null,
             snackbar: false,
             actionColor: '',
@@ -3228,7 +3230,8 @@ export default {
         },
     },
     mounted() {
-        this.tinymceKey = Date.now().toString();
+        this.replyEditorKey = Date.now().toString();
+        this.internalNoteEditorKey = Date.now().toString() + 1;
         this.__globalTimer();
         this.getTicket();
         this.getSuppliers();
