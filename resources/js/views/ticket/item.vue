@@ -219,6 +219,7 @@
                                     <Tinymce
                                         v-model="ticketAnswer.answer"
                                         :placeholder="langMap.ticket.answer_description"
+                                        :key="tinymceKey"
                                     />
                                 </div>
                                 <div class="col-md-12">
@@ -2944,6 +2945,7 @@ export default {
     },
     data() {
         return {
+            tinymceKey: 0,
             selectedAnswerId: null,
             snackbar: false,
             actionColor: '',
@@ -3226,6 +3228,7 @@ export default {
         },
     },
     mounted() {
+        this.tinymceKey = Date.now().toString();
         this.__globalTimer();
         this.getTicket();
         this.getSuppliers();
