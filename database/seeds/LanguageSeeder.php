@@ -145,6 +145,7 @@ class LanguageSeeder extends Seeder
                                 'name' => 'Name',
                                 'slug' => 'Code',
                                 'symbol' => 'Symbol',
+                                'code' => 'code',
                                 'color' => 'Color',
                                 'cancel' => 'Cancel',
                                 'create' => 'Create',
@@ -439,6 +440,7 @@ class LanguageSeeder extends Seeder
                             'reset_password' => 'Reset password',
                             'reset_password_email_sent' => 'Reset password email sent',
                             'edit_contact' => 'Edit contact',
+                            'edit_tag' => 'Edit tag',
                             'delete_contact' => 'Delete contact',
                             'new_contact' => 'New contact',
                             'social_info' => 'Social media',
@@ -448,6 +450,7 @@ class LanguageSeeder extends Seeder
                             'user' => 'User',
                             'product_categories' => 'Product categories',
                             'edit_category' => 'Edit category',
+                            'edit_currency' => 'Edit currency',
                             'new_product_category' => 'Add product category',
                             'delete_product_category' => 'Delete product category',
                             'parent_product_category' => 'Parent category',
@@ -640,7 +643,9 @@ class LanguageSeeder extends Seeder
                         'save_for_later' => 'Do you want to save the content of the form for later?',
                         'close_ticket_title' => 'Close the ticket?',
                         'link_tickets' => 'Link tickets',
-                        'view' => 'View'
+                        'view' => 'View',
+                        "set_reminder_time" => "Set reminder time",
+                        "time" => "Time"
                     ],
                     'main' =>
                         [
@@ -756,6 +761,7 @@ class LanguageSeeder extends Seeder
                             'information' => 'Information',
                             'user' => 'User',
                             'save' => 'Save',
+                            'clear' => 'Clear',
                             'save_as' => 'Save as...',
                             'send' => 'Send',
                             'continue' => 'Continue',
@@ -816,7 +822,9 @@ class LanguageSeeder extends Seeder
                             'remove_client_group' => 'Are you sure that you want to remove this client group?',
                             'remove_client_group_success' => 'Client group was successfully removed',
                             'remove_client_group_error' => 'Client group removal error',
-                            'client_groups' => 'Client groups'
+                            'client_groups' => 'Client groups',
+                            'assign_priority' => 'Assign priority',
+                            'preview_last_response' => 'Preview of last response'
                         ],
                     'system_settings' =>
                         [
@@ -1091,10 +1099,10 @@ class LanguageSeeder extends Seeder
                     'exceptions' => [
                         'field_is_required' => '%{field} is required',
                     ],
-                    'external_source' => [
+                    'domains' => [
                          'add_new' => 'Add new',
-                         'add_new_external_source' => 'Add new external source',
-                         'edit_external_source' => 'Edit external source',
+                         'add_new_domain' => 'Add new domain',
+                         'edit_domain' => 'Edit domain',
                          'domain' => 'Domain',
                          'domain_prefix' => 'Domain prefix',
                          'uri' => 'Uri',
@@ -1117,7 +1125,7 @@ class LanguageSeeder extends Seeder
                          'add' => 'Add',
                          'save' => 'Save',
                          'close' => 'Close',
-                         'delete_confirmation' => 'Are you sure you want to delete this source?',
+                         'delete_confirmation' => 'Are you sure you want to delete this domain?',
                          'id' => 'ID',
                          'payment' => 'Payment',
                          'subscription' => 'Subscription',
@@ -1543,6 +1551,7 @@ class LanguageSeeder extends Seeder
                             'reset_password' => 'Passwort zurücksetzen',
                             'reset_password_email_sent' => 'Passwort E-Mail zurücksetzen gesendet',
                             'edit_contact' => 'Kontakt bearbeiten',
+                            'edit_tag' => 'Tag bearbeiten',
                             'delete_contact' => 'Kontakt löschen',
                             'new_contact' => 'Neuer Kontakt',
                             'social_info' => 'Social Media',
@@ -1552,6 +1561,7 @@ class LanguageSeeder extends Seeder
                             'user' => 'Benutzer',
                             'product_categories' => 'Produktkategorien',
                             'edit_category' => 'Kategorie bearbeiten',
+                            'edit_currency' => 'Währung bearbeiten',
                             'new_product_category' => 'Produktkategorie hinzufügen',
                             'delete_product_category' => 'Produktkategorie löschen',
                             'parent_product_category' => 'Übergeordnete Kategorie',
@@ -1739,7 +1749,9 @@ class LanguageSeeder extends Seeder
                             'save_for_later' => 'Möchten Sie den Inhalt des Formulars für später speichern?',
                             'close_ticket_title' => 'Das Ticket schliessen?',
                             'link_tickets' => 'Tickets verknüpfen',
-                            'view' => 'Anzeigen'
+                            'view' => 'Anzeigen',
+                            "set_reminder_time" => "Erinnerungszeit einstellen",
+                            "time" => "Zeit"
                         ],
                         'main' => [
                             'create' => 'erstellen',
@@ -1850,6 +1862,7 @@ class LanguageSeeder extends Seeder
                             'information' => 'information',
                             'user' => 'benutzer',
                             'save' => 'speichern',
+                            'clear' => 'Klar',
                             'save_as' => 'Speichern als...',
                             'send' => 'Senden',
                             'continue' => 'fortsetzen',
@@ -1910,7 +1923,9 @@ class LanguageSeeder extends Seeder
                             'remove_client_group' => 'Sind Sie sicher, dass Sie diese Kundengruppe entfernen möchten?',
                             'remove_client_group_success' => 'Kundengruppe wurde erfolgreich entfernt',
                             'remove_client_group_error' => 'Fehler beim Entfernen von Clientgruppen',
-                            'client_groups' => 'Kundengruppen'
+                            'client_groups' => 'Kundengruppen',
+                            'assign_priority' => 'Priorität zuweisen',
+                            'preview_last_response' => 'Vorschau der letzten Antwort'
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
@@ -2178,10 +2193,10 @@ class LanguageSeeder extends Seeder
                         'exceptions' => [
                             'field_is_required' => '%{field} ist erforderlich',
                         ],
-                        'external_source' => [
+                        'domains' => [
                             'add_new' => 'Neu hinzufügen',
-                            'add_new_external_source' => 'Neue externe Quelle hinzufügen',
-                            'edit_external_source' => 'Externe Quelle bearbeiten',
+                            'add_new_domain' => 'Neue Domain hinzufügen',
+                            'edit_domain' => 'Domain bearbeiten',
                             'domain' => 'Domäne',
                             'domain_prefix' => 'Domain-Präfix',
                             'uri' => 'Uri',
@@ -2204,7 +2219,7 @@ class LanguageSeeder extends Seeder
                             'add' => 'Hinzufügen',
                             'save' => 'Speichern',
                             'close' => 'Schließen',
-                            'delete_confirmation' => 'Sind Sie sicher, dass Sie diese Quelle löschen möchten?',
+                            'delete_confirmation' => 'Sind Sie sicher, dass Sie diese Domain löschen möchten?',
                             'id' => 'ID',
                             'payment' => 'Zahlung',
                             'subscription' => 'Abonnement',

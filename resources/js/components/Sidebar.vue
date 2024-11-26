@@ -458,10 +458,10 @@
                                 <v-icon>mdi mdi-server-outline</v-icon>
                             </v-list-item-action>
                         </template>
-                        <span>External sources</span>
+                        <span>Hosting</span>
                     </v-tooltip>
                     <v-list-item-content>
-                        <v-list-item-title>External sources</v-list-item-title>
+                        <v-list-item-title>Hosting</v-list-item-title>
                     </v-list-item-content>
                 </template>
                 <v-tooltip right :disabled="!localDrawer">
@@ -472,19 +472,19 @@
                             v-if="$helpers.auth.checkPermissionByIds([1])"
                             color="#757575"
                             link
-                            to="/hosting"
+                            to="/domains"
                         >
                             <v-list-item-action>
                                 <v-icon>mdi mdi-fireplace-off</v-icon>
                             </v-list-item-action>
                             <v-list-item-content>
                                 <v-list-item-title
-                                >Hosting
+                                >Domains
                                 </v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                     </template>
-                    <span>Hosting</span>
+                    <span>Domains</span>
                 </v-tooltip>
                 <v-tooltip right :disabled="!localDrawer">
                     <template v-slot:activator="{ on, attrs }">

@@ -477,6 +477,7 @@
                     </v-toolbar>
 
                     <v-card-text>
+
                         <v-data-table
                             :headers="headers.currencies"
                             :items="$store.getters['Currencies/getCurrencies']"
@@ -484,64 +485,14 @@
                             class="elevation-1"
                             dense
                         >
-                            <template v-slot:item.name="props">
-                                <v-edit-dialog
-                                    @cancel="saveCurrency(props.item)"
-                                    @close="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
-                                    @save="saveCurrency(props.item)"
-                                >
-                                    {{ props.item.name }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.name"
-                                            :hint="langMap.tracking.settings.name"
-                                            :label="langMap.tracking.settings.name"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
-                            <template v-slot:item.slug="props">
-                                <v-edit-dialog
-                                    @cancel="saveCurrency(props.item)"
-                                    @close="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
-                                    @save="saveCurrency(props.item)"
-                                >
-                                    {{ props.item.slug }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.slug"
-                                            :hint="langMap.tracking.settings.slug"
-                                            :label="langMap.tracking.settings.slug"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
-                            <template v-slot:item.symbol="props">
-                                <v-edit-dialog
-                                    @cancel="saveCurrency(props.item)"
-                                    @close="saveCurrency(props.item)"
-                                    @open="saveCurrency(props.item)"
-                                    @save="saveCurrency(props.item)"
-                                >
-                                    {{ props.item.symbol }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.symbol"
-                                            :hint="langMap.tracking.settings.symbol"
-                                            :label="langMap.tracking.settings.symbol"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
                             <template v-slot:item.actions="props">
+                                <v-btn
+                                    :color="themeBgColor"
+                                    icon
+                                    @click="isCanEditCurrency = true; editCurrencyForm = props.item;"
+                                >
+                                    <v-icon>mdi mdi-pencil</v-icon>
+                                </v-btn>
                                 <v-btn
                                     :color="themeBgColor"
                                     icon
@@ -622,26 +573,33 @@
                             <template v-slot:item.id="props">
                                 {{ props.item.id }}
                             </template>
-                            <template v-slot:item.name="props">
-                                <v-edit-dialog
-                                    @cancel="saveActivityType(props.item)"
-                                    @close="saveActivityType(props.item)"
-                                    @open="saveActivityType(props.item)"
-                                    @save="saveActivityType(props.item)"
-                                >
-                                    {{ props.item.name }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.name"
-                                            :hint="langMap.tracking.settings.name"
-                                            :label="langMap.tracking.settings.name"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
+<!--                            <template v-slot:item.name="props">-->
+<!--                                <v-edit-dialog-->
+<!--                                    @cancel="saveActivityType(props.item)"-->
+<!--                                    @close="saveActivityType(props.item)"-->
+<!--                                    @open="saveActivityType(props.item)"-->
+<!--                                    @save="saveActivityType(props.item)"-->
+<!--                                >-->
+<!--                                    {{ props.item.name }}-->
+<!--                                    <template v-slot:input>-->
+<!--                                        <v-text-field-->
+<!--                                            v-model="props.item.name"-->
+<!--                                            :hint="langMap.tracking.settings.name"-->
+<!--                                            :label="langMap.tracking.settings.name"-->
+<!--                                            counter-->
+<!--                                            single-line-->
+<!--                                        ></v-text-field>-->
+<!--                                    </template>-->
+<!--                                </v-edit-dialog>-->
+<!--                            </template>-->
                             <template v-slot:item.actions="props">
+                                <v-btn
+                                    :color="themeBgColor"
+                                    icon
+                                    @click="isCanEditActivity = true; forms.activityType = props.item"
+                                >
+                                    <v-icon>mdi mdi-pencil</v-icon>
+                                </v-btn>
                                 <v-btn
                                     :color="themeBgColor"
                                     icon
@@ -1404,25 +1362,6 @@
                             show-expand
                             single-expand
                         >
-                            <template v-slot:item.name="props">
-                                <v-edit-dialog
-                                    @cancel="saveTag(props.item)"
-                                    @close="saveTag(props.item)"
-                                    @open="saveTag(props.item)"
-                                    @save="saveTag(props.item)"
-                                >
-                                    {{ props.item.name }}
-                                    <template v-slot:input>
-                                        <v-text-field
-                                            v-model="props.item.name"
-                                            :hint="langMap.tracking.settings.name"
-                                            :label="langMap.tracking.settings.name"
-                                            counter
-                                            single-line
-                                        ></v-text-field>
-                                    </template>
-                                </v-edit-dialog>
-                            </template>
                             <template v-slot:item.color="props">
                                 <v-menu
                                     v-model="colorMenu[props.item.id]"
@@ -1430,6 +1369,7 @@
                                     nudge-bottom="105"
                                     nudge-left="16"
                                     top
+                                    disabled
                                 >
                                     <template v-slot:activator="{ on }">
                                         <div
@@ -1460,12 +1400,20 @@
                                 <v-btn
                                     :color="themeBgColor"
                                     icon
+                                    @click="isCanEditTag = true; forms.tags = props.item;"
+                                >
+                                    <v-icon>mdi mdi-pencil</v-icon>
+                                </v-btn>
+                                <v-btn
+                                    :color="themeBgColor"
+                                    icon
                                     @click="removeTag(props.item.id)"
                                 >
                                     <v-icon>mdi-delete</v-icon>
                                 </v-btn>
                             </template>
                             <template v-slot:expanded-item="{ headers, item }">
+
                                 <td :colspan="headers.length">
                                     <v-list
                                         dense
@@ -1889,6 +1837,236 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+
+            <v-dialog v-model="isCanEditCurrency" max-width="480" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.company.edit_currency }}: {{ editCurrencyForm.name }}
+                    </v-card-title>
+                    <v-card-text class="mt-6">
+                        <v-text-field
+                            v-model="editCurrencyForm.name"
+                            :color="themeBgColor"
+                            :label="langMap.tracking.settings.currency_name"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="editCurrencyForm.slug"
+                            :color="themeBgColor"
+                            :label="langMap.tracking.settings.currency_symbol"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="editCurrencyForm.symbol"
+                            :color="themeBgColor"
+                            :label="langMap.tracking.settings.currency_slug"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="clearEditableCurrency">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="saveCurrency(editCurrencyForm)">
+                            {{ langMap.main.edit }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="isCanEditActivity" max-width="480" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.company.edit_currency }}: {{ forms.activityType.name }}
+                    </v-card-title>
+                    <v-card-text class="mt-6">
+                        <v-text-field
+                            v-model="forms.activityType.name"
+                            :color="themeBgColor"
+                            :label="langMap.tracking.settings.name"
+                            type="text"
+                            dense
+                        ></v-text-field>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="clearEditableActivity">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="saveActivityType(forms.activityType)">
+                            {{ langMap.main.edit }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="isCanEditTag" max-width="480" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.company.edit_currency }}: {{ forms.tags.name }}
+                    </v-card-title>
+                    <v-card-text class="mt-6">
+                        <v-form>
+                            <div class="row">
+                                <v-col class="pa-1" cols="md-6">
+                                    <v-text-field
+                                        v-model="forms.tags.name"
+                                        :label="langMap.tracking.settings.name"
+                                        required
+                                    ></v-text-field>
+
+                                </v-col>
+                                <v-col class="pa-1" cols="md-6">
+                                    <v-text-field
+                                        v-model="forms.tags.color"
+                                        :label="langMap.tracking.settings.color"
+                                        class="ma-0 pa-0"
+                                        hide-details
+                                        required
+                                        solo
+                                    >
+                                        <template v-slot:append>
+                                            <v-menu
+                                                v-model="colorMenuCreate"
+                                                :close-on-content-click="false"
+                                                nudge-bottom="105"
+                                                nudge-left="16"
+                                                top
+                                            >
+                                                <template v-slot:activator="{ on }">
+                                                    <div
+                                                        :style="{
+                                                                backgroundColor: forms.tags.color,
+                                                                cursor: 'pointer',
+                                                                height: '30px',
+                                                                width: '30px',
+                                                                borderRadius: colorMenuCreate ? '50%' : '4px',
+                                                                transition: 'border-radius 200ms ease-in-out'
+                                                            }"
+                                                        v-on="on"
+                                                    />
+                                                </template>
+                                                <v-card>
+                                                    <v-card-text
+                                                        class="pa-0"
+                                                    >
+                                                        <v-color-picker
+                                                            v-model="forms.tags.color"
+                                                            flat
+                                                        />
+                                                    </v-card-text>
+                                                </v-card>
+                                            </v-menu>
+                                        </template>
+                                    </v-text-field>
+                                </v-col>
+                            </div>
+                        </v-form>
+                        <td :colspan="headers.length">
+                            <v-list
+                                v-if="forms.tags.translates"
+                                dense
+                            >
+                                <v-list-item
+                                    v-for="(translate, index) in forms.tags.translates"
+                                    :key="translate.id"
+                                    class="d-flex flex-row"
+                                >
+                                    <div
+                                        class="d-inline-flex flex-grow-0 mx-3"
+                                        style="min-width: 100px"
+                                    >
+                                        {{ getLangName(translate.lang) }}
+                                    </div>
+                                    <div class="d-inline-flex flex-grow-1">
+                                        <v-text-field
+                                            v-model="forms.tags.translates[index].name"
+                                            class="mt-n1"
+                                            dense
+                                            hide-details
+                                            @blur="addOrUpdateTranslate(forms.tags, translate.lang, translate.name)"
+                                        ></v-text-field>
+                                    </div>
+                                </v-list-item>
+                                <v-list-item-action v-if="filterLang(forms.tags).length > 0">
+                                    <v-dialog
+                                        v-model="addTranslationDialog[forms.tags.id]"
+                                        width="500"
+                                    >
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                text
+                                                v-bind="attrs"
+                                                @click="resetDialog()"
+                                                v-on="on"
+                                            >
+                                                {{ langMap.tracking.settings.add_translation }}
+                                            </v-btn>
+                                        </template>
+
+                                        <v-card>
+                                            <v-card-title class="headline grey lighten-2">
+                                                {{ langMap.tracking.settings.add_translation }}
+                                            </v-card-title>
+
+                                            <v-card-text>
+                                                <v-select
+                                                    v-model="tagTranslateForm.lang"
+                                                    :items="filterLang(forms.tags)"
+                                                    :label="langMap.tracking.settings.language"
+                                                    item-text="name"
+                                                    item-value="locale"
+                                                ></v-select>
+                                                <v-text-field
+                                                    v-model="tagTranslateForm.name"
+                                                    label="Tag name"
+                                                ></v-text-field>
+                                            </v-card-text>
+
+                                            <v-divider></v-divider>
+
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
+                                                <v-btn
+                                                    color="error"
+                                                    text
+                                                    @click="closeDialog(forms.tags.id)"
+                                                >
+                                                    {{ langMap.tracking.settings.cancel }}
+                                                </v-btn>
+                                                <v-btn
+                                                    color="success"
+                                                    text
+                                                    @click="addOrUpdateTranslate(forms.tags); closeDialog(forms.tags.id)"
+                                                >
+                                                    {{ langMap.tracking.settings.add }}
+                                                </v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
+                                </v-list-item-action>
+                            </v-list>
+                        </td>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="clearEditableTag">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="saveTag(forms.tags)">
+                            {{ langMap.main.edit }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-row>
     </v-container>
 </template>
@@ -2255,6 +2433,15 @@ export default {
                 parent_id: ''
             },
             isCanEditCategory: false,
+            isCanEditCurrency: false,
+            editCurrencyForm: {
+                id: null,
+                name: '',
+                slug: '',
+                symbol: ''
+            },
+            isCanEditActivity: false,
+            isCanEditTag: false
         }
     },
     created() {
@@ -3054,16 +3241,20 @@ export default {
             return foundLang ? foundLang.name : code;
         },
         saveTag(item) {
+            console.log(this.forms.tags.translates)
             this.$store.dispatch('Tags/updateTag', item);
+            this.clearEditableTag();
         },
         saveService(item) {
             this.$store.dispatch('Services/updateService', item);
         },
         saveCurrency(item) {
             this.$store.dispatch('Currencies/updateCurrency', item);
+            this.clearEditableCurrency();
         },
         saveActivityType(item) {
             this.$store.dispatch('ActivityTypes/updateActivityType', item);
+            this.clearEditableActivity();
         },
         removeTag(tagId) {
             this.$store.dispatch('Tags/deleteTag', tagId)
@@ -3157,6 +3348,7 @@ export default {
                 lang: lang ?? this.tagTranslateForm.lang,
                 name: name ?? this.tagTranslateForm.name
             });
+            this.__getTags()
         },
         getPermissions() {
             axios.get(`/api/permissions`).then(response => {
@@ -3311,6 +3503,29 @@ export default {
                 name: '',
                 category_id: ''
             }
+        },
+        clearEditableCurrency() {
+            this.isCanEditCurrency = false;
+            this.editCurrencyForm = {
+                id: null,
+                name: '',
+                code: '',
+                symbol: ''
+            }
+        },
+        clearEditableActivity() {
+            this.isCanEditActivity = false;
+            this.forms.activityType = {
+                name: '',
+            }
+        },
+        clearEditableTag() {
+            this.isCanEditTag = false;
+            this.forms.tags = {
+                name: '',
+                color: this.$helpers.color.genRandomColor()
+            }
+            this.addTranslationDialog = {}
         },
         editCategory(){
             axios.patch(`/api/product_category/${this.editableCategoryItem.id}`, {

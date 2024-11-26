@@ -1,8 +1,8 @@
 <template>
-    <v-container fluid>
-        <v-toolbar flat>
+    <v-container style="padding-top: 0;" fluid>
+        <v-toolbar style="height: 40px;" flat>
             <v-tabs v-model="activeTab" :color="themeBgColor">
-                <v-tab v-for="item in tabs" :key="item.id" :value="item.id"
+                <v-tab v-for="item in tabs" :key="item.id" :value="item.id" style="padding: 0 10px;"
                 >{{ item.name }}
                 </v-tab>
             </v-tabs>
@@ -40,6 +40,10 @@
     z-index: 5;
     position: relative;
     background: #fff;
+}
+
+header /deep/ .v-toolbar__content {
+    height: 40px!important;
 }
 </style>
 

@@ -169,8 +169,8 @@ export default [
         component: SingleEmployee
     },
     {
-        path: '/hosting',
-        name: 'hosting',
+        path: '/domains',
+        name: 'domains',
         meta: {
             requiresAuth: true,
         },

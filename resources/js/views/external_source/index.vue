@@ -35,7 +35,7 @@
                         addOrEditExternalSourceDialogOpen = true;
                         dialogMode = 'add';
                       "
-                      >{{ langMap.external_source.add_new }}
+                      >{{ langMap.domains.add_new }}
                     </v-btn>
                   </v-col>
                   <v-col md="2" sm="12">
@@ -129,8 +129,8 @@
         >
           {{
             dialogMode === 'add'
-              ? langMap.external_source.add_new_external_source
-              : langMap.external_source.edit_external_source
+              ? langMap.domains.add_new_domain
+              : langMap.domains.edit_domain
           }}
         </v-card-title>
         <v-card-text>
@@ -141,14 +141,14 @@
           >
             <!-- Domain Section -->
             <v-card elevation="1" outlined style="padding: 6px 18px">
-              <v-card-title>{{ langMap.external_source.domain }}</v-card-title>
+              <v-card-title>{{ langMap.domains.domain }}</v-card-title>
               <v-card-actions>
                 <v-row>
                   <v-col cols="6" md="4">
                     <v-text-field
                       v-model="externalSourceForm.domain"
                       :color="themeBgColor"
-                      :label="langMap.external_source.domain"
+                      :label="langMap.domains.domain"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -158,7 +158,7 @@
                     <v-text-field
                       v-model="externalSourceForm.domain_prefix"
                       :color="themeBgColor"
-                      :label="langMap.external_source.domain_prefix"
+                      :label="langMap.domains.domain_prefix"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -168,7 +168,7 @@
                     <v-text-field
                       v-model="externalSourceForm.uri"
                       :color="themeBgColor"
-                      :label="langMap.external_source.uri"
+                      :label="langMap.domains.uri"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -182,14 +182,14 @@
 
             <!-- Auth Section -->
             <v-card elevation="1" outlined style="padding: 6px 18px">
-              <v-card-title>{{ langMap.external_source.auth }}</v-card-title>
+              <v-card-title>{{ langMap.domains.auth }}</v-card-title>
               <v-card-actions>
                 <v-row>
                   <v-col cols="6" md="6">
                     <v-text-field
                       v-model="externalSourceForm.auth_name"
                       :color="themeBgColor"
-                      :label="langMap.external_source.auth_name"
+                      :label="langMap.domains.auth_name"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -199,7 +199,7 @@
                       v-model="externalSourceForm.auth_method"
                       :color="themeBgColor"
                       :items="['GET', 'POST']"
-                      :label="langMap.external_source.auth_method"
+                      :label="langMap.domains.auth_method"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -209,7 +209,7 @@
                     <v-textarea
                       v-model="externalSourceForm.auth_headers"
                       :color="themeBgColor"
-                      :label="langMap.external_source.auth_headers"
+                      :label="langMap.domains.auth_headers"
                       :rules="[requiredRule]"
                       class="form_textarea"
                       dense
@@ -225,7 +225,7 @@
             <!-- Credentials Section -->
             <v-card elevation="1" outlined style="padding: 6px 18px">
               <v-card-title
-                >{{ langMap.external_source.credentials }}
+                >{{ langMap.domains.credentials }}
               </v-card-title>
               <v-card-actions>
                 <v-row>
@@ -233,7 +233,7 @@
                     <v-text-field
                       v-model="externalSourceForm.name"
                       :color="themeBgColor"
-                      :label="langMap.external_source.name"
+                      :label="langMap.domains.name"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -243,7 +243,7 @@
                     <v-text-field
                       v-model="externalSourceForm.password"
                       :color="themeBgColor"
-                      :label="langMap.external_source.password"
+                      :label="langMap.domains.password"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -257,14 +257,14 @@
 
             <!-- Billing Section -->
             <v-card elevation="1" outlined style="padding: 6px 18px">
-              <v-card-title>{{ langMap.external_source.billing }}</v-card-title>
+              <v-card-title>{{ langMap.domains.billing }}</v-card-title>
               <v-card-actions>
                 <v-row>
                   <v-col cols="6" md="3">
                     <v-text-field
                       v-model="externalSourceForm.billing_price"
                       :color="themeBgColor"
-                      :label="langMap.external_source.billing_price"
+                      :label="langMap.domains.billing_price"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -278,7 +278,7 @@
                       :items="currencies"
                       item-value="id"
                       item-text="slug"
-                      :label="langMap.external_source.billing_currency"
+                      :label="langMap.domains.billing_currency"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -291,7 +291,7 @@
                       :items="billing_type_items"
                       item-text="label"
                       item-value="value"
-                      :label="langMap.external_source.billing_type"
+                      :label="langMap.domains.billing_type"
                       :rules="[requiredRule]"
                       dense
                       required
@@ -304,7 +304,7 @@
                       :items="billing_auto_renewal_items"
                       item-value="value"
                       item-text="label"
-                      :label="langMap.external_source.is_billing_auto_renewal"
+                      :label="langMap.domains.is_billing_auto_renewal"
                       :disabled="externalSourceForm.billing_type !== 2"
                       dense
                       required
@@ -326,8 +326,8 @@
           >
             {{
               dialogMode === 'add'
-                ? langMap.external_source.add
-                : langMap.external_source.save
+                ? langMap.domains.add
+                : langMap.domains.save
             }}
           </v-btn>
           <v-btn
@@ -335,7 +335,7 @@
             text
             @click="addOrEditExternalSourceDialogOpen = false"
           >
-            {{ langMap.external_source.close }}
+            {{ langMap.domains.close }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -351,7 +351,7 @@
           :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
           class="mb-5"
         >
-          {{ langMap.external_source.delete_confirmation }}
+          {{ langMap.domains.delete_confirmation }}
         </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -438,24 +438,24 @@ export default {
       },
       headers: [
         {
-          text: this.$store.state.lang.lang_map.external_source.id,
+          text: this.$store.state.lang.lang_map.domains.id,
           value: 'id',
         },
         {
-          text: this.$store.state.lang.lang_map.external_source.name,
+          text: this.$store.state.lang.lang_map.domains.name,
           value: 'name',
         },
         {
-          text: this.$store.state.lang.lang_map.external_source.domain,
+          text: this.$store.state.lang.lang_map.domains.domain,
           value: 'domain',
           sortable: false,
         },
         {
-          text: this.$store.state.lang.lang_map.external_source.billing_price,
+          text: this.$store.state.lang.lang_map.domains.billing_price,
           value: 'billing_price',
         },
         {
-          text: this.$store.state.lang.lang_map.external_source
+          text: this.$store.state.lang.lang_map.domains
             .billing_currency,
           value: 'billing_currency',
         },
@@ -484,11 +484,11 @@ export default {
       },
       billing_type_items: [
         {
-          label: this.$store.state.lang.lang_map.external_source.payment,
+          label: this.$store.state.lang.lang_map.domains.payment,
           value: 1,
         },
         {
-          label: this.$store.state.lang.lang_map.external_source.subscription,
+          label: this.$store.state.lang.lang_map.domains.subscription,
           value: 2,
         },
       ],
@@ -623,9 +623,8 @@ export default {
     },
       handleCopyPassword(id){
         axios.get(`/api/external-sources/${id}/get-password/`).then((response) => {
-            console.log(response.data.data);
             if(response.data.success){
-                this.snackbarMessage = this.$store.state.lang.lang_map.external_source.copied_password;
+                this.snackbarMessage = this.$store.state.lang.lang_map.domains.copied_password;
                 this.snackbar = true;
                 this.actionColor = 'success';
 
