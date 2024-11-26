@@ -643,7 +643,9 @@ class LanguageSeeder extends Seeder
                         'save_for_later' => 'Do you want to save the content of the form for later?',
                         'close_ticket_title' => 'Close the ticket?',
                         'link_tickets' => 'Link tickets',
-                        'view' => 'View'
+                        'view' => 'View',
+                        "set_reminder_time" => "Set reminder time",
+                        "time" => "Time"
                     ],
                     'main' =>
                         [
@@ -759,6 +761,7 @@ class LanguageSeeder extends Seeder
                             'information' => 'Information',
                             'user' => 'User',
                             'save' => 'Save',
+                            'clear' => 'Clear',
                             'save_as' => 'Save as...',
                             'send' => 'Send',
                             'continue' => 'Continue',
@@ -1746,7 +1749,9 @@ class LanguageSeeder extends Seeder
                             'save_for_later' => 'Möchten Sie den Inhalt des Formulars für später speichern?',
                             'close_ticket_title' => 'Das Ticket schliessen?',
                             'link_tickets' => 'Tickets verknüpfen',
-                            'view' => 'Anzeigen'
+                            'view' => 'Anzeigen',
+                            "set_reminder_time" => "Erinnerungszeit einstellen",
+                            "time" => "Zeit"
                         ],
                         'main' => [
                             'create' => 'erstellen',
@@ -1857,6 +1862,7 @@ class LanguageSeeder extends Seeder
                             'information' => 'information',
                             'user' => 'benutzer',
                             'save' => 'speichern',
+                            'clear' => 'Klar',
                             'save_as' => 'Speichern als...',
                             'send' => 'Senden',
                             'continue' => 'fortsetzen',
