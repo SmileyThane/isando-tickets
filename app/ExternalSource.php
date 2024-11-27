@@ -32,13 +32,17 @@ class ExternalSource extends Model
         'password' => BCryptCaster::class,
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'otp_secret'];
 
     public function entity(): MorphTo
     {
         return $this->morphTo();
     }
 
+    public function getIsOtpAvailableAttribute(): bool
+    {
+        return $this->attributes['otp_secret'] !== null;
+    }
     public function externalSourceType(): BelongsTo
     {
         return $this->belongsTo(ExternalSourceType::class);
