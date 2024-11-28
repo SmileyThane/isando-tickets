@@ -1,10 +1,11 @@
 <template>
   <v-container fluid>
-    <v-tabs v-model="employeeActiveTab" :color="themeBgColor" align-with-title>
+    <v-tabs v-model="employeeActiveTab" :color="themeBgColor" style="height: 40px;">
       <v-tab
         v-for="(item, index) in items"
         @click="handleChangeCustomerTab(index)"
         :key="item"
+        style="height: 40px;"
       >
         {{ item }}
       </v-tab>
@@ -36,6 +37,12 @@
   </v-container>
 </template>
 
+<style scoped>
+  .v-tabs /deep/ .v-tabs-bar {
+      height: 40px!important;
+  }
+</style>
+
 <script>
 import BasicEmployee from './basic';
 import tickets from '../../components/tickets/tickets';
@@ -57,7 +64,18 @@ export default {
       themeBgColor: this.$store.state.themeBgColor,
     };
   },
+    mounted() {
+        this.getUser(this.$route.params.id)
+    },
   methods: {
+      getUser(){
+          axios.get(`/api/user/find/${this.$route.params.id}`).then(response => {
+              response = response.data
+              if (response.success === true) {
+                  this.onSetContactName(response.data.email);
+              }
+          });
+      },
     onSetContactName(name) {
       this.contactName = name;
     },

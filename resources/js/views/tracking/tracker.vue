@@ -464,17 +464,13 @@
                                             >
                                                 <v-edit-dialog
                                                     v-if="isEditable(row)"
-                                                    @save="debounceSave(row, 'entity', row.entity)"
-                                                    @cancel="cancel"
-                                                    @open="open"
-                                                    @close="debounceSave(row, 'entity', row.entity)"
                                                 >
                                                     <ProjectBtn
                                                         :key="row.id"
                                                         :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
                                                         v-model="row.entity"
-                                                        @blur="debounceSave(row, 'entity', row.entity)"
-                                                        @input="debounceSave(row, 'entity', row.entity)"
+                                                        :openPanel="row.entity_type === 'App\\TrackingProject' ? 0 : 2"
+                                                        :openChildrenId="row.entity_id"
                                                     ></ProjectBtn>
                                                 </v-edit-dialog>
                                                 <div v-else>
@@ -492,10 +488,10 @@
                                                 :width="headers.find(i => i.value === 'entity').width"
                                             >
                                                 <template v-if="row.entity && row.entity.client">
-                                                    {{ row.entity.client.name }}
+                                                    {{ row.entity.product.name }}
                                                 </template>
                                                 <template v-else-if="row.entity">{{
-                                                        row.entity.from_company_name
+                                                        row.entity.name
                                                     }}
                                                 </template>
                                             </td>
@@ -505,10 +501,6 @@
                                             >
                                                 <v-edit-dialog
                                                     v-if="isEditable(row)"
-                                                    @save="debounceSave(row, 'description')"
-                                                    @cancel="cancel"
-                                                    @open="open"
-                                                    @close="debounceSave(row, 'description')"
                                                     :ref="`dialog${row.id}`"
                                                 >
                                                     <span v-if="row.service">
@@ -600,10 +592,6 @@
                                                     <div class="d-flex-inline">
                                                         <v-edit-dialog
                                                             v-if="isEditable(row)"
-                                                            @save=""
-                                                            @cancel="cancel"
-                                                            @open="open"
-                                                            @close=""
                                                         >
                                                             {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;<span
                                                             v-if="row.date_to && row.date_to !== null">{{ moment(row.date_to).format(timeFormat) }}</span>
@@ -1276,13 +1264,13 @@ export default {
             const self = this;
             return this.tracking
                 .filter(function (item) {
-                    if (self.teamFilter.length) {
+                    if (item && self.teamFilter.length) {
                         return self.teamFilter.indexOf(item.user_id) !== -1;
                     }
                     return true;
                 })
                 .filter(function (item) {
-                    return moment(item.date_from).format(self.dateFormat) === date;
+                    return item && moment(item.date_from).format(self.dateFormat) === date;
                 });
         },
         save(item, fieldName, newValue = null) {
@@ -1382,12 +1370,15 @@ export default {
             const self = this;
             const items = this.tracking
                 .filter(function (item) {
-                    if (self.teamFilter.length) {
+                    if (item && self.teamFilter.length) {
                         return self.teamFilter.indexOf(item.user_id) !== -1;
                     }
                     return true;
                 }).reduce(function (acc, item) {
-                    const date = moment(item.date_from).format('YYYY-MM-DD');
+                    let date = moment().format('YYYY-MM-DD');
+                    if (item) {
+                        date = moment(item.date_from).format('YYYY-MM-DD');
+                    }
                     return [...acc, date.toString()];
                 }, []);
             const panels = [...new Set(items)].sort().reverse();
@@ -1491,11 +1482,17 @@ export default {
         globalTimer: function () {
             // Update DataTable passed field
             this.tracking.filter(i => {
-                return i.status === this.STATUS_STARTED;
+                if (i) {
+                    return i.status === this.STATUS_STARTED;
+                }
+
+                return false
             }).forEach(i => {
-                const index = this.tracking.indexOf(i);
-                this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment(), true);
-                this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
+                    if (i) {
+                        const index = this.tracking.indexOf(i);
+                        this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment(), true);
+                        this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
+                    }
             });
             // Update timerPanel
             if (this.timerPanel.start) {
@@ -1503,12 +1500,12 @@ export default {
                 this.timerPanel.passedSeconds = this.$helpers.time.convertSecToTime(seconds);
             }
         },
-        'timerPanel.entity': function () {
-            this.timerPanel.entity_type = this.timerPanel.entity && this.timerPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
+        'timerPanel.entity': function (value) {
+            this.timerPanel.entity_type = this.timerPanel.entity && this.timerPanel.entity.from_entity_id ? "App\\Ticket" : 'App\\TrackingProject';
             this.saveChangesFromTimer();
         },
         'manualPanel.entity': function () {
-            this.manualPanel.entity_type = this.manualPanel && this.manualPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
+            this.manualPanel.entity_type = this.manualPanel && this.manualPanel.entity.from_entity_id ? "App\\Ticket" : 'App\\TrackingProject';
         }
     },
 }
