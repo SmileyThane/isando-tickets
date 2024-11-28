@@ -36,7 +36,7 @@ export default {
             let companies = [];
             tickets = tickets.filter(i => i.from_entity_id);
             tickets.forEach(i => {
-                if (!companies.find(x => x.id === i.from_entity_id)) {
+                if (!companies.find(x => x.id === i.from_entity_id) && i.from_entity_name) {
                     companies.push({name: i.from_entity_name, number: i.number, id: i.from_entity_id, tickets: []})
                 }
             })

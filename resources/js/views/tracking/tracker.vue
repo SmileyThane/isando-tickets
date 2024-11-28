@@ -1264,13 +1264,13 @@ export default {
             const self = this;
             return this.tracking
                 .filter(function (item) {
-                    if (self.teamFilter.length) {
+                    if (item && self.teamFilter.length) {
                         return self.teamFilter.indexOf(item.user_id) !== -1;
                     }
                     return true;
                 })
                 .filter(function (item) {
-                    return moment(item.date_from).format(self.dateFormat) === date;
+                    return item && moment(item.date_from).format(self.dateFormat) === date;
                 });
         },
         save(item, fieldName, newValue = null) {
@@ -1370,12 +1370,15 @@ export default {
             const self = this;
             const items = this.tracking
                 .filter(function (item) {
-                    if (self.teamFilter.length) {
+                    if (item && self.teamFilter.length) {
                         return self.teamFilter.indexOf(item.user_id) !== -1;
                     }
                     return true;
                 }).reduce(function (acc, item) {
-                    const date = moment(item.date_from).format('YYYY-MM-DD');
+                    let date = moment().format('YYYY-MM-DD');
+                    if (item) {
+                        date = moment(item.date_from).format('YYYY-MM-DD');
+                    }
                     return [...acc, date.toString()];
                 }, []);
             const panels = [...new Set(items)].sort().reverse();
@@ -1479,11 +1482,17 @@ export default {
         globalTimer: function () {
             // Update DataTable passed field
             this.tracking.filter(i => {
-                return i.status === this.STATUS_STARTED;
+                if (i) {
+                    return i.status === this.STATUS_STARTED;
+                }
+
+                return false
             }).forEach(i => {
-                const index = this.tracking.indexOf(i);
-                this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment(), true);
-                this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
+                    if (i) {
+                        const index = this.tracking.indexOf(i);
+                        this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment(), true);
+                        this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
+                    }
             });
             // Update timerPanel
             if (this.timerPanel.start) {
