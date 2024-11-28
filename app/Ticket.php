@@ -196,7 +196,7 @@ class Ticket extends Model
     {
         $locale = Language::find($this->langId)->locale;
         $createdAt = Carbon::parse($this->attributes['created_at']);
-        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
+        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() . ' (' . $createdAt->locale($locale)->format('d.m h:i:s') . ')' : '';
     }
 
     public function creator(): HasOne
