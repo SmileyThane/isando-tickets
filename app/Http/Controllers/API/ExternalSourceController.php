@@ -11,6 +11,7 @@ use App\Repositories\ExternalSourceRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OTPHP\TOTP;
 
 class ExternalSourceController extends Controller
 {
@@ -82,5 +83,30 @@ class ExternalSourceController extends Controller
         }
 
         return self::showResponse(false);
+    }
+
+    public function getOTP(int $id): Response|JsonResponse
+    {
+        $source = $this->repository->getById($id);
+        $secretKey = $source->otp_secret;
+        $otp = null;
+
+        if ($secretKey) {
+            $totp = TOTP::create($secretKey);
+            $totp->setLabel($source->name);
+            $totp->setIssuer(env('APP_NAME'));
+            $otp = $totp->now();
+        }
+
+        return self::showResponse(true, ['otp' => $otp]);
+    }
+
+    public function setOTPSecret(Request $request, int $id): Response|JsonResponse
+    {
+        $source = $this->repository->getById($id);
+        $source->otp_secret = str_replace(' ', '', $request->otp_secret);
+        $source->save();
+
+        return self::showResponse(true);
     }
 }
