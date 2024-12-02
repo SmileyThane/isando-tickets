@@ -7,7 +7,7 @@
     "watch-poll": "npm run watch -- --watch-poll",
     "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
     "prod": "npm run production",
-    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "format": "prettier --write resources"
   },
   "devDependencies": {
@@ -31,23 +31,23 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@tinymce/tinymce-vue": "^6.1.0",
+    "@tinymce/tinymce-vue": "^3.2.8",
     "chart.js": "^2.9.4",
     "html2pdf.js": "^0.10.1",
     "moment": "^2.29.2",
     "moment-timezone": "^0.5.35",
     "primeicons": "^6.0.1",
     "sortablejs": "^1.14.0",
-    "v-calendar": "^3.1.2",
-    "vee-validate": "^4.14.4",
+    "v-calendar": "^2.2.3",
+    "vee-validate": "^3.3.3",
     "vue-chartjs": "^3.5.1",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.3.2",
     "vue2-perfect-scrollbar": "^1.5.0",
     "vuebar": "^0.0.20",
     "vuedraggable": "^2.24.3",
-    "vuetify": "^3.7.3",
-    "vuex": "^4.1.0",
+    "vuetify": "^2.2.32",
+    "vuex": "^3.5.1",
     "webpack": "^5.94.0"
   }
 }
