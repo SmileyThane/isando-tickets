@@ -438,6 +438,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::get('{id}/get-password', [ExternalSourceController::class, 'getPassword']);
         Route::get('{id}/get-uri', [ExternalSourceController::class, 'getUri']);
+
+        Route::get('{id}/get-otp', [ExternalSourceController::class, 'getOTP']);
+        Route::post('{id}/set-otp-secret', [ExternalSourceController::class, 'setOTPSecret']);
     });
 
     Route::prefix('external-source-types')->group(function () {
