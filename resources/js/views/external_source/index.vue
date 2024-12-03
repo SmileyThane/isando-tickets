@@ -9,7 +9,7 @@
       {{ snackbarMessage }}
     </v-snackbar>
     <div class="row justify-content-center">
-      <div class="col-md-12">
+        <div class="col-md-12">
         <div class="card">
           <div class="card-body">
             <v-data-table
@@ -26,7 +26,7 @@
             >
               <template v-slot:top>
                 <v-row>
-                  <v-col md="10" sm="12">
+                  <v-col md="8" sm="12">
                     <v-btn
                       style="margin-left: 10px"
                       outlined
@@ -38,6 +38,15 @@
                       >{{ langMap.domains.add_new }}
                     </v-btn>
                   </v-col>
+                    <v-col md="2" sm="12">
+                        <v-btn
+                            style="margin-left: 10px"
+                            outlined
+                            :color="themeBgColor"
+                            @click="otpDialog = true"
+                        >Authentificate
+                        </v-btn>
+                    </v-col>
                   <v-col md="2" sm="12">
                     <v-select
                       v-model="options.itemsPerPage"
@@ -146,16 +155,6 @@
                 <v-row>
                   <v-col cols="6" md="4">
                     <v-text-field
-                      v-model="externalSourceForm.domain"
-                      :color="themeBgColor"
-                      :label="langMap.domains.domain"
-                      :rules="[requiredRule]"
-                      dense
-                      required
-                    />
-                  </v-col>
-                  <v-col cols="6" md="4">
-                    <v-text-field
                       v-model="externalSourceForm.domain_prefix"
                       :color="themeBgColor"
                       :label="langMap.domains.domain_prefix"
@@ -164,6 +163,16 @@
                       required
                     />
                   </v-col>
+                    <v-col cols="6" md="4">
+                        <v-text-field
+                            v-model="externalSourceForm.domain"
+                            :color="themeBgColor"
+                            :label="langMap.domains.domain"
+                            :rules="[requiredRule]"
+                            dense
+                            required
+                        />
+                    </v-col>
                   <v-col cols="6" md="4">
                     <v-text-field
                       v-model="externalSourceForm.uri"
@@ -368,6 +377,39 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+      <v-dialog
+          v-model="otpDialog"
+          max-width="580"
+          persistent
+      >
+          <v-card>
+              <v-card-title
+                  :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
+                  class="mb-5"
+              >
+                  <span>Authentification</span>
+              </v-card-title>
+              <v-card-actions>
+                  <div style="width: 100%; display: flex; flex-direction: column;">
+                      <v-text-field v-model="otpId" placeholder="Enter your OTP secret"/>
+                      <div style="width: 100%; display: flex; justify-content: space-between;">
+                          <v-spacer></v-spacer>
+                          <v-btn
+                              color="grey darken-1"
+                              text
+                              @click="otpDialog = false"
+                          >
+                              {{ langMap.main.close }}
+                          </v-btn>
+                          <v-btn color="red darken-1" text @click="setOtpSecret">
+                              Connect
+                          </v-btn>
+                      </div>
+                  </div>
+              </v-card-actions>
+          </v-card>
+      </v-dialog>
   </v-container>
 </template>
 
@@ -463,6 +505,10 @@ export default {
           text: '',
           value: 'actions',
         },
+        {
+            text: 'Otp',
+            value: 'otp_secret'
+        }
       ],
       externalSources: [],
       name: '',
@@ -502,6 +548,9 @@ export default {
       dialogMode: 'add',
       isFormValid: false,
       requiredRule: (value) => !!value || 'This field is required',
+      otpId: '',
+      otpData: null,
+      otpDialog: false,
     };
   },
   mounted() {
@@ -526,6 +575,15 @@ export default {
     },
   },
   methods: {
+      setOtpSecret(){
+          this.loading = true;
+          axios.post(`/api/${this.otpId}/set-otp-secret`).then((response) => {
+              this.loading = false;
+              this.otpData = response.data.data
+          }).catch(() => {
+              this.loading = false
+          })
+      },
     submitForm() {
       if (this.$refs.externalSourceForm.validate()) {
         this.saveOrAddExternalSource();
