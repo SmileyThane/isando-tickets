@@ -26,7 +26,7 @@
             >
               <template v-slot:top>
                 <v-row>
-                  <v-col md="8" sm="12">
+                  <v-col md="10" sm="12">
                     <v-btn
                       style="margin-left: 10px"
                       outlined
@@ -38,15 +38,6 @@
                       >{{ langMap.domains.add_new }}
                     </v-btn>
                   </v-col>
-                    <v-col md="2" sm="12">
-                        <v-btn
-                            style="margin-left: 10px"
-                            outlined
-                            :color="themeBgColor"
-                            @click="otpDialog = true"
-                        >Authentificate
-                        </v-btn>
-                    </v-col>
                   <v-col md="2" sm="12">
                     <v-select
                       v-model="options.itemsPerPage"
@@ -65,50 +56,106 @@
                   item.domain_prefix + '://' + item.domain + '.' + item.uri
                 }}</a>
               </template>
-              <template v-slot:item.actions="{ item }">
-                <v-btn
-                  :color="themeBgColor"
-                  icon
-                  fab
-                  x-small
-                  dark
-                  @click="
+                <template v-slot:item.actions="{ item }">
+                    <v-tooltip v-if="item.is_otp_verified" top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                :color="themeBgColor"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="getAuthenticateCode(item.id)"
+                            >
+                                <v-icon>mdi mdi-refresh</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.refresh_auth_code }}</span>
+                    </v-tooltip>
+
+
+                    <v-tooltip v-else top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                :color="themeBgColor"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="otpDialog = true; externalSourceForm = item;"
+                            >
+                                <v-icon>mdi mdi-download</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.get_auth_code }}</span>
+                    </v-tooltip>
+
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                :color="themeBgColor"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="
                     addOrEditExternalSourceDialogOpen = true;
                     dialogMode = 'edit';
                     externalSourceForm = item;
                   "
-                >
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
+                            >
+                                <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.edit }}</span>
+                    </v-tooltip>
 
-                <v-btn
-                  color="error"
-                  icon
-                  fab
-                  x-small
-                  dark
-                  @click="
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="error"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="
                     removeExternalSourceDialogOpen = true;
                     dialogMode = 'edit';
                     externalSourceForm = item;
                   "
-                >
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
+                            >
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.remove }}</span>
+                    </v-tooltip>
 
-                  <v-btn
-                      color="primary"
-                      icon
-                      fab
-                      x-small
-                      dark
-                      @click="
-                    handleCopyPassword(item.id)
-                  "
-                  >
-                      <v-icon>mdi mdi-content-copy</v-icon>
-                  </v-btn>
-              </template>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="primary"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="handleCopyPassword(item.id)"
+                            >
+                                <v-icon>mdi mdi-content-copy</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.copy_password }}</span>
+                    </v-tooltip>
+                </template>
               <template v-slot:footer>
                 <v-pagination
                   v-model="options.page"
@@ -388,11 +435,11 @@
                   :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
                   class="mb-5"
               >
-                  <span>Authentification</span>
+                  <span>{{ langMap.domains.authentication }}</span>
               </v-card-title>
               <v-card-actions>
                   <div style="width: 100%; display: flex; flex-direction: column;">
-                      <v-text-field v-model="otpId" placeholder="Enter your OTP secret"/>
+                      <v-text-field v-model="otpSecret" placeholder="Enter your OTP secret"/>
                       <div style="width: 100%; display: flex; justify-content: space-between;">
                           <v-spacer></v-spacer>
                           <v-btn
@@ -402,8 +449,8 @@
                           >
                               {{ langMap.main.close }}
                           </v-btn>
-                          <v-btn color="red darken-1" text @click="setOtpSecret">
-                              Connect
+                          <v-btn color="red darken-1" text @click="setOtpSecret(externalSourceForm.id)">
+                              {{ langMap.domains.connect }}
                           </v-btn>
                       </div>
                   </div>
@@ -502,13 +549,14 @@ export default {
           value: 'billing_currency',
         },
         {
+          text: this.$store.state.lang.lang_map.domains
+            .otp_code,
+          value: 'otp_code'
+        },
+        {
           text: '',
           value: 'actions',
         },
-        {
-            text: 'Otp',
-            value: 'otp_secret'
-        }
       ],
       externalSources: [],
       name: '',
@@ -547,9 +595,8 @@ export default {
       removeExternalSourceDialogOpen: false,
       dialogMode: 'add',
       isFormValid: false,
-      requiredRule: (value) => !!value || 'This field is required',
-      otpId: '',
-      otpData: null,
+      requiredRule: (value) => !!value || this.$store.state.lang.lang_map.domains.required_field,
+      otpSecret: '',
       otpDialog: false,
     };
   },
@@ -575,13 +622,15 @@ export default {
     },
   },
   methods: {
-      setOtpSecret(){
-          this.loading = true;
-          axios.post(`/api/${this.otpId}/set-otp-secret`).then((response) => {
-              this.loading = false;
-              this.otpData = response.data.data
-          }).catch(() => {
-              this.loading = false
+      getAuthenticateCode(id){
+          axios.get(`/api/external-sources/${id}/get-otp`).then((response) => {
+            this.externalSources = this.externalSources.map((el) => el.id === id ? {...el, otp_code: response.data.data.otp} : el);
+          })
+      },
+      setOtpSecret(id){
+          axios.post(`/api/external-sources/${id}/set-otp-secret`, {otp_secret: this.otpSecret}).then((response) => {
+              if(response.data.success) this.otpDialog = false
+              this.getExternalSources()
           })
       },
     submitForm() {
