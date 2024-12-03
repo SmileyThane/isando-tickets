@@ -34,12 +34,14 @@ class ExternalSource extends Model
 
     protected $hidden = ['password', 'otp_secret'];
 
+    protected $appends = ['is_otp_verified'];
+
     public function entity(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function getIsOtpAvailableAttribute(): bool
+    public function getIsOtpVerifiedAttribute(): bool
     {
         return $this->attributes['otp_secret'] !== null;
     }
