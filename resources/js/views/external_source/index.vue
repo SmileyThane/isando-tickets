@@ -9,7 +9,7 @@
       {{ snackbarMessage }}
     </v-snackbar>
     <div class="row justify-content-center">
-      <div class="col-md-12">
+        <div class="col-md-12">
         <div class="card">
           <div class="card-body">
             <v-data-table
@@ -56,50 +56,106 @@
                   item.domain_prefix + '://' + item.domain + '.' + item.uri
                 }}</a>
               </template>
-              <template v-slot:item.actions="{ item }">
-                <v-btn
-                  :color="themeBgColor"
-                  icon
-                  fab
-                  x-small
-                  dark
-                  @click="
+                <template v-slot:item.actions="{ item }">
+                    <v-tooltip v-if="item.is_otp_verified" top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                :color="themeBgColor"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="getAuthenticateCode(item.id)"
+                            >
+                                <v-icon>mdi mdi-refresh</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.refresh_auth_code }}</span>
+                    </v-tooltip>
+
+
+                    <v-tooltip v-else top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                :color="themeBgColor"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="otpDialog = true; externalSourceForm = item;"
+                            >
+                                <v-icon>mdi mdi-download</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.get_auth_code }}</span>
+                    </v-tooltip>
+
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                :color="themeBgColor"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="
                     addOrEditExternalSourceDialogOpen = true;
                     dialogMode = 'edit';
                     externalSourceForm = item;
                   "
-                >
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
+                            >
+                                <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.edit }}</span>
+                    </v-tooltip>
 
-                <v-btn
-                  color="error"
-                  icon
-                  fab
-                  x-small
-                  dark
-                  @click="
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="error"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="
                     removeExternalSourceDialogOpen = true;
                     dialogMode = 'edit';
                     externalSourceForm = item;
                   "
-                >
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
+                            >
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.remove }}</span>
+                    </v-tooltip>
 
-                  <v-btn
-                      color="primary"
-                      icon
-                      fab
-                      x-small
-                      dark
-                      @click="
-                    handleCopyPassword(item.id)
-                  "
-                  >
-                      <v-icon>mdi mdi-content-copy</v-icon>
-                  </v-btn>
-              </template>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="primary"
+                                icon
+                                fab
+                                x-small
+                                dark
+                                v-on="on"
+                                v-bind="attrs"
+                                @click="handleCopyPassword(item.id)"
+                            >
+                                <v-icon>mdi mdi-content-copy</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ langMap.domains.copy_password }}</span>
+                    </v-tooltip>
+                </template>
               <template v-slot:footer>
                 <v-pagination
                   v-model="options.page"
@@ -146,16 +202,6 @@
                 <v-row>
                   <v-col cols="6" md="4">
                     <v-text-field
-                      v-model="externalSourceForm.domain"
-                      :color="themeBgColor"
-                      :label="langMap.domains.domain"
-                      :rules="[requiredRule]"
-                      dense
-                      required
-                    />
-                  </v-col>
-                  <v-col cols="6" md="4">
-                    <v-text-field
                       v-model="externalSourceForm.domain_prefix"
                       :color="themeBgColor"
                       :label="langMap.domains.domain_prefix"
@@ -164,6 +210,16 @@
                       required
                     />
                   </v-col>
+                    <v-col cols="6" md="4">
+                        <v-text-field
+                            v-model="externalSourceForm.domain"
+                            :color="themeBgColor"
+                            :label="langMap.domains.domain"
+                            :rules="[requiredRule]"
+                            dense
+                            required
+                        />
+                    </v-col>
                   <v-col cols="6" md="4">
                     <v-text-field
                       v-model="externalSourceForm.uri"
@@ -368,6 +424,39 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+      <v-dialog
+          v-model="otpDialog"
+          max-width="580"
+          persistent
+      >
+          <v-card>
+              <v-card-title
+                  :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`"
+                  class="mb-5"
+              >
+                  <span>{{ langMap.domains.authentication }}</span>
+              </v-card-title>
+              <v-card-actions>
+                  <div style="width: 100%; display: flex; flex-direction: column;">
+                      <v-text-field v-model="otpSecret" placeholder="Enter your OTP secret"/>
+                      <div style="width: 100%; display: flex; justify-content: space-between;">
+                          <v-spacer></v-spacer>
+                          <v-btn
+                              color="grey darken-1"
+                              text
+                              @click="otpDialog = false"
+                          >
+                              {{ langMap.main.close }}
+                          </v-btn>
+                          <v-btn color="red darken-1" text @click="setOtpSecret(externalSourceForm.id)">
+                              {{ langMap.domains.connect }}
+                          </v-btn>
+                      </div>
+                  </div>
+              </v-card-actions>
+          </v-card>
+      </v-dialog>
   </v-container>
 </template>
 
@@ -460,6 +549,11 @@ export default {
           value: 'billing_currency',
         },
         {
+          text: this.$store.state.lang.lang_map.domains
+            .otp_code,
+          value: 'otp_code'
+        },
+        {
           text: '',
           value: 'actions',
         },
@@ -501,7 +595,9 @@ export default {
       removeExternalSourceDialogOpen: false,
       dialogMode: 'add',
       isFormValid: false,
-      requiredRule: (value) => !!value || 'This field is required',
+      requiredRule: (value) => !!value || this.$store.state.lang.lang_map.domains.required_field,
+      otpSecret: '',
+      otpDialog: false,
     };
   },
   mounted() {
@@ -526,6 +622,17 @@ export default {
     },
   },
   methods: {
+      getAuthenticateCode(id){
+          axios.get(`/api/external-sources/${id}/get-otp`).then((response) => {
+            this.externalSources = this.externalSources.map((el) => el.id === id ? {...el, otp_code: response.data.data.otp} : el);
+          })
+      },
+      setOtpSecret(id){
+          axios.post(`/api/external-sources/${id}/set-otp-secret`, {otp_secret: this.otpSecret}).then((response) => {
+              if(response.data.success) this.otpDialog = false
+              this.getExternalSources()
+          })
+      },
     submitForm() {
       if (this.$refs.externalSourceForm.validate()) {
         this.saveOrAddExternalSource();
