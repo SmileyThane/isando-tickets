@@ -1125,11 +1125,20 @@ class LanguageSeeder extends Seeder
                          'add' => 'Add',
                          'save' => 'Save',
                          'close' => 'Close',
+                         'edit' => 'Edit',
+                         'remove' => 'Remove',
+                         'connect' => 'Connect',
                          'delete_confirmation' => 'Are you sure you want to delete this domain?',
                          'id' => 'ID',
                          'payment' => 'Payment',
                          'subscription' => 'Subscription',
-                         'copied_password' => 'Password was copied'
+                         'copy_password' => 'Copy password',
+                         'copied_password' => 'Password was copied',
+                         'refresh_auth_code' => 'Refresh auth code',
+                         'get_auth_code' => 'Get auth code',
+                         'authentication' => 'Authentication',
+                         'otp_code' => 'OTP code',
+                         'required_field' => 'This field is required'
                     ],
                 ])
             ]
@@ -2219,11 +2228,20 @@ class LanguageSeeder extends Seeder
                             'add' => 'Hinzufügen',
                             'save' => 'Speichern',
                             'close' => 'Schließen',
+                            'edit' => 'Bearbeiten',
+                            'remove' => 'Entfernen',
+                            'connect' => 'Verbinden',
                             'delete_confirmation' => 'Sind Sie sicher, dass Sie diese Domain löschen möchten?',
                             'id' => 'ID',
                             'payment' => 'Zahlung',
                             'subscription' => 'Abonnement',
-                            'copied_password' => 'Passwort wurde kopiert'
+                            'copy_password' => 'Copy password',
+                            'copied_password' => 'Passwort kopieren',
+                            'refresh_auth_code' => 'Authentifizierungscode aktualisieren',
+                            'get_auth_code' => 'Authentifizierungscode erhalten',
+                            'authentication' => 'Authentifizierung',
+                            'otp_code' => 'OTP-Code',
+                            'required_field' => 'Dieses Feld ist erforderlich'
                         ],
                     ]
                 )
