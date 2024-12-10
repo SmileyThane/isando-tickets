@@ -531,13 +531,12 @@
                                                             v-model="row.service"
                                                             return-object
                                                             dense
-                                                            @input="$refs[`dialog${row.id}`][0].isActive = false"
                                                         ></v-select>
                                                         <v-btn
                                                             class="float-right mb-2"
                                                             text
                                                             color="success"
-                                                            @click="$refs[`dialog${row.id}`][0].isActive = false"
+                                                            @click="$refs[`dialog${row.id}`][0].isActive = false; debounceSave(row, 'entity', row.entity)"
                                                         >{{ langMap.tracking.tracker.save }}
                                                         </v-btn>
                                                     </template>
@@ -964,7 +963,7 @@ export default {
             isLoadingProject: false,
             teamFilter: [],
             offset: 0,
-            loadMoreAvailable: true,
+            loadMoreAvailable: true
         }
     },
     created: function () {
