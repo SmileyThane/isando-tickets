@@ -22,6 +22,7 @@
                 class="elevation-4"
                 fixed-header
                 dense
+                height="75vh"
                 hide-default-footer
                 item-key="id"
                 show-expand
