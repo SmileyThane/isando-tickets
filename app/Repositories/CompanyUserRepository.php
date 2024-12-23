@@ -317,11 +317,13 @@ class CompanyUserRepository
 
     public function updateNotes($id, $notes)
     {
-        $user = CompanyUser::find($id);
-
-        if ($user && $notes) {
-            $user->notes = $notes;
-            $user->save();
+        $user = User::query()->find($id);
+        if ($user) {
+            $companyUser = CompanyUser::find($user->employee->id);
+            if ($companyUser && $notes) {
+                $companyUser->notes = $notes;
+                $companyUser->save();
+            }
         }
     }
 
