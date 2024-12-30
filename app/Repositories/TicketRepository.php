@@ -522,6 +522,59 @@ class TicketRepository
         return true;
     }
 
+    public function filterEmailRecipients($employees, Ticket $ticket, string $notificationType): array
+    {
+        $recipients = [];
+        foreach ($employees as $employee) {
+            $user = $employee->userData;
+            if (!$user) {
+                continue;
+            }
+
+            if ($user->notificationStatuses->isEmpty()) {
+                $recipients[] = $employee;
+            } else {
+                switch ($notificationType) {
+                    case Ticket::ACTION_NEW_TICKET:
+                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_COMPANY)
+                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_ME)
+                                && $ticket->assignedPerson
+                                && $user->id === $ticket->assignedPerson->user_id)
+                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_TEAM)
+                                && $ticket->team && $ticket->team->employees->contains('company_user_id', $employee->id))
+                        ) {
+                            $recipients[] = $employee;
+                        }
+                        break;
+                    case Ticket::ACTION_UPDATE_TICKET:
+                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_COMPANY)
+                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_ME)
+                                && $ticket->assignedPerson
+                                && $user->id === $ticket->assignedPerson->id)
+                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_TEAM)
+                                && $ticket->team && $ticket->team->employees->contains('company_user_id', $employee->id))
+                        ) {
+                            $recipients[] = $employee;
+                        }
+                        break;
+                    case Ticket::ACTION_ATTACH_TEAM_TO_TICKET:
+                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_TEAM)) {
+                            $recipients[] = $employee;
+                        }
+                        break;
+                    default:
+                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_CLIENT_RESPONSE_ASSIGNED_TO_ME)
+                            && $ticket->assignedPerson
+                            && $user->id === $ticket->assignedPerson->user_id) {
+                            $recipients[] = $employee;
+                        }
+                }
+            }
+        }
+
+        return $recipients;
+    }
+
     public function updateDescription(Request $request, $id)
     {
         $ticket = Ticket::find($id);
@@ -534,21 +587,6 @@ class TicketRepository
         }
 
         return $ticket;
-    }
-
-    public function delete($id): bool
-    {
-        $result = false;
-        $ticket = Ticket::find($id);
-        if ($ticket) {
-            TicketMerge::where('parent_ticket_id', $id)->orWhere('child_ticket_id', $id)->delete();
-            $ticket->delete();
-            $result = true;
-        }
-        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_deleted');
-        $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
-
-        return $result;
     }
 
     public function markAsSpam($id): bool
@@ -762,12 +800,17 @@ class TicketRepository
     {
         if ($request->child_ticket_id) {
             foreach ($request->child_ticket_id as $ticketId) {
-                $ticketMerge = new TicketMerge();
-                $ticketMerge->merged_by_user_id = Auth::id();
-                $ticketMerge->merge_comment = $request->merge_comment;
-                $ticketMerge->parent_ticket_id = $request->parent_ticket_id;
-                $ticketMerge->child_ticket_id = $ticketId;
-                $ticketMerge->save();
+                TicketMerge::query()->firstOrCreate(
+                    [
+                        'parent_ticket_id' => $request->parent_ticket_id,
+                        'child_ticket_id' => $ticketId
+                    ],
+                    [
+                        'merge_comment' => $request->merge_comment,
+                        'merged_by_user_id' => Auth::id()
+
+                    ]
+                );
                 if ($wihHistory === true) {
                     $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
                     $this->ticketUpdateRepo->addHistoryItem($ticketId, null, $historyDescription);
@@ -815,6 +858,21 @@ class TicketRepository
         }
     }
 
+    public function delete($id): bool
+    {
+        $result = false;
+        $ticket = Ticket::find($id);
+        if ($ticket) {
+            TicketMerge::where('parent_ticket_id', $id)->orWhere('child_ticket_id', $id)->delete();
+            $ticket->delete();
+            $result = true;
+        }
+        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_deleted');
+        $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
+
+        return $result;
+    }
+
     public function getFilterParameters(Request $request): array
     {
         return $this->ticketSelectRepo->getFilterParameters($request);
@@ -828,58 +886,5 @@ class TicketRepository
         $ticket->save();
 
         return true;
-    }
-
-    public function filterEmailRecipients($employees, Ticket $ticket, string $notificationType): array
-    {
-        $recipients = [];
-        foreach ($employees as $employee) {
-            $user = $employee->userData;
-            if (!$user) {
-                continue;
-            }
-
-            if ($user->notificationStatuses->isEmpty()) {
-                $recipients[] = $employee;
-            } else {
-                switch ($notificationType) {
-                    case Ticket::ACTION_NEW_TICKET:
-                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_COMPANY)
-                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_ME)
-                                && $ticket->assignedPerson
-                                && $user->id === $ticket->assignedPerson->user_id)
-                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_NEW_ASSIGNED_TO_TEAM)
-                                && $ticket->team && $ticket->team->employees->contains('company_user_id', $employee->id))
-                        ) {
-                            $recipients[] = $employee;
-                        }
-                        break;
-                    case Ticket::ACTION_UPDATE_TICKET:
-                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_COMPANY)
-                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_ME)
-                                && $ticket->assignedPerson
-                                && $user->id === $ticket->assignedPerson->id)
-                            || ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_TEAM)
-                                && $ticket->team && $ticket->team->employees->contains('company_user_id', $employee->id))
-                        ) {
-                            $recipients[] = $employee;
-                        }
-                        break;
-                    case Ticket::ACTION_ATTACH_TEAM_TO_TICKET:
-                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_UPDATED_ASSIGNED_TO_TEAM)) {
-                            $recipients[] = $employee;
-                        }
-                        break;
-                    default:
-                        if ($user->hasNotificationStatus(UserNotificationStatus::TICKET_CLIENT_RESPONSE_ASSIGNED_TO_ME)
-                            && $ticket->assignedPerson
-                            && $user->id === $ticket->assignedPerson->user_id) {
-                            $recipients[] = $employee;
-                        }
-                }
-            }
-        }
-
-        return $recipients;
     }
 }
