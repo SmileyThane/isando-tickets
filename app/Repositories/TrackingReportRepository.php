@@ -522,8 +522,8 @@ class TrackingReportRepository
                 'customer' => isset($entity['entity']) && isset($entity['entity']['client'])
                     ? $entity['entity']['client']['name']
                     : (
-                    isset($entity['entity']['from_company_name'])
-                        ? $entity['entity']['from_company_name']
+                    isset($entity['entity']['from_entity_name'])
+                        ? $entity['entity']['from_entity_name']
                         : ''
                     ),
                 'project' => isset($entity['entity']) ? $entity['entity']['name'] : '',
