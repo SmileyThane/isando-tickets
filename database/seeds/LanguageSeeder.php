@@ -1482,13 +1482,13 @@ class LanguageSeeder extends Seeder
                             'internal' => 'Intern',
                         ],
                         'ticket_tabs' => [
-                            'all' => 'ALLER',
-                            'open' => 'ÖFFNEN',
-                            'my_tickets' => 'MEINE TICKETS',
-                            'urgent_open' => 'DRINGEND-OFFEN',
-                            'internal_open' => 'INTERN-OFFEN',
-                            'projects' => 'FORSCHUNGSPROJEKTE',
-                            'spam' => 'SPAM',
+                            'all' => 'ALLE',
+                            'open' => 'Geöffnet',
+                            'my_tickets' => 'Meine Tickets',
+                            'urgent_open' => 'Dringend',
+                            'internal_open' => 'Intern',
+                            'projects' => 'Projekte',
+                            'spam' => 'Spam',
                             'closed' => 'Geschlossen'
                         ],
                         'filter' => [
