@@ -162,8 +162,10 @@ export default {
     },
     back() {
       if (this.backButtonPath) {
-        this.$router.push(this.backButtonPath);
+        this.$router.push(localStorage.getItem('backPath') ? JSON.parse(localStorage.getItem('backPath')) : this.backButtonPath );
       } else window.history.back();
+
+      localStorage.removeItem('backPath');
     },
     logout(e) {
       e.preventDefault();

@@ -1023,6 +1023,7 @@ export default {
             });
         },
         showItem(item) {
+            localStorage.setItem('backPath', JSON.stringify(this.$route.fullPath));
             this.$router.push(`/ticket/${item.id}`)
         },
         ticketDeleteProcess(item) {
