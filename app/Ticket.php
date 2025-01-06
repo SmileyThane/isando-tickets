@@ -400,4 +400,12 @@ class Ticket extends Model
             'id'
         );
     }
+
+    public function Tags()
+    {
+        return $this->morphToMany(
+            Tag::class,
+            'taggable'
+        );
+    }
 }
