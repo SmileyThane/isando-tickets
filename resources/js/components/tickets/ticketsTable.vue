@@ -1007,7 +1007,9 @@ export default {
                         this.tickets = response.data.data;
                         this.totalTickets = response.data.total;
                         this.lastPage = response.data.last_page;
-                        this.ticketsSearch = this.searchValue;
+                        if (this.searchValue) {
+                            this.ticketsSearch = this.searchValue;
+                        }
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';

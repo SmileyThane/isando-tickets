@@ -211,9 +211,9 @@ class TicketRepository
         if ($orderedField === 'from_entity_id') {
             $ticketResult = $ticketResult->get();
             if ($orderedDirection === 'asc') {
-                $ticketResult = $ticketResult->sortBy('from_company_name', SORT_NATURAL);
+                $ticketResult = $ticketResult->sortBy('from_entity_name', SORT_NATURAL);
             } else {
-                $ticketResult = $ticketResult->sortByDesc('from_company_name', SORT_NATURAL);
+                $ticketResult = $ticketResult->sortByDesc('from_entity_name', SORT_NATURAL);
             }
         } elseif ($orderedField === 'contact.user_data.full_name') {
             $ticketResult = $ticketResult->get();

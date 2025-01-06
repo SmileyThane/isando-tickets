@@ -522,8 +522,8 @@ class TrackingReportRepository
                 'customer' => isset($entity['entity']) && isset($entity['entity']['client'])
                     ? $entity['entity']['client']['name']
                     : (
-                    isset($entity['entity']['from_company_name'])
-                        ? $entity['entity']['from_company_name']
+                    isset($entity['entity']['from_entity_name'])
+                        ? $entity['entity']['from_entity_name']
                         : ''
                     ),
                 'project' => isset($entity['entity']) ? $entity['entity']['name'] : '',
@@ -739,9 +739,9 @@ class TrackingReportRepository
             $row = [];
             $row[] = $tracking['user'] ? $this->fixCharacters($tracking['user']['full_name']) : '';
             $row[] = $tracking['user'] ? $tracking['user']['id'] : '';
-            if ($tracking['entity'] && isset($tracking['entity']['from'])) {
-                $row[] = $tracking['entity'] && $tracking['entity']['from_company_name'] ? $this->fixCharacters($tracking['entity']['from_company_name']) : '';
-                $row[] = $tracking['entity'] && $tracking['entity']['from']['id'] ? $tracking['entity']['from']['id'] : '';
+            if ($tracking['entity'] && isset($tracking['entity']['from_entity_id'])) {
+                $row[] = $tracking['entity'] && $tracking['entity']['from_entity_name'] ? $this->fixCharacters($tracking['entity']['from_entity_name']) : '';
+                $row[] = $tracking['entity'] && $tracking['entity']['from_entity_id'] ? $tracking['entity']['from_entity_id'] : '';
             } else {
                 $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $this->fixCharacters($tracking['entity']['client']['name']) : '';
                 $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['id'] : '';
