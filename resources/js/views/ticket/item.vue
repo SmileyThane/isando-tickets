@@ -2504,6 +2504,45 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
+                <br/>
+                <v-expansion-panels class="d-sm-none d-md-flex">
+                    <v-expansion-panel>
+                        <v-expansion-panel-header style="background: #f0f0f0">
+              <span>
+                <strong>{{langMap.kb.tags}}</strong>
+              </span>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <div style="display: flex; max-height: 350px; overflow-y: auto; overflow-x: hidden;">
+                                <v-select v-model="activeTags" :color="themeBgColor"
+                                          :items="$store.getters['Tags/getTags']"
+                                          :placeholder="langMap.kb.select_tags"
+                                          append-icon="mdi-tag-multiple-outline"
+                                          item-text="name"
+                                          item-value="id"
+                                          v-on:change="updateTicket();"
+                                          multiple
+                                          small-chips
+                                          hide-selected
+                                >
+                                    <template v-slot:selection="{ attrs, item, parent, selected }">
+                                        <v-chip :color="item.color" :text-color="invertColor(item.color)" class="ml-2"
+                                                close label small v-bind="attrs"
+                                                @click:close="syncTags(item)">
+                                            {{ item.name }}
+                                        </v-chip>
+                                    </template>
+                                    <template v-slot:item="{ attrs, item, parent, selected }">
+                                        <v-chip :color="item.color" :text-color="invertColor(item.color)" class="ml-2"
+                                                label v-bind="attrs">
+                                            {{ item.name }}
+                                        </v-chip>
+                                    </template>
+                                </v-select>
+                            </div>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-col>
             <v-scale-transition>
                 <v-col v-show="thirdColumn" :md="thirdColumnSize" cols="12" sm="12">
@@ -3005,6 +3044,7 @@ export default {
             assignPanel: [],
             notesPanel: [],
             teamAssignPanel: [],
+            tagsPanel: [],
             signatures: [],
             selectedSignature: '',
             thirdColumn: false,
@@ -3259,6 +3299,7 @@ export default {
             remindDialogOpen: false,
             dateValue: moment().format('YYYY-MM-DDTHH:mm:ss'),
             timeValue: moment().format('YYYY-MM-DDTHH:mm:ss'),
+            activeTags: [],
         };
     },
     watch: {
@@ -3310,6 +3351,15 @@ export default {
         clearInterval(this.intervalId);
     },
     methods: {
+        syncTags(item) {
+            let index = this.activeTags.indexOf(item.id);
+            if (index !== -1) {
+                this.activeTags.splice(index, 1);
+            }
+        },
+        invertColor(hex) {
+            return this.$helpers.color.invertColor(hex);
+        },
         saveReminderDate(){
             this.ticket.reminderDate = this.dateValue.slice(0, -8) + this.timeValue.slice(-8);
             this.updateTicket();
@@ -3466,6 +3516,7 @@ export default {
                         this.notesPanel.push(0);
                     }
                     this.getInternalBilling();
+                    this.activeTags = ticket.tags;
 
                     if(response.data.reminderDate) {
                         this.dateValue = response.data.reminderDate
@@ -3641,6 +3692,7 @@ export default {
             this.ticket.from_entity_id = Object.values(this.from)[0];
             this.ticket.from_entity_type = Object.keys(this.from)[0];
             this.ticket.name = this.ticket.original_name;
+            this.ticket.tags = this.activeTags.map((tagId) => this.$store.getters['Tags/getTags'].find((tag) => tag.id === tagId));
             axios
                 .patch(`/api/ticket/${this.$route.params.id}`, this.ticket)
                 .then((response) => {
