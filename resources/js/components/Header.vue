@@ -52,6 +52,18 @@
 <script>
 import EventBus from './EventBus';
 
+//back button logic
+const backButtonRoutes = {
+  'ticket/': '/tickets',
+  'customer/': '/customer',
+  'employee/': '/employee',
+  'product/': '/product',
+  'projects/': '/tracking/projects',
+  'notify_history/': '/notify_history',
+  'company/': '/company',
+  'team/': '/team',
+};
+
 export default {
   name: 'Header',
   props: { value: { type: Boolean } },
@@ -109,18 +121,6 @@ export default {
         localStorage.removeItem('customerTicketsPath');
       }
 
-      //back button logic
-      const backButtonRoutes = {
-        'ticket/': '/tickets',
-        'customer/': '/customer',
-        'employee/': '/employee',
-        'product/': '/product',
-        'projects/': '/tracking/projects',
-        'notify_history/': '/notify_history',
-        'company/': '/company',
-        'team/': '/team',
-      };
-
       for (const [path, backPath] of Object.entries(backButtonRoutes)) {
         if (this.$route.path.includes(path)) {
           this.isBackButtonVisible = true;
@@ -137,6 +137,12 @@ export default {
     if (this.$route.path.includes('notify/')) {
       this.isBackButtonVisible = true;
       this.backButtonPath = '/notify';
+    }
+    for (const [path, backPath] of Object.entries(backButtonRoutes)) {
+      if (this.$route.path.includes(path)) {
+        this.isBackButtonVisible = true;
+        return;
+      }
     }
     this.getUsername();
     let that = this;
