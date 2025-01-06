@@ -401,7 +401,7 @@ class Ticket extends Model
         );
     }
 
-    public function Tags()
+    public function tags()
     {
         return $this->morphToMany(
             Tag::class,
