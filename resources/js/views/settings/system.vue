@@ -1873,7 +1873,7 @@
                         </v-btn>
                         <v-btn color="red darken-1" text
                                @click="saveCurrency(editCurrencyForm)">
-                            {{ langMap.main.edit }}
+                            {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1882,7 +1882,7 @@
             <v-dialog v-model="isCanEditActivity" max-width="480" persistent>
                 <v-card>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.company.edit_currency }}: {{ forms.activityType.name }}
+                        {{ langMap.company.edit_activity }}: {{ forms.activityType.name }}
                     </v-card-title>
                     <v-card-text class="mt-6">
                         <v-text-field
@@ -1900,7 +1900,7 @@
                         </v-btn>
                         <v-btn color="red darken-1" text
                                @click="saveActivityType(forms.activityType)">
-                            {{ langMap.main.edit }}
+                            {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1909,7 +1909,7 @@
             <v-dialog v-model="isCanEditTag" max-width="480" persistent>
                 <v-card>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.company.edit_currency }}: {{ forms.tags.name }}
+                        {{ langMap.company.edit_tag }}: {{ forms.tags.name }}
                     </v-card-title>
                     <v-card-text class="mt-6">
                         <v-form>
@@ -2062,7 +2062,7 @@
                         </v-btn>
                         <v-btn color="red darken-1" text
                                @click="saveTag(forms.tags)">
-                            {{ langMap.main.edit }}
+                            {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
