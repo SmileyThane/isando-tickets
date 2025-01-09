@@ -204,7 +204,8 @@ class TicketRepository
                 'priority',
                 'status',
                 'category',
-                'billedBy'
+                'billedBy',
+                'tags'
             );
         $orderedField = $request->sort_by ?? 'id';
         $orderedDirection = $request->sort_val === 'false' ? 'asc' : 'desc';
@@ -324,7 +325,8 @@ class TicketRepository
                 'attachments',
                 'mergedParent',
                 'billedBy',
-                'followers'
+                'followers',
+                'tags'
             )->first();
         if ($ticket) {
             $ticket->append(['from', 'to'])->makeVisible(['from', 'to', 'description', 'contact', 'assignedPerson']);
