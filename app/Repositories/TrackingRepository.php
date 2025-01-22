@@ -295,8 +295,10 @@ class TrackingRepository
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
             if ($tracking->entity_type === TrackingProject::class) {
                 $project = TrackingProject::find($request->entity['id']);
-                $tracking->rate = $project->rate;
-                $tracking->team_id = $tracking->entity->team_id;
+                if ($project) {
+                    $tracking->rate = $project->rate;
+                    $tracking->team_id = $tracking->entity->team_id;
+                }
             }
             if ($tracking->entity_type === Ticket::class) {
                 $tracking->rate = $tracking->entity->billedBy ? $tracking->entity->billedBy->cost : 0;
