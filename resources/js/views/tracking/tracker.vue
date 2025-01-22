@@ -1281,7 +1281,7 @@ export default {
             }
             if (fieldName === 'entity') {
                 item.entity_id = item.entity && item.entity.id ? item.entity.id : item.entity_id;
-                item.entity_type = item.entity && item.entity.from ? 'App\\Ticket' : 'App\\TrackingProject';
+                item.entity_type = item.entity && item.entity_type === 'App\\Ticket' ? 'App\\Ticket' : 'App\\TrackingProject';
             }
             if (moment(item.date_to).isBefore(moment(item.date_from))) {
                 item.date_to = moment(item.date_to).set({
