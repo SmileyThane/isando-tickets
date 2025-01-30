@@ -458,6 +458,15 @@ class TicketRepository
         $ticket->status_id = $request->status_id;
         $ticket->save();
         if ($isInternal === false) {
+            $clientEmployees = $ticket->toClient->employees;
+            $employees = [];
+            foreach ($clientEmployees as $clientEmployee) {
+                if ($clientEmployee->employee && $clientEmployee->employee->userData)
+                {
+                    $employees[] = $clientEmployee->employee;
+                }
+            }
+
             $this->emailEmployees(
                 $this->filterEmailRecipients($ticket->to->employees, $ticket, $request->ticket_action ?? ''),
                 $ticket,
