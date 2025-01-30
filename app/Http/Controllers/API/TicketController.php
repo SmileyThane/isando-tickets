@@ -139,8 +139,17 @@ class TicketController extends Controller
 
         if ($result && $hasAccess) {
             $result = $this->ticketRepo->create($request);
+            $clientEmployees = $result->toClient->employees;
+            $employees = [];
+            foreach ($clientEmployees as $clientEmployee) {
+                if ($clientEmployee->employee && $clientEmployee->employee->userData)
+                {
+                    $employees[] = $clientEmployee->employee;
+                }
+            }
+
             $this->ticketRepo->emailEmployees(
-                $this->ticketRepo->filterEmailRecipients($result->to->employees, $result, Ticket::ACTION_NEW_TICKET),
+                $this->ticketRepo->filterEmailRecipients($employees, $result, Ticket::ACTION_NEW_TICKET),
                 $result,
                 NewTicket::class,
             );
