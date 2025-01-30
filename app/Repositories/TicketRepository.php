@@ -468,7 +468,7 @@ class TicketRepository
             }
 
             $this->emailEmployees(
-                $this->filterEmailRecipients($ticket->to->employees, $ticket, $request->ticket_action ?? ''),
+                $this->filterEmailRecipients($employees, $ticket, $request->ticket_action ?? ''),
                 $ticket,
                 ChangedTicketStatus::class,
             );
