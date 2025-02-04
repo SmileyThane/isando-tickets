@@ -461,8 +461,7 @@ class TicketRepository
             $clientEmployees = $ticket->toClient->employees;
             $employees = [];
             foreach ($clientEmployees as $clientEmployee) {
-                if ($clientEmployee->employee && $clientEmployee->employee->userData)
-                {
+                if ($clientEmployee->employee && $clientEmployee->employee->userData) {
                     $employees[] = $clientEmployee->employee;
                 }
             }
