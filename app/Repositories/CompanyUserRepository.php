@@ -123,6 +123,14 @@ class CompanyUserRepository
                         $query->withTrashed();
                     }
                 }
+            )->orWhereHas(
+                'userData.emails',
+                function ($query) use ($request) {
+                    $query->where('email', 'like', '%' . $request->search . '%');
+                    if ($request->with_trashed) {
+                        $query->withTrashed();
+                    }
+                }
             );
         }
         $companyUsers = $companyUsers->get();
