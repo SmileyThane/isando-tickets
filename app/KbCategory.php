@@ -15,7 +15,7 @@ class KbCategory extends Model
 {
     use SoftDeletes, NodeTrait;
 
-    protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'icon_color', 'company_id', 'parent_id', 'type_id', 'is_internal', 'is_draft'];
+    protected $fillable = ['name', 'name_de' , 'name_it', 'description', 'description_it', 'description_de', 'icon', 'icon_color', 'company_id', 'parent_id', 'type_id', 'is_internal', 'is_draft'];
 
     public function company(): BelongsTo
     {
@@ -50,6 +50,10 @@ class KbCategory extends Model
     {
         if (Auth::user()->language_id === 2) {
             return $this->name_de;
+        }
+
+        if (Auth::user()->language_id === 3) {
+            return $this->name_it;
         }
 
         return $this->name ?? '';

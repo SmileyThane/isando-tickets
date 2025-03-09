@@ -15,11 +15,11 @@ class KbArticle extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'company_id', 'is_internal', 'featured_color', 'keywords', 'keywords_de', 'type_id', 'owner_id', 'approved_at', 'importance_id', 'is_draft'];
+    protected $fillable = ['name', 'name_it', 'name_de', 'summary', 'summary_it', 'summary_de', 'content', 'content_de', 'content_it', 'company_id', 'is_internal', 'featured_color', 'keywords', 'keywords_de', 'keywords_it', 'type_id', 'owner_id', 'approved_at', 'importance_id', 'is_draft'];
 
     protected $appends = ['featured_image', 'importance'];
 
-    protected $hidden = ['content', 'content_de'];
+    protected $hidden = ['content', 'content_de', 'content_it'];
 
     protected $with = ['attachments'];
 
@@ -98,6 +98,10 @@ class KbArticle extends Model
     {
         if (Auth::user()->language_id === 2) {
             return $this->name_de;
+        }
+
+        if (Auth::user()->language_id === 3) {
+            return $this->name_it;
         }
 
         return $value;
