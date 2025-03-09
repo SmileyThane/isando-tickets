@@ -387,6 +387,17 @@
                                                           single-line/>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
+                                    <v-expansion-panel>
+                                        <v-expansion-panel-header>Italian</v-expansion-panel-header>
+                                        <v-expansion-panel-content>
+                                            <v-text-field v-model="categoryForm.name_it" :color="themeBgColor"
+                                                          :label="langMap.main.name" hide-details single-line/>
+                                            <v-text-field v-model="categoryForm.description_it"
+                                                          :color="themeBgColor" :label="langMap.main.description"
+                                                          hide-details
+                                                          single-line/>
+                                        </v-expansion-panel-content>
+                                    </v-expansion-panel>
                                 </v-expansion-panels>
                             </v-col>
                         </v-row>
@@ -536,8 +547,10 @@ export default {
                     (this.$route.query.parent_category ? this.$route.query.parent_category : null),
                 name: '',
                 name_de: '',
+                name_it: '',
                 description: '',
                 description_de: '',
+                description_it: '',
                 icon: '',
                 icon_color: this.$store.state.themeBgColor,
                 _active: [],
@@ -701,7 +714,8 @@ export default {
             selectedArticle: {
                 id: null,
                 name: '',
-                name_de: ''
+                name_de: '',
+                name_it: ''
             },
             kbPermissionsTypes: {
                 view: 'view',
@@ -766,13 +780,19 @@ export default {
         setSortByOptions(){
             const currentLanguage = this.$store.state.lang.short_code
             this.sortByArticlesOptions = [
-                {id: 1, label: this.$store.state.lang.lang_map.kb.name_sort, value: currentLanguage === 'en' ? 'name' : 'name_de'},
+                {
+                    id: 1, label: this.$store.state.lang.lang_map.kb.name_sort, value:
+                        currentLanguage === 'en' ? 'name' : currentLanguage === 'it' ? 'name_it' : 'name_de'
+                },
                 {id: 2, label: this.$store.state.lang.lang_map.kb.is_internal_sort, value: 'is_internal'},
                 {id: 3, label: this.$store.state.lang.lang_map.kb.keywords_sort, value: 'keywords'},
                 {id: 4, label: this.$store.state.lang.lang_map.kb.is_draft_sort, value: 'is_draft'},
             ]
             this.sortByCategoriesOptions = [
-                {id: 1, label: this.$store.state.lang.lang_map.kb.name_sort, value: currentLanguage === 'en' ? 'name' : 'name_de'},
+                {
+                    id: 1, label: this.$store.state.lang.lang_map.kb.name_sort, value:
+                        currentLanguage === 'en' ? 'name' : currentLanguage === 'it' ? 'name_it' : 'name_de'
+                },
                 {id: 2, label: this.$store.state.lang.lang_map.kb.is_internal_sort, value: 'is_internal'},
                 {id: 4, label: this.$store.state.lang.lang_map.kb.is_draft_sort, value: 'is_draft'},
             ]
@@ -873,8 +893,10 @@ export default {
                 parent_id: this.getCategoryIdFromQuery,
                 name: '',
                 name_de: '',
+                name_it: '',
                 description: '',
                 description_de: '',
+                description_it: '',
                 icon: '',
                 icon_color: this.themeBgColor,
                 _active: []
@@ -887,8 +909,10 @@ export default {
                 parent_id: category.parent_id,
                 name: category.name,
                 name_de: category.name_de,
+                name_it: category.name_it,
                 description: category.description,
                 description_de: category.description_de,
+                description_it: category.description_it,
                 icon_color: category.icon_color,
                 icon: category.icon,
                 _active: [category.parent_id],
@@ -979,7 +1003,8 @@ export default {
             this.selectedArticle = {
                 id: null,
                 name: '',
-                name_de: ''
+                name_de: '',
+                name_it: ''
             }
         },
         deleteArticle(article) {
