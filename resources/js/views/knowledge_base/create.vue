@@ -214,6 +214,68 @@
                                         </v-row>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
+                                <v-expansion-panel style="background-color: #fafafa;">
+                                    <v-expansion-panel-header>Italian</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-text-field v-model="article.name_it" :color="themeBgColor"
+                                                      :label="langMap.main.name"
+                                                      hide-details single-line/>
+                                        <v-textarea v-model="article.summary_it" :color="themeBgColor"
+                                                    :label="langMap.kb.summary"
+                                                    hide-details rows="4" single-line/>
+                                        <v-spacer>&nbsp;</v-spacer>
+                                        <tinymce ref="content_it" v-model="article.content_it"
+                                                 :placeholder="langMap.kb.article_content"
+                                                 aria-rowcount="40"/>
+                                        <v-spacer>&nbsp;</v-spacer>
+                                        <hr/>
+                                        <v-row>
+                                            <v-col cols="6">
+                                                <v-textarea v-model="article.keywords_it" :color="themeBgColor"
+                                                            :placeholder="langMap.kb.keywords" rows="4"/>
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <v-spacer>&nbsp;</v-spacer>
+                                                <label>{{ langMap.kb.attachments }}</label>
+                                                <v-chip-group column>
+                                                    <v-chip v-for="attachment in article.attachments"
+                                                            v-if="attachment.service_info && attachment.service_info.lang == 'de'"
+                                                            :key="attachment.id" :color="themeBgColor" class="mr-2"
+                                                            close
+                                                            label outlined
+                                                            @click:close="deleteAttachment(attachment)">
+                                                        <span @click="download(attachment.link)">
+                                                            <v-icon :color="themeBgColor" left
+                                                                    v-text="fileIcon(attachment.name)"/>
+                                                            {{ attachment.name }}
+                                                        </span>
+                                                    </v-chip>
+                                                </v-chip-group>
+                                                <v-spacer>&nbsp;</v-spacer>
+                                                <v-file-input
+                                                    ref="fileupload_it"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :label="langMap.kb.create_attachment"
+                                                    :show-size="1024"
+                                                    chips
+                                                    counter
+                                                    multiple
+                                                    prepend-icon="mdi-paperclip"
+                                                    v-on:change="onFileChangeIt"
+                                                >
+                                                    <template v-slot:selection="{ file, index, text }">
+                                                        <v-chip :color="themeBgColor" label outlined>
+                                                            <v-icon :color="themeBgColor" left
+                                                                    v-text="fileIcon(file.name)"/>
+                                                            {{ text }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-file-input>
+                                            </v-col>
+                                        </v-row>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
                             </v-expansion-panels>
                         </v-col>
                     </v-row>
@@ -361,10 +423,13 @@ export default {
                 categories: [],
                 name: '',
                 name_de: '',
+                name_it: '',
                 summary: '',
                 summary_de: '',
+                summary_it: '',
                 content: '',
                 content_de: '',
+                content_it: '',
                 tags: [],
                 attachments: [],
                 featured_image: '',
@@ -383,6 +448,7 @@ export default {
             selectedAttachment: null,
             files: [],
             files_de: [],
+            files_it: [],
             stepTypes: [
                 {id: 1, name: this.$store.state.lang.lang_map.kb.buttons},
                 {id: 2, name: this.$store.state.lang.lang_map.kb.links},
@@ -535,6 +601,13 @@ export default {
                 });
             }
 
+            if (this.files_it && this.files_it.length > 0) {
+                Array.from(this.files_it).forEach(function (file) {
+                    formData.append('files[]', file);
+                    formData.append('file_infos[]', JSON.stringify({type: 'kb_document', lang: 'de'}));
+                });
+            }
+
             if (this.article.id) {
                 formData.append('_method', 'PUT');
 
@@ -642,6 +715,9 @@ export default {
         },
         onFileChangeDe(files) {
             this.files_de = files;
+        },
+        onFileChangeIt(files) {
+            this.files_it = files;
         },
         unlinkStep(item) {
             this.article.next.splice(this.article.next.indexOf(item), 1);
