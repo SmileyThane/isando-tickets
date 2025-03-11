@@ -471,6 +471,8 @@
                                                         v-model="row.entity"
                                                         :openPanel="row.entity_type === 'App\\TrackingProject' ? 0 : 2"
                                                         :openChildrenId="row.entity_id"
+                                                        @blur="debounceSave(row, 'entity', row.entity)"
+                                                        @input="debounceSave(row, 'entity', row.entity)"
                                                     ></ProjectBtn>
                                                 </v-edit-dialog>
                                                 <div v-else>
@@ -1281,7 +1283,7 @@ export default {
             }
             if (fieldName === 'entity') {
                 item.entity_id = item.entity && item.entity.id ? item.entity.id : item.entity_id;
-                item.entity_type = item.entity && item.entity_type === 'App\\Ticket' ? 'App\\Ticket' : 'App\\TrackingProject';
+                item.entity_type = item.entity && item.entity.from_entity_type ? 'App\\Ticket' : 'App\\TrackingProject';
             }
             if (moment(item.date_to).isBefore(moment(item.date_from))) {
                 item.date_to = moment(item.date_to).set({
